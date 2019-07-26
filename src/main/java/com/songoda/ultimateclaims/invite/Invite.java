@@ -13,6 +13,8 @@ public class Invite {
 
     private final long created;
 
+    private boolean accepted = false;
+
     public Invite(UUID inviter, UUID invited, Claim claim) {
         this.inviter = inviter;
         this.invited = invited;
@@ -34,5 +36,13 @@ public class Invite {
 
     public long getCreated() {
         return created;
+    }
+
+    public void accepted() {
+        this.accepted = true;
+    }
+
+    public boolean isAccepted() {
+        return accepted;
     }
 }

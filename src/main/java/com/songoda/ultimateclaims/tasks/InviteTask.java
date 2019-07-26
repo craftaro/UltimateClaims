@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 public class InviteTask extends BukkitRunnable {
 
@@ -35,7 +36,7 @@ public class InviteTask extends BukkitRunnable {
     @Override
     public void run() {
         for (Invite invite : new ArrayList<>(waitingInventations)) {
-            if (!plugin.getClaimManager().hasClaim(invite.getInviter()))
+            if (invite.isAccepted() || !plugin.getClaimManager().hasClaim(invite.getInviter()))
                 this.waitingInventations.remove(invite);
 
             if (System.currentTimeMillis() - invite.getCreated()
@@ -57,5 +58,10 @@ public class InviteTask extends BukkitRunnable {
     public Invite addInvite(Invite invite) {
         this.waitingInventations.add(invite);
         return invite;
+    }
+
+    public Invite getInvite(UUID uuid) {
+        return waitingInventations.stream()
+                .filter(invite -> invite.getInvited() == uuid).findFirst().orElse(null);
     }
 }

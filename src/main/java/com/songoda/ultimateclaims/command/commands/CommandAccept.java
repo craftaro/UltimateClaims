@@ -13,41 +13,30 @@ import org.bukkit.entity.Player;
 public class CommandAccept extends AbstractCommand {
 
     public CommandAccept(AbstractCommand parent) {
-        super("invite", parent, true);
+        super("accept", parent, true);
     }
 
     @Override
     protected ReturnType runCommand(UltimateClaims instance, CommandSender sender, String... args) {
         Player player = (Player) sender;
 
-        if (args.length < 2)
-            return ReturnType.SYNTAX_ERROR;
 
-        if (!instance.getClaimManager().hasClaim(player)) {
-            sender.sendMessage("YOu need to be in a claim to do this.");
-            return ReturnType.FAILURE;
+        Invite invite = instance.getInviteTask().getInvite(player.getUniqueId());
+
+        if (invite == null) {
+            sender.sendMessage("You have no invites");
+        } else {
+            invite.getClaim().addMember(player, ClaimRole.MEMBER);
+            invite.accepted();
+            sender.sendMessage("Invite accepted.");
         }
 
-        Claim claim = instance.getClaimManager().getClaim(player);
-
-        OfflinePlayer invited = Bukkit.getPlayer(args[1]);
-
-        if (invited == null) {
-            sender.sendMessage("That player does not exist or is not online.");
-            return ReturnType.FAILURE;
-        }
-
-
-        instance.getInviteTask().addInvite(new Invite(player.getUniqueId(), invited.getUniqueId(), claim));
-        instance.getClaimManager().getClaim(player).addMember(invited.getUniqueId(), ClaimRole.MEMBER);
-
-        sender.sendMessage("You invited them");
         return ReturnType.SUCCESS;
     }
 
     @Override
     public String getPermissionNode() {
-        return "ultimateclaims.invite";
+        return "ultimateclaims.accept";
     }
 
     @Override
