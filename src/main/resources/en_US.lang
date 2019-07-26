@@ -1,0 +1,7 @@
+#General Messages
+
+general.nametag.prefix = "&8[&6UltimateClaims&8]"
+
+#Event Messages
+
+event.general.nopermission = "&cYou do not have permission to do that."

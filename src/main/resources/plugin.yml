@@ -1,0 +1,12 @@
+name: UltimateClaims
+description: UltimateClaims
+version: maven-version-number
+main: com.songoda.ultimateclaims.UltimateClaims
+author: songoda
+api-version: 1.13
+commands:
+  UltimateClaims:
+    description: I have no idea.
+    default: true
+    aliases: [ucl, claims, claim, c]
+    usage: /<command> [reload]
