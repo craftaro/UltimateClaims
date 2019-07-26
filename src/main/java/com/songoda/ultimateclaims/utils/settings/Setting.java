@@ -9,6 +9,11 @@ import java.util.stream.Collectors;
 
 public enum Setting {
 
+    POWERCELL_RECIPE("Main.PowerCell Recipe",
+            Arrays.asList("3:IRON_BLOCK", "4:DIAMOND", "5:IRON_BLOCK",
+                    "12:DIAMOND", "13:IRON_BLOCK", "14:DIAMOND",
+                    "21:IRON_BLOCK", "22:DIAMOND", "23:IRON_BLOCK")),
+
     VAULT_ECONOMY("Economy.Use Vault Economy", true,
             "Should Vault be used?"),
 

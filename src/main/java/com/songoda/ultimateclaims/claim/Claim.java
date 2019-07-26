@@ -33,7 +33,7 @@ public class Claim {
             .setCanPlace(false)
             .build();
 
-    private Location powerCell = null;
+    private PowerCell powerCell = null;
 
     public String getName() {
         return name;
@@ -99,11 +99,11 @@ public class Claim {
         this.claimedChunks.remove(chunk);
     }
 
-    public Location getPowerCell() {
+    public PowerCell getPowerCell() {
         return powerCell;
     }
 
-    public void setPowerCell(Location powerCell) {
+    public void setPowerCell(PowerCell powerCell) {
         this.powerCell = powerCell;
     }
 

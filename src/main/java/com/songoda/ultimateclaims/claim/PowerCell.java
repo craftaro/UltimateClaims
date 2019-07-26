@@ -1,10 +1,10 @@
 package com.songoda.ultimateclaims.claim;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import javax.xml.stream.Location;
 import java.util.List;
 
 public class PowerCell {

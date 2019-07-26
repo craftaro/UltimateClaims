@@ -3,7 +3,6 @@ package com.songoda.ultimateclaims.claim;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -42,8 +41,8 @@ public class ClaimBuilder {
         return this;
     }
 
-    public ClaimBuilder setPowerCell(Location location) {
-        this.claim.setPowerCell(location);
+    public ClaimBuilder setPowerCell(PowerCell powerCell) {
+        this.claim.setPowerCell(powerCell);
         return this;
     }
 
