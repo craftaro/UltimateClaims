@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
@@ -24,10 +25,10 @@ public class InventoryListeners implements Listener {
         if (!(event.getPlayer() instanceof Player)) return;
 
         ClaimManager claimManager = plugin.getClaimManager();
-        Player player = (Player)event.getPlayer();
+        Player player = (Player) event.getPlayer();
         if (!claimManager.hasClaim(player)) return;
         Claim claim = claimManager.getClaim(player);
-        if (claim.getPowerCell() != null) return;
+        if (claim.getPowerCell().getLocation() != null) return;
         List<String> recipe = Setting.POWERCELL_RECIPE.getStringList();
 
         int size = 0;
@@ -35,12 +36,15 @@ public class InventoryListeners implements Listener {
             if (event.getInventory().getItem(i) == null) continue;
             String line = i + ":" + event.getInventory().getItem(i).getType().name();
             if (!recipe.contains(line)) return;
-            size ++;
+            size++;
         }
         if (size != recipe.size()) return;
 
         claim.getPowerCell().setLocation(event.getInventory().getLocation());
-        claim.getPowerCell().getInventory().addItem(event.getInventory().getContents());
+        for (ItemStack item : event.getInventory().getContents()) {
+            if (item == null) continue;
+            claim.getPowerCell().getInventory().addItem(item);
+        }
         event.getInventory().clear();
 
         player.sendMessage("Powercell set");

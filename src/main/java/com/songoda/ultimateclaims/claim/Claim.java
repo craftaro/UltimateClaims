@@ -5,7 +5,6 @@ import com.songoda.ultimateclaims.member.ClaimPermissions;
 import com.songoda.ultimateclaims.member.ClaimPermissionsBuilder;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -33,7 +32,7 @@ public class Claim {
             .setCanPlace(false)
             .build();
 
-    private PowerCell powerCell = null;
+    private PowerCell powerCell = new PowerCell();
 
     public String getName() {
         return name;

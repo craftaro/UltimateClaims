@@ -3,15 +3,18 @@ package com.songoda.ultimateclaims.listeners;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
+import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.Methods;
 import org.bukkit.Chunk;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class BlockListeners implements Listener {
 
@@ -25,7 +28,9 @@ public class BlockListeners implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
         ClaimManager claimManager = UltimateClaims.getInstance().getClaimManager();
 
-        Chunk chunk = event.getBlock().getChunk();
+        Block block = event.getBlock();
+
+        Chunk chunk = block.getChunk();
 
         if (!claimManager.hasClaim(chunk)) return;
 
@@ -53,6 +58,8 @@ public class BlockListeners implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         ClaimManager claimManager = UltimateClaims.getInstance().getClaimManager();
 
+        Block block = event.getBlock();
+
         Chunk chunk = event.getBlock().getChunk();
 
         if (!claimManager.hasClaim(chunk)) return;
@@ -65,6 +72,20 @@ public class BlockListeners implements Listener {
             event.getPlayer().sendMessage("nope cant build.");
             event.setCancelled(true);
             return;
+        }
+
+        if (claim.getPowerCell().getLocation().equals(block.getLocation())) {
+            PowerCell powerCell = claim.getPowerCell();
+            if (member.getRole() == ClaimRole.OWNER) {
+                for (ItemStack item : powerCell.getInventory().getContents()) {
+                    if (item == null) continue;
+                    block.getWorld().dropItemNaturally(block.getLocation(), item);
+                }
+                powerCell.setLocation(null);
+            } else {
+                event.getPlayer().sendMessage("no");
+                event.setCancelled(true);
+            }
         }
 
         if (member.getRole() == ClaimRole.OWNER) return;
