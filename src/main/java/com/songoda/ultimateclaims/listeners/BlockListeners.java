@@ -81,6 +81,7 @@ public class BlockListeners implements Listener {
                     if (item == null) continue;
                     block.getWorld().dropItemNaturally(block.getLocation(), item);
                 }
+                powerCell.getInventory().clear();
                 powerCell.setLocation(null);
             } else {
                 event.getPlayer().sendMessage("no");
