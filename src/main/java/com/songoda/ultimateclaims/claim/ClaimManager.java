@@ -46,4 +46,7 @@ public class ClaimManager {
                 .filter(claim -> claim.getClaimedChunks().contains(chunk)).findFirst().orElse(null);
     }
 
+    public void removeClaim(Claim claim) {
+        this.registeredClaims.remove(claim);
+    }
 }

@@ -28,7 +28,7 @@ public class InventoryListeners implements Listener {
         Player player = (Player) event.getPlayer();
         if (!claimManager.hasClaim(player)) return;
         Claim claim = claimManager.getClaim(player);
-        if (claim.getPowerCell().getLocation() != null) return;
+        if (claim.getPowerCell().hasLocation()) return;
         List<String> recipe = Setting.POWERCELL_RECIPE.getStringList();
 
         int size = 0;

@@ -1,5 +1,6 @@
 package com.songoda.ultimateclaims.claim;
 
+import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
 import com.songoda.ultimateclaims.member.ClaimPermissionsBuilder;
@@ -7,10 +8,7 @@ import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class Claim {
 
@@ -18,7 +16,7 @@ public class Claim {
     private ClaimMember owner;
     private final Set<ClaimMember> members = new HashSet<>();
     private final Set<Chunk> claimedChunks = new HashSet<>();
-    private final Set<UUID> bannedPlayer = new HashSet<>();
+    private final Set<UUID> bannedPlayers = new HashSet<>();
 
     private ClaimPermissions memberPermissions = new ClaimPermissionsBuilder()
             .setCanBuild(true)
@@ -123,11 +121,17 @@ public class Claim {
     }
 
     public void banPlayer(UUID uuid) {
-        this.bannedPlayer.add(uuid);
+        this.bannedPlayers.add(uuid);
     }
 
     public void unBanPlayer(UUID uuid) {
-        this.bannedPlayer.remove(uuid);
+        this.bannedPlayers.remove(uuid);
+    }
+
+    public void destroy() {
+        this.claimedChunks.clear();
+        this.powerCell.destroy();
+        UltimateClaims.getInstance().getClaimManager().removeClaim(this);
     }
 
 }

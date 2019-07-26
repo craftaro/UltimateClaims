@@ -14,6 +14,8 @@ public enum Setting {
                     "12:DIAMOND", "13:IRON_BLOCK", "14:DIAMOND",
                     "21:IRON_BLOCK", "22:DIAMOND", "23:IRON_BLOCK")),
 
+    INVITE_TIMEOUT("Main.Invite Timeout", 30),
+
     VAULT_ECONOMY("Economy.Use Vault Economy", true,
             "Should Vault be used?"),
 

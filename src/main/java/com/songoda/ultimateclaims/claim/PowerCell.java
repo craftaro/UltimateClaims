@@ -30,10 +30,23 @@ public class PowerCell {
     }
 
     public Location getLocation() {
-        return location;
+        return location.clone();
+    }
+
+    public boolean hasLocation() {
+        return location != null;
     }
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public void destroy() {
+        for (ItemStack item : inventory.getContents()) {
+            if (item == null) continue;
+            location.getWorld().dropItemNaturally(location, item);
+        }
+        inventory.clear();
+        location = null;
     }
 }

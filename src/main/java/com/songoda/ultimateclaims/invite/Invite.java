@@ -13,11 +13,11 @@ public class Invite {
 
     private final long created;
 
-    public Invite(UUID inviter, UUID invited, Claim claim, long created) {
+    public Invite(UUID inviter, UUID invited, Claim claim) {
         this.inviter = inviter;
         this.invited = invited;
         this.claim = claim;
-        this.created = created;
+        this.created = System.currentTimeMillis();
     }
 
     public UUID getInviter() {

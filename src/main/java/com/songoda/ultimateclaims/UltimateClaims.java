@@ -41,6 +41,8 @@ public class UltimateClaims extends JavaPlugin {
     private CommandManager commandManager;
     private ClaimManager claimManager;
 
+    private InviteTask inviteTask;
+
     public static UltimateClaims getInstance() {
         return INSTANCE;
     }
@@ -86,7 +88,7 @@ public class UltimateClaims extends JavaPlugin {
         this.claimManager = new ClaimManager();
 
         // Tasks
-        InviteTask.startTask(this);
+        this.inviteTask = InviteTask.startTask(this);
 
         // Setup Economy
         if (Setting.VAULT_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("Vault"))
@@ -141,5 +143,9 @@ public class UltimateClaims extends JavaPlugin {
 
     public ClaimManager getClaimManager() {
         return claimManager;
+    }
+
+    public InviteTask getInviteTask() {
+        return inviteTask;
     }
 }

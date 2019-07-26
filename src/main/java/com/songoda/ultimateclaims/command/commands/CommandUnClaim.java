@@ -28,7 +28,10 @@ public class CommandUnClaim extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        instance.getClaimManager().getClaim(player).removeClaimedChunk(player.getLocation().getChunk());
+        claim.removeClaimedChunk(player.getLocation().getChunk());
+
+        if (claim.getClaimedChunks().size() == 0)
+            claim.destroy();
 
         sender.sendMessage("unclaimed " + instance.getClaimManager().getClaim(player).getClaimedChunks().size());
         return ReturnType.SUCCESS;

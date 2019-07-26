@@ -75,14 +75,8 @@ public class BlockListeners implements Listener {
         }
 
         if (claim.getPowerCell().getLocation().equals(block.getLocation())) {
-            PowerCell powerCell = claim.getPowerCell();
             if (member.getRole() == ClaimRole.OWNER) {
-                for (ItemStack item : powerCell.getInventory().getContents()) {
-                    if (item == null) continue;
-                    block.getWorld().dropItemNaturally(block.getLocation(), item);
-                }
-                powerCell.getInventory().clear();
-                powerCell.setLocation(null);
+                claim.getPowerCell().destroy();
             } else {
                 event.getPlayer().sendMessage("no");
                 event.setCancelled(true);

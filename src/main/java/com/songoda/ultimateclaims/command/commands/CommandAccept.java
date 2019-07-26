@@ -10,9 +10,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CommandInvite extends AbstractCommand {
+public class CommandAccept extends AbstractCommand {
 
-    public CommandInvite(AbstractCommand parent) {
+    public CommandAccept(AbstractCommand parent) {
         super("invite", parent, true);
     }
 
