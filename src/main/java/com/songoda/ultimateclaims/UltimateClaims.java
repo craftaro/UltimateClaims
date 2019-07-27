@@ -6,11 +6,15 @@ import com.songoda.ultimateclaims.economy.Economy;
 import com.songoda.ultimateclaims.economy.PlayerPointsEconomy;
 import com.songoda.ultimateclaims.economy.ReserveEconomy;
 import com.songoda.ultimateclaims.economy.VaultEconomy;
+import com.songoda.ultimateclaims.hologram.Hologram;
+import com.songoda.ultimateclaims.hologram.HologramHolographicDisplays;
 import com.songoda.ultimateclaims.listeners.BlockListeners;
 import com.songoda.ultimateclaims.listeners.EntityListeners;
 import com.songoda.ultimateclaims.listeners.InteractListeners;
 import com.songoda.ultimateclaims.listeners.InventoryListeners;
+import com.songoda.ultimateclaims.tasks.AnimateTask;
 import com.songoda.ultimateclaims.tasks.InviteTask;
+import com.songoda.ultimateclaims.tasks.PowerCellTask;
 import com.songoda.ultimateclaims.utils.Metrics;
 import com.songoda.ultimateclaims.utils.ServerVersion;
 import com.songoda.ultimateclaims.utils.locale.Locale;
@@ -36,7 +40,8 @@ public class UltimateClaims extends JavaPlugin {
 
     private Locale locale;
     private Economy economy;
-    
+    private Hologram hologram;
+
     private SettingsManager settingsManager;
     private CommandManager commandManager;
     private ClaimManager claimManager;
@@ -77,6 +82,11 @@ public class UltimateClaims extends JavaPlugin {
 
         PluginManager pluginManager = Bukkit.getPluginManager();
 
+        // Register Hologram Plugin
+        if (Setting.POWERCELL_HOLOGRAMS.getBoolean()
+                && pluginManager.isPluginEnabled("HolographicDisplays"))
+            hologram = new HologramHolographicDisplays(this);
+
         // Listeners
         pluginManager.registerEvents(new EntityListeners(this), this);
         pluginManager.registerEvents(new BlockListeners(this), this);
@@ -89,6 +99,8 @@ public class UltimateClaims extends JavaPlugin {
 
         // Tasks
         this.inviteTask = InviteTask.startTask(this);
+        AnimateTask.startTask(this);
+        PowerCellTask.startTask(this);
 
         // Setup Economy
         if (Setting.VAULT_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("Vault"))
@@ -147,5 +159,9 @@ public class UltimateClaims extends JavaPlugin {
 
     public InviteTask getInviteTask() {
         return inviteTask;
+    }
+
+    public Hologram getHologram() {
+        return hologram;
     }
 }

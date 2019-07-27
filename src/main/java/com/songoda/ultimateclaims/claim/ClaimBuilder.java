@@ -1,5 +1,6 @@
 package com.songoda.ultimateclaims.claim;
 
+import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Chunk;
@@ -26,6 +27,11 @@ public class ClaimBuilder {
     }
 
     public ClaimBuilder setOwner(Player player) {
+        if (claim.getName() == null)
+            claim.setName(UltimateClaims.getInstance().getLocale()
+                    .getMessage("general.claim.defaultname")
+                    .processPlaceholder("name", player.getName())
+                    .getMessage());
         return this.setOwner(player.getUniqueId());
     }
 

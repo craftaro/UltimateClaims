@@ -24,7 +24,7 @@ public class CommandInvite extends AbstractCommand {
             return ReturnType.SYNTAX_ERROR;
 
         if (!instance.getClaimManager().hasClaim(player)) {
-            sender.sendMessage("YOu need to be in a claim to do this.");
+            sender.sendMessage("You need to be in a claim to do this.");
             return ReturnType.FAILURE;
         }
 
@@ -32,16 +32,21 @@ public class CommandInvite extends AbstractCommand {
 
         OfflinePlayer invited = Bukkit.getPlayer(args[1]);
 
-        if (invited == null) {
+        if (invited == null && !invited.isOnline()) {
             sender.sendMessage("That player does not exist or is not online.");
             return ReturnType.FAILURE;
         }
 
-
         instance.getInviteTask().addInvite(new Invite(player.getUniqueId(), invited.getUniqueId(), claim));
         instance.getClaimManager().getClaim(player).addMember(invited.getUniqueId(), ClaimRole.MEMBER);
 
-        sender.sendMessage("You invited them");
+        instance.getLocale().getMessage("event.invite.invite")
+                .processPlaceholder("name", invited.getName())
+                .sendPrefixedMessage(player);
+
+        instance.getLocale().getMessage("event.invite.invited")
+                .processPlaceholder("claim", claim.getName())
+                .sendPrefixedMessage(invited.getPlayer());
         return ReturnType.SUCCESS;
     }
 

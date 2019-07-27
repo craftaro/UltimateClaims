@@ -1,7 +1,16 @@
 #General Messages
 
 general.nametag.prefix = "&8[&6UltimateClaims&8]"
+general.claim.defaultname = "%name%'s claim"
+
+#Command Messages
+
+event.invite.invited = "&7You have been invited to join &6%claim%&7."
+event.invite.invite = "&7You have invited &6%name% &7to join your claim&7."
 
 #Event Messages
 
 event.general.nopermission = "&cYou do not have permission to do that."
+event.invite.expired = "&cYour invitation has expired..."
+event.claim.enter = "&7You have entered &6%claim%&7."
+event.claim.exit = "&7You have exited &6%claim%&7."

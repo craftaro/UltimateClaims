@@ -30,7 +30,7 @@ public class CommandClaim extends AbstractCommand {
                             .addClaimedChunks(player.getLocation().getChunk())
                             .build());
 
-        sender.sendMessage("claimed " + instance.getClaimManager().getClaim(player).getClaimedChunks().size());
+        sender.sendMessage("claimed " + instance.getClaimManager().getClaim(player).getClaimedChunks().size() + "! You have 10 minutes to place a power cell.");
         return ReturnType.SUCCESS;
     }
 

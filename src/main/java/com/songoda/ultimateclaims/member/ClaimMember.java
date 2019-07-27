@@ -1,16 +1,24 @@
 package com.songoda.ultimateclaims.member;
 
+import com.songoda.ultimateclaims.claim.Claim;
+
 import java.util.UUID;
 
 public class ClaimMember {
 
+    private final Claim claim;
     private final UUID uuid;
     private final ClaimRole role;
     private boolean isPresent = false;
 
-    public ClaimMember(UUID uuid, ClaimRole role) {
+    public ClaimMember(Claim claim, UUID uuid, ClaimRole role) {
+        this.claim = claim;
         this.uuid = uuid;
         this.role = role;
+    }
+
+    public Claim getClaim() {
+        return claim;
     }
 
     public UUID getUniqueId() {

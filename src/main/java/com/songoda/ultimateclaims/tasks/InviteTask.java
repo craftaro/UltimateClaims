@@ -45,11 +45,12 @@ public class InviteTask extends BukkitRunnable {
                 OfflinePlayer invited = Bukkit.getPlayer(invite.getInvited());
 
                 if (inviter != null && inviter.isOnline())
-                    inviter.getPlayer().sendMessage("Your invite expired");
+                    plugin.getLocale().getMessage("event.invite.expired")
+                            .sendPrefixedMessage(inviter.getPlayer());
 
                 if (invited != null && invited.isOnline())
-                    invited.getPlayer().sendMessage("Your invite expired");
-
+                    plugin.getLocale().getMessage("event.invite.expired")
+                            .sendPrefixedMessage(invited.getPlayer());
                 waitingInventations.remove(invite);
             }
         }

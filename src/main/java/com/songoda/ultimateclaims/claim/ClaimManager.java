@@ -3,9 +3,7 @@ package com.songoda.ultimateclaims.claim;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ClaimManager {
 
@@ -47,6 +45,10 @@ public class ClaimManager {
     }
 
     public void removeClaim(Claim claim) {
-        this.registeredClaims.remove(claim);
+        this.registeredClaims.remove(claim.getOwner().getUniqueId());
+    }
+
+    public Collection<Claim> getRegisteredClaims() {
+        return registeredClaims.values();
     }
 }

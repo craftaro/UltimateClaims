@@ -8,7 +8,10 @@ import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 public class Claim {
 
@@ -45,7 +48,7 @@ public class Claim {
     }
 
     public void setOwner(UUID owner) {
-        this.owner = new ClaimMember(owner, ClaimRole.OWNER);
+        this.owner = new ClaimMember(this, owner, ClaimRole.OWNER);
     }
 
     public Set<ClaimMember> getMembers() {
@@ -53,7 +56,7 @@ public class Claim {
     }
 
     public void addMember(UUID uuid, ClaimRole role) {
-        this.members.add(new ClaimMember(uuid, role));
+        this.members.add(new ClaimMember(this, uuid, role));
     }
 
     public void addMember(Player player, ClaimRole role) {

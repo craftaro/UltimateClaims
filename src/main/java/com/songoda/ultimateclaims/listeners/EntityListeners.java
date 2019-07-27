@@ -33,7 +33,9 @@ public class EntityListeners implements Listener {
                     else
                         member.setPresent(false);
                 }
-                event.getPlayer().sendMessage("You left the claim");
+                plugin.getLocale().getMessage("event.claim.exit")
+                        .processPlaceholder("claim", claim.getName())
+                .sendPrefixedMessage(event.getPlayer());
             }
         }
 
@@ -47,7 +49,9 @@ public class EntityListeners implements Listener {
                     else
                         member.setPresent(true);
                 }
-                event.getPlayer().sendMessage("You entered a claim.");
+                plugin.getLocale().getMessage("event.claim.enter")
+                        .processPlaceholder("claim", claim.getName())
+                        .sendPrefixedMessage(event.getPlayer());
             }
         }
     }

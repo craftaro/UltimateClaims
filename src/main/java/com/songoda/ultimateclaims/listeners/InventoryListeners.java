@@ -40,12 +40,12 @@ public class InventoryListeners implements Listener {
         }
         if (size != recipe.size()) return;
 
-        claim.getPowerCell().setLocation(event.getInventory().getLocation());
         for (ItemStack item : event.getInventory().getContents()) {
             if (item == null) continue;
             claim.getPowerCell().getInventory().addItem(item);
         }
         event.getInventory().clear();
+        claim.getPowerCell().setLocation(event.getInventory().getLocation());
 
         player.sendMessage("Powercell set");
     }

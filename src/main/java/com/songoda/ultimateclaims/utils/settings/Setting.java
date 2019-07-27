@@ -2,6 +2,7 @@ package com.songoda.ultimateclaims.utils.settings;
 
 
 import com.songoda.ultimateclaims.UltimateClaims;
+import org.bukkit.Material;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,9 +11,14 @@ import java.util.stream.Collectors;
 public enum Setting {
 
     POWERCELL_RECIPE("Main.PowerCell Recipe",
-            Arrays.asList("3:IRON_BLOCK", "4:DIAMOND", "5:IRON_BLOCK",
-                    "12:DIAMOND", "13:IRON_BLOCK", "14:DIAMOND",
-                    "21:IRON_BLOCK", "22:DIAMOND", "23:IRON_BLOCK")),
+            Arrays.asList("3:IRON_INGOT", "4:DIAMOND", "5:IRON_INGOT",
+                    "12:DIAMOND", "13:IRON_INGOT", "14:DIAMOND",
+                    "21:IRON_INGOT", "22:DIAMOND", "23:IRON_INGOT")),
+
+    ITEM_VALUES("Main.PowerCell Item Values",
+            Arrays.asList("DIAMOND:120", "IRON_INGOT:30")),
+
+    POWERCELL_HOLOGRAMS("Main.Powercell Holograms", true),
 
     INVITE_TIMEOUT("Main.Invite Timeout", 30),
 
@@ -99,4 +105,14 @@ public enum Setting {
         return UltimateClaims.getInstance().getConfig().getDouble(setting);
     }
 
+    public Material getMaterial() {
+        String materialStr = UltimateClaims.getInstance().getConfig().getString(setting);
+        Material material = Material.getMaterial(materialStr);
+
+        if (material == null) {
+            System.out.println(String.format("Config value \"%s\" has an invalid material name: \"%s\"", setting, materialStr));
+        }
+
+        return material;
+    }
 }
