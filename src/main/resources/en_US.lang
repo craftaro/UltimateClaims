@@ -23,6 +23,11 @@ command.accept.accepted = "&6%name% &7accepted your invitation."
 command.claim.success = "&7You claimed this chunk for your claim."
 command.unclaim.success = "&7You unclaimed this chunk."
 
+#Interface Messages
+interface.powercell.economytitle = "&7Economy stored: &6%time%&7."
+interface.powercell.valuablestitle = "&7Item's stored: &6%time%&7."
+interface.powercell.totaltitle = "&7Total Power: &6%time%&7."
+
 #Event Messages
 
 event.general.nopermission = "&cYou do not have permission to do that."

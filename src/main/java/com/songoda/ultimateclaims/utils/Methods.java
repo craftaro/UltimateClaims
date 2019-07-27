@@ -88,6 +88,10 @@ public class Methods {
             sb.append(" ").append(minutes).append("m");
         if (seconds != 0L)
             sb.append(" ").append(seconds).append("s");
+
+        if (sb.toString().equals(""))
+            sb.append("0s");
+
         return sb.toString().trim();
     }
 

@@ -23,12 +23,14 @@ public class GUIPowerCell extends AbstractGUI {
     private PowerCell powercell;
     private Claim claim;
 
+    private int task;
+
     public GUIPowerCell(Player player, Claim claim) {
         super(player);
         this.powercell = claim.getPowerCell();
         this.claim = claim;
         plugin = UltimateClaims.getInstance();
-        
+
         if (powercell.getOpened() != null) {
             OfflinePlayer opened = Bukkit.getPlayer(powercell.getOpened());
             if (opened.isOnline())
@@ -36,7 +38,8 @@ public class GUIPowerCell extends AbstractGUI {
         }
         powercell.setOpened(player.getUniqueId());
 
-        init(Methods.formatTitle(plugin.getLocale().getMessage("interface.powercell.title").getMessage()), 54);
+        init(Methods.formatTitle(claim.getName()), 54);
+        runTask();
     }
 
     @Override
@@ -73,7 +76,8 @@ public class GUIPowerCell extends AbstractGUI {
 
         ItemStack economy = new ItemStack(Material.SUNFLOWER);
         ItemMeta economyMeta = economy.getItemMeta();
-        economyMeta.setDisplayName(plugin.getLocale().getMessage("interface.powercell.economytitle").getMessage());
+        economyMeta.setDisplayName(plugin.getLocale().getMessage("interface.powercell.economytitle")
+                .processPlaceholder("time", Methods.makeReadable((long)powercell.getEconomyPower() * 60 * 1000)).getMessage());
         List<String> economyLore = new ArrayList<>();
         String[] economySplit = plugin.getLocale().getMessage("interface.powercell.economylore").getMessage().split("\\|");
         for (String line : economySplit) economyLore.add(Methods.formatText(line));
@@ -82,17 +86,18 @@ public class GUIPowerCell extends AbstractGUI {
 
         ItemStack total = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.CLOCK : Material.valueOf("WATCH"));
         ItemMeta totalMeta = total.getItemMeta();
-        totalMeta.setDisplayName(plugin.getLocale().getMessage("interface.powercell.totaltitle").getMessage());
+        totalMeta.setDisplayName(plugin.getLocale().getMessage("interface.powercell.totaltitle")
+                .processPlaceholder("time", Methods.makeReadable((long)powercell.getTotalPower() * 60 * 1000)).getMessage());
         List<String> totalLore = new ArrayList<>();
-        String[] totalSplit = plugin.getLocale().getMessage("interface.powercell.totallore")
-                .processPlaceholder("time", powercell.getTotalPower()).getMessage().split("\\|");
+        String[] totalSplit = plugin.getLocale().getMessage("interface.powercell.totallore").getMessage().split("\\|");
         for (String line : totalSplit) totalLore.add(line);
         totalMeta.setLore(totalLore);
         total.setItemMeta(totalMeta);
 
         ItemStack valuables = new ItemStack(Material.DIAMOND);
         ItemMeta valuablesMeta = valuables.getItemMeta();
-        valuablesMeta.setDisplayName(plugin.getLocale().getMessage("interface.powercell.valuablestitle").getMessage());
+        valuablesMeta.setDisplayName(plugin.getLocale().getMessage("interface.powercell.valuablestitle")
+                .processPlaceholder("time", Methods.makeReadable((long)powercell.getItemPower() * 60 * 1000)).getMessage());
         List<String> valublesLore = new ArrayList<>();
         String[] valuablesSplit = plugin.getLocale().getMessage("interface.powercell.valuableslore").getMessage().split("\\|");
         for (String line : valuablesSplit) valublesLore.add(line);
@@ -141,8 +146,30 @@ public class GUIPowerCell extends AbstractGUI {
             inventory.setItem(i, powercell.getItems().get(j));
             j++;
         }
-
     }
+
+
+    private void runTask() {
+        task = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this::save, 5L, 5L);
+    }
+
+    private void save() {
+        powercell.clearItems();
+        for (int i = 10; i < 44; i++) {
+            if (i == 17
+                    || i == 18
+                    || i == 26
+                    || i == 27
+                    || i == 35
+                    || i == 36
+                    || inventory.getItem(i) == null) continue;
+            powercell.addItem(inventory.getItem(i));
+        }
+        if (powercell.getLocation() != null && plugin.getHologram() != null)
+            plugin.getHologram().update(powercell);
+        this.constructGUI();
+    }
+
 
     @Override
     protected void registerClickables() {
@@ -155,30 +182,19 @@ public class GUIPowerCell extends AbstractGUI {
         });
 
         registerClickable(50, (player, inventory, cursor, slot, type) -> {
-            // Open members GUI
+            new GUIMembers(player, claim);
         });
 
         registerClickable(49, (player, inventory, cursor, slot, type) -> {
-            // Open banned GUI
+            new GUIBans(player, claim);
         });
     }
 
     @Override
     protected void registerOnCloses() {
         registerOnClose(((player1, inventory1) -> {
-            powercell.clearItems();
-            for (int i = 10; i < 44; i++) {
-                if (i == 17
-                        || i == 18
-                        || i == 26
-                        || i == 27
-                        || i == 35
-                        || i == 36
-                        || inventory.getItem(i) == null) continue;
-                powercell.addItem(inventory.getItem(i));
-            }
-            if (powercell.getLocation() != null && plugin.getHologram() != null)
-                plugin.getHologram().update(powercell);
+            Bukkit.getScheduler().cancelTask(task);
+            this.save();
             powercell.setOpened(null);
         }));
     }

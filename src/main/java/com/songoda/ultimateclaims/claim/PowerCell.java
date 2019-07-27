@@ -77,11 +77,10 @@ public class PowerCell {
     }
 
     public int getItemPower() {
-        int total = currentPower;
+        int total = 0;
         List<String> materials = Setting.ITEM_VALUES.getStringList();
         for (String value : materials) {
             Material material = Material.valueOf(value.split(":")[0]);
-            System.out.println(getMaterialAmount(material) + "");
             if (getMaterialAmount(material) != 0)
                 total += getMaterialAmount(material) * Integer.parseInt(value.split(":")[1]);
         }
