@@ -27,7 +27,7 @@ public class PowerCell {
             List<String> materials = Setting.ITEM_VALUES.getStringList();
             for (String value : materials) {
                 Material material = Material.valueOf(value.split(":")[0]);
-                if (getItems().stream().anyMatch(item -> item.getType() == material)) {
+                if (getMaterialAmount(material) != 0) {
                     this.removeOneMaterial(material);
                     this.currentPower += Integer.parseInt(value.split(":")[1]);
                     if (plugin.getHologram() != null)
@@ -51,7 +51,7 @@ public class PowerCell {
         int amount = 0;
         for (ItemStack item : items) {
             if (item.getType() != material) continue;
-            amount = item.getAmount();
+            amount += item.getAmount();
         }
         return amount;
     }
@@ -73,7 +73,7 @@ public class PowerCell {
     }
 
     public int getTotalPower() {
-        return getItemPower() + getEconomyPower();
+        return getItemPower() + getEconomyPower() + currentPower;
     }
 
     public int getItemPower() {
@@ -81,6 +81,7 @@ public class PowerCell {
         List<String> materials = Setting.ITEM_VALUES.getStringList();
         for (String value : materials) {
             Material material = Material.valueOf(value.split(":")[0]);
+            System.out.println(getMaterialAmount(material) + "");
             if (getMaterialAmount(material) != 0)
                 total += getMaterialAmount(material) * Integer.parseInt(value.split(":")[1]);
         }
