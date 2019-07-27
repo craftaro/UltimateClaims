@@ -3,17 +3,15 @@ package com.songoda.ultimateclaims.command.commands;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.command.AbstractCommand;
-import com.songoda.ultimateclaims.invite.Invite;
-import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CommandInvite extends AbstractCommand {
+public class CommandKick extends AbstractCommand {
 
-    public CommandInvite(AbstractCommand parent) {
-        super("invite", parent, true);
+    public CommandKick(AbstractCommand parent) {
+        super("kick", parent, true);
     }
 
     @Override
@@ -30,38 +28,43 @@ public class CommandInvite extends AbstractCommand {
 
         Claim claim = instance.getClaimManager().getClaim(player);
 
-        OfflinePlayer invited = Bukkit.getPlayer(args[1]);
+        OfflinePlayer toKick = Bukkit.getPlayer(args[1]);
 
-        if (invited == null && !invited.isOnline()) {
+        if (toKick == null) {
             instance.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
-        instance.getInviteTask().addInvite(new Invite(player.getUniqueId(), invited.getUniqueId(), claim));
-        instance.getClaimManager().getClaim(player).addMember(invited.getUniqueId(), ClaimRole.MEMBER);
+        if (claim.getMember(toKick.getUniqueId()) == null) {
+            instance.getLocale().getMessage("command.general.notinclaim").sendPrefixedMessage(sender);
+            return ReturnType.FAILURE;
+        }
 
-        instance.getLocale().getMessage("command.invite.invite")
-                .processPlaceholder("name", invited.getName())
-                .sendPrefixedMessage(player);
+        if (toKick.isOnline())
+            instance.getLocale().getMessage("command.kick.kicked")
+                    .processPlaceholder("claim", toKick.getName())
+                    .sendPrefixedMessage(toKick.getPlayer());
 
-        instance.getLocale().getMessage("command.invite.invited")
+        instance.getLocale().getMessage("command.kick.kick")
+                .processPlaceholder("name", toKick.getName())
                 .processPlaceholder("claim", claim.getName())
-                .sendPrefixedMessage(invited.getPlayer());
+                .sendPrefixedMessage(player);
+        claim.removeMember(toKick.getUniqueId());
         return ReturnType.SUCCESS;
     }
 
     @Override
     public String getPermissionNode() {
-        return "ultimateclaims.invite";
+        return "ultimateclaims.kick";
     }
 
     @Override
     public String getSyntax() {
-        return "/ucl invite";
+        return "/ucl kick";
     }
 
     @Override
     public String getDescription() {
-        return "Invite.";
+        return "kick fools.";
     }
 }

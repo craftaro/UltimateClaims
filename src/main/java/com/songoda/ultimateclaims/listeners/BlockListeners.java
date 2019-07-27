@@ -65,6 +65,7 @@ public class BlockListeners implements Listener {
         if (!claimManager.hasClaim(chunk)) return;
 
         Claim claim = claimManager.getClaim(chunk);
+        PowerCell powerCell = claim.getPowerCell();
 
         ClaimMember member = claim.getMember(event.getPlayer());
 
@@ -74,9 +75,9 @@ public class BlockListeners implements Listener {
             return;
         }
 
-        if (claim.getPowerCell().getLocation().equals(block.getLocation())) {
+        if (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation())) {
             if (member.getRole() == ClaimRole.OWNER) {
-                claim.getPowerCell().destroy();
+                powerCell.destroy();
             } else {
                 event.getPlayer().sendMessage("no");
                 event.setCancelled(true);

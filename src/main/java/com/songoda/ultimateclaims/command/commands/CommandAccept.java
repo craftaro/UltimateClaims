@@ -1,7 +1,6 @@
 package com.songoda.ultimateclaims.command.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.command.AbstractCommand;
 import com.songoda.ultimateclaims.invite.Invite;
 import com.songoda.ultimateclaims.member.ClaimRole;
@@ -24,11 +23,20 @@ public class CommandAccept extends AbstractCommand {
         Invite invite = instance.getInviteTask().getInvite(player.getUniqueId());
 
         if (invite == null) {
-            sender.sendMessage("You have no invites");
+            instance.getLocale().getMessage("command.accept.none").sendPrefixedMessage(player);
         } else {
             invite.getClaim().addMember(player, ClaimRole.MEMBER);
             invite.accepted();
-            sender.sendMessage("Invite accepted.");
+            instance.getLocale().getMessage("command.accept.success")
+                    .processPlaceholder("claim", invite.getClaim().getName())
+                    .sendPrefixedMessage(player);
+
+            OfflinePlayer owner = Bukkit.getPlayer(invite.getInviter());
+
+            if (owner != null && owner.isOnline())
+                instance.getLocale().getMessage("command.accept.accepted")
+                        .processPlaceholder("name", player.getName())
+                        .sendPrefixedMessage(owner.getPlayer());
         }
 
         return ReturnType.SUCCESS;
