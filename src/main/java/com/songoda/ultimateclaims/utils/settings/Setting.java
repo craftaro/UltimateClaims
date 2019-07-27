@@ -20,6 +20,8 @@ public enum Setting {
 
     ECONOMY_VALUE("Main.PowerCell Economy Value", 500),
 
+    MINIMUM_POWER("Main.Minimum PowerCell power", -30),
+
     POWERCELL_HOLOGRAMS("Main.Powercell Holograms", true),
 
     INVITE_TIMEOUT("Main.Invite Timeout", 30),

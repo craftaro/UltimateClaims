@@ -50,7 +50,7 @@ public class BlockListeners implements Listener {
         else if (member.getRole() == ClaimRole.VISITOR
                 && claim.getMemberPermissions().canPlace()) return;
 
-        event.getPlayer().sendMessage("nope cant build.");
+        event.getPlayer().sendMessage("nope cant place.");
         event.setCancelled(true);
     }
 
