@@ -4,6 +4,8 @@ import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.utils.settings.Setting;
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -45,7 +47,13 @@ public class InventoryListeners implements Listener {
             claim.getPowerCell().getInventory().addItem(item);
         }
         event.getInventory().clear();
-        claim.getPowerCell().setLocation(event.getInventory().getLocation());
+        Location location = event.getInventory().getLocation();
+        claim.getPowerCell().setLocation(location.clone());
+
+        float xx = (float) (0 + (Math.random() * 1));
+        float yy = (float) (0 + (Math.random() * 2));
+        float zz = (float) (0 + (Math.random() * 1));
+        location.getWorld().spawnParticle(Particle.LAVA, location.add(.5,.5,.5), 25, xx, yy, zz, 0);
 
         player.sendMessage("Powercell set");
     }

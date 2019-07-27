@@ -3,6 +3,8 @@ package com.songoda.ultimateclaims.tasks;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.PowerCell;
+import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -32,8 +34,11 @@ public class AnimateTask extends BukkitRunnable {
         for (Claim claim : new ArrayList<>(plugin.getClaimManager().getRegisteredClaims())) {
             PowerCell powerCell = claim.getPowerCell();
             if (!powerCell.hasLocation()) continue;
-            powerCell.getLocation().getWorld()
-                    .spawnParticle(Particle.SPELL_WITCH, powerCell.getLocation().add(.5,.5,.5), 10);
+            Location location = powerCell.getLocation().add(.5, .5, .5);
+            float xx = (float) (0 + (Math.random() * 1));
+            float yy = (float) (0 + (Math.random() * 1));
+            float zz = (float) (0 + (Math.random() * 1));
+            location.getWorld().spawnParticle(Particle.REDSTONE, location, 5, xx, yy, zz, 1, new Particle.DustOptions(powerCell.getCurrentPower() >= 0 ? Color.LIME : Color.RED, 1F));
         }
     }
 }

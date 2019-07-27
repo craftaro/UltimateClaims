@@ -92,7 +92,6 @@ public class PowerCell {
             if (UltimateClaims.getInstance().getHologram() != null)
                 UltimateClaims.getInstance().getHologram().remove(this);
         }
-        this.currentPower = 1;
         this.inventory.clear();
         this.location = null;
     }
