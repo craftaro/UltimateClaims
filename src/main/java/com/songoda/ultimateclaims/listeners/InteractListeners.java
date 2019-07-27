@@ -3,6 +3,7 @@ package com.songoda.ultimateclaims.listeners;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
+import com.songoda.ultimateclaims.gui.GUIPowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.Methods;
@@ -13,6 +14,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class InteractListeners implements Listener {
 
@@ -23,10 +25,10 @@ public class InteractListeners implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onInteract(BlockPlaceEvent event) {
+    public void onInteract(PlayerInteractEvent event) {
         ClaimManager claimManager = UltimateClaims.getInstance().getClaimManager();
 
-        Chunk chunk = event.getBlock().getChunk();
+        Chunk chunk = event.getClickedBlock().getChunk();
 
         if (!claimManager.hasClaim(chunk)) return;
 
@@ -40,8 +42,16 @@ public class InteractListeners implements Listener {
             return;
         }
 
-        if (member.getRole() == ClaimRole.OWNER) return;
-        else if (member.getRole() == ClaimRole.MEMBER
+        if (member.getRole() == ClaimRole.OWNER) {
+            System.out.println("test");
+            if (claim.getPowerCell().hasLocation()
+                    && claim.getPowerCell().getLocation().equals(event.getClickedBlock().getLocation())) {
+                System.out.println("test2");
+                new GUIPowerCell(event.getPlayer(), claim);
+                event.setCancelled(true);
+            }
+            return;
+        } else if (member.getRole() == ClaimRole.MEMBER
                 && claim.getMemberPermissions().canInteract()) return;
         else if (member.getRole() == ClaimRole.VISITOR
                 && claim.getMemberPermissions().canInteract()) return;
