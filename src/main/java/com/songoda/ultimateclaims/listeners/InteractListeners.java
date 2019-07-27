@@ -43,10 +43,8 @@ public class InteractListeners implements Listener {
         }
 
         if (member.getRole() == ClaimRole.OWNER) {
-            System.out.println("test");
             if (claim.getPowerCell().hasLocation()
                     && claim.getPowerCell().getLocation().equals(event.getClickedBlock().getLocation())) {
-                System.out.println("test2");
                 new GUIPowerCell(event.getPlayer(), claim);
                 event.setCancelled(true);
             }

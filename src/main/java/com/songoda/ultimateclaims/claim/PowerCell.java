@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class PowerCell {
 
@@ -18,6 +19,7 @@ public class PowerCell {
     private int currentPower = 10;
 
     private double economyBalance = 0;
+    private UUID opened = null;
 
     public int tick(Claim claim) {
         UltimateClaims plugin = UltimateClaims.getInstance();
@@ -79,9 +81,8 @@ public class PowerCell {
         List<String> materials = Setting.ITEM_VALUES.getStringList();
         for (String value : materials) {
             Material material = Material.valueOf(value.split(":")[0]);
-            if (this.items.stream().anyMatch(item -> item.getType() == material)) {
-                total += getMaterialAmount(material) + Integer.parseInt(value.split(":")[1]);
-            }
+            if (getMaterialAmount(material) != 0)
+                total += getMaterialAmount(material) * Integer.parseInt(value.split(":")[1]);
         }
         return total;
     }
@@ -92,6 +93,14 @@ public class PowerCell {
 
     public List<ItemStack> getItems() {
         return new ArrayList<>(this.items);
+    }
+
+    public void addItem(ItemStack item) {
+        this.items.add(item);
+    }
+
+    public void clearItems() {
+        this.items.clear();
     }
 
     public Location getLocation() {
@@ -107,6 +116,14 @@ public class PowerCell {
         tick(null);
     }
 
+    public UUID getOpened() {
+        return opened;
+    }
+
+    public void setOpened(UUID opened) {
+        this.opened = opened;
+    }
+
     public void destroy() {
         if (location != null) {
             for (ItemStack item : this.items) {
@@ -116,7 +133,7 @@ public class PowerCell {
             if (UltimateClaims.getInstance().getHologram() != null)
                 UltimateClaims.getInstance().getHologram().remove(this);
         }
-        this.items.clear();
+        this.clearItems();
         this.location = null;
     }
 }

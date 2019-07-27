@@ -44,7 +44,7 @@ public class InventoryListeners implements Listener {
 
         for (ItemStack item : event.getInventory().getContents()) {
             if (item == null) continue;
-            claim.getPowerCell().getInventory().addItem(item);
+            claim.getPowerCell().addItem(item);
         }
         event.getInventory().clear();
         Location location = event.getInventory().getLocation();

@@ -6,11 +6,11 @@ import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.utils.Methods;
 import com.songoda.ultimateclaims.utils.ServerVersion;
 import com.songoda.ultimateclaims.utils.gui.AbstractGUI;
-import com.songoda.ultimateclaims.utils.gui.Clickable;
+import com.songoda.ultimateclaims.utils.gui.Range;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -28,6 +28,13 @@ public class GUIPowerCell extends AbstractGUI {
         this.powercell = claim.getPowerCell();
         this.claim = claim;
         plugin = UltimateClaims.getInstance();
+        
+        if (powercell.getOpened() != null) {
+            OfflinePlayer opened = Bukkit.getPlayer(powercell.getOpened());
+            if (opened.isOnline())
+                opened.getPlayer().closeInventory();
+        }
+        powercell.setOpened(player.getUniqueId());
 
         init(Methods.formatTitle(plugin.getLocale().getMessage("interface.powercell.title").getMessage()), 54);
     }
@@ -116,10 +123,23 @@ public class GUIPowerCell extends AbstractGUI {
         inventory.setItem(6, valuables);
         inventory.setItem(48, info);
         inventory.setItem(50, members);
+
+        int j = 0;
+        for (int i = 10; i < 44; i++) {
+            if (inventory.getItem(i) != null) continue;
+            if (powercell.getItems().size() <= j) break;
+            inventory.setItem(i, powercell.getItems().get(j));
+            j++;
+        }
+
     }
 
     @Override
     protected void registerClickables() {
+        addDraggable(new Range(10, 16, null, true), true);
+        addDraggable(new Range(19, 25, null, true), true);
+        addDraggable(new Range(28, 34, null, true), true);
+        addDraggable(new Range(37, 43, null, true), true);
         registerClickable(2, (player, inventory, cursor, slot, type) -> {
             // Click to add more time - type in chat the amount you want to deposit.
         });
@@ -131,6 +151,21 @@ public class GUIPowerCell extends AbstractGUI {
 
     @Override
     protected void registerOnCloses() {
-
+        registerOnClose(((player1, inventory1) -> {
+            powercell.clearItems();
+            for (int i = 10; i < 44; i++) {
+                if (i == 17
+                        || i == 18
+                        || i == 26
+                        || i == 27
+                        || i == 35
+                        || i == 36
+                        || inventory.getItem(i) == null) continue;
+                powercell.addItem(inventory.getItem(i));
+            }
+            if (powercell.getLocation() != null && plugin.getHologram() != null)
+                plugin.getHologram().update(powercell);
+            powercell.setOpened(null);
+        }));
     }
 }
