@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PowerCell {
@@ -38,8 +39,8 @@ public class PowerCell {
             List<String> materials = Setting.ITEM_VALUES.getStringList();
             for (String value : materials) {
                 Material material = Material.valueOf(value.split(":")[0]);
-                if (inventory.contains(material)) {
-                    inventory.removeItem(new ItemStack(material, 1));
+                if (getItems().stream().anyMatch(item -> item.getType() == material)) {
+                    this.removeOneMaterial(material);
                     this.currentPower += Integer.parseInt(value.split(":")[1]);
                     if (plugin.getHologram() != null)
                         plugin.getHologram().update(this);
@@ -58,6 +59,39 @@ public class PowerCell {
         return this.currentPower--;
     }
 
+    private List<ItemStack> getItems() {
+        List<ItemStack> items = new ArrayList<>();
+        for (int i = 10; i < 44; i++) {
+            ItemStack item = this.inventory.getItem(i);
+            if (item == null
+                    || (item.hasItemMeta() && item.getItemMeta().hasDisplayName())) continue;
+            items.add(item);
+        }
+        return items;
+    }
+
+    private int getMaterialAmount(Material material) {
+        int amount = 0;
+        for (ItemStack item : getItems()) {
+            if (item.getType() != material) continue;
+            amount = item.getAmount();
+        }
+        return amount;
+    }
+
+    private void removeOneMaterial(Material material) {
+        for (int i = 10; i < 44; i++) {
+            ItemStack item = this.inventory.getItem(i);
+            if (item == null || item.getType() != material) continue;
+
+            item.setAmount(item.getAmount() - 1);
+
+            if (item.getAmount() <= 0)
+                inventory.setItem(i, null);
+            return;
+        }
+    }
+
     public int getCurrentPower() {
         return currentPower;
     }
@@ -71,8 +105,8 @@ public class PowerCell {
         List<String> materials = Setting.ITEM_VALUES.getStringList();
         for (String value : materials) {
             Material material = Material.valueOf(value.split(":")[0]);
-            if (inventory.contains(material)) {
-                total += Integer.parseInt(value.split(":")[1]);
+            if (getItems().stream().anyMatch(item -> item.getType() == material)) {
+                total += getMaterialAmount(material) + Integer.parseInt(value.split(":")[1]);
             }
         }
         return total;
