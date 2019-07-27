@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -44,7 +45,8 @@ public class InteractListeners implements Listener {
 
         if (member.getRole() == ClaimRole.OWNER) {
             if (claim.getPowerCell().hasLocation()
-                    && claim.getPowerCell().getLocation().equals(event.getClickedBlock().getLocation())) {
+                    && claim.getPowerCell().getLocation().equals(event.getClickedBlock().getLocation())
+            && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 new GUIPowerCell(event.getPlayer(), claim);
                 event.setCancelled(true);
             }

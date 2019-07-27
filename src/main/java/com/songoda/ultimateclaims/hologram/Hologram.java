@@ -3,6 +3,7 @@ package com.songoda.ultimateclaims.hologram;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.utils.Methods;
+import com.songoda.ultimateclaims.utils.settings.Setting;
 import org.bukkit.Location;
 
 public abstract class Hologram {
@@ -14,7 +15,15 @@ public abstract class Hologram {
     }
 
     public void update(PowerCell powerCell) {
-        update(powerCell.getLocation(), Methods.makeReadable((long)(powerCell.getTotalPower() * 60 * 1000)));
+        if (powerCell.getCurrentPower() > 0) {
+            update(powerCell.getLocation(), plugin.getLocale().getMessage("general.claim.powercell")
+                    .processPlaceholder("time", Methods.makeReadable((long) (powerCell.getTotalPower() * 60 * 1000)))
+                    .getMessage());
+        } else {
+            update(powerCell.getLocation(), plugin.getLocale().getMessage("general.claim.powercell.low")
+                    .processPlaceholder("time", Methods.makeReadable((long) ((powerCell.getTotalPower() + Setting.MINIMUM_POWER.getInt()) * 60 * 1000)))
+                    .getMessage());
+        }
     }
 
     public void remove(PowerCell powerCell) {
