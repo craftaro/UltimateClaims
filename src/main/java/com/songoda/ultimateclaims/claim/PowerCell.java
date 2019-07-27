@@ -18,6 +18,8 @@ public class PowerCell {
 
     private int currentPower = 10;
 
+    private double economyBalance = 0;
+
     public PowerCell() {
         this.inventory = Bukkit.createInventory(null, 54, "test");
     }
@@ -44,6 +46,12 @@ public class PowerCell {
                     return this.currentPower;
                 }
             }
+            double economyValue = Setting.ECONOMY_VALUE.getDouble();
+            if (economyBalance >= economyValue) {
+                this.economyBalance -= economyValue;
+                this.currentPower += 1;
+            }
+
         }
         if (location != null && plugin.getHologram() != null)
             plugin.getHologram().update(this);
@@ -55,6 +63,10 @@ public class PowerCell {
     }
 
     public int getTotalPower() {
+        return getItemPower() + getEconomyPower();
+    }
+
+    public int getItemPower() {
         int total = currentPower;
         List<String> materials = Setting.ITEM_VALUES.getStringList();
         for (String value : materials) {
@@ -64,6 +76,10 @@ public class PowerCell {
             }
         }
         return total;
+    }
+
+    public int getEconomyPower() {
+        return (int) Math.floor(economyBalance / Setting.ECONOMY_VALUE.getDouble());
     }
 
     public Inventory getInventory() {

@@ -18,6 +18,8 @@ public enum Setting {
     ITEM_VALUES("Main.PowerCell Item Values",
             Arrays.asList("DIAMOND:120", "IRON_INGOT:30")),
 
+    ECONOMY_VALUE("Main.PowerCell Economy Value", 500),
+
     POWERCELL_HOLOGRAMS("Main.Powercell Holograms", true),
 
     INVITE_TIMEOUT("Main.Invite Timeout", 30),
