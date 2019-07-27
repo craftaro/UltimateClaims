@@ -17,7 +17,7 @@ public class CommandClaim extends AbstractCommand {
         Player player = (Player) sender;
 
         if (instance.getClaimManager().hasClaim(player.getLocation().getChunk())) {
-            player.sendMessage("This is already claimed.");
+            instance.getLocale().getMessage("command.general.claimed").sendPrefixedMessage(player);
             return ReturnType.FAILURE;
         }
 
@@ -30,7 +30,7 @@ public class CommandClaim extends AbstractCommand {
                             .addClaimedChunks(player.getLocation().getChunk())
                             .build());
 
-        sender.sendMessage("claimed " + instance.getClaimManager().getClaim(player).getClaimedChunks().size() + "! You have 10 minutes to place a power cell.");
+        instance.getLocale().getMessage("command.claim.success").sendPrefixedMessage(sender);
         return ReturnType.SUCCESS;
     }
 

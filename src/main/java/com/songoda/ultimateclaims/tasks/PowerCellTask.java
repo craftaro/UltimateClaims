@@ -33,7 +33,7 @@ public class PowerCellTask extends BukkitRunnable {
     public void run() {
         for (Claim claim : new ArrayList<>(plugin.getClaimManager().getRegisteredClaims())) {
             PowerCell powerCell = claim.getPowerCell();
-            int tick = powerCell.tick();
+            int tick = powerCell.tick(claim);
             if (tick == 0) {
                 for (ClaimMember member : claim.getMembers())
                     this.outOfPower(member);

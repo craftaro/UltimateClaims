@@ -33,7 +33,7 @@ public class PowerCell {
         }
     }
 
-    public int tick() {
+    public int tick(Claim claim) {
         UltimateClaims plugin = UltimateClaims.getInstance();
         if (this.currentPower <= 0) {
             List<String> materials = Setting.ITEM_VALUES.getStringList();
@@ -56,7 +56,7 @@ public class PowerCell {
         }
         if (location != null && plugin.getHologram() != null)
             plugin.getHologram().update(this);
-        return this.currentPower--;
+        return this.currentPower -= claim == null ? 0 : claim.getClaimedChunks().size();
     }
 
     private List<ItemStack> getItems() {
@@ -130,7 +130,7 @@ public class PowerCell {
 
     public void setLocation(Location location) {
         this.location = location;
-        tick();
+        tick(null);
     }
 
     public void destroy() {

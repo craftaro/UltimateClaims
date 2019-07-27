@@ -19,18 +19,18 @@ public class CommandUnClaim extends AbstractCommand {
         Claim claim = instance.getClaimManager().getClaim(player.getLocation().getChunk());
 
         if (claim == null) {
-            player.sendMessage("This chunk is not claimed.");
+            instance.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         if (claim.getOwner().getUniqueId() != player.getUniqueId()){
-            player.sendMessage("This chunk is not claimed by you.");
+            instance.getLocale().getMessage("command.general.notyourclaim").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         claim.removeClaimedChunk(player.getLocation().getChunk());
 
-        sender.sendMessage("unclaimed");
+        instance.getLocale().getMessage("command.unclaim.success").sendPrefixedMessage(sender);
         if (claim.getClaimedChunks().size() == 0)
             claim.destroy();
 

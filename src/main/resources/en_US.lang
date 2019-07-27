@@ -8,6 +8,9 @@ general.claim.defaultname = "%name%'s claim"
 command.general.noclaim = "&cYou need to be in a claim to do this."
 command.general.noplayer = "&cThat player does not exist or is not online."
 command.general.notinclaim = "&cThat player is not in your claim."
+command.general.claimed = "&cThis chunk is already claimed."
+command.general.notclaimed = "&cThis chunk isn't claimed."
+command.general.notyourclaim = "&cThis chunk is claimed by someone else."
 command.invite.invited = "&7You have been invited to join &6%claim%&7."
 command.invite.invite = "&7You have invited &6%name% &7to join your claim&7."
 command.kick.kicked = "&cYou have been kicked from &4%claim%&c."
@@ -15,6 +18,8 @@ command.kick.kick = "&7You kicked &6%name% &7from &6%claim%&7."
 command.accept.none = "&cYou do not currently have any invites to accept."
 command.accept.success = "&7You are now a member of %claim%&7."
 command.accept.accepted = "&6%name% &7accepted your invitation."
+command.claim.success = "&7You claimed this chunk for your claim."
+command.unclaim.success = "&7You unclaimed this chunk."
 
 #Event Messages
 
