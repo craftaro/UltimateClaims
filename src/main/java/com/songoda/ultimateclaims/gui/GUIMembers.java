@@ -2,13 +2,18 @@ package com.songoda.ultimateclaims.gui;
 
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.ultimateclaims.member.ClaimMember;
+import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.Methods;
 import com.songoda.ultimateclaims.utils.ServerVersion;
 import com.songoda.ultimateclaims.utils.gui.AbstractGUI;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +23,24 @@ public class GUIMembers extends AbstractGUI {
     private UltimateClaims plugin;
     private Player player;
     private Claim claim;
+    private ClaimRole displayedRole = ClaimRole.OWNER;
+    private int page = 1;
+    private List<ClaimMember> allMembers;
+    private List<ClaimMember> members;
+    private List<ClaimMember> visitors;
+
 
     public GUIMembers(Player player, Claim claim) {
         super(player);
         this.player = player;
         this.claim = claim;
         plugin = UltimateClaims.getInstance();
+
+        for (ClaimMember claimMember : claim.getMembers()) {
+            if (claimMember.getRole() == ClaimRole.MEMBER) members.add(claimMember);
+            if (claimMember.getRole() == ClaimRole.VISITOR) visitors.add(claimMember);
+            allMembers.add(claimMember);
+        }
 
         init(Methods.formatTitle(plugin.getLocale().getMessage("interface.members.title").getMessage()), 54);
     }
@@ -106,22 +123,13 @@ public class GUIMembers extends AbstractGUI {
         visitor.setItemMeta(visitorMeta);
 
         ItemStack member = new ItemStack(Material.PAINTING);
-        ItemMeta memberMeta = visitor.getItemMeta();
+        ItemMeta memberMeta = member.getItemMeta();
         memberMeta.setDisplayName(plugin.getLocale().getMessage("interface.members.membersettingstitle").getMessage());
         List<String> memberLore = new ArrayList<>();
         String[] memberSplit = plugin.getLocale().getMessage("interface.members.membersettingslore").getMessage().split("\\|");
         for (String line : memberSplit) memberLore.add(line);
         memberMeta.setLore(memberLore);
         member.setItemMeta(memberMeta);
-
-        ItemStack owner = new ItemStack(Material.ITEM_FRAME);
-        ItemMeta ownerMeta = owner.getItemMeta();
-        ownerMeta.setDisplayName(plugin.getLocale().getMessage("interface.members.ownersettingstitle").getMessage());
-        List<String> ownerLore = new ArrayList<>();
-        String[] ownerSplit = plugin.getLocale().getMessage("interface.members.ownersettingslore").getMessage().split("\\|");
-        for (String line : ownerSplit) ownerLore.add(line);
-        ownerMeta.setLore(ownerLore);
-        owner.setItemMeta(ownerMeta);
 
         ItemStack previous = new ItemStack(Material.MAP);
         ItemMeta previousMeta = previous.getItemMeta();
@@ -146,27 +154,63 @@ public class GUIMembers extends AbstractGUI {
         inventory.setItem(3, type);
         inventory.setItem(4, stats);
         inventory.setItem(5, sort);
-        inventory.setItem(37, previous);
+        if (page > 1) inventory.setItem(37, previous);
         inventory.setItem(39, visitor);
-        inventory.setItem(40, member);
-        inventory.setItem(41, owner);
-        inventory.setItem(43, next);
+        inventory.setItem(41, member);
 
-        // Pages + Member Skulls
+        if (allMembers == null || allMembers.isEmpty()) return;
+
+        List<ClaimMember> toDisplay = null;
+        if (displayedRole == ClaimRole.OWNER) toDisplay = allMembers;
+        if (displayedRole == ClaimRole.MEMBER) toDisplay = members;
+        if (displayedRole == ClaimRole.VISITOR) toDisplay = visitors;
+
+        if (page < Math.ceil(toDisplay.size() / 21)) inventory.setItem(43, next);
+
+        // I think this should work?
+
+        int currentMember = 0;
+        for (int i = 0; i < 3; i++) {
+            for (int j = currentMember; j < currentMember+8; j++) {
+                if (toDisplay.size() < j) return;
+
+                OfflinePlayer skullPlayer = Bukkit.getOfflinePlayer(toDisplay.get(currentMember).getUniqueId());
+
+                ItemStack skull = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ?
+                        Material.PLAYER_HEAD : Material.valueOf("SKULL"));
+                if (!plugin.isServerVersionAtLeast(ServerVersion.V1_13)) skull.setDurability((short) 3);
+                SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+                skullMeta.setOwningPlayer(skullPlayer);
+                skullMeta.setDisplayName(Methods.formatText("&b") + skullPlayer.getName());
+                List<String> lore = new ArrayList<>();
+                String[] skullSplit = plugin.getLocale().getMessage("interface.members.skull")
+                        .processPlaceholder("role",
+                                Methods.formatText(toDisplay.get(currentMember).getRole().toString().toLowerCase(), true))
+                        .getMessage().split("\\|");
+                skull.setItemMeta(skullMeta);
+
+                inventory.setItem(((i + 1) * 7) + j, skull);
+
+                currentMember++;
+            }
+        }
     }
 
     @Override
     protected void registerClickables() {
         registerClickable(0, (player, inventory, cursor, slot, type) -> {
-            // Should exit go back to the powercell or close the GUI?
+            player.closeInventory();
         });
 
         registerClickable(8, (player, inventory, cursor, slot, type) -> {
-
+            player.closeInventory();
         });
 
         registerClickable(3, (player, inventory, cursor, slot, type) -> {
-            // Change Type - Show visitors, show members
+            if (displayedRole == ClaimRole.MEMBER) displayedRole = ClaimRole.OWNER;
+            if (displayedRole == ClaimRole.OWNER) displayedRole = ClaimRole.VISITOR;
+            if (displayedRole == ClaimRole.VISITOR) displayedRole = ClaimRole.MEMBER;
+            constructGUI();
         });
 
         registerClickable(5, (player, inventory, cursor, slot, type) -> {
@@ -174,24 +218,18 @@ public class GUIMembers extends AbstractGUI {
         });
 
         registerClickable(37, (player, inventory, cursor, slot, type) -> {
-            // Previous Page
+            page = page == 1 ? 1 : page--;
         });
 
         registerClickable(39, (player, inventory, cursor, slot, type) -> {
-            // Open visitor settings GUI.
-        });
-
-        registerClickable(40, (player, inventory, cursor, slot, type) -> {
-            // Open member settings GUI.
+            new GUISettings(player, claim, ClaimRole.VISITOR);
         });
 
         registerClickable(41, (player, inventory, cursor, slot, type) -> {
-            // Open owner settings GUI.
+            new GUISettings(player, claim, ClaimRole.MEMBER);
         });
 
-        registerClickable(43, (player, inventory, cursor, slot, type) -> {
-            // Open next page.
-        });
+        registerClickable(43, (player, inventory, cursor, slot, type) -> page++);
     }
 
     @Override

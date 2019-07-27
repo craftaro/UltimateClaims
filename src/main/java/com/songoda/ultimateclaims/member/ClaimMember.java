@@ -10,6 +10,8 @@ public class ClaimMember {
     private final UUID uuid;
     private final ClaimRole role;
     private boolean isPresent = false;
+    private int playTime;
+    private int memberSince;
 
     public ClaimMember(Claim claim, UUID uuid, ClaimRole role) {
         this.claim = claim;
@@ -35,5 +37,13 @@ public class ClaimMember {
 
     public void setPresent(boolean present) {
         this.isPresent = present;
+    }
+
+    public int getPlayTime() {
+        return playTime;
+    }
+
+    public int getMemberSince() {
+        return memberSince;
     }
 }

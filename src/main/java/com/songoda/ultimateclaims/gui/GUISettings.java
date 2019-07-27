@@ -49,6 +49,18 @@ public class GUISettings extends AbstractGUI {
         inventory.setItem(34, Methods.getBackgroundGlass(true));
         inventory.setItem(35, Methods.getBackgroundGlass(true));
 
+        inventory.setItem(2, Methods.getBackgroundGlass(false));
+        inventory.setItem(3, Methods.getBackgroundGlass(false));
+        inventory.setItem(4, Methods.getBackgroundGlass(false));
+        inventory.setItem(5, Methods.getBackgroundGlass(false));
+        inventory.setItem(6, Methods.getBackgroundGlass(false));
+        inventory.setItem(29, Methods.getBackgroundGlass(false));
+        inventory.setItem(30, Methods.getBackgroundGlass(false));
+        inventory.setItem(31, Methods.getBackgroundGlass(false));
+        inventory.setItem(32, Methods.getBackgroundGlass(false));
+        inventory.setItem(33, Methods.getBackgroundGlass(false));
+
+
         ItemStack exit = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_FENCE_GATE : Material.valueOf("FENCE_GATE"));
         ItemMeta exitMeta = exit.getItemMeta();
         exitMeta.setDisplayName(plugin.getLocale().getMessage("interface.settings.exittitle").getMessage());
