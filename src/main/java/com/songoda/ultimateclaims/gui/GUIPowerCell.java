@@ -3,6 +3,7 @@ package com.songoda.ultimateclaims.gui;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.PowerCell;
+import com.songoda.ultimateclaims.utils.AbstractChatConfirm;
 import com.songoda.ultimateclaims.utils.Methods;
 import com.songoda.ultimateclaims.utils.ServerVersion;
 import com.songoda.ultimateclaims.utils.gui.AbstractGUI;
@@ -77,7 +78,7 @@ public class GUIPowerCell extends AbstractGUI {
         ItemStack economy = new ItemStack(Material.SUNFLOWER);
         ItemMeta economyMeta = economy.getItemMeta();
         economyMeta.setDisplayName(plugin.getLocale().getMessage("interface.powercell.economytitle")
-                .processPlaceholder("time", Methods.makeReadable((long)powercell.getEconomyPower() * 60 * 1000)).getMessage());
+                .processPlaceholder("time", Methods.makeReadable((long) powercell.getEconomyPower() * 60 * 1000)).getMessage());
         List<String> economyLore = new ArrayList<>();
         String[] economySplit = plugin.getLocale().getMessage("interface.powercell.economylore").getMessage().split("\\|");
         for (String line : economySplit) economyLore.add(Methods.formatText(line));
@@ -87,7 +88,7 @@ public class GUIPowerCell extends AbstractGUI {
         ItemStack total = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.CLOCK : Material.valueOf("WATCH"));
         ItemMeta totalMeta = total.getItemMeta();
         totalMeta.setDisplayName(plugin.getLocale().getMessage("interface.powercell.totaltitle")
-                .processPlaceholder("time", Methods.makeReadable((long)powercell.getTotalPower() * 60 * 1000)).getMessage());
+                .processPlaceholder("time", Methods.makeReadable((long) powercell.getTotalPower() * 60 * 1000)).getMessage());
         List<String> totalLore = new ArrayList<>();
         String[] totalSplit = plugin.getLocale().getMessage("interface.powercell.totallore").getMessage().split("\\|");
         for (String line : totalSplit) totalLore.add(line);
@@ -97,11 +98,7 @@ public class GUIPowerCell extends AbstractGUI {
         ItemStack valuables = new ItemStack(Material.DIAMOND);
         ItemMeta valuablesMeta = valuables.getItemMeta();
         valuablesMeta.setDisplayName(plugin.getLocale().getMessage("interface.powercell.valuablestitle")
-                .processPlaceholder("time", Methods.makeReadable((long)powercell.getItemPower() * 60 * 1000)).getMessage());
-        List<String> valublesLore = new ArrayList<>();
-        String[] valuablesSplit = plugin.getLocale().getMessage("interface.powercell.valuableslore").getMessage().split("\\|");
-        for (String line : valuablesSplit) valublesLore.add(line);
-        valuablesMeta.setLore(valublesLore);
+                .processPlaceholder("time", Methods.makeReadable((long) powercell.getItemPower() * 60 * 1000)).getMessage());
         valuables.setItemMeta(valuablesMeta);
 
         ItemStack info = new ItemStack(Material.BOOK);
@@ -150,7 +147,10 @@ public class GUIPowerCell extends AbstractGUI {
 
 
     private void runTask() {
-        task = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this::save, 5L, 5L);
+        task = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+            this.save();
+            this.constructGUI();
+        }, 5L, 5L);
     }
 
     private void save() {
@@ -167,7 +167,6 @@ public class GUIPowerCell extends AbstractGUI {
         }
         if (powercell.getLocation() != null && plugin.getHologram() != null)
             plugin.getHologram().update(powercell);
-        this.constructGUI();
     }
 
 
@@ -179,6 +178,23 @@ public class GUIPowerCell extends AbstractGUI {
         addDraggable(new Range(37, 43, null, true), true);
         registerClickable(2, (player, inventory, cursor, slot, type) -> {
             // Click to add more time - type in chat the amount you want to deposit.
+            AbstractChatConfirm abstractChatConfirm = new AbstractChatConfirm(player, event -> {
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    if (!Methods.isNumeric(event.getMessage())) {
+                        player.sendMessage("Not a number.");
+                        return;
+                    }
+                    double amount = Double.parseDouble(event.getMessage());
+                    if (plugin.getEconomy().hasBalance(player, amount)) {
+                        plugin.getEconomy().withdrawBalance(player, amount);
+                        powercell.addEconomy(amount);
+                    } else {
+                        player.sendMessage("Not enough money.");
+                    }
+                }, 0L);
+            });
+
+            abstractChatConfirm.setOnClose(() -> new GUIPowerCell(player, claim));
         });
 
         registerClickable(50, (player, inventory, cursor, slot, type) -> {

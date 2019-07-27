@@ -99,6 +99,10 @@ public class PowerCell {
         this.items.add(item);
     }
 
+    public void addEconomy(double amount) {
+        this.economyBalance += amount;
+    }
+
     public void clearItems() {
         this.items.clear();
     }

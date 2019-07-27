@@ -180,6 +180,11 @@ public class Methods {
         return location;
     }
 
+    public static boolean isNumeric(String s) {
+        if (s == null || s.equals(""))
+            return false;
+        return s.matches("[-+]?\\d*\\.?\\d+");
+    }
 
     public static String convertToInvisibleString(String s) {
         if (s == null || s.equals(""))

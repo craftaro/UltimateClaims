@@ -18,7 +18,7 @@ public enum Setting {
     ITEM_VALUES("Main.PowerCell Item Values",
             Arrays.asList("DIAMOND:120", "IRON_INGOT:30")),
 
-    ECONOMY_VALUE("Main.PowerCell Economy Value", 500),
+    ECONOMY_VALUE("Main.PowerCell Economy Value", 100),
 
     MINIMUM_POWER("Main.Minimum PowerCell power", -30),
 
