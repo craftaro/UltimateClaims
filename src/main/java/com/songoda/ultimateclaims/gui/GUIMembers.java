@@ -5,11 +5,8 @@ import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.utils.Methods;
 import com.songoda.ultimateclaims.utils.ServerVersion;
 import com.songoda.ultimateclaims.utils.gui.AbstractGUI;
-import com.songoda.ultimateclaims.utils.gui.Clickable;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -169,7 +166,7 @@ public class GUIMembers extends AbstractGUI {
         });
 
         registerClickable(3, (player, inventory, cursor, slot, type) -> {
-            // Change Type
+            // Change Type - Show visitors, show members
         });
 
         registerClickable(5, (player, inventory, cursor, slot, type) -> {
