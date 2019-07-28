@@ -150,4 +150,7 @@ public class Claim {
         UltimateClaims.getInstance().getClaimManager().removeClaim(this);
     }
 
+    public Set<UUID> getBannedPlayers() {
+        return bannedPlayers;
+    }
 }

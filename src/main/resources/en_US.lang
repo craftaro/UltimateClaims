@@ -52,8 +52,19 @@ interface.powercell.memberstitle = "&7Members"
 
 interface.members.skulllore = "&7Role: &a%role%|&7Playtime: &b%playtime%|&7Member Since: &d%membersince%"
 interface.members.changetypetitle = "&7Change Type"
-interface.members.changetypelore = "&7Currently: &d%current%|&7Click to sort by &6%newsort%"
+interface.members.changetypelore = "&7Currently: &d%current%|&7Click to change type."
+interface.members.statstitle = "&7Stats"
+interface.members.changesorttitle = "&7Change Sort"
+interface.members.changesortlore = "&7Currently: &d%current%|&7Click to change sort."
+interface.members.visitorsettingstitle = "&7Visitor Settings"
+interface.members.membersettingstitle = "&7Member Settings"
 
+interface.settings.breaktitle = "&7Block Break"
+interface.settings.placetitle = "&7Block Place"
+interface.settings.interacttitle = "&7Interact"
+
+interface.bans.infotitle = "&7Info"
+interface.bans.skulllore = "&7Click to unban."
 
 #Event Messages
 
@@ -63,5 +74,5 @@ event.claim.enter = "&7You have entered &6%claim%&7."
 event.claim.exit = "&7You have exited &6%claim%&7."
 event.powercell.success = "&7You created a powercell. Fill it up with fuel to keep your land claimed."
 event.powercell.failopen = "&cYou need to be the owner of this claim to open its powercell."
-event.powercell.lowpower = "&cYou're claim &4%claim% &cis out of power!"
+event.powercell.lowpower = "&cYour claim &4%claim% &cis out of power!"
 event.powercell.superpower = "&cYou're claim &4%claim%'s &4is still out of power and at risk of dissolution!"

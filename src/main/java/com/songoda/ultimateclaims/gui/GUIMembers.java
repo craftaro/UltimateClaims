@@ -16,7 +16,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class GUIMembers extends AbstractGUI {
@@ -78,7 +82,10 @@ public class GUIMembers extends AbstractGUI {
         ItemMeta typeMeta = type.getItemMeta();
         typeMeta.setDisplayName(plugin.getLocale().getMessage("interface.members.changetypetitle").getMessage());
         List<String> typeLore = new ArrayList<>();
-        String[] typeSplit = plugin.getLocale().getMessage("interface.members.typelore").getMessage().split("\\|");
+        String[] typeSplit = plugin.getLocale().getMessage("interface.members.typelore")
+                .processPlaceholder("current",
+                        Methods.formatText(displayedRole.toString(), true))
+                .getMessage().split("\\|");
         for (String line : typeSplit) typeLore.add(line);
         typeMeta.setLore(typeLore);
         type.setItemMeta(typeMeta);
@@ -87,7 +94,10 @@ public class GUIMembers extends AbstractGUI {
         ItemMeta sortMeta = sort.getItemMeta();
         sortMeta.setDisplayName(plugin.getLocale().getMessage("interface.members.changesorttitle").getMessage());
         List<String> sortLore = new ArrayList<>();
-        String[] sortSplit = plugin.getLocale().getMessage("interface.members.sortlore").getMessage().split("\\|");
+        String[] sortSplit = plugin.getLocale().getMessage("interface.members.sortlore")
+                .processPlaceholder("current",
+                        Methods.formatText(sortType.toString().replace('_', ' '), true))
+                .getMessage().split("\\|");
         for (String line : sortSplit) sortLore.add(line);
         sortMeta.setLore(sortLore);
         sort.setItemMeta(sortMeta);
@@ -146,7 +156,7 @@ public class GUIMembers extends AbstractGUI {
         if (sortType == SortType.PLAYTIME)
             toDisplay = toDisplay.stream().sorted(Comparator.comparingLong(ClaimMember::getPlayTime))
                     .collect(Collectors.toList());
-        if (sortType == SortType.MEMBERSINCE)
+        if (sortType == SortType.MEMBER_SINCE)
             toDisplay = toDisplay.stream().sorted(Comparator.comparingLong(ClaimMember::getPlayTime))
                     .collect(Collectors.toList());
 
@@ -232,9 +242,9 @@ public class GUIMembers extends AbstractGUI {
                     sortType = SortType.PLAYTIME;
                     break;
                 case PLAYTIME:
-                    sortType = SortType.MEMBERSINCE;
+                    sortType = SortType.MEMBER_SINCE;
                     break;
-                case MEMBERSINCE:
+                case MEMBER_SINCE:
                     sortType = SortType.DEFAULT;
                     break;
             }
@@ -259,6 +269,6 @@ public class GUIMembers extends AbstractGUI {
     public enum SortType {
         DEFAULT,
         PLAYTIME,
-        MEMBERSINCE
+        MEMBER_SINCE
     }
 }

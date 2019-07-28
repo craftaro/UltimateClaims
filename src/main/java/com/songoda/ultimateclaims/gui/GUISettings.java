@@ -29,7 +29,7 @@ public class GUISettings extends AbstractGUI {
         this.plugin = UltimateClaims.getInstance();
 
         init(Methods.formatTitle(plugin.getLocale().getMessage("interface.settings.title")
-                .processPlaceholder("role", role.toString().toLowerCase()).getMessage()), 36);
+                .processPlaceholder("role", role.toString().toLowerCase()).getMessage()), 27);
     }
 
     @Override
@@ -44,30 +44,24 @@ public class GUISettings extends AbstractGUI {
         inventory.setItem(17, Methods.getBackgroundGlass(true));
         inventory.setItem(18, Methods.getBackgroundGlass(true));
         inventory.setItem(26, Methods.getBackgroundGlass(true));
-        inventory.setItem(27, Methods.getBackgroundGlass(true));
-        inventory.setItem(28, Methods.getBackgroundGlass(true));
-        inventory.setItem(34, Methods.getBackgroundGlass(true));
-        inventory.setItem(35, Methods.getBackgroundGlass(true));
+        inventory.setItem(19, Methods.getBackgroundGlass(true));
+        inventory.setItem(25, Methods.getBackgroundGlass(true));
 
         inventory.setItem(2, Methods.getBackgroundGlass(false));
         inventory.setItem(3, Methods.getBackgroundGlass(false));
         inventory.setItem(4, Methods.getBackgroundGlass(false));
         inventory.setItem(5, Methods.getBackgroundGlass(false));
         inventory.setItem(6, Methods.getBackgroundGlass(false));
-        inventory.setItem(29, Methods.getBackgroundGlass(false));
-        inventory.setItem(30, Methods.getBackgroundGlass(false));
-        inventory.setItem(31, Methods.getBackgroundGlass(false));
-        inventory.setItem(32, Methods.getBackgroundGlass(false));
-        inventory.setItem(33, Methods.getBackgroundGlass(false));
+        inventory.setItem(20, Methods.getBackgroundGlass(false));
+        inventory.setItem(21, Methods.getBackgroundGlass(false));
+        inventory.setItem(22, Methods.getBackgroundGlass(false));
+        inventory.setItem(23, Methods.getBackgroundGlass(false));
+        inventory.setItem(24, Methods.getBackgroundGlass(false));
 
 
         ItemStack exit = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_FENCE_GATE : Material.valueOf("FENCE_GATE"));
         ItemMeta exitMeta = exit.getItemMeta();
-        exitMeta.setDisplayName(plugin.getLocale().getMessage("interface.settings.exittitle").getMessage());
-        List<String> exitLore = new ArrayList<>();
-        String[] exitSplit = plugin.getLocale().getMessage("interface.settings.exitlore").getMessage().split("\\|");
-        for (String line : exitSplit) exitLore.add(line);
-        exitMeta.setLore(exitLore);
+        exitMeta.setDisplayName(plugin.getLocale().getMessage("general.interface.exit").getMessage());
         exit.setItemMeta(exitMeta);
 
         ItemStack blockBreak = new ItemStack(Material.IRON_PICKAXE);
@@ -107,11 +101,11 @@ public class GUISettings extends AbstractGUI {
     @Override
     protected void registerClickables() {
         registerClickable(0, (player, inventory, cursor, slot, type) -> {
-            // Should exit go back to the members GUI or close the GUI?
+            player.closeInventory();
         });
 
         registerClickable(8, (player, inventory, cursor, slot, type) -> {
-            // ^
+            player.closeInventory();
         });
 
         registerClickable(11, (player, inventory, cursor, slot, type) -> {
@@ -123,7 +117,7 @@ public class GUISettings extends AbstractGUI {
         });
 
         registerClickable(15, (player, inventory, cursor, slot, type) -> {
-            //
+            // Toggle interact perms.
         });
     }
 

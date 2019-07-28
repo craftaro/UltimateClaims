@@ -62,11 +62,7 @@ public class GUIBans extends AbstractGUI {
 
         ItemStack exit = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_FENCE_GATE : Material.valueOf("FENCE_GATE"));
         ItemMeta exitMeta = exit.getItemMeta();
-        exitMeta.setDisplayName(plugin.getLocale().getMessage("interface.settings.exittitle").getMessage());
-        List<String> exitLore = new ArrayList<>();
-        String[] exitSplit = plugin.getLocale().getMessage("interface.settings.exitlore").getMessage().split("\\|");
-        for (String line : exitSplit) exitLore.add(line);
-        exitMeta.setLore(exitLore);
+        exitMeta.setDisplayName(plugin.getLocale().getMessage("general.interface.exit").getMessage());
         exit.setItemMeta(exitMeta);
 
         ItemStack info = new ItemStack(Material.PAINTING);
@@ -80,20 +76,12 @@ public class GUIBans extends AbstractGUI {
 
         ItemStack previous = new ItemStack(Material.MAP);
         ItemMeta previousMeta = previous.getItemMeta();
-        previousMeta.setDisplayName(plugin.getLocale().getMessage("interface.members.previoustitle").getMessage());
-        List<String> previousLore = new ArrayList<>();
-        String[] previousSplit = plugin.getLocale().getMessage("interface.members.previouslore").getMessage().split("\\|");
-        for (String line : previousSplit) previousLore.add(line);
-        previousMeta.setLore(previousLore);
+        previousMeta.setDisplayName(plugin.getLocale().getMessage("general.interface.previous").getMessage());
         previous.setItemMeta(previousMeta);
 
         ItemStack next = new ItemStack(Material.PAPER);
         ItemMeta nextMeta = next.getItemMeta();
-        nextMeta.setDisplayName(plugin.getLocale().getMessage("interface.members.nexttitle").getMessage());
-        List<String> nextLore = new ArrayList<>();
-        String[] nextSplit = plugin.getLocale().getMessage("interface.members.nextlore").getMessage().split("\\|");
-        for (String line : nextSplit) nextLore.add(line);
-        nextMeta.setLore(nextLore);
+        nextMeta.setDisplayName(plugin.getLocale().getMessage("general.interface.next").getMessage());
         next.setItemMeta(nextMeta);
 
         inventory.setItem(0, exit);
@@ -102,17 +90,16 @@ public class GUIBans extends AbstractGUI {
         inventory.setItem(37, previous);
         inventory.setItem(43, next);
 
-        // Skulls + Pages
     }
 
     @Override
     protected void registerClickables() {
         registerClickable(0, (player, inventory, cursor, slot, type) -> {
-            // Return or close GUI
+            new GUIPowerCell(player, claim);
         });
 
         registerClickable(8, (player, inventory, cursor, slot, type) -> {
-            // ^
+            new GUIPowerCell(player, claim);
         });
 
         registerClickable(37, (player, inventory, cursor, slot, type) -> {

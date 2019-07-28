@@ -180,13 +180,11 @@ public class GUIPowerCell extends AbstractGUI {
             abstractChatConfirm.setOnClose(() -> new GUIPowerCell(player, claim));
         });
 
-        registerClickable(50, (player, inventory, cursor, slot, type) -> {
-            new GUIMembers(player, claim);
-        });
+        registerClickable(50, (player, inventory, cursor, slot, type)
+                -> new GUIMembers(player, claim));
 
-        registerClickable(49, (player, inventory, cursor, slot, type) -> {
-            new GUIBans(player, claim);
-        });
+        registerClickable(48, (player, inventory, cursor, slot, type)
+                -> new GUIBans(player, claim));
     }
 
     @Override
