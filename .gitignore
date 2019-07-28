@@ -1,3 +1,5 @@
-\.idea
-\target
-UltimateFishing.iml
+/.idea/
+/target/
+**/build/
+/bin/
+*.iml

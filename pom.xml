@@ -33,6 +33,9 @@
                             <artifactSet>
                                 <includes>
                                     <include>com.songoda:songodaupdater</include>
+                                    <include>com.zaxxer:HikariCP</include>
+                                    <include>org.slf4j:slf4j-api</include>
+                                    <include>org.slf4j:slf4j-nop</include>
                                 </includes>
                             </artifactSet>
                             <filters>
@@ -59,6 +62,10 @@
         <repository>
             <id>reserve-repo</id>
             <url>https://dl.bintray.com/theneweconomy/java/</url>
+        </repository>
+        <repository>
+            <id>CodeMC</id>
+            <url>https://repo.codemc.org/repository/maven-public</url>
         </repository>
     </repositories>
     <dependencies>
@@ -92,6 +99,26 @@
             <groupId>net.milkbowl</groupId>
             <artifactId>vault</artifactId>
             <version>1.7.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.23.1</version>
         </dependency>
     </dependencies>
 </project>
