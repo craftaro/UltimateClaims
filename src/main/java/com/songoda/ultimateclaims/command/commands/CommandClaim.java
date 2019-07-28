@@ -1,5 +1,8 @@
 package com.songoda.ultimateclaims.command.commands;
 
+import com.songoda.ultimateclaims.utils.spigotmaps.MapBuilder;
+import com.songoda.ultimateclaims.utils.spigotmaps.rendering.ImageRenderer;
+import com.songoda.ultimateclaims.utils.spigotmaps.util.ImageTools;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimBuilder;
@@ -9,6 +12,13 @@ import com.songoda.ultimateclaims.utils.settings.Setting;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Map;
 
 public class CommandClaim extends AbstractCommand {
 
@@ -54,6 +64,24 @@ public class CommandClaim extends AbstractCommand {
                             .setOwner(player)
                             .addClaimedChunk(chunk, player)
                             .build());
+
+            try {
+                BufferedImage catImage = ImageIO.read(instance.getResource("recipe.png"));
+                catImage = ImageTools.resizeToMapSize(catImage);
+                ImageRenderer catRenderer = ImageRenderer.builder()
+                        .image(catImage)
+                        .build();
+                ItemStack mapItem = MapBuilder.create()
+                        .addRenderers(catRenderer).build().createItemStack();
+                ItemMeta meta = mapItem.getItemMeta();
+                meta.setDisplayName(instance.getLocale().getMessage("general.powercellrecipe").getMessage());
+                mapItem.setItemMeta(meta);
+                Map<Integer, ItemStack> items = player.getInventory().addItem(mapItem);
+                for (ItemStack item : items.values())
+                    player.getLocation().getWorld().dropItemNaturally(player.getLocation(), item);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             instance.getLocale().getMessage("command.claim.info")
                     .processPlaceholder("time", Methods.makeReadable((long) (Setting.STARTING_POWER.getInt() * 60 * 1000)))
