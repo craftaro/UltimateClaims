@@ -6,15 +6,11 @@ import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.gui.GUIPowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
-import com.songoda.ultimateclaims.utils.Methods;
 import org.bukkit.Chunk;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class InteractListeners implements Listener {
@@ -38,25 +34,29 @@ public class InteractListeners implements Listener {
         ClaimMember member = claim.getMember(event.getPlayer());
 
         if (member == null) {
-            event.getPlayer().sendMessage("nope cant interact.");
+            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
             event.setCancelled(true);
             return;
         }
+        if (claim.getPowerCell().hasLocation()
+                && claim.getPowerCell().getLocation().equals(event.getClickedBlock().getLocation())
+                && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (member.getRole() == ClaimRole.OWNER) {
+                new GUIPowerCell(event.getPlayer(), claim);
+            } else {
+                plugin.getLocale().getMessage("event.powercell.failopen").sendPrefixedMessage(event.getPlayer());
+            }
+            event.setCancelled(true);
+        }
 
         if (member.getRole() == ClaimRole.OWNER) {
-            if (claim.getPowerCell().hasLocation()
-                    && claim.getPowerCell().getLocation().equals(event.getClickedBlock().getLocation())
-            && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                new GUIPowerCell(event.getPlayer(), claim);
-                event.setCancelled(true);
-            }
             return;
         } else if (member.getRole() == ClaimRole.MEMBER
                 && claim.getMemberPermissions().canInteract()) return;
         else if (member.getRole() == ClaimRole.VISITOR
                 && claim.getMemberPermissions().canInteract()) return;
 
-        event.getPlayer().sendMessage("nope cant interact.");
+        plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
         event.setCancelled(true);
     }
 }

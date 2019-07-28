@@ -5,6 +5,8 @@ general.claim.defaultname = "%name%'s claim"
 general.claim.powercell = "&6%time% &7Remaining."
 general.claim.powercell.low = "&cLow Power!"
 general.claim.dissolve = "&7Your claim &6%claim% &7has been dissolved."
+general.notanumber = "&cThe entry &4%value% &cis not a number"
+general.notenoughfunds = "&cYou do not have enough funds."
 
 #Command Messages
 
@@ -32,6 +34,7 @@ interface.powercell.economytitle = "&7Economy stored: &6%time%&7."
 interface.powercell.economylore = "&7Click to deposit funds."
 interface.powercell.valuablestitle = "&7Item's stored: &6%time%&7."
 interface.powercell.totaltitle = "&7Total Power: &6%time%&7."
+interface.powercell.addfunds = "&7Enter an amount to deposit."
 
 #Event Messages
 
@@ -40,3 +43,6 @@ event.invite.expired = "&cYour invitation has expired..."
 event.claim.enter = "&7You have entered &6%claim%&7."
 event.claim.exit = "&7You have exited &6%claim%&7."
 event.powercell.success = "&7You created a powercell. Fill it up with fuel to keep your land claimed."
+event.powercell.failopen = "&cYou need to be the owner of this claim to open its powercell."
+event.powercell.lowpower = "&cYou're claim &4%claim% &cis out of power!"
+event.powercell.superpower = "&cYou're claim &4%claim%'s &4is still out of power and at risk of dissolution!"

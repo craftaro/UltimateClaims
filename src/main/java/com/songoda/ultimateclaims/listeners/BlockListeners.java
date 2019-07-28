@@ -39,7 +39,7 @@ public class BlockListeners implements Listener {
         ClaimMember member = claim.getMember(event.getPlayer());
 
         if (member == null) {
-            event.getPlayer().sendMessage("nope cant place.");
+            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
             event.setCancelled(true);
             return;
         }
@@ -50,7 +50,7 @@ public class BlockListeners implements Listener {
         else if (member.getRole() == ClaimRole.VISITOR
                 && claim.getMemberPermissions().canPlace()) return;
 
-        event.getPlayer().sendMessage("nope cant place.");
+        plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
         event.setCancelled(true);
     }
 
@@ -70,7 +70,7 @@ public class BlockListeners implements Listener {
         ClaimMember member = claim.getMember(event.getPlayer());
 
         if (member == null) {
-            event.getPlayer().sendMessage("nope cant build.");
+            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
             event.setCancelled(true);
             return;
         }
@@ -79,7 +79,7 @@ public class BlockListeners implements Listener {
             if (member.getRole() == ClaimRole.OWNER) {
                 powerCell.destroy();
             } else {
-                event.getPlayer().sendMessage("no");
+                plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
                 event.setCancelled(true);
             }
         }
@@ -90,7 +90,7 @@ public class BlockListeners implements Listener {
         else if (member.getRole() == ClaimRole.VISITOR
                 && claim.getMemberPermissions().canBreak()) return;
 
-        event.getPlayer().sendMessage("nope cant build.");
+        plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
         event.setCancelled(true);
     }
 }

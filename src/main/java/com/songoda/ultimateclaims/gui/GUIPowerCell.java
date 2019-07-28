@@ -163,23 +163,23 @@ public class GUIPowerCell extends AbstractGUI {
         addDraggable(new Range(28, 34, null, true), true);
         addDraggable(new Range(37, 43, null, true), true);
         registerClickable(2, (player, inventory, cursor, slot, type) -> {
-            player.sendMessage("Enter an amount to add.");
-            // Click to add more time - type in chat the amount you want to deposit.
-            AbstractChatConfirm abstractChatConfirm = new AbstractChatConfirm(player, event -> {
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if (!Methods.isNumeric(event.getMessage())) {
-                        player.sendMessage("Not a number.");
-                        return;
-                    }
-                    double amount = Double.parseDouble(event.getMessage());
-                    if (plugin.getEconomy().hasBalance(player, amount)) {
-                        plugin.getEconomy().withdrawBalance(player, amount);
-                        powercell.addEconomy(amount);
-                    } else {
-                        player.sendMessage("Not enough money.");
-                    }
-                }, 0L);
-            });
+            plugin.getLocale().getMessage("interface.powercell.addfunds").sendPrefixedMessage(player);
+            AbstractChatConfirm abstractChatConfirm = new AbstractChatConfirm(player, event ->
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                        if (!Methods.isNumeric(event.getMessage())) {
+                            plugin.getLocale().getMessage("general.notanumber")
+                                    .processPlaceholder("value", event.getMessage())
+                                    .sendPrefixedMessage(player);
+                            return;
+                        }
+                        double amount = Double.parseDouble(event.getMessage());
+                        if (plugin.getEconomy().hasBalance(player, amount)) {
+                            plugin.getEconomy().withdrawBalance(player, amount);
+                            powercell.addEconomy(amount);
+                        } else {
+                            plugin.getLocale().getMessage("general.notenoughfunds").sendPrefixedMessage(player);
+                        }
+                    }, 0L));
 
             abstractChatConfirm.setOnClose(() -> new GUIPowerCell(player, claim));
         });

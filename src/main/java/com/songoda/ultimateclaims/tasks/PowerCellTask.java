@@ -61,13 +61,17 @@ public class PowerCellTask extends BukkitRunnable {
     private void outOfPower(ClaimMember member) {
         Player player = Bukkit.getPlayer(member.getUniqueId());
         if (player != null)
-            player.sendMessage("Your claim " + member.getClaim().getName() + " is out of power...");
+            plugin.getLocale().getMessage("event.powercell.lowpower")
+                    .processPlaceholder("claim", member.getClaim().getName())
+                    .sendPrefixedMessage(player);
     }
 
     private void tenLeft(ClaimMember member) {
         Player player = Bukkit.getPlayer(member.getUniqueId());
         if (player != null)
-            player.sendMessage("Your claim " + member.getClaim().getName() + " is about to be dissolved...");
+            plugin.getLocale().getMessage("event.powercell.superpower")
+                    .processPlaceholder("claim", member.getClaim().getName())
+                    .sendPrefixedMessage(player);
     }
 
     private void dissolved(ClaimMember member) {
