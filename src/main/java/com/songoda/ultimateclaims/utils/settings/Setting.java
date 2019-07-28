@@ -32,6 +32,8 @@ public enum Setting {
 
     MAX_CHUNKS("Main.Max Chunks", 10),
 
+    MAX_MEMBERS("Main.Max Members", 10),
+
     VAULT_ECONOMY("Economy.Use Vault Economy", true,
             "Should Vault be used?"),
 

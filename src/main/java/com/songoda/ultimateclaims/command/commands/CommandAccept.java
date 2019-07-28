@@ -4,6 +4,7 @@ import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.command.AbstractCommand;
 import com.songoda.ultimateclaims.invite.Invite;
 import com.songoda.ultimateclaims.member.ClaimRole;
+import com.songoda.ultimateclaims.utils.settings.Setting;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;

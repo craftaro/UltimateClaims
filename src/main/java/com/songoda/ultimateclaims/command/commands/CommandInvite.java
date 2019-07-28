@@ -4,6 +4,8 @@ import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.command.AbstractCommand;
 import com.songoda.ultimateclaims.invite.Invite;
+import com.songoda.ultimateclaims.member.ClaimRole;
+import com.songoda.ultimateclaims.utils.settings.Setting;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -38,6 +40,13 @@ public class CommandInvite extends AbstractCommand {
 
         if (player.getUniqueId() == invited.getUniqueId()) {
             instance.getLocale().getMessage("command.invite.notself").sendPrefixedMessage(sender);
+            return ReturnType.FAILURE;
+        }
+
+
+        if (Math.toIntExact(claim.getMembers().stream()
+                .filter(member -> member.getRole() == ClaimRole.MEMBER).count()) + instance.getInviteTask().getInviteCount() >= Setting.MAX_MEMBERS.getInt()) {
+            instance.getLocale().getMessage("command.accept.maxed").sendPrefixedMessage(player);
             return ReturnType.FAILURE;
         }
 
