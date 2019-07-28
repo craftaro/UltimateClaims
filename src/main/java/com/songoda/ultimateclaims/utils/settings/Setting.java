@@ -26,6 +26,8 @@ public enum Setting {
 
     INVITE_TIMEOUT("Main.Invite Timeout", 30),
 
+    STARTING_POWER("Main.Starting Power", 10),
+
     VAULT_ECONOMY("Economy.Use Vault Economy", true,
             "Should Vault be used?"),
 

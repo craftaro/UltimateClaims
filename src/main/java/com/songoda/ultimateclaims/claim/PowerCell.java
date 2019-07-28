@@ -19,7 +19,7 @@ public class PowerCell {
 
     private List<ItemStack> items = new ArrayList<>();
 
-    private int currentPower = 10;
+    private int currentPower = Setting.STARTING_POWER.getInt();
 
     private double economyBalance = 0;
     private Inventory opened = null;

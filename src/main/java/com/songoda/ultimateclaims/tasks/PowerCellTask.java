@@ -24,7 +24,7 @@ public class PowerCellTask extends BukkitRunnable {
         plugin = plug;
         if (instance == null) {
             instance = new PowerCellTask(plugin);
-            instance.runTaskTimer(plugin, 0, 60); // 60 * 20
+            instance.runTaskTimer(plugin, 0, 60 * 20); // 60 * 20
         }
 
         return instance;
@@ -35,6 +35,12 @@ public class PowerCellTask extends BukkitRunnable {
         for (Claim claim : new ArrayList<>(plugin.getClaimManager().getRegisteredClaims())) {
             PowerCell powerCell = claim.getPowerCell();
             int tick = powerCell.tick();
+            if (tick == -1 && !powerCell.hasLocation()) {
+                for (ClaimMember member : claim.getMembers())
+                    this.dissolved(member);
+                this.dissolved(claim.getOwner());
+                claim.destroy();
+            }
             if (tick == -1) {
                 for (ClaimMember member : claim.getMembers())
                     this.outOfPower(member);
@@ -67,6 +73,8 @@ public class PowerCellTask extends BukkitRunnable {
     private void dissolved(ClaimMember member) {
         Player player = Bukkit.getPlayer(member.getUniqueId());
         if (player != null)
-            player.sendMessage("Your claim " + member.getClaim().getName() + " was dissolved.");
+            plugin.getLocale().getMessage("general.claim.dissolve")
+                    .processPlaceholder("claim", member.getClaim().getName())
+                    .sendPrefixedMessage(player);
     }
 }
