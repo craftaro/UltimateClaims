@@ -13,6 +13,8 @@ import java.util.List;
 
 public class PowerCell {
 
+    private final Claim claim;
+
     private Location location;
 
     private List<ItemStack> items = new ArrayList<>();
@@ -22,30 +24,35 @@ public class PowerCell {
     private double economyBalance = 0;
     private Inventory opened = null;
 
-    public int tick(Claim claim) {
+    public PowerCell(Claim claim) {
+        this.claim = claim;
+    }
+
+    public int tick() {
         UltimateClaims plugin = UltimateClaims.getInstance();
         if (this.currentPower <= 0) {
             List<String> materials = Setting.ITEM_VALUES.getStringList();
             for (String value : materials) {
                 Material material = Material.valueOf(value.split(":")[0]);
-                if (getMaterialAmount(material) != 0) {
-                    this.removeOneMaterial(material);
-                    this.currentPower += Integer.parseInt(value.split(":")[1]);
-                    if (plugin.getHologram() != null)
-                        plugin.getHologram().update(this);
-                    return this.currentPower;
-                }
+                if (getMaterialAmount(material) == 0) continue;
+                this.removeOneMaterial(material);
+                this.currentPower += getItemValue(material);
+                if (plugin.getHologram() != null)
+                    plugin.getHologram().update(this);
+                return this.currentPower;
             }
-            double economyValue = Setting.ECONOMY_VALUE.getDouble();
+            double economyValue = getEconomyValue();
             if (economyBalance >= economyValue) {
                 this.economyBalance -= economyValue;
                 this.currentPower += 1;
+                if (plugin.getHologram() != null)
+                    plugin.getHologram().update(this);
+                return this.currentPower;
             }
-
         }
         if (location != null && plugin.getHologram() != null)
             plugin.getHologram().update(this);
-        return this.currentPower -= claim == null ? 0 : claim.getClaimedChunks().size();
+        return this.currentPower--;
     }
 
     private int getMaterialAmount(Material material) {
@@ -116,14 +123,28 @@ public class PowerCell {
         List<String> materials = Setting.ITEM_VALUES.getStringList();
         for (String value : materials) {
             Material material = Material.valueOf(value.split(":")[0]);
-            if (getMaterialAmount(material) != 0)
-                total += getMaterialAmount(material) * Integer.parseInt(value.split(":")[1]);
+            if (getMaterialAmount(material) == 0) continue;
+
+            total += getMaterialAmount(material) * getItemValue(material);
         }
         return total;
     }
 
     public int getEconomyPower() {
-        return (int) Math.floor(economyBalance / Setting.ECONOMY_VALUE.getDouble());
+        return (int) Math.floor(economyBalance / getEconomyValue());
+    }
+
+    private int getItemValue(Material material) {
+        List<String> materials = Setting.ITEM_VALUES.getStringList();
+        for (String value : materials) {
+            if (material == Material.valueOf(value.split(":")[0]))
+                return (int) Math.floor(Integer.parseInt(value.split(":")[1]) / claim.getClaimedChunks().size());
+        }
+        return 0;
+    }
+
+    public int getEconomyValue() {
+        return (int) Math.floor(Setting.ECONOMY_VALUE.getDouble() / claim.getClaimedChunks().size());
     }
 
     public List<ItemStack> getItems() {
@@ -154,7 +175,6 @@ public class PowerCell {
 
     public void setLocation(Location location) {
         this.location = location;
-        tick(null);
     }
 
     public Inventory getOpened() {

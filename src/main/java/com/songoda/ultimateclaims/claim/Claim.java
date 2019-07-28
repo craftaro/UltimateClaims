@@ -33,7 +33,7 @@ public class Claim {
             .setCanPlace(false)
             .build();
 
-    private PowerCell powerCell = new PowerCell();
+    private PowerCell powerCell = new PowerCell(this);
 
     public String getName() {
         return name;

@@ -49,12 +49,14 @@ public class InventoryListeners implements Listener {
         event.getInventory().clear();
         Location location = event.getInventory().getLocation();
         claim.getPowerCell().setLocation(location.clone());
+        if (plugin.getHologram() != null)
+            plugin.getHologram().update(claim.getPowerCell());
 
         float xx = (float) (0 + (Math.random() * 1));
         float yy = (float) (0 + (Math.random() * 2));
         float zz = (float) (0 + (Math.random() * 1));
         location.getWorld().spawnParticle(Particle.LAVA, location.add(.5,.5,.5), 25, xx, yy, zz, 0);
 
-        player.sendMessage("Powercell set");
+        plugin.getLocale().getMessage("event.powercell.success").sendPrefixedMessage(player);
     }
 }

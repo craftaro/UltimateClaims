@@ -1,6 +1,7 @@
 package com.songoda.ultimateclaims.command.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
+import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimBuilder;
 import com.songoda.ultimateclaims.command.AbstractCommand;
 import org.bukkit.command.CommandSender;
@@ -21,9 +22,13 @@ public class CommandClaim extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        if (instance.getClaimManager().hasClaim(player))
-            instance.getClaimManager().getClaim(player).addClaimedChunk(player.getLocation().getChunk());
-        else
+        if (instance.getClaimManager().hasClaim(player)) {
+            Claim claim = instance.getClaimManager().getClaim(player);
+            claim.addClaimedChunk(player.getLocation().getChunk());
+
+            if (claim.getPowerCell().hasLocation() && instance.getHologram() != null)
+                instance.getHologram().update(claim.getPowerCell());
+        } else
             instance.getClaimManager().addClaim(player,
                     new ClaimBuilder()
                             .setOwner(player)

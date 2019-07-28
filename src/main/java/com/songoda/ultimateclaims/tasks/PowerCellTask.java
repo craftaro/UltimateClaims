@@ -24,7 +24,7 @@ public class PowerCellTask extends BukkitRunnable {
         plugin = plug;
         if (instance == null) {
             instance = new PowerCellTask(plugin);
-            instance.runTaskTimer(plugin, 0, 60 * 20); // 60 * 20
+            instance.runTaskTimer(plugin, 0, 60); // 60 * 20
         }
 
         return instance;
@@ -34,7 +34,7 @@ public class PowerCellTask extends BukkitRunnable {
     public void run() {
         for (Claim claim : new ArrayList<>(plugin.getClaimManager().getRegisteredClaims())) {
             PowerCell powerCell = claim.getPowerCell();
-            int tick = powerCell.tick(claim);
+            int tick = powerCell.tick();
             if (tick == -1) {
                 for (ClaimMember member : claim.getMembers())
                     this.outOfPower(member);

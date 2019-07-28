@@ -181,6 +181,10 @@ public class GUIMembers extends AbstractGUI {
                 if (!plugin.isServerVersionAtLeast(ServerVersion.V1_13)) skull.setDurability((short) 3);
                 SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
                 skullMeta.setOwningPlayer(skullPlayer);
+                if (plugin.isServerVersionAtLeast(ServerVersion.V1_13))
+                    skullMeta.setOwningPlayer(skullPlayer);
+                else
+                    skullMeta.setOwner(skullPlayer.getName());
                 skullMeta.setDisplayName(Methods.formatText("&b") + skullPlayer.getName());
                 List<String> lore = new ArrayList<>();
                 String[] skullSplit = plugin.getLocale().getMessage("interface.members.skull")
