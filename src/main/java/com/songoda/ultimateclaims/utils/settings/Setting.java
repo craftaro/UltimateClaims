@@ -30,6 +30,8 @@ public enum Setting {
 
     STARTING_POWER("Main.Starting Power", 10),
 
+    MAX_CHUNKS("Main.Max Chunks", 10),
+
     VAULT_ECONOMY("Economy.Use Vault Economy", true,
             "Should Vault be used?"),
 

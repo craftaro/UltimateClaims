@@ -54,6 +54,13 @@ public class CommandClaim extends AbstractCommand {
                 return ReturnType.FAILURE;
             }
 
+            if (claim.getClaimedChunks().size() >= Setting.MAX_CHUNKS.getInt()) {
+                instance.getLocale().getMessage("command.claim.toomany")
+                        .processPlaceholder("amount", Setting.MAX_CHUNKS)
+                        .sendPrefixedMessage(player);
+                return ReturnType.FAILURE;
+            }
+
             claim.addClaimedChunk(chunk, player);
 
             if (instance.getHologram() != null)
