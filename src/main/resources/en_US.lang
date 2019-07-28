@@ -8,6 +8,9 @@ general.claim.dissolve = "&7Your claim &6%claim% &7has been dissolved."
 general.notanumber = "&cThe entry &4%value% &cis not a number"
 general.notenoughfunds = "&cYou do not have enough funds."
 general.powercellrecipe = "&6Powercell Recipe"
+general.interface.exit = "&cExit"
+general.interface.next = "&cNext Page"
+general.interface.previous = "&cPrevious Page"
 
 #Command Messages
 
@@ -20,6 +23,7 @@ command.general.notclaimed = "&cThis chunk isn't claimed."
 command.general.notyourclaim = "&cThis chunk is claimed by someone else."
 command.invite.invited = "&7You have been invited to join &6%claim%&7. Use &6/c accept &7to accept the invitation."
 command.invite.invite = "&7You have invited &6%name% &7to join your claim&7."
+command.invite.notself = "&7You cannot invite yourself."
 command.kick.kicked = "&cYou have been kicked from &4%claim%&c."
 command.kick.kick = "&7You kicked &6%name% &7from &6%claim%&7."
 command.accept.none = "&cYou do not currently have any invites to accept."
@@ -41,6 +45,14 @@ interface.powercell.economylore = "&7Click to deposit funds."
 interface.powercell.valuablestitle = "&7Item's stored: &6%time%&7."
 interface.powercell.totaltitle = "&7Total Power: &6%time%&7."
 interface.powercell.addfunds = "&7Enter an amount to deposit."
+interface.powercell.infotitle = "&7Info"
+interface.powercell.banstitle = "&7Bans
+interface.powercell.memberstitle = "&7Members"
+
+interface.members.skulllore = "&7Role: &a%role%|&7Playtime: &b%playtime%|&7Member Since: &d%membersince%"
+interface.members.changetypetitle = "&7Change Type"
+interface.members.changetypelore = "&7Currently: &d%current%|&7Click to sort by &6%newsort%"
+
 
 #Event Messages
 

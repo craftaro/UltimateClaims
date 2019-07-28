@@ -126,9 +126,9 @@ public class GUIPowerCell extends AbstractGUI {
 
         ItemStack banned = new ItemStack(Material.IRON_AXE);
         ItemMeta bannedMeta = banned.getItemMeta();
-        bannedMeta.setDisplayName(plugin.getLocale().getMessage("interface.powercell.bannedtitle").getMessage());
+        bannedMeta.setDisplayName(plugin.getLocale().getMessage("interface.powercell.banstitle").getMessage());
         List<String> bannedLore = new ArrayList<>();
-        String[] bannedSplit = plugin.getLocale().getMessage("interface.powercell.memberslore").getMessage().split("\\|");
+        String[] bannedSplit = plugin.getLocale().getMessage("interface.powercell.banslore").getMessage().split("\\|");
         for (String line : bannedSplit) bannedLore.add(line);
         bannedMeta.setLore(bannedLore);
         banned.setItemMeta(bannedMeta);
@@ -136,8 +136,8 @@ public class GUIPowerCell extends AbstractGUI {
         inventory.setItem(2, economy);
         inventory.setItem(4, total);
         inventory.setItem(6, valuables);
-        inventory.setItem(48, info);
-        inventory.setItem(49, banned);
+        inventory.setItem(49, info);
+        inventory.setItem(48, banned);
         inventory.setItem(50, members);
     }
 

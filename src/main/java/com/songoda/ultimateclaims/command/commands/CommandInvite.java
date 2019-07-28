@@ -36,6 +36,11 @@ public class CommandInvite extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
+        if (player.getUniqueId() == invited.getUniqueId()) {
+            instance.getLocale().getMessage("command.invite.notself").sendPrefixedMessage(sender);
+            return ReturnType.FAILURE;
+        }
+
         instance.getInviteTask().addInvite(new Invite(player.getUniqueId(), invited.getUniqueId(), claim));
 
         instance.getLocale().getMessage("command.invite.invite")

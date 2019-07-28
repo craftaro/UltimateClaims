@@ -15,7 +15,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class GUIMembers extends AbstractGUI {
@@ -26,7 +29,7 @@ public class GUIMembers extends AbstractGUI {
     private ClaimRole displayedRole = ClaimRole.OWNER;
     private int page = 1;
     private List<ClaimMember> allMembers, members, visitors;
-
+    private SortType sortType = SortType.DEFAULT;
 
     public GUIMembers(Player player, Claim claim) {
         super(player);
@@ -81,11 +84,7 @@ public class GUIMembers extends AbstractGUI {
 
         ItemStack exit = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_FENCE_GATE : Material.valueOf("FENCE_GATE"));
         ItemMeta exitMeta = exit.getItemMeta();
-        exitMeta.setDisplayName(plugin.getLocale().getMessage("interface.members.exittitle").getMessage());
-        List<String> exitLore = new ArrayList<>();
-        String[] exitSplit = plugin.getLocale().getMessage("interface.members.exitlore").getMessage().split("\\|");
-        for (String line : exitSplit) exitLore.add(line);
-        exitMeta.setLore(exitLore);
+        exitMeta.setDisplayName(plugin.getLocale().getMessage("general.interface.exit").getMessage());
         exit.setItemMeta(exitMeta);
 
         ItemStack type = new ItemStack(Material.HOPPER);
@@ -135,20 +134,12 @@ public class GUIMembers extends AbstractGUI {
 
         ItemStack previous = new ItemStack(Material.MAP);
         ItemMeta previousMeta = previous.getItemMeta();
-        previousMeta.setDisplayName(plugin.getLocale().getMessage("interface.members.previoustitle").getMessage());
-        List<String> previousLore = new ArrayList<>();
-        String[] previousSplit = plugin.getLocale().getMessage("interface.members.previouslore").getMessage().split("\\|");
-        for (String line : previousSplit) previousLore.add(line);
-        previousMeta.setLore(previousLore);
+        previousMeta.setDisplayName(plugin.getLocale().getMessage("general.interface.previous").getMessage());
         previous.setItemMeta(previousMeta);
 
         ItemStack next = new ItemStack(Material.PAPER);
         ItemMeta nextMeta = next.getItemMeta();
-        nextMeta.setDisplayName(plugin.getLocale().getMessage("interface.members.nexttitle").getMessage());
-        List<String> nextLore = new ArrayList<>();
-        String[] nextSplit = plugin.getLocale().getMessage("interface.members.nextlore").getMessage().split("\\|");
-        for (String line : nextSplit) nextLore.add(line);
-        nextMeta.setLore(nextLore);
+        nextMeta.setDisplayName(plugin.getLocale().getMessage("general.interface.next").getMessage());
         next.setItemMeta(nextMeta);
 
         inventory.setItem(0, exit);
@@ -161,10 +152,13 @@ public class GUIMembers extends AbstractGUI {
 
         if (allMembers == null || allMembers.isEmpty()) return;
 
-        List<ClaimMember> toDisplay = null;
-        if (displayedRole == ClaimRole.OWNER) toDisplay = allMembers;
-        if (displayedRole == ClaimRole.MEMBER) toDisplay = members;
-        if (displayedRole == ClaimRole.VISITOR) toDisplay = visitors;
+        List<ClaimMember> toDisplay = allMembers;
+        toDisplay.stream().sorted(Comparator.comparingInt(claimMember -> claimMember.getRole().getIndex()));
+
+        if (sortType == SortType.PLAYTIME)
+            toDisplay.stream().sorted(Comparator.comparingLong(claimMember -> claimMember.getPlayTime()));
+        if (sortType == SortType.MEMBERSINCE)
+            toDisplay.stream().sorted(Comparator.comparingLong(claimMember -> claimMember.getMemberSince()));
 
         if (page > 1) {
             inventory.setItem(37, previous);
@@ -183,6 +177,7 @@ public class GUIMembers extends AbstractGUI {
             for (int j = currentMember; j < currentMember+8; j++) {
                 if (toDisplay.size()-1 < j) return;
 
+                ClaimMember claimMember = toDisplay.get(currentMember);
                 OfflinePlayer skullPlayer = Bukkit.getOfflinePlayer(toDisplay.get(currentMember).getUniqueId());
 
                 ItemStack skull = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ?
@@ -196,10 +191,16 @@ public class GUIMembers extends AbstractGUI {
                     skullMeta.setOwner(skullPlayer.getName());
                 skullMeta.setDisplayName(Methods.formatText("&b") + skullPlayer.getName());
                 List<String> lore = new ArrayList<>();
-                String[] skullSplit = plugin.getLocale().getMessage("interface.members.skull")
+                String[] skullSplit = plugin.getLocale().getMessage("interface.members.skulllore")
                         .processPlaceholder("role",
                                 Methods.formatText(toDisplay.get(currentMember).getRole().toString().toLowerCase(), true))
+                        .processPlaceholder("playtime",
+                                new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date(claimMember.getPlayTime())))
+                        .processPlaceholder("membersince",
+                                new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date(claimMember.getMemberSince())))
                         .getMessage().split("\\|");
+                for (String line : skullSplit) lore.add(line);
+                skullMeta.setLore(lore);
                 skull.setItemMeta(skullMeta);
 
                 inventory.setItem((int) Math.ceil(10+(j/(i+1))), skull);
@@ -208,6 +209,7 @@ public class GUIMembers extends AbstractGUI {
             }
         }
     }
+
 
     @Override
     protected void registerClickables() {
@@ -220,15 +222,34 @@ public class GUIMembers extends AbstractGUI {
         });
 
         registerClickable(3, (player, inventory, cursor, slot, type) -> {
-            if (displayedRole == ClaimRole.MEMBER) displayedRole = ClaimRole.OWNER;
-            if (displayedRole == ClaimRole.OWNER) displayedRole = ClaimRole.VISITOR;
-            if (displayedRole == ClaimRole.VISITOR) displayedRole = ClaimRole.MEMBER;
+            switch (displayedRole) {
+                case OWNER:
+                    displayedRole = ClaimRole.VISITOR;
+                    break;
+                case MEMBER:
+                    displayedRole = ClaimRole.OWNER;
+                    break;
+                case VISITOR:
+                    displayedRole = ClaimRole.MEMBER;
+                    break;
+            }
+
             constructGUI();
         });
 
         registerClickable(5, (player, inventory, cursor, slot, type) -> {
-            // Change Sort
-        });;
+            switch (sortType) {
+                case DEFAULT:
+                    sortType = SortType.PLAYTIME;
+                    break;
+                case PLAYTIME:
+                    sortType = SortType.MEMBERSINCE;
+                    break;
+                case MEMBERSINCE:
+                    sortType = SortType.DEFAULT;
+                    break;
+            }
+        });
 
         registerClickable(39, (player, inventory, cursor, slot, type) -> {
             new GUISettings(player, claim, ClaimRole.VISITOR);
@@ -242,5 +263,11 @@ public class GUIMembers extends AbstractGUI {
     @Override
     protected void registerOnCloses() {
 
+    }
+
+    public enum SortType {
+        DEFAULT,
+        PLAYTIME,
+        MEMBERSINCE
     }
 }
