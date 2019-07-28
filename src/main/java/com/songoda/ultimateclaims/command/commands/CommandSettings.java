@@ -24,7 +24,7 @@ public class CommandSettings extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/ucl settings";
+        return "/c settings";
     }
 
     @Override

@@ -86,7 +86,7 @@ public class Claim {
     }
 
     public void removeMember(Player player) {
-        removeMember(player);
+        this.removeMember(player.getUniqueId());
     }
 
     public Set<Chunk> getClaimedChunks() {

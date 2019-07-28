@@ -60,11 +60,11 @@ public class CommandUnClaim extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/ucl unclaim";
+        return "/c unclaim";
     }
 
     @Override
     public String getDescription() {
-        return "unClaim land.";
+        return "Unclaim land from your claim.";
     }
 }

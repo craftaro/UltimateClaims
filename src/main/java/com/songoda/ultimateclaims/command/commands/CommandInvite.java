@@ -4,7 +4,6 @@ import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.command.AbstractCommand;
 import com.songoda.ultimateclaims.invite.Invite;
-import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -49,6 +48,7 @@ public class CommandInvite extends AbstractCommand {
         return ReturnType.SUCCESS;
     }
 
+
     @Override
     public String getPermissionNode() {
         return "ultimateclaims.invite";
@@ -56,11 +56,11 @@ public class CommandInvite extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/ucl invite";
+        return "/c invite <player>";
     }
 
     @Override
     public String getDescription() {
-        return "Invite.";
+        return "Invite a player to join your claim.";
     }
 }

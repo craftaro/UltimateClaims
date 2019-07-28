@@ -40,11 +40,11 @@ public class CommandDissolve extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/ucl dissolve";
+        return "/c dissolve";
     }
 
     @Override
     public String getDescription() {
-        return "dissolve.";
+        return "Dissolve your claim.";
     }
 }

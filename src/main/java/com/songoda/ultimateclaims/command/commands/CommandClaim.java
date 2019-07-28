@@ -1,14 +1,14 @@
 package com.songoda.ultimateclaims.command.commands;
 
-import com.songoda.ultimateclaims.utils.spigotmaps.MapBuilder;
-import com.songoda.ultimateclaims.utils.spigotmaps.rendering.ImageRenderer;
-import com.songoda.ultimateclaims.utils.spigotmaps.util.ImageTools;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimBuilder;
 import com.songoda.ultimateclaims.command.AbstractCommand;
 import com.songoda.ultimateclaims.utils.Methods;
 import com.songoda.ultimateclaims.utils.settings.Setting;
+import com.songoda.ultimateclaims.utils.spigotmaps.MapBuilder;
+import com.songoda.ultimateclaims.utils.spigotmaps.rendering.ImageRenderer;
+import com.songoda.ultimateclaims.utils.spigotmaps.util.ImageTools;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -46,10 +46,10 @@ public class CommandClaim extends AbstractCommand {
             }
 
             if (Setting.CHUNKS_MUST_TOUCH.getBoolean()
-            && !claim.getClaimedChunks().contains(chunk.getWorld().getChunkAt(chunk.getX() + 1, chunk.getZ()))
-            && !claim.getClaimedChunks().contains(chunk.getWorld().getChunkAt(chunk.getX() - 1, chunk.getZ()))
-            && !claim.getClaimedChunks().contains(chunk.getWorld().getChunkAt(chunk.getX(), chunk.getZ() + 1))
-            && !claim.getClaimedChunks().contains(chunk.getWorld().getChunkAt(chunk.getX(), chunk.getZ() - 1))) {
+                    && !claim.getClaimedChunks().contains(chunk.getWorld().getChunkAt(chunk.getX() + 1, chunk.getZ()))
+                    && !claim.getClaimedChunks().contains(chunk.getWorld().getChunkAt(chunk.getX() - 1, chunk.getZ()))
+                    && !claim.getClaimedChunks().contains(chunk.getWorld().getChunkAt(chunk.getX(), chunk.getZ() + 1))
+                    && !claim.getClaimedChunks().contains(chunk.getWorld().getChunkAt(chunk.getX(), chunk.getZ() - 1))) {
                 instance.getLocale().getMessage("command.claim.nottouching").sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
             }
@@ -68,11 +68,11 @@ public class CommandClaim extends AbstractCommand {
             try {
                 BufferedImage catImage = ImageIO.read(instance.getResource("recipe.png"));
                 catImage = ImageTools.resizeToMapSize(catImage);
-                ImageRenderer catRenderer = ImageRenderer.builder()
+                ImageRenderer renderer = ImageRenderer.builder()
                         .image(catImage)
                         .build();
                 ItemStack mapItem = MapBuilder.create()
-                        .addRenderers(catRenderer).build().createItemStack();
+                        .addRenderers(renderer).build().createItemStack();
                 ItemMeta meta = mapItem.getItemMeta();
                 meta.setDisplayName(instance.getLocale().getMessage("general.powercellrecipe").getMessage());
                 mapItem.setItemMeta(meta);
@@ -99,11 +99,11 @@ public class CommandClaim extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/ucl claim";
+        return "/c claim";
     }
 
     @Override
     public String getDescription() {
-        return "Claim land.";
+        return "Claim the land you are currently standing in for your claim.";
     }
 }

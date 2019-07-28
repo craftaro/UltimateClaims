@@ -55,11 +55,11 @@ public class CommandAccept extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/ucl accept";
+        return "/c accept";
     }
 
     @Override
     public String getDescription() {
-        return "Accept.";
+        return "Accept the latest claim invitation.";
     }
 }

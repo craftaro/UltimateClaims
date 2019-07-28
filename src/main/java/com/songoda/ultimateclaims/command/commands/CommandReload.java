@@ -24,7 +24,7 @@ public class CommandReload extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/ucl reload";
+        return "/c reload";
     }
 
     @Override
