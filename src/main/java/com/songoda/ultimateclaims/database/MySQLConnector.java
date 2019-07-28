@@ -1,4 +1,4 @@
-package com.esophose.playerparticles.database;
+package com.songoda.ultimateclaims.database;
 
 import java.sql.Connection;
 import java.sql.SQLException;
