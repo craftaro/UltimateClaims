@@ -30,6 +30,7 @@ public class CommandManager implements CommandExecutor {
         addCommand(new CommandInvite(commandUltimateClaims));
         addCommand(new CommandAccept(commandUltimateClaims));
         addCommand(new CommandKick(commandUltimateClaims));
+        addCommand(new CommandDissolve(commandUltimateClaims));
     }
 
     private AbstractCommand addCommand(AbstractCommand abstractCommand) {

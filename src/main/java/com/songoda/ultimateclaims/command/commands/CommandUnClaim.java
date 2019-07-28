@@ -65,6 +65,6 @@ public class CommandUnClaim extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "zunClaim land.";
+        return "unClaim land.";
     }
 }
