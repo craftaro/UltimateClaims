@@ -37,7 +37,7 @@ public class PowerCell {
                 if (getMaterialAmount(material) == 0) continue;
                 this.removeOneMaterial(material);
                 this.currentPower += getItemValue(material);
-                if (plugin.getHologram() != null)
+                if (location != null && plugin.getHologram() != null)
                     plugin.getHologram().update(this);
                 return this.currentPower;
             }
@@ -45,7 +45,7 @@ public class PowerCell {
             if (economyBalance >= economyValue) {
                 this.economyBalance -= economyValue;
                 this.currentPower += 1;
-                if (plugin.getHologram() != null)
+                if (location != null && plugin.getHologram() != null)
                     plugin.getHologram().update(this);
                 return this.currentPower;
             }
