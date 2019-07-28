@@ -25,9 +25,7 @@ public class GUIMembers extends AbstractGUI {
     private Claim claim;
     private ClaimRole displayedRole = ClaimRole.OWNER;
     private int page = 1;
-    private List<ClaimMember> allMembers;
-    private List<ClaimMember> members;
-    private List<ClaimMember> visitors;
+    private List<ClaimMember> allMembers, members, visitors;
 
 
     public GUIMembers(Player player, Claim claim) {
@@ -35,6 +33,10 @@ public class GUIMembers extends AbstractGUI {
         this.player = player;
         this.claim = claim;
         plugin = UltimateClaims.getInstance();
+
+        allMembers = new ArrayList<>();
+        members = new ArrayList<>();
+        visitors = new ArrayList<>();
 
         for (ClaimMember claimMember : claim.getMembers()) {
             if (claimMember.getRole() == ClaimRole.MEMBER) members.add(claimMember);
@@ -154,7 +156,6 @@ public class GUIMembers extends AbstractGUI {
         inventory.setItem(3, type);
         inventory.setItem(4, stats);
         inventory.setItem(5, sort);
-        if (page > 1) inventory.setItem(37, previous);
         inventory.setItem(39, visitor);
         inventory.setItem(41, member);
 
@@ -165,14 +166,22 @@ public class GUIMembers extends AbstractGUI {
         if (displayedRole == ClaimRole.MEMBER) toDisplay = members;
         if (displayedRole == ClaimRole.VISITOR) toDisplay = visitors;
 
-        if (page < Math.ceil(toDisplay.size() / 21)) inventory.setItem(43, next);
+        if (page > 1) {
+            inventory.setItem(37, previous);
+            registerClickable(37, (player, inventory, cursor, slot, type1) -> {
+                page = page == 1 ? 1 : page--;
+            });
+        }
 
-        // I think this should work?
+        if (page < Math.ceil(toDisplay.size() / 21)){
+            inventory.setItem(43, next);
+            registerClickable(43, (player, inventory, cursor, slot, type1) -> page++);
+        }
 
         int currentMember = 0;
         for (int i = 0; i < 3; i++) {
             for (int j = currentMember; j < currentMember+8; j++) {
-                if (toDisplay.size() < j) return;
+                if (toDisplay.size()-1 < j) return;
 
                 OfflinePlayer skullPlayer = Bukkit.getOfflinePlayer(toDisplay.get(currentMember).getUniqueId());
 
@@ -193,7 +202,7 @@ public class GUIMembers extends AbstractGUI {
                         .getMessage().split("\\|");
                 skull.setItemMeta(skullMeta);
 
-                inventory.setItem(((i + 1) * 7) + j, skull);
+                inventory.setItem((int) Math.ceil(10+(j/(i+1))), skull);
 
                 currentMember++;
             }
@@ -219,11 +228,7 @@ public class GUIMembers extends AbstractGUI {
 
         registerClickable(5, (player, inventory, cursor, slot, type) -> {
             // Change Sort
-        });
-
-        registerClickable(37, (player, inventory, cursor, slot, type) -> {
-            page = page == 1 ? 1 : page--;
-        });
+        });;
 
         registerClickable(39, (player, inventory, cursor, slot, type) -> {
             new GUISettings(player, claim, ClaimRole.VISITOR);
@@ -232,8 +237,6 @@ public class GUIMembers extends AbstractGUI {
         registerClickable(41, (player, inventory, cursor, slot, type) -> {
             new GUISettings(player, claim, ClaimRole.MEMBER);
         });
-
-        registerClickable(43, (player, inventory, cursor, slot, type) -> page++);
     }
 
     @Override

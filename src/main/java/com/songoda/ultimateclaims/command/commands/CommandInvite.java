@@ -38,7 +38,6 @@ public class CommandInvite extends AbstractCommand {
         }
 
         instance.getInviteTask().addInvite(new Invite(player.getUniqueId(), invited.getUniqueId(), claim));
-        instance.getClaimManager().getClaim(player).addMember(invited.getUniqueId(), ClaimRole.MEMBER);
 
         instance.getLocale().getMessage("command.invite.invite")
                 .processPlaceholder("name", invited.getName())

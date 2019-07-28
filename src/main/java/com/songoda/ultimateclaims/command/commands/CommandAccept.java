@@ -25,7 +25,13 @@ public class CommandAccept extends AbstractCommand {
         if (invite == null) {
             instance.getLocale().getMessage("command.accept.none").sendPrefixedMessage(player);
         } else {
-            invite.getClaim().addMember(player, ClaimRole.MEMBER);
+            if (invite.getClaim().getMember(player) == null)
+                invite.getClaim().addMember(player, ClaimRole.MEMBER);
+
+            if (invite.getClaim().getMember(player).getRole() == ClaimRole.VISITOR)
+                invite.getClaim().getMember(player).setRole(ClaimRole.MEMBER);
+
+
             invite.accepted();
             instance.getLocale().getMessage("command.accept.success")
                     .processPlaceholder("claim", invite.getClaim().getName())

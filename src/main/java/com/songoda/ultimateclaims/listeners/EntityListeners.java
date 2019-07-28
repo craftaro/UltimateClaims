@@ -44,11 +44,11 @@ public class EntityListeners implements Listener {
             if (claimManager.getClaim(event.getFrom().getChunk()) != claim) {
                 ClaimMember member = claim.getMember(event.getPlayer());
                 if (member == null) {
-                    if (member.getRole() == ClaimRole.VISITOR)
-                        claim.addMember(event.getPlayer(), ClaimRole.VISITOR);
-                    else
-                        member.setPresent(true);
+                    claim.addMember(event.getPlayer(), ClaimRole.VISITOR);
+                    member = claim.getMember(event.getPlayer());
                 }
+
+                member.setPresent(true);
                 plugin.getLocale().getMessage("event.claim.enter")
                         .processPlaceholder("claim", claim.getName())
                         .sendPrefixedMessage(event.getPlayer());
