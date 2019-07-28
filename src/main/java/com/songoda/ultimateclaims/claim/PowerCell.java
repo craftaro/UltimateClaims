@@ -15,7 +15,7 @@ public class PowerCell {
 
     private final Claim claim;
 
-    private Location location;
+    private Location location = null;
 
     private List<ItemStack> items = new ArrayList<>();
 
