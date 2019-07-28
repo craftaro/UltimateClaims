@@ -32,6 +32,8 @@ public class ClaimMember {
     }
 
     public void setRole(ClaimRole role) {
+        if (role == ClaimRole.MEMBER)
+            memberSince = System.currentTimeMillis();
         this.role = role;
     }
 
@@ -47,7 +49,15 @@ public class ClaimMember {
         return playTime;
     }
 
+    public void setPlayTime(long playTime) {
+        this.playTime = playTime;
+    }
+
     public long getMemberSince() {
         return memberSince;
+    }
+
+    public void setMemberSince(long memberSince) {
+        this.memberSince = memberSince;
     }
 }

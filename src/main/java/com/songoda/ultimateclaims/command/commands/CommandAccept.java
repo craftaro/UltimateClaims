@@ -26,6 +26,12 @@ public class CommandAccept extends AbstractCommand {
         if (invite == null) {
             instance.getLocale().getMessage("command.accept.none").sendPrefixedMessage(player);
         } else {
+            if (Math.toIntExact(invite.getClaim().getMembers().stream()
+                    .filter(member -> member.getRole() == ClaimRole.MEMBER).count()) >= Setting.MAX_MEMBERS.getInt()) {
+                instance.getLocale().getMessage("command.accept.maxed").sendPrefixedMessage(player);
+                return ReturnType.FAILURE;
+            }
+
             if (invite.getClaim().getMember(player) == null)
                 invite.getClaim().addMember(player, ClaimRole.MEMBER);
 

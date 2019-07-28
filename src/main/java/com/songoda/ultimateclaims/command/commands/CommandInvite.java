@@ -43,13 +43,6 @@ public class CommandInvite extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-
-        if (Math.toIntExact(claim.getMembers().stream()
-                .filter(member -> member.getRole() == ClaimRole.MEMBER).count()) + instance.getInviteTask().getInviteCount() >= Setting.MAX_MEMBERS.getInt()) {
-            instance.getLocale().getMessage("command.accept.maxed").sendPrefixedMessage(player);
-            return ReturnType.FAILURE;
-        }
-
         instance.getInviteTask().addInvite(new Invite(player.getUniqueId(), invited.getUniqueId(), claim));
 
         instance.getLocale().getMessage("command.invite.invite")

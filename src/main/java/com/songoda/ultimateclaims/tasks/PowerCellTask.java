@@ -4,12 +4,15 @@ import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
+import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.settings.Setting;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PowerCellTask extends BukkitRunnable {
 
@@ -24,7 +27,7 @@ public class PowerCellTask extends BukkitRunnable {
         plugin = plug;
         if (instance == null) {
             instance = new PowerCellTask(plugin);
-            instance.runTaskTimer(plugin, 0, 60 * 20); // 60 * 20
+            instance.runTaskTimer(plugin, 0, 20); // 60 * 20
         }
 
         return instance;
@@ -34,6 +37,12 @@ public class PowerCellTask extends BukkitRunnable {
     public void run() {
         for (Claim claim : new ArrayList<>(plugin.getClaimManager().getRegisteredClaims())) {
             PowerCell powerCell = claim.getPowerCell();
+            List<ClaimMember> members = claim.getMembers().stream()
+                    .filter(member -> member.getRole() != ClaimRole.VISITOR).collect(Collectors.toList());
+            members.add(claim.getOwner());
+            for (ClaimMember member : members) {
+                member.setPlayTime(member.getPlayTime() + (60 * 1000)); // Should be a var.
+            }
             int tick = powerCell.tick();
             if (tick == -1 && !powerCell.hasLocation()) {
                 for (ClaimMember member : claim.getMembers())
@@ -42,17 +51,14 @@ public class PowerCellTask extends BukkitRunnable {
                 claim.destroy();
             }
             if (tick == -1) {
-                for (ClaimMember member : claim.getMembers())
+                for (ClaimMember member : members)
                     this.outOfPower(member);
-                this.outOfPower(claim.getOwner());
             } else if (tick == (Setting.MINIMUM_POWER.getInt() + 10)) {
-                for (ClaimMember member : claim.getMembers())
+                for (ClaimMember member : members)
                     this.tenLeft(member);
-                this.tenLeft(claim.getOwner());
             } else if (tick <= Setting.MINIMUM_POWER.getInt()) {
-                for (ClaimMember member : claim.getMembers())
+                for (ClaimMember member : members)
                     this.dissolved(member);
-                this.dissolved(claim.getOwner());
                 claim.destroy();
             }
         }
