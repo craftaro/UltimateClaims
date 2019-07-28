@@ -32,7 +32,7 @@ public class CommandClaim extends AbstractCommand {
                 return ReturnType.FAILURE;
             }
 
-            claim.addClaimedChunk(player.getLocation().getChunk());
+            claim.addClaimedChunk(player.getLocation().getChunk(), player);
 
             if (instance.getHologram() != null)
                 instance.getHologram().update(claim.getPowerCell());
@@ -40,7 +40,7 @@ public class CommandClaim extends AbstractCommand {
             instance.getClaimManager().addClaim(player,
                     new ClaimBuilder()
                             .setOwner(player)
-                            .addClaimedChunks(player.getLocation().getChunk())
+                            .addClaimedChunk(player.getLocation().getChunk(), player)
                             .build());
 
             instance.getLocale().getMessage("command.claim.info")

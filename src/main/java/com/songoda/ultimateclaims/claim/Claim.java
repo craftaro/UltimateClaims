@@ -5,7 +5,9 @@ import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
 import com.songoda.ultimateclaims.member.ClaimPermissionsBuilder;
 import com.songoda.ultimateclaims.member.ClaimRole;
+import com.songoda.ultimateclaims.utils.Methods;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -91,11 +93,22 @@ public class Claim {
         return claimedChunks;
     }
 
+
     public void addClaimedChunk(Chunk chunk) {
         this.claimedChunks.add(chunk);
     }
 
+    public void addClaimedChunk(Chunk chunk, Player player) {
+        Methods.animateChunk(chunk, player, Material.EMERALD_BLOCK);
+        addClaimedChunk(chunk);
+    }
+
     public void removeClaimedChunk(Chunk chunk) {
+        this.claimedChunks.remove(chunk);
+    }
+
+    public void removeClaimedChunk(Chunk chunk, Player player) {
+        Methods.animateChunk(chunk, player, Material.REDSTONE_BLOCK);
         this.claimedChunks.remove(chunk);
     }
 

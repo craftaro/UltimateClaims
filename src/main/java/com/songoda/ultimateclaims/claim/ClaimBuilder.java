@@ -47,6 +47,11 @@ public class ClaimBuilder {
         return this;
     }
 
+    public ClaimBuilder addClaimedChunk(Chunk chunk, Player player) {
+        this.claim.addClaimedChunk(chunk, player);
+        return this;
+    }
+
     public ClaimBuilder setPowerCell(PowerCell powerCell) {
         this.claim.setPowerCell(powerCell);
         return this;
