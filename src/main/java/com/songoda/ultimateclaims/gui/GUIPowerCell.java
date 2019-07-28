@@ -9,8 +9,8 @@ import com.songoda.ultimateclaims.utils.ServerVersion;
 import com.songoda.ultimateclaims.utils.gui.AbstractGUI;
 import com.songoda.ultimateclaims.utils.gui.Range;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -32,20 +32,20 @@ public class GUIPowerCell extends AbstractGUI {
         this.claim = claim;
         plugin = UltimateClaims.getInstance();
 
-        if (powercell.getOpened() != null) {
-            OfflinePlayer opened = Bukkit.getPlayer(powercell.getOpened());
-            if (opened.isOnline())
-                opened.getPlayer().closeInventory();
+        if (powercell.getOpened() == null) {
+            init(Methods.formatTitle(claim.getName()), 54);
+        } else {
+            this.inventory = powercell.getOpened();
+            player.openInventory(inventory);
+            constructGUI();
         }
-        powercell.setOpened(player.getUniqueId());
-
-        init(Methods.formatTitle(claim.getName()), 54);
         runTask();
     }
 
     @Override
     protected void constructGUI() {
-        inventory.clear();
+        if (powercell.getOpened() == null)
+            inventory.clear();
         resetClickables();
         registerClickables();
 
@@ -75,6 +75,14 @@ public class GUIPowerCell extends AbstractGUI {
         inventory.setItem(49, Methods.getBackgroundGlass(false));
         inventory.setItem(51, Methods.getBackgroundGlass(false));
 
+        this.createButtons();
+
+        powercell.updateInventory(inventory);
+        if (powercell.getOpened() == null)
+            this.powercell.setOpened(this.inventory);
+    }
+
+    private void createButtons() {
         ItemStack economy = new ItemStack(Material.SUNFLOWER);
         ItemMeta economyMeta = economy.getItemMeta();
         economyMeta.setDisplayName(plugin.getLocale().getMessage("interface.powercell.economytitle")
@@ -135,40 +143,16 @@ public class GUIPowerCell extends AbstractGUI {
         inventory.setItem(48, info);
         inventory.setItem(49, banned);
         inventory.setItem(50, members);
-
-        int j = 0;
-        for (int i = 10; i < 44; i++) {
-            if (inventory.getItem(i) != null) continue;
-            if (powercell.getItems().size() <= j) break;
-            inventory.setItem(i, powercell.getItems().get(j));
-            j++;
-        }
     }
-
 
     private void runTask() {
         task = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
-            this.save();
-            this.constructGUI();
+            this.powercell.updateItems();
+            this.createButtons();
+            if (plugin.getHologram() != null)
+                plugin.getHologram().update(powercell);
         }, 5L, 5L);
     }
-
-    private void save() {
-        powercell.clearItems();
-        for (int i = 10; i < 44; i++) {
-            if (i == 17
-                    || i == 18
-                    || i == 26
-                    || i == 27
-                    || i == 35
-                    || i == 36
-                    || inventory.getItem(i) == null) continue;
-            powercell.addItem(inventory.getItem(i));
-        }
-        if (powercell.getLocation() != null && plugin.getHologram() != null)
-            plugin.getHologram().update(powercell);
-    }
-
 
     @Override
     protected void registerClickables() {
@@ -177,6 +161,7 @@ public class GUIPowerCell extends AbstractGUI {
         addDraggable(new Range(28, 34, null, true), true);
         addDraggable(new Range(37, 43, null, true), true);
         registerClickable(2, (player, inventory, cursor, slot, type) -> {
+            player.sendMessage("Enter an amount to add.");
             // Click to add more time - type in chat the amount you want to deposit.
             AbstractChatConfirm abstractChatConfirm = new AbstractChatConfirm(player, event -> {
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -210,8 +195,7 @@ public class GUIPowerCell extends AbstractGUI {
     protected void registerOnCloses() {
         registerOnClose(((player1, inventory1) -> {
             Bukkit.getScheduler().cancelTask(task);
-            this.save();
-            powercell.setOpened(null);
+            //this.save();
         }));
     }
 }

@@ -35,7 +35,7 @@ public class PowerCellTask extends BukkitRunnable {
         for (Claim claim : new ArrayList<>(plugin.getClaimManager().getRegisteredClaims())) {
             PowerCell powerCell = claim.getPowerCell();
             int tick = powerCell.tick(claim);
-            if (tick == 0) {
+            if (tick == -1) {
                 for (ClaimMember member : claim.getMembers())
                     this.outOfPower(member);
                 this.outOfPower(claim.getOwner());
