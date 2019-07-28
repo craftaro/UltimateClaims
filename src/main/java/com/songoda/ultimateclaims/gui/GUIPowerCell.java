@@ -97,10 +97,6 @@ public class GUIPowerCell extends AbstractGUI {
         ItemMeta totalMeta = total.getItemMeta();
         totalMeta.setDisplayName(plugin.getLocale().getMessage("interface.powercell.totaltitle")
                 .processPlaceholder("time", Methods.makeReadable((long) powercell.getTotalPower() * 60 * 1000)).getMessage());
-        List<String> totalLore = new ArrayList<>();
-        String[] totalSplit = plugin.getLocale().getMessage("interface.powercell.totallore").getMessage().split("\\|");
-        for (String line : totalSplit) totalLore.add(line);
-        totalMeta.setLore(totalLore);
         total.setItemMeta(totalMeta);
 
         ItemStack valuables = new ItemStack(Material.DIAMOND);
