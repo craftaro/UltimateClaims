@@ -9,7 +9,6 @@ import com.songoda.ultimateclaims.utils.ServerVersion;
 import com.songoda.ultimateclaims.utils.gui.AbstractGUI;
 import com.songoda.ultimateclaims.utils.gui.Range;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -24,7 +23,7 @@ public class GUIPowerCell extends AbstractGUI {
     private PowerCell powercell;
     private Claim claim;
 
-    private int task;
+    private int task = -1;
 
     public GUIPowerCell(Player player, Claim claim) {
         super(player);
@@ -38,6 +37,7 @@ public class GUIPowerCell extends AbstractGUI {
             this.inventory = powercell.getOpened();
             player.openInventory(inventory);
             constructGUI();
+            registerOnCloses();
         }
         runTask();
     }
@@ -146,7 +146,9 @@ public class GUIPowerCell extends AbstractGUI {
     }
 
     private void runTask() {
-        task = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+        this.task = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+            if (!inventory.getViewers().contains(player))
+                Bukkit.getScheduler().cancelTask(task);
             this.powercell.updateItems();
             this.createButtons();
             if (plugin.getHologram() != null)
@@ -193,9 +195,5 @@ public class GUIPowerCell extends AbstractGUI {
 
     @Override
     protected void registerOnCloses() {
-        registerOnClose(((player1, inventory1) -> {
-            Bukkit.getScheduler().cancelTask(task);
-            //this.save();
-        }));
     }
 }
