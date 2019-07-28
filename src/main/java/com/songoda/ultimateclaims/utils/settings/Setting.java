@@ -24,6 +24,8 @@ public enum Setting {
 
     POWERCELL_HOLOGRAMS("Main.Powercell Holograms", true),
 
+    CHUNKS_MUST_TOUCH("Main.Chunks Must Touch", true),
+
     INVITE_TIMEOUT("Main.Invite Timeout", 30),
 
     STARTING_POWER("Main.Starting Power", 10),

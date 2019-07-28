@@ -6,6 +6,7 @@ import com.songoda.ultimateclaims.claim.ClaimBuilder;
 import com.songoda.ultimateclaims.command.AbstractCommand;
 import com.songoda.ultimateclaims.utils.Methods;
 import com.songoda.ultimateclaims.utils.settings.Setting;
+import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -24,6 +25,8 @@ public class CommandClaim extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
+        Chunk chunk = player.getLocation().getChunk();
+
         if (instance.getClaimManager().hasClaim(player)) {
             Claim claim = instance.getClaimManager().getClaim(player);
 
@@ -32,7 +35,16 @@ public class CommandClaim extends AbstractCommand {
                 return ReturnType.FAILURE;
             }
 
-            claim.addClaimedChunk(player.getLocation().getChunk(), player);
+            if (Setting.CHUNKS_MUST_TOUCH.getBoolean()
+            && !claim.getClaimedChunks().contains(chunk.getWorld().getChunkAt(chunk.getX() + 1, chunk.getZ()))
+            && !claim.getClaimedChunks().contains(chunk.getWorld().getChunkAt(chunk.getX() - 1, chunk.getZ()))
+            && !claim.getClaimedChunks().contains(chunk.getWorld().getChunkAt(chunk.getX(), chunk.getZ() + 1))
+            && !claim.getClaimedChunks().contains(chunk.getWorld().getChunkAt(chunk.getX(), chunk.getZ() - 1))) {
+                instance.getLocale().getMessage("command.claim.nottouching").sendPrefixedMessage(player);
+                return ReturnType.FAILURE;
+            }
+
+            claim.addClaimedChunk(chunk, player);
 
             if (instance.getHologram() != null)
                 instance.getHologram().update(claim.getPowerCell());
@@ -40,7 +52,7 @@ public class CommandClaim extends AbstractCommand {
             instance.getClaimManager().addClaim(player,
                     new ClaimBuilder()
                             .setOwner(player)
-                            .addClaimedChunk(player.getLocation().getChunk(), player)
+                            .addClaimedChunk(chunk, player)
                             .build());
 
             instance.getLocale().getMessage("command.claim.info")
