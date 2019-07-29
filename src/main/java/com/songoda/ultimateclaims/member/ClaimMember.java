@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public class ClaimMember {
 
+    private int id;
     private final Claim claim;
     private final UUID uuid;
     private ClaimRole role;

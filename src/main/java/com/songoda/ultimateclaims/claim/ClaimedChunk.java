@@ -8,6 +8,8 @@ import java.util.Objects;
 
 public class ClaimedChunk {
 
+    private int id;
+    private Claim claim;
     private final String world;
     private final int x;
     private final int z;

@@ -16,6 +16,7 @@ import java.util.UUID;
 
 public class Claim {
 
+    private int id;
     private String name = null;
     private ClaimMember owner;
     private final Set<ClaimMember> members = new HashSet<>();
