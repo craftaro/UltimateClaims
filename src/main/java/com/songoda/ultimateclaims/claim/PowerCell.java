@@ -130,7 +130,6 @@ public class PowerCell {
     public int getItemPower() {
         int total = 0;
         List<String> materials = Setting.ITEM_VALUES.getStringList();
-        materials.remove(materials.size()-1);
         for (String value : materials) {
             Material material = Material.valueOf(value.split(":")[0]);
             if (getMaterialAmount(material) == 0) continue;
@@ -146,7 +145,6 @@ public class PowerCell {
 
     private int getItemValue(Material material) {
         List<String> materials = Setting.ITEM_VALUES.getStringList();
-        materials.remove(materials.size()-1);
         for (String value : materials) {
             if (material == Material.valueOf(value.split(":")[0]))
                 return (int) Math.floor(Integer.parseInt(value.split(":")[1]) / claim.getClaimSize());
