@@ -40,6 +40,11 @@ public class CommandKick extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
+        if (player.getUniqueId() == toKick.getUniqueId()) {
+            instance.getLocale().getMessage("command.kick.notself").sendPrefixedMessage(sender);
+            return ReturnType.FAILURE;
+        }
+
         if (toKick.isOnline())
             instance.getLocale().getMessage("command.kick.kicked")
                     .processPlaceholder("claim", toKick.getName())

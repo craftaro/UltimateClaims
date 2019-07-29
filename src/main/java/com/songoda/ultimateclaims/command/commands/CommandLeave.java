@@ -39,6 +39,12 @@ public class CommandLeave extends AbstractCommand {
             instance.getLocale().getMessage("command.general.notapartclaim").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
+
+        if (player.getUniqueId() == ((Claim)oClaim.get()).getOwner().getUniqueId()) {
+            instance.getLocale().getMessage("command.leave.owner").sendPrefixedMessage(sender);
+            return ReturnType.FAILURE;
+        }
+
         Claim claim = (Claim) oClaim.get();
 
         claim.removeMember(player);
