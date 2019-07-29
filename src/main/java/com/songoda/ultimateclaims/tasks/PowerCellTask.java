@@ -6,9 +6,7 @@ import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.settings.Setting;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -38,9 +36,8 @@ public class PowerCellTask extends BukkitRunnable {
     public void run() {
         for (Claim claim : new ArrayList<>(plugin.getClaimManager().getRegisteredClaims())) {
             PowerCell powerCell = claim.getPowerCell();
-            List<ClaimMember> members = claim.getMembers().stream()
+            List<ClaimMember> members = claim.getOwnerAndMembers().stream()
                     .filter(member -> member.getRole() != ClaimRole.VISITOR).collect(Collectors.toList());
-            members.add(claim.getOwner());
             for (ClaimMember member : members) {
                 if (member.getPlayer().isOnline())
                     member.setPlayTime(member.getPlayTime() + (60 * 1000)); // Should be a var.

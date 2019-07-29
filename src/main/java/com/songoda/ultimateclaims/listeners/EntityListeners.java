@@ -44,17 +44,20 @@ public class EntityListeners implements Listener {
             if (claimManager.getClaim(event.getFrom().getChunk()) != claim) {
                 ClaimMember member = claim.getMember(event.getPlayer());
                 if (member == null) {
-                    if (claim.isLocked()) {
+                    if (claim.isLocked() && !event.getPlayer().hasPermission("ultimateclaims.bypass")) {
                         plugin.getLocale().getMessage("event.claim.locked")
                                 .sendPrefixedMessage(event.getPlayer());
                         event.setCancelled(true);
                         return;
                     }
-                    claim.addMember(event.getPlayer(), ClaimRole.VISITOR);
-                    member = claim.getMember(event.getPlayer());
-                }
 
-                member.setPresent(true);
+                    if (event.getPlayer().hasPermission("ultimateclaims.bypass")) {
+                        claim.addMember(event.getPlayer(), ClaimRole.VISITOR);
+                        member = claim.getMember(event.getPlayer());
+                    }
+                }
+                if (member != null)
+                    member.setPresent(true);
                 plugin.getLocale().getMessage("event.claim.enter")
                         .processPlaceholder("claim", claim.getName())
                         .sendPrefixedMessage(event.getPlayer());

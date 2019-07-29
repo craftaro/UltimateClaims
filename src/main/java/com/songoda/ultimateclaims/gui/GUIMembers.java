@@ -146,8 +146,7 @@ public class GUIMembers extends AbstractGUI {
         inventory.setItem(39, visitor);
         inventory.setItem(41, member);
 
-        List<ClaimMember> toDisplay = new ArrayList<>(claim.getMembers());
-        toDisplay.add(claim.getOwner());
+        List<ClaimMember> toDisplay = new ArrayList<>(claim.getOwnerAndMembers());
         toDisplay = toDisplay.stream().filter(m -> m.getRole() == displayedRole || displayedRole == ClaimRole.OWNER)
                 .sorted(Comparator.comparingInt(claimMember -> claimMember.getRole().getIndex()))
                 .collect(Collectors.toList());

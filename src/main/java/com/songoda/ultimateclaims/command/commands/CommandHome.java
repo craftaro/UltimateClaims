@@ -34,7 +34,7 @@ public class CommandHome extends AbstractCommand {
                 .filter(c -> c.getName().toLowerCase().equals(claimStr.toLowerCase())
                         && c.getMember(player) != null).findFirst();
 
-        if (!oClaim.isPresent()) {
+        if (!oClaim.isPresent() && !sender.hasPermission("ultimateclaims.bypass")) {
             instance.getLocale().getMessage("command.general.notapartclaim").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
@@ -60,7 +60,7 @@ public class CommandHome extends AbstractCommand {
         if (args.length == 2) {
             List<String> claims = new ArrayList<>();
             for (Claim claim : instance.getClaimManager().getRegisteredClaims()) {
-                if (!claim.isOwnerOrMember(player)) continue;
+                if (!claim.isOwnerOrMember(player) && !sender.hasPermission("ultimateclaims.bypass")) continue;
                 claims.add(claim.getName());
             }
             return claims;

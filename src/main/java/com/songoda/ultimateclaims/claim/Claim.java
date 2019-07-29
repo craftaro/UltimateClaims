@@ -26,7 +26,6 @@ public class Claim {
     private final Set<UUID> bannedPlayers = new HashSet<>();
 
     private Location home = null;
-
     private boolean locked = false;
 
     private ClaimPermissions memberPermissions = new ClaimPermissionsBuilder()
@@ -60,6 +59,12 @@ public class Claim {
     }
 
     public Set<ClaimMember> getMembers() {
+        return members;
+    }
+
+    public Set<ClaimMember> getOwnerAndMembers() {
+        Set<ClaimMember> members = new HashSet<>(this.members);
+        members.add(this.owner);
         return members;
     }
 
@@ -107,12 +112,6 @@ public class Claim {
     public int getClaimSize() {
         return this.claimedChunks.size();
     }
-
-    // If you really, really need this in the future feel free to uncomment it.
-    // You should probably be using containsChunk(Chunk) or getClaimSize() instead.
-//    public Set<ClaimedChunk> getClaimedChunks() {
-//        return claimedChunks;
-//    }
 
     public void addClaimedChunk(Chunk chunk) {
         this.claimedChunks.add(new ClaimedChunk(chunk));
