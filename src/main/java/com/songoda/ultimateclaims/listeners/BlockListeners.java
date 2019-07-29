@@ -6,7 +6,7 @@ import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
-import com.songoda.ultimateclaims.utils.Methods;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -14,7 +14,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class BlockListeners implements Listener {
 
@@ -38,20 +37,12 @@ public class BlockListeners implements Listener {
 
         ClaimMember member = claim.getMember(event.getPlayer());
 
-        if (member == null) {
+        if (member == null
+                ||member.getRole() == ClaimRole.VISITOR && !claim.getVisitorPermissions().canPlace()
+                || member.getRole() == ClaimRole.MEMBER && !claim.getMemberPermissions().canPlace()) {
             plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
             event.setCancelled(true);
-            return;
         }
-
-        if (member.getRole() == ClaimRole.OWNER) return;
-        else if (member.getRole() == ClaimRole.MEMBER
-                && claim.getMemberPermissions().canPlace()) return;
-        else if (member.getRole() == ClaimRole.VISITOR
-                && claim.getMemberPermissions().canPlace()) return;
-
-        plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
-        event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
@@ -69,7 +60,9 @@ public class BlockListeners implements Listener {
 
         ClaimMember member = claim.getMember(event.getPlayer());
 
-        if (member == null) {
+        if (member == null
+                || member.getRole() == ClaimRole.VISITOR && !claim.getVisitorPermissions().canBreak()
+                || member.getRole() == ClaimRole.MEMBER && !claim.getMemberPermissions().canBreak()) {
             plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
             event.setCancelled(true);
             return;
@@ -83,14 +76,5 @@ public class BlockListeners implements Listener {
                 event.setCancelled(true);
             }
         }
-
-        if (member.getRole() == ClaimRole.OWNER) return;
-        else if (member.getRole() == ClaimRole.MEMBER
-                && claim.getMemberPermissions().canBreak()) return;
-        else if (member.getRole() == ClaimRole.VISITOR
-                && claim.getMemberPermissions().canBreak()) return;
-
-        plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
-        event.setCancelled(true);
     }
 }

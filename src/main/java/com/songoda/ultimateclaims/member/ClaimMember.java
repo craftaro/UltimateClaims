@@ -11,7 +11,7 @@ public class ClaimMember {
     private ClaimRole role;
     private boolean isPresent = false;
     private long playTime;
-    private long memberSince;
+    private long memberSince = System.currentTimeMillis();;
 
     public ClaimMember(Claim claim, UUID uuid, ClaimRole role) {
         this.claim = claim;
@@ -32,8 +32,6 @@ public class ClaimMember {
     }
 
     public void setRole(ClaimRole role) {
-        if (role == ClaimRole.MEMBER)
-            memberSince = System.currentTimeMillis();
         this.role = role;
     }
 

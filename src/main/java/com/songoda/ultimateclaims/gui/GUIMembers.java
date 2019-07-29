@@ -16,11 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GUIMembers extends AbstractGUI {
@@ -31,11 +27,13 @@ public class GUIMembers extends AbstractGUI {
     private ClaimRole displayedRole = ClaimRole.OWNER;
     private int page = 1;
     private SortType sortType = SortType.DEFAULT;
+    private boolean back;
 
-    public GUIMembers(Player player, Claim claim) {
+    public GUIMembers(Player player, Claim claim, boolean back) {
         super(player);
         this.player = player;
         this.claim = claim;
+        this.back = back;
         plugin = UltimateClaims.getInstance();
 
         init(Methods.formatTitle(plugin.getLocale().getMessage("interface.members.title").getMessage()), 54);
@@ -75,14 +73,15 @@ public class GUIMembers extends AbstractGUI {
 
         ItemStack exit = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_FENCE_GATE : Material.valueOf("FENCE_GATE"));
         ItemMeta exitMeta = exit.getItemMeta();
-        exitMeta.setDisplayName(plugin.getLocale().getMessage("general.interface.exit").getMessage());
+        if (back) exitMeta.setDisplayName(plugin.getLocale().getMessage("general.interface.back").getMessage());
+        else exitMeta.setDisplayName(plugin.getLocale().getMessage("general.interface.exit").getMessage());
         exit.setItemMeta(exitMeta);
 
         ItemStack type = new ItemStack(Material.HOPPER);
         ItemMeta typeMeta = type.getItemMeta();
         typeMeta.setDisplayName(plugin.getLocale().getMessage("interface.members.changetypetitle").getMessage());
         List<String> typeLore = new ArrayList<>();
-        String[] typeSplit = plugin.getLocale().getMessage("interface.members.typelore")
+        String[] typeSplit = plugin.getLocale().getMessage("general.interface.current")
                 .processPlaceholder("current",
                         Methods.formatText(displayedRole.toString(), true))
                 .getMessage().split("\\|");
@@ -94,7 +93,7 @@ public class GUIMembers extends AbstractGUI {
         ItemMeta sortMeta = sort.getItemMeta();
         sortMeta.setDisplayName(plugin.getLocale().getMessage("interface.members.changesorttitle").getMessage());
         List<String> sortLore = new ArrayList<>();
-        String[] sortSplit = plugin.getLocale().getMessage("interface.members.sortlore")
+        String[] sortSplit = plugin.getLocale().getMessage("general.interface.current")
                 .processPlaceholder("current",
                         Methods.formatText(sortType.toString().replace('_', ' '), true))
                 .getMessage().split("\\|");
@@ -196,7 +195,7 @@ public class GUIMembers extends AbstractGUI {
                                 Methods.formatText(toDisplay.get(currentMember).getRole().toString().toLowerCase(), true))
                         .processPlaceholder("playtime", Methods.makeReadable(claimMember.getPlayTime()))
                         .processPlaceholder("membersince",
-                                new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date(claimMember.getMemberSince())))
+                                new SimpleDateFormat("dd/MM/yyyy").format(new Date(claimMember.getMemberSince())))
                         .getMessage().split("\\|");
                 for (String line : skullSplit) lore.add(line);
                 skullMeta.setLore(lore);
@@ -213,11 +212,17 @@ public class GUIMembers extends AbstractGUI {
     @Override
     protected void registerClickables() {
         registerClickable(0, (player, inventory, cursor, slot, type) -> {
-            player.closeInventory();
+            if (back)
+                new GUIPowerCell(player, claim);
+            else
+                player.closeInventory();
         });
 
         registerClickable(8, (player, inventory, cursor, slot, type) -> {
-            player.closeInventory();
+            if (back)
+                new GUIPowerCell(player, claim);
+            else
+                player.closeInventory();
         });
 
         registerClickable(3, (player, inventory, cursor, slot, type) -> {
@@ -253,11 +258,11 @@ public class GUIMembers extends AbstractGUI {
         });
 
         registerClickable(39, (player, inventory, cursor, slot, type) -> {
-            new GUISettings(player, claim, ClaimRole.VISITOR);
+            new GUISettings(player, claim, ClaimRole.VISITOR, true);
         });
 
         registerClickable(41, (player, inventory, cursor, slot, type) -> {
-            new GUISettings(player, claim, ClaimRole.MEMBER);
+            new GUISettings(player, claim, ClaimRole.MEMBER, true);
         });
     }
 

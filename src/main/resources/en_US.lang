@@ -9,8 +9,10 @@ general.notanumber = "&cThe entry &4%value% &cis not a number"
 general.notenoughfunds = "&cYou do not have enough funds."
 general.powercellrecipe = "&6Powercell Recipe"
 general.interface.exit = "&cExit"
+general.interface.back = "&cBack"
 general.interface.next = "&cNext Page"
 general.interface.previous = "&cPrevious Page"
+general.interface.current = "&7Current: &6%current%&7."
 
 #Command Messages
 
@@ -41,28 +43,37 @@ command.leave.youleft = "&7You left &6%claim%&7."
 command.leave.left = "&6%player% &7left &6%claim%&7."
 
 #Interface Messages
+
 interface.powercell.economytitle = "&7Economy stored: &6%time%&7."
 interface.powercell.economylore = "&7Click to deposit funds."
 interface.powercell.valuablestitle = "&7Item's stored: &6%time%&7."
 interface.powercell.totaltitle = "&7Total Power: &6%time%&7."
 interface.powercell.addfunds = "&7Enter an amount to deposit."
-interface.powercell.infotitle = "&7Info"
-interface.powercell.banstitle = "&7Bans
-interface.powercell.memberstitle = "&7Members"
+interface.powercell.infotitle = "&5&lInfo"
+interface.powercell.infolore = "&7You have &6%chunks% &7claimed|&7chunks & &6%members% &7members."
+interface.powercell.banstitle = "&c&lBans"
+interface.powercell.banslore = "&7View your claims bans."
+interface.powercell.memberstitle = "&9&lMembers"
+interface.powercell.memberslore = "&7View your claims members."
 
+interface.members.title = "Members"
 interface.members.skulllore = "&7Role: &a%role%|&7Playtime: &b%playtime%|&7Member Since: &d%membersince%"
 interface.members.changetypetitle = "&7Change Type"
 interface.members.changetypelore = "&7Currently: &d%current%|&7Click to change type."
 interface.members.statstitle = "&7Stats"
-interface.members.changesorttitle = "&7Change Sort"
+interface.members.changesorttitle = "&7Change Sorting"
 interface.members.changesortlore = "&7Currently: &d%current%|&7Click to change sort."
-interface.members.visitorsettingstitle = "&7Visitor Settings"
-interface.members.membersettingstitle = "&7Member Settings"
+interface.members.visitorsettingstitle = "&9&lVisitor Settings"
+interface.members.visitorsettingslore = "&7Edit settings for visitors."
+interface.members.membersettingstitle = "&5&lMember Settings"
+interface.members.membersettingslore = "&7Edit settings for members."
 
+interface.settings.title = "%role% Settings"
 interface.settings.breaktitle = "&7Block Break"
 interface.settings.placetitle = "&7Block Place"
 interface.settings.interacttitle = "&7Interact"
 
+interface.bans.title = "Info"
 interface.bans.infotitle = "&7Info"
 interface.bans.skulllore = "&7Click to unban."
 

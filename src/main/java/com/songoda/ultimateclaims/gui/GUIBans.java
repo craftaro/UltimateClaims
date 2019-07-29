@@ -17,13 +17,15 @@ public class GUIBans extends AbstractGUI {
 
     private UltimateClaims plugin;
     private Claim claim;
+    private boolean back;
 
-    public GUIBans(Player player, Claim claim) {
+    public GUIBans(Player player, Claim claim, boolean back) {
         super(player);
         this.claim = claim;
         this.plugin = UltimateClaims.getInstance();
+        this.back = back;
 
-        init(Methods.formatTitle(plugin.getLocale().getMessage("interface.banned.title").getMessage()), 54);
+        init(Methods.formatTitle(plugin.getLocale().getMessage("interface.bans.title").getMessage()), 54);
     }
 
     @Override
@@ -62,7 +64,8 @@ public class GUIBans extends AbstractGUI {
 
         ItemStack exit = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_FENCE_GATE : Material.valueOf("FENCE_GATE"));
         ItemMeta exitMeta = exit.getItemMeta();
-        exitMeta.setDisplayName(plugin.getLocale().getMessage("general.interface.exit").getMessage());
+        if (back) exitMeta.setDisplayName(plugin.getLocale().getMessage("general.interface.back").getMessage());
+        else exitMeta.setDisplayName(plugin.getLocale().getMessage("general.interface.exit").getMessage());
         exit.setItemMeta(exitMeta);
 
         ItemStack info = new ItemStack(Material.PAINTING);
@@ -95,11 +98,17 @@ public class GUIBans extends AbstractGUI {
     @Override
     protected void registerClickables() {
         registerClickable(0, (player, inventory, cursor, slot, type) -> {
-            new GUIPowerCell(player, claim);
+            if (back)
+                new GUIPowerCell(player, claim);
+            else
+                player.closeInventory();
         });
 
         registerClickable(8, (player, inventory, cursor, slot, type) -> {
-            new GUIPowerCell(player, claim);
+            if (back)
+                new GUIPowerCell(player, claim);
+            else
+                player.closeInventory();
         });
 
         registerClickable(37, (player, inventory, cursor, slot, type) -> {

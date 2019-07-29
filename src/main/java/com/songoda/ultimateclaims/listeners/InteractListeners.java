@@ -27,13 +27,15 @@ public class InteractListeners implements Listener {
 
         Chunk chunk = event.getClickedBlock().getChunk();
 
-        if (!claimManager.hasClaim(chunk)) return;
+        if (event.getAction() == Action.LEFT_CLICK_BLOCK || !claimManager.hasClaim(chunk)) return;
 
         Claim claim = claimManager.getClaim(chunk);
 
         ClaimMember member = claim.getMember(event.getPlayer());
 
-        if (member == null) {
+        if (member == null
+                || member.getRole() == ClaimRole.VISITOR && !claim.getVisitorPermissions().canInteract()
+                || member.getRole() == ClaimRole.MEMBER && !claim.getMemberPermissions().canInteract()) {
             plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
             event.setCancelled(true);
             return;
@@ -48,15 +50,5 @@ public class InteractListeners implements Listener {
             }
             event.setCancelled(true);
         }
-
-        if (member.getRole() == ClaimRole.OWNER) {
-            return;
-        } else if (member.getRole() == ClaimRole.MEMBER
-                && claim.getMemberPermissions().canInteract()) return;
-        else if (member.getRole() == ClaimRole.VISITOR
-                && claim.getMemberPermissions().canInteract()) return;
-
-        plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
-        event.setCancelled(true);
     }
 }

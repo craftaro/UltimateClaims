@@ -56,7 +56,7 @@ public class CommandClaim extends AbstractCommand {
 
             if (claim.getClaimedChunks().size() >= Setting.MAX_CHUNKS.getInt()) {
                 instance.getLocale().getMessage("command.claim.toomany")
-                        .processPlaceholder("amount", Setting.MAX_CHUNKS)
+                        .processPlaceholder("amount", Setting.MAX_CHUNKS.getInt())
                         .sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
             }

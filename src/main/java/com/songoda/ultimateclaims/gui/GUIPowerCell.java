@@ -3,6 +3,7 @@ package com.songoda.ultimateclaims.gui;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.PowerCell;
+import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.AbstractChatConfirm;
 import com.songoda.ultimateclaims.utils.Methods;
 import com.songoda.ultimateclaims.utils.ServerVersion;
@@ -110,7 +111,10 @@ public class GUIPowerCell extends AbstractGUI {
         infoMeta.setDisplayName(plugin.getLocale().getMessage("interface.powercell.infotitle").getMessage());
         List<String> infoLore = new ArrayList<>();
         String[] infoSplit = plugin.getLocale().getMessage("interface.powercell.infolore")
-                .processPlaceholder("owner", claim.getOwner()).getMessage().split("\\|");
+                .processPlaceholder("chunks", claim.getClaimedChunks().size())
+                .processPlaceholder("members",
+                        claim.getMembers().stream().filter(m -> m.getRole() == ClaimRole.MEMBER).count())
+                .getMessage().split("\\|");
         for (String line : infoSplit) infoLore.add(line);
         infoMeta.setLore(infoLore);
         info.setItemMeta(infoMeta);
@@ -181,10 +185,10 @@ public class GUIPowerCell extends AbstractGUI {
         });
 
         registerClickable(50, (player, inventory, cursor, slot, type)
-                -> new GUIMembers(player, claim));
+                -> new GUIMembers(player, claim, true));
 
         registerClickable(48, (player, inventory, cursor, slot, type)
-                -> new GUIBans(player, claim));
+                -> new GUIBans(player, claim, true));
     }
 
     @Override

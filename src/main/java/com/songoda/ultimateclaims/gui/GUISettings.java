@@ -20,16 +20,18 @@ public class GUISettings extends AbstractGUI {
     private Player player;
     private Claim claim;
     private ClaimRole role;
+    private boolean back;
 
-    public GUISettings(Player player, Claim claim, ClaimRole role) {
+    public GUISettings(Player player, Claim claim, ClaimRole role, boolean back) {
         super(player);
         this.player = player;
         this.claim = claim;
         this.role = role;
         this.plugin = UltimateClaims.getInstance();
+        this.back = back;
 
         init(Methods.formatTitle(plugin.getLocale().getMessage("interface.settings.title")
-                .processPlaceholder("role", role.toString().toLowerCase()).getMessage()), 27);
+                .processPlaceholder("role", Methods.formatText(role.toString().toLowerCase(), true)).getMessage()), 27);
     }
 
     @Override
@@ -61,14 +63,17 @@ public class GUISettings extends AbstractGUI {
 
         ItemStack exit = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_FENCE_GATE : Material.valueOf("FENCE_GATE"));
         ItemMeta exitMeta = exit.getItemMeta();
-        exitMeta.setDisplayName(plugin.getLocale().getMessage("general.interface.exit").getMessage());
+        exitMeta.setDisplayName(plugin.getLocale().getMessage("general.interface.back").getMessage());
         exit.setItemMeta(exitMeta);
 
         ItemStack blockBreak = new ItemStack(Material.IRON_PICKAXE);
         ItemMeta breakMeta = blockBreak.getItemMeta();
         breakMeta.setDisplayName(plugin.getLocale().getMessage("interface.settings.breaktitle").getMessage());
         List<String> breakLore = new ArrayList<>();
-        String[] breakSplit = plugin.getLocale().getMessage("interface.settings.breaklore").getMessage().split("\\|");
+        String[] breakSplit = plugin.getLocale().getMessage("general.interface.current")
+                .processPlaceholder("current", role == ClaimRole.MEMBER
+                        ? claim.getMemberPermissions().canBreak() : claim.getVisitorPermissions().canBreak())
+                .getMessage().split("\\|");
         for (String line : breakSplit) breakLore.add(line);
         breakMeta.setLore(breakLore);
         blockBreak.setItemMeta(breakMeta);
@@ -77,7 +82,10 @@ public class GUISettings extends AbstractGUI {
         ItemMeta placeMeta = place.getItemMeta();
         placeMeta.setDisplayName(plugin.getLocale().getMessage("interface.settings.placetitle").getMessage());
         List<String> placeLore = new ArrayList<>();
-        String[] placeSplit = plugin.getLocale().getMessage("interface.settings.placelore").getMessage().split("\\|");
+        String[] placeSplit = plugin.getLocale().getMessage("general.interface.current")
+                .processPlaceholder("current", role == ClaimRole.MEMBER
+                        ? claim.getMemberPermissions().canPlace() : claim.getVisitorPermissions().canPlace())
+                .getMessage().split("\\|");
         for (String line : placeSplit) placeLore.add(line);
         placeMeta.setLore(placeLore);
         place.setItemMeta(placeMeta);
@@ -86,7 +94,10 @@ public class GUISettings extends AbstractGUI {
         ItemMeta interactMeta = interact.getItemMeta();
         interactMeta.setDisplayName(plugin.getLocale().getMessage("interface.settings.interacttitle").getMessage());
         List<String> interactLore = new ArrayList<>();
-        String[] interactSplit = plugin.getLocale().getMessage("interface.settings.itneractlore").getMessage().split("\\|");
+        String[] interactSplit = plugin.getLocale().getMessage("general.interface.current")
+                .processPlaceholder("current", role == ClaimRole.MEMBER
+                        ? claim.getMemberPermissions().canInteract() : claim.getVisitorPermissions().canInteract())
+                .getMessage().split("\\|");
         for (String line : interactSplit) interactLore.add(line);
         interactMeta.setLore(interactLore);
         interact.setItemMeta(interactMeta);
@@ -100,24 +111,37 @@ public class GUISettings extends AbstractGUI {
 
     @Override
     protected void registerClickables() {
-        registerClickable(0, (player, inventory, cursor, slot, type) -> {
-            player.closeInventory();
-        });
+        registerClickable(0, (player, inventory, cursor, slot, type) ->
+                new GUIMembers(player, claim, back));
 
-        registerClickable(8, (player, inventory, cursor, slot, type) -> {
-            player.closeInventory();
-        });
+        registerClickable(8, (player, inventory, cursor, slot, type) ->
+                new GUIMembers(player, claim, back));
 
         registerClickable(11, (player, inventory, cursor, slot, type) -> {
             // Toggle block break perms
+            if (role == ClaimRole.MEMBER)
+                claim.getMemberPermissions().setCanBreak(!claim.getMemberPermissions().canBreak());
+            else
+                claim.getVisitorPermissions().setCanBreak(!claim.getVisitorPermissions().canBreak());
+            constructGUI();
         });
 
         registerClickable(13, (player, inventory, cursor, slot, type) -> {
-            // Toggle block place perms.
+            // Toggle block place perms
+            if (role == ClaimRole.MEMBER)
+                claim.getMemberPermissions().setCanPlace(!claim.getMemberPermissions().canPlace());
+            else
+                claim.getVisitorPermissions().setCanPlace(!claim.getVisitorPermissions().canPlace());
+            constructGUI();
         });
 
         registerClickable(15, (player, inventory, cursor, slot, type) -> {
-            // Toggle interact perms.
+            // Toggle block interact perms
+            if (role == ClaimRole.MEMBER)
+                claim.getMemberPermissions().setCanInteract(!claim.getMemberPermissions().canInteract());
+            else
+                claim.getVisitorPermissions().setCanInteract(!claim.getVisitorPermissions().canInteract());
+            constructGUI();
         });
     }
 
