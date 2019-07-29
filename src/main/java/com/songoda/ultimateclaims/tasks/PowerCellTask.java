@@ -7,6 +7,7 @@ import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.settings.Setting;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -41,7 +42,8 @@ public class PowerCellTask extends BukkitRunnable {
                     .filter(member -> member.getRole() != ClaimRole.VISITOR).collect(Collectors.toList());
             members.add(claim.getOwner());
             for (ClaimMember member : members) {
-                member.setPlayTime(member.getPlayTime() + (60 * 1000)); // Should be a var.
+                if (member.getPlayer().isOnline())
+                    member.setPlayTime(member.getPlayTime() + (60 * 1000)); // Should be a var.
             }
             int tick = powerCell.tick();
             if (tick == -1 && !powerCell.hasLocation()) {
@@ -65,26 +67,26 @@ public class PowerCellTask extends BukkitRunnable {
     }
 
     private void outOfPower(ClaimMember member) {
-        Player player = Bukkit.getPlayer(member.getUniqueId());
-        if (player != null)
+        OfflinePlayer player = member.getPlayer();
+        if (player.isOnline())
             plugin.getLocale().getMessage("event.powercell.lowpower")
                     .processPlaceholder("claim", member.getClaim().getName())
-                    .sendPrefixedMessage(player);
+                    .sendPrefixedMessage(player.getPlayer());
     }
 
     private void tenLeft(ClaimMember member) {
-        Player player = Bukkit.getPlayer(member.getUniqueId());
-        if (player != null)
+        OfflinePlayer player = member.getPlayer();
+        if (player.isOnline())
             plugin.getLocale().getMessage("event.powercell.superpower")
                     .processPlaceholder("claim", member.getClaim().getName())
-                    .sendPrefixedMessage(player);
+                    .sendPrefixedMessage(player.getPlayer());
     }
 
     private void dissolved(ClaimMember member) {
-        Player player = Bukkit.getPlayer(member.getUniqueId());
-        if (player != null)
+        OfflinePlayer player = member.getPlayer();
+        if (player.isOnline())
             plugin.getLocale().getMessage("general.claim.dissolve")
                     .processPlaceholder("claim", member.getClaim().getName())
-                    .sendPrefixedMessage(player);
+                    .sendPrefixedMessage(player.getPlayer());
     }
 }

@@ -1,6 +1,8 @@
 package com.songoda.ultimateclaims.member;
 
 import com.songoda.ultimateclaims.claim.Claim;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
 import java.util.UUID;
 
@@ -57,5 +59,9 @@ public class ClaimMember {
 
     public void setMemberSince(long memberSince) {
         this.memberSince = memberSince;
+    }
+
+    public OfflinePlayer getPlayer() {
+        return Bukkit.getOfflinePlayer(uuid);
     }
 }
