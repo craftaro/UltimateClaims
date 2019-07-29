@@ -33,8 +33,17 @@ public class AnimateTask extends BukkitRunnable {
     public void run() {
         for (Claim claim : new ArrayList<>(plugin.getClaimManager().getRegisteredClaims())) {
             PowerCell powerCell = claim.getPowerCell();
+
             if (!powerCell.hasLocation()) continue;
             Location location = powerCell.getLocation().add(.5, .5, .5);
+
+            int x = location.getBlockX() >> 4;
+            int z = location.getBlockZ() >> 4;
+
+            if (!location.getWorld().isChunkLoaded(x, z)) {
+                continue;
+            }
+
             float xx = (float) (0 + (Math.random() * 1));
             float yy = (float) (0 + (Math.random() * 1));
             float zz = (float) (0 + (Math.random() * 1));
