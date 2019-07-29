@@ -3,15 +3,20 @@ package com.songoda.ultimateclaims.command.commands;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.command.AbstractCommand;
+import com.songoda.ultimateclaims.member.ClaimMember;
+import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CommandKick extends AbstractCommand {
 
     public CommandKick(AbstractCommand parent) {
-        super("kick", parent, true);
+        super(parent, true, "kick");
     }
 
     @Override
@@ -56,6 +61,21 @@ public class CommandKick extends AbstractCommand {
                 .sendPrefixedMessage(player);
         claim.removeMember(toKick.getUniqueId());
         return ReturnType.SUCCESS;
+    }
+
+    @Override
+    protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
+        if (!(sender instanceof Player)) return null;
+        Player player = ((Player) sender);
+        if (args.length == 2) {
+            List<String> claims = new ArrayList<>();
+            for (Claim claim : instance.getClaimManager().getRegisteredClaims()) {
+                if (!claim.isOwnerOrMember(player)) continue;
+                claims.add(claim.getName());
+            }
+            return claims;
+        }
+        return null;
     }
 
     @Override

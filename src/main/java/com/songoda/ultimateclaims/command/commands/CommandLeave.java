@@ -4,16 +4,19 @@ import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.command.AbstractCommand;
 import com.songoda.ultimateclaims.member.ClaimMember;
+import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class CommandLeave extends AbstractCommand {
 
     public CommandLeave(AbstractCommand parent) {
-        super("leave", parent, true);
+        super(parent, true, "leave");
     }
 
     @Override
@@ -58,6 +61,21 @@ public class CommandLeave extends AbstractCommand {
         this.notify(instance, claim.getOwner());
 
         return ReturnType.SUCCESS;
+    }
+
+    @Override
+    protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
+        if (!(sender instanceof Player)) return null;
+        Player player = ((Player) sender);
+        if (args.length == 2) {
+            List<String> claims = new ArrayList<>();
+            for (Claim claim : instance.getClaimManager().getRegisteredClaims()) {
+                if (!claim.isOwnerOrMember(player)) continue;
+                claims.add(claim.getName());
+            }
+            return claims;
+        }
+        return null;
     }
 
     private void notify(UltimateClaims instance, ClaimMember member) {

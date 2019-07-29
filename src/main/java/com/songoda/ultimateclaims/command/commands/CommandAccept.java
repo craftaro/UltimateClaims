@@ -10,10 +10,12 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class CommandAccept extends AbstractCommand {
 
     public CommandAccept(AbstractCommand parent) {
-        super("accept", parent, true);
+        super(parent, true, "accept");
     }
 
     @Override
@@ -53,6 +55,11 @@ public class CommandAccept extends AbstractCommand {
         }
 
         return ReturnType.SUCCESS;
+    }
+
+    @Override
+    protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
+        return null;
     }
 
     @Override

@@ -8,10 +8,12 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class CommandDissolve extends AbstractCommand {
 
     public CommandDissolve(AbstractCommand parent) {
-        super("dissolve", parent, true);
+        super(parent, true, "dissolve");
     }
 
     @Override
@@ -31,6 +33,11 @@ public class CommandDissolve extends AbstractCommand {
                 .sendPrefixedMessage(player);
 
         return ReturnType.SUCCESS;
+    }
+
+    @Override
+    protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
+        return null;
     }
 
     @Override

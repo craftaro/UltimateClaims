@@ -6,10 +6,12 @@ import com.songoda.ultimateclaims.command.AbstractCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class CommandLock extends AbstractCommand {
 
     public CommandLock(AbstractCommand parent) {
-        super("lock", parent, true);
+        super(parent, true, "lock");
     }
 
     @Override
@@ -33,6 +35,11 @@ public class CommandLock extends AbstractCommand {
         claim.setLocked(!claim.isLocked());
 
         return ReturnType.SUCCESS;
+    }
+
+    @Override
+    protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
+        return null;
     }
 
     @Override

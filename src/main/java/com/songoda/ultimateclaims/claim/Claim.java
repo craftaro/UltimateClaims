@@ -9,6 +9,7 @@ import com.songoda.ultimateclaims.utils.Methods;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -66,7 +67,7 @@ public class Claim {
         this.members.add(new ClaimMember(this, uuid, role));
     }
 
-    public void addMember(Player player, ClaimRole role) {
+    public void addMember(OfflinePlayer player, ClaimRole role) {
         addMember(player.getUniqueId(), role);
     }
 
@@ -77,7 +78,7 @@ public class Claim {
         return optional.orElse(null);
     }
 
-    public ClaimMember getMember(Player player) {
+    public ClaimMember getMember(OfflinePlayer player) {
         return getMember(player.getUniqueId());
     }
 
@@ -90,8 +91,13 @@ public class Claim {
         this.members.remove(member);
     }
 
-    public void removeMember(Player player) {
+    public void removeMember(OfflinePlayer player) {
         this.removeMember(player.getUniqueId());
+    }
+
+    public boolean isOwnerOrMember(OfflinePlayer player) {
+        if (player.getUniqueId() == owner.getUniqueId()) return true;
+        return this.members.stream().anyMatch(member -> member.getRole() == ClaimRole.MEMBER);
     }
 
     public boolean containsChunk(Chunk chunk) {

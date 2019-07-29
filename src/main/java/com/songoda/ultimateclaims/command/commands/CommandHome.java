@@ -3,17 +3,17 @@ package com.songoda.ultimateclaims.command.commands;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.command.AbstractCommand;
-import com.songoda.ultimateclaims.member.ClaimMember;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class CommandHome extends AbstractCommand {
 
     public CommandHome(AbstractCommand parent) {
-        super("home", parent, true);
+        super(parent, true, "home");
     }
 
     @Override
@@ -51,6 +51,21 @@ public class CommandHome extends AbstractCommand {
                 .sendPrefixedMessage(player);
 
         return ReturnType.SUCCESS;
+    }
+
+    @Override
+    protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
+        if (!(sender instanceof Player)) return null;
+        Player player = ((Player) sender);
+        if (args.length == 2) {
+            List<String> claims = new ArrayList<>();
+            for (Claim claim : instance.getClaimManager().getRegisteredClaims()) {
+                if (!claim.isOwnerOrMember(player)) continue;
+                claims.add(claim.getName());
+            }
+            return claims;
+        }
+        return null;
     }
 
     @Override

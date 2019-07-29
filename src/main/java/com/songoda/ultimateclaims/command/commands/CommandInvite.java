@@ -11,10 +11,14 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class CommandInvite extends AbstractCommand {
 
     public CommandInvite(AbstractCommand parent) {
-        super("invite", parent, true);
+        super(parent, true, "invite");
     }
 
     @Override
@@ -53,6 +57,15 @@ public class CommandInvite extends AbstractCommand {
                 .processPlaceholder("claim", claim.getName())
                 .sendPrefixedMessage(invited.getPlayer());
         return ReturnType.SUCCESS;
+    }
+
+    @Override
+    protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
+        if (args.length == 2) {
+            return Bukkit.getOnlinePlayers().stream().filter(p -> p != sender)
+                    .map(Player::getName).collect(Collectors.toList());
+        }
+        return null;
     }
 
 

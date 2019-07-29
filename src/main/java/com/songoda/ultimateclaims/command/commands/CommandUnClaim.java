@@ -8,10 +8,12 @@ import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class CommandUnClaim extends AbstractCommand {
 
     public CommandUnClaim(AbstractCommand parent) {
-        super("unclaim", parent, true);
+        super(parent, true, "unclaim");
     }
 
     @Override
@@ -51,6 +53,11 @@ public class CommandUnClaim extends AbstractCommand {
         }
 
         return ReturnType.SUCCESS;
+    }
+
+    @Override
+    protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
+        return null;
     }
 
     @Override

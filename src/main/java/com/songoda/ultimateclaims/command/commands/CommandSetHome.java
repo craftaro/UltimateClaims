@@ -7,10 +7,12 @@ import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class CommandSetHome extends AbstractCommand {
 
     public CommandSetHome(AbstractCommand parent) {
-        super("sethome", parent, true);
+        super(parent, true, "sethome");
     }
 
     @Override
@@ -34,6 +36,11 @@ public class CommandSetHome extends AbstractCommand {
         instance.getLocale().getMessage("command.sethome.set").sendPrefixedMessage(sender);
 
         return ReturnType.SUCCESS;
+    }
+
+    @Override
+    protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
+        return null;
     }
 
     @Override

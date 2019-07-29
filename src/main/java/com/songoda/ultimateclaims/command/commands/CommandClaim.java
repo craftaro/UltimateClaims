@@ -4,6 +4,7 @@ import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimBuilder;
 import com.songoda.ultimateclaims.command.AbstractCommand;
+import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.Methods;
 import com.songoda.ultimateclaims.utils.settings.Setting;
 import com.songoda.ultimateclaims.utils.spigotmaps.MapBuilder;
@@ -18,12 +19,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class CommandClaim extends AbstractCommand {
 
     public CommandClaim(AbstractCommand parent) {
-        super("claim", parent, true);
+        super(parent, true, "claim");
     }
 
     @Override
@@ -99,6 +102,21 @@ public class CommandClaim extends AbstractCommand {
 
         instance.getLocale().getMessage("command.claim.success").sendPrefixedMessage(sender);
         return ReturnType.SUCCESS;
+    }
+
+    @Override
+    protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
+        if (!(sender instanceof Player)) return null;
+        if (args.length == 1) {
+            List<String> claims = new ArrayList<>();
+            for (Claim claim : instance.getClaimManager().getRegisteredClaims()) {
+                if (claim.getMember((Player)sender) == null
+                        || claim.getMember((Player)sender).getRole() == ClaimRole.VISITOR) continue;
+                claims.add(claim.getName());
+            }
+            return claims;
+        }
+        return null;
     }
 
     @Override

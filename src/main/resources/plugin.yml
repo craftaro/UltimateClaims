@@ -7,7 +7,15 @@ author: songoda
 api-version: 1.13
 commands:
   UltimateClaims:
-    description: I have no idea.
+    description: Reloads the configuration file
     default: true
     aliases: [ucl, claims, claim, c]
-    usage: /<command> [reload]
+    usage: /ultimateclaims reload
+permissions:
+  ultimateclaims.*:
+    description: Inherits all plugin permissions
+    children:
+      ultimateclaims.bypass: true
+  ultimateclaims.bypass:
+    description: Allows a player or admin to bypass claim restrictions.
+    default: op
