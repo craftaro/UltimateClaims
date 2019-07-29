@@ -3,13 +3,16 @@ package com.songoda.ultimateclaims.listeners;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
+import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.utils.settings.Setting;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -29,9 +32,18 @@ public class InventoryListeners implements Listener {
 
         ClaimManager claimManager = plugin.getClaimManager();
         Player player = (Player) event.getPlayer();
-        if (!claimManager.hasClaim(player)) return;
-        Claim claim = claimManager.getClaim(player);
-        if (claim.getPowerCell().hasLocation()) return;
+        if (!claimManager.hasClaim(player)
+                || event.getInventory().getLocation() == null) return;
+
+        Chunk chunk = event.getInventory().getLocation().getChunk();
+
+        if (!claimManager.hasClaim(chunk)) return;
+
+        Claim claim = claimManager.getClaim(chunk);
+
+        if (claim.getOwner().getUniqueId() != player.getUniqueId()
+                || claim.getPowerCell().hasLocation()) return;
+
         List<String> recipe = Setting.POWERCELL_RECIPE.getStringList();
 
         int size = 0;

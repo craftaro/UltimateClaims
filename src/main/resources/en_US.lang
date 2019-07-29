@@ -43,6 +43,8 @@ command.unclaim.powercell = "&cYou cannot unclaim the chunk holding your powerce
 command.leave.youleft = "&7You left &6%claim%&7."
 command.leave.left = "&6%player% &7left &6%claim%&7."
 command.leave.owner = "&cYou cannot leave your own claim."
+command.lock.locked = "&7You locked your claim."
+command.lock.unlocked = "&7You unlocked your claim."
 
 #Interface Messages
 
@@ -85,6 +87,7 @@ event.general.nopermission = "&cYou do not have permission to do that."
 event.invite.expired = "&cYour invitation has expired..."
 event.claim.enter = "&7You have entered &6%claim%&7."
 event.claim.exit = "&7You have exited &6%claim%&7."
+event.claim.locked = "&cA magical force prevents you from entering..."
 event.powercell.success = "&7You created a powercell. Fill it up with fuel to keep your land claimed."
 event.powercell.failopen = "&cYou need to be the owner of this claim to open its powercell."
 event.powercell.lowpower = "&cYour claim &4%claim% &cis out of power!"

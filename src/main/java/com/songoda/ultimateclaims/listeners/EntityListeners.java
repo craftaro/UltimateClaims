@@ -35,7 +35,7 @@ public class EntityListeners implements Listener {
                 }
                 plugin.getLocale().getMessage("event.claim.exit")
                         .processPlaceholder("claim", claim.getName())
-                .sendPrefixedMessage(event.getPlayer());
+                        .sendPrefixedMessage(event.getPlayer());
             }
         }
 
@@ -44,6 +44,12 @@ public class EntityListeners implements Listener {
             if (claimManager.getClaim(event.getFrom().getChunk()) != claim) {
                 ClaimMember member = claim.getMember(event.getPlayer());
                 if (member == null) {
+                    if (claim.isLocked()) {
+                        plugin.getLocale().getMessage("event.claim.locked")
+                                .sendPrefixedMessage(event.getPlayer());
+                        event.setCancelled(true);
+                        return;
+                    }
                     claim.addMember(event.getPlayer(), ClaimRole.VISITOR);
                     member = claim.getMember(event.getPlayer());
                 }

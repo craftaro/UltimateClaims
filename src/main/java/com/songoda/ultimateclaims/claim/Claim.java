@@ -23,6 +23,8 @@ public class Claim {
     private final Set<Chunk> claimedChunks = new HashSet<>();
     private final Set<UUID> bannedPlayers = new HashSet<>();
 
+    private boolean locked = false;
+
     private ClaimPermissions memberPermissions = new ClaimPermissionsBuilder()
             .setCanBuild(true)
             .setCanInteract(true)
@@ -152,5 +154,17 @@ public class Claim {
 
     public Set<UUID> getBannedPlayers() {
         return bannedPlayers;
+    }
+
+    public void setOwner(ClaimMember owner) {
+        this.owner = owner;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 }
