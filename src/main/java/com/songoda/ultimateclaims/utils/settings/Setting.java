@@ -18,8 +18,8 @@ public enum Setting {
             "in order to create a powercell."),
 
     ITEM_VALUES("Main.PowerCell Item Values",
-            Arrays.asList("DIAMOND:120", "IRON_INGOT:30",
-                    "The value in minutes of each item put into the powercell.")),
+            Arrays.asList("DIAMOND:120", "IRON_INGOT:30"),
+                    "The value in minutes of each item put into the powercell."),
 
     ECONOMY_VALUE("Main.PowerCell Economy Value", 100,
             "How much money should constitute one minute?"),
