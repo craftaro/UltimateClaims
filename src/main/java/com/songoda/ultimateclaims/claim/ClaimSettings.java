@@ -3,7 +3,7 @@ package com.songoda.ultimateclaims.claim;
 public class ClaimSettings {
 
     private boolean hostileMobSpawning = true;
-    private boolean firespread = true;
+    private boolean fireSpread = true;
     private boolean mobGriefing = true;
     private boolean leafDecay = true;
     private boolean pvp = true;
@@ -18,12 +18,12 @@ public class ClaimSettings {
         return this;
     }
 
-    public boolean isFirespread() {
-        return firespread;
+    public boolean isFireSpread() {
+        return fireSpread;
     }
 
-    public ClaimSettings setFirespread(boolean firespread) {
-        this.firespread = firespread;
+    public ClaimSettings setFireSpread(boolean fireSpread) {
+        this.fireSpread = fireSpread;
         return this;
     }
 

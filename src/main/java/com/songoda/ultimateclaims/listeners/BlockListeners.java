@@ -13,7 +13,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
 
 public class BlockListeners implements Listener {
 
@@ -69,6 +71,31 @@ public class BlockListeners implements Listener {
                 powerCell.destroy();
             } else {
                 plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void ignite(BlockIgniteEvent event) {
+        ClaimManager claimManager = plugin.getClaimManager();
+
+        if (claimManager.hasClaim(event.getBlock().getChunk())) {
+            Claim claim = claimManager.getClaim(event.getBlock().getChunk());
+            if (!claim.getClaimSettings().isFireSpread()
+                    && event.getCause() == BlockIgniteEvent.IgniteCause.SPREAD) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void decay(LeavesDecayEvent event) {
+        ClaimManager claimManager = plugin.getClaimManager();
+
+        if (claimManager.hasClaim(event.getBlock().getChunk())) {
+            Claim claim = claimManager.getClaim(event.getBlock().getChunk());
+            if (!claim.getClaimSettings().isLeafDecay()) {
                 event.setCancelled(true);
             }
         }

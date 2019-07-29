@@ -5,11 +5,13 @@ import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
+import org.bukkit.Chunk;
 import org.bukkit.entity.Monster;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -84,6 +86,35 @@ public class EntityListeners implements Listener {
         if (claimManager.hasClaim(event.getLocation().getChunk())) {
             Claim claim = claimManager.getClaim(event.getLocation().getChunk());
             if (!claim.getClaimSettings().isHostileMobSpawning() && event.getEntity() instanceof Monster) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onChange(EntityChangeBlockEvent event) {
+        ClaimManager claimManager = plugin.getClaimManager();
+
+        if (claimManager.hasClaim(event.getBlock().getLocation().getChunk())) {
+            Claim claim = claimManager.getClaim(event.getBlock().getLocation().getChunk());
+            if (!claim.getClaimSettings().isMobGriefing()) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onDamage(EntityDamageByEntityEvent event) {
+        if (!(event.getEntity() instanceof Player)
+                || !(event.getDamager() instanceof Player)) return;
+
+        ClaimManager claimManager = plugin.getClaimManager();
+
+        Chunk chunk = event.getEntity().getLocation().getChunk();
+
+        if (claimManager.hasClaim(chunk)) {
+            Claim claim = claimManager.getClaim(chunk);
+            if (!claim.getClaimSettings().isPvp()) {
                 event.setCancelled(true);
             }
         }

@@ -16,6 +16,26 @@ permissions:
     description: Inherits all plugin permissions
     children:
       ultimateclaims.bypass: true
+      ultimateclaims.toggle.hostilemobspawning: true
+      ultimateclaims.toggle.firespread: true
+      ultimateclaims.toggle.pvp: true
+      ultimateclaims.toggle.mobgriefing: true
+      ultimateclaims.toggle.leafdecay: true
   ultimateclaims.bypass:
     description: Allows a player or admin to bypass claim restrictions.
+    default: op
+  ultimateclaims.toggle.hostilemobspawning: true
+    description: Allows the claim owner to toggle mob spawning.
+    default: op
+  ultimateclaims.toggle.firespread: true
+    description: Allows the claim owner to toggle fire spread.
+    default: op
+  ultimateclaims.toggle.pvp: true
+    description: Allows the claim owner to toggle pvp.
+    default: op
+  ultimateclaims.toggle.mobgriefing: true
+    description: Allows the claim owner to toggle mob griefing.
+    default: op
+  ultimateclaims.toggle.leafdecay: true
+    description: Allows the claim owner to toggle leaf decay.
     default: op
