@@ -31,7 +31,7 @@ public class PowerCell {
     public int tick() {
 
         boolean loaded = false;
-        if (location == null) {
+        if (location != null) {
             int x = location.getBlockX() >> 4;
             int z = location.getBlockZ() >> 4;
 

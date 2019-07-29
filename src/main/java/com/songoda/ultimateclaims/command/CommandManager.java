@@ -88,7 +88,7 @@ public class CommandManager implements CommandExecutor {
             }
             return;
         }
-        plugin.getLocale().newMessage("event.general.nopermission").sendPrefixedMessage(sender);
+        plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(sender);
     }
 
     public List<AbstractCommand> getCommands() {
