@@ -37,9 +37,10 @@ public class BlockListeners implements Listener {
 
         ClaimMember member = claim.getMember(event.getPlayer());
 
-        if (member == null
+        if ((member == null
                 ||member.getRole() == ClaimRole.VISITOR && !claim.getVisitorPermissions().canPlace()
-                || member.getRole() == ClaimRole.MEMBER && !claim.getMemberPermissions().canPlace()) {
+                || member.getRole() == ClaimRole.MEMBER && !claim.getMemberPermissions().canPlace())
+                && !event.getPlayer().hasPermission("ultimateclaims.bypass")) {
             plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
             event.setCancelled(true);
         }
@@ -60,16 +61,17 @@ public class BlockListeners implements Listener {
 
         ClaimMember member = claim.getMember(event.getPlayer());
 
-        if (member == null
+        if ((member == null
                 || member.getRole() == ClaimRole.VISITOR && !claim.getVisitorPermissions().canBreak()
-                || member.getRole() == ClaimRole.MEMBER && !claim.getMemberPermissions().canBreak()) {
+                || member.getRole() == ClaimRole.MEMBER && !claim.getMemberPermissions().canBreak())
+                && !event.getPlayer().hasPermission("ultimateclaims.bypass")) {
             plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
             event.setCancelled(true);
             return;
         }
 
         if (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation())) {
-            if (member.getRole() == ClaimRole.OWNER) {
+            if (member.getRole() == ClaimRole.OWNER || event.getPlayer().hasPermission("ultimateclaims.bypass")) {
                 powerCell.destroy();
             } else {
                 plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());

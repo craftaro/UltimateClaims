@@ -33,9 +33,10 @@ public class InteractListeners implements Listener {
 
         ClaimMember member = claim.getMember(event.getPlayer());
 
-        if (member == null
+        if ((member == null
                 || member.getRole() == ClaimRole.VISITOR && !claim.getVisitorPermissions().canInteract()
-                || member.getRole() == ClaimRole.MEMBER && !claim.getMemberPermissions().canInteract()) {
+                || member.getRole() == ClaimRole.MEMBER && !claim.getMemberPermissions().canInteract())
+                && !event.getPlayer().hasPermission("ultimateclaims.bypass")) {
             plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
             event.setCancelled(true);
             return;
@@ -43,7 +44,7 @@ public class InteractListeners implements Listener {
         if (claim.getPowerCell().hasLocation()
                 && claim.getPowerCell().getLocation().equals(event.getClickedBlock().getLocation())
                 && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (member.getRole() == ClaimRole.OWNER) {
+            if (member.getRole() == ClaimRole.OWNER || event.getPlayer().hasPermission("ultimateclaims.bypass")) {
                 new GUIPowerCell(event.getPlayer(), claim);
             } else {
                 plugin.getLocale().getMessage("event.powercell.failopen").sendPrefixedMessage(event.getPlayer());
