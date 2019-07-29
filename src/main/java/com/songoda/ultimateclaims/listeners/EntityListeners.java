@@ -44,7 +44,7 @@ public class EntityListeners implements Listener {
             if (claimManager.getClaim(event.getFrom().getChunk()) != claim) {
                 ClaimMember member = claim.getMember(event.getPlayer());
                 if (member == null) {
-                    if ((claim.isBanned(member.getUniqueId()) || claim.isLocked()) && !event.getPlayer().hasPermission("ultimateclaims.bypass")) {
+                    if (claim.isLocked() && !event.getPlayer().hasPermission("ultimateclaims.bypass")) {
                         plugin.getLocale().getMessage("event.claim.locked")
                                 .sendPrefixedMessage(event.getPlayer());
                         event.setCancelled(true);
@@ -58,6 +58,14 @@ public class EntityListeners implements Listener {
                 }
                 if (member != null)
                     member.setPresent(true);
+
+                if (member != null && claim.isBanned(member.getUniqueId())) {
+                    plugin.getLocale().getMessage("event.claim.locked")
+                            .sendPrefixedMessage(event.getPlayer());
+                    event.setCancelled(true);
+                    return;
+                }
+
                 plugin.getLocale().getMessage("event.claim.enter")
                         .processPlaceholder("claim", claim.getName())
                         .sendPrefixedMessage(event.getPlayer());
