@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CommandBan extends AbstractCommand {
 
@@ -60,15 +61,9 @@ public class CommandBan extends AbstractCommand {
 
     @Override
     protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
-        if (!(sender instanceof Player)) return null;
-        Player player = ((Player) sender);
         if (args.length == 2) {
-            List<String> claims = new ArrayList<>();
-            for (Claim claim : instance.getClaimManager().getRegisteredClaims()) {
-                if (!claim.isOwnerOrMember(player)) continue;
-                claims.add(claim.getName());
-            }
-            return claims;
+            return Bukkit.getOnlinePlayers().stream().filter(p -> p != sender)
+                    .map(Player::getName).collect(Collectors.toList());
         }
         return null;
     }

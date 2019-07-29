@@ -3,15 +3,14 @@ package com.songoda.ultimateclaims.command.commands;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.command.AbstractCommand;
-import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CommandKick extends AbstractCommand {
 
@@ -40,7 +39,7 @@ public class CommandKick extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        if (claim.getMember(toKick.getUniqueId()) == null) {
+        if (claim.getMember(toKick.getUniqueId()).getRole() != ClaimRole.MEMBER) {
             instance.getLocale().getMessage("command.general.notinclaim").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
@@ -59,21 +58,15 @@ public class CommandKick extends AbstractCommand {
                 .processPlaceholder("name", toKick.getName())
                 .processPlaceholder("claim", claim.getName())
                 .sendPrefixedMessage(player);
-        claim.removeMember(toKick.getUniqueId());
+        claim.getMember(toKick.getUniqueId()).setRole(ClaimRole.VISITOR);
         return ReturnType.SUCCESS;
     }
 
     @Override
     protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
-        if (!(sender instanceof Player)) return null;
-        Player player = ((Player) sender);
         if (args.length == 2) {
-            List<String> claims = new ArrayList<>();
-            for (Claim claim : instance.getClaimManager().getRegisteredClaims()) {
-                if (!claim.isOwnerOrMember(player)) continue;
-                claims.add(claim.getName());
-            }
-            return claims;
+            return Bukkit.getOnlinePlayers().stream().filter(p -> p != sender)
+                    .map(Player::getName).collect(Collectors.toList());
         }
         return null;
     }
