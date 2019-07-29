@@ -16,7 +16,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class GUIMembers extends AbstractGUI {
@@ -83,7 +87,7 @@ public class GUIMembers extends AbstractGUI {
         List<String> typeLore = new ArrayList<>();
         String[] typeSplit = plugin.getLocale().getMessage("general.interface.current")
                 .processPlaceholder("current",
-                        Methods.formatText(displayedRole.toString(), true))
+                        Methods.formatText(displayedRole == ClaimRole.OWNER ? "ALL" : displayedRole.toString(), true))
                 .getMessage().split("\\|");
         for (String line : typeSplit) typeLore.add(line);
         typeMeta.setLore(typeLore);
@@ -160,20 +164,29 @@ public class GUIMembers extends AbstractGUI {
 
         Collections.reverse(toDisplay);
 
+        for (int i = 0; i < 100; i++) {
+            toDisplay.add(toDisplay.get(0));
+        }
+
         if (page > 1) {
             inventory.setItem(37, previous);
-            registerClickable(37, (player, inventory, cursor, slot, type1) -> page = page == 1 ? 1 : page--);
+            registerClickable(37, (player, inventory, cursor, slot, type1) -> {
+                page--;
+                constructGUI();
+            });
         }
-
-        if (page < Math.ceil(toDisplay.size() / 21)) {
+        if (page < (int) Math.ceil(toDisplay.size() / 21) + 1) {
             inventory.setItem(43, next);
-            registerClickable(43, (player, inventory, cursor, slot, type1) -> page++);
+            registerClickable(43, (player, inventory, cursor, slot, type1) -> {
+                page++;
+                constructGUI();
+            });
         }
 
-        int currentMember = 0;
-        for (int i = 0; i < 3; i++) {
-            for (int j = currentMember; j < currentMember + 8; j++) {
-                if (toDisplay.size() - 1 < j) return;
+        int currentMember = page == 1 ? 0 : 21 * (page - 1);
+        for (int i = 1; i < 4; i++) {
+            for (int j = 1; j < 8; j++) {
+                if ((toDisplay.size() - 1 < currentMember) || toDisplay == null || toDisplay.isEmpty()) return;
 
                 ClaimMember claimMember = toDisplay.get(currentMember);
                 OfflinePlayer skullPlayer = Bukkit.getOfflinePlayer(toDisplay.get(currentMember).getUniqueId());
@@ -200,7 +213,7 @@ public class GUIMembers extends AbstractGUI {
                 skullMeta.setLore(lore);
                 skull.setItemMeta(skullMeta);
 
-                inventory.setItem((int) Math.ceil(10 + (j / (i + 1))), skull);
+                inventory.setItem((9*i) + j, skull);
 
                 currentMember++;
             }

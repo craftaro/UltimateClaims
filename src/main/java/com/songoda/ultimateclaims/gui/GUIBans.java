@@ -5,19 +5,24 @@ import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.utils.Methods;
 import com.songoda.ultimateclaims.utils.ServerVersion;
 import com.songoda.ultimateclaims.utils.gui.AbstractGUI;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class GUIBans extends AbstractGUI {
 
     private UltimateClaims plugin;
     private Claim claim;
     private boolean back;
+    private int page = 1;
 
     public GUIBans(Player player, Claim claim, boolean back) {
         super(player);
@@ -90,9 +95,56 @@ public class GUIBans extends AbstractGUI {
         inventory.setItem(0, exit);
         inventory.setItem(4, info);
         inventory.setItem(8, exit);
-        inventory.setItem(37, previous);
-        inventory.setItem(43, next);
 
+        List<UUID> toDisplay = new ArrayList<>(claim.getBannedPlayers());
+
+        if (page > 1) {
+            inventory.setItem(37, previous);
+            registerClickable(37, (player, inventory, cursor, slot, type) -> {
+                page--;
+                constructGUI();
+            });
+        }
+        if (page < (int) Math.ceil(toDisplay.size() / 21) + 1) {
+            inventory.setItem(43, next);
+            registerClickable(43, (player, inventory, cursor, slot, type) -> {
+                page++;
+                constructGUI();
+            });
+        }
+
+        int current = page == 1 ? 0 : 21 * (page - 1);
+        for (int i = 1; i < 4; i++) {
+            for (int j = 1; j < 8; j++) {
+                if (toDisplay.size() - 1 < current) return;
+
+                OfflinePlayer skullPlayer = Bukkit.getOfflinePlayer(toDisplay.get(current));
+
+                ItemStack skull = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ?
+                        Material.PLAYER_HEAD : Material.valueOf("SKULL"));
+                if (!plugin.isServerVersionAtLeast(ServerVersion.V1_13)) skull.setDurability((short) 3);
+                SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+                skullMeta.setOwningPlayer(skullPlayer);
+                if (plugin.isServerVersionAtLeast(ServerVersion.V1_13))
+                    skullMeta.setOwningPlayer(skullPlayer);
+                else
+                    skullMeta.setOwner(skullPlayer.getName());
+                skullMeta.setDisplayName(Methods.formatText("&b") + skullPlayer.getName());
+                List<String> lore = new ArrayList<>();
+                String[] skullSplit = plugin.getLocale().getMessage("interface.bans.skulllore")
+                        .getMessage().split("\\|");
+                for (String line : skullSplit) lore.add(line);
+                skullMeta.setLore(lore);
+                skull.setItemMeta(skullMeta);
+
+                inventory.setItem((9*i) + j, skull);
+                current++;
+
+                final UUID playerUUID = toDisplay.get(current);
+
+                registerClickable((9 * i) + j, (player, inventory, cursor, slot, type) -> claim.unBanPlayer(playerUUID));
+            }
+        }
     }
 
     @Override
@@ -109,14 +161,6 @@ public class GUIBans extends AbstractGUI {
                 new GUIPowerCell(player, claim);
             else
                 player.closeInventory();
-        });
-
-        registerClickable(37, (player, inventory, cursor, slot, type) -> {
-            // Previous page
-        });
-
-        registerClickable(43, (player, inventory, cursor, slot, type) -> {
-            // Next Page
         });
     }
 

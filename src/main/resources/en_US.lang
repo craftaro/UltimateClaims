@@ -80,7 +80,7 @@ interface.settings.breaktitle = "&7Block Break"
 interface.settings.placetitle = "&7Block Place"
 interface.settings.interacttitle = "&7Interact"
 
-interface.bans.title = "Info"
+interface.bans.title = "Bans"
 interface.bans.infotitle = "&7Info"
 interface.bans.skulllore = "&7Click to unban."
 
