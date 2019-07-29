@@ -13,26 +13,40 @@ public enum Setting {
     POWERCELL_RECIPE("Main.PowerCell Recipe",
             Arrays.asList("3:IRON_INGOT", "4:DIAMOND", "5:IRON_INGOT",
                     "12:DIAMOND", "13:IRON_INGOT", "14:DIAMOND",
-                    "21:IRON_INGOT", "22:DIAMOND", "23:IRON_INGOT")),
+                    "21:IRON_INGOT", "22:DIAMOND", "23:IRON_INGOT"),
+            "The recipe players will need to place into a chest",
+            "in order to create a powercell."),
 
     ITEM_VALUES("Main.PowerCell Item Values",
-            Arrays.asList("DIAMOND:120", "IRON_INGOT:30")),
+            Arrays.asList("DIAMOND:120", "IRON_INGOT:30",
+                    "The value in minutes of each item put into the powercell.")),
 
-    ECONOMY_VALUE("Main.PowerCell Economy Value", 100),
+    ECONOMY_VALUE("Main.PowerCell Economy Value", 100,
+            "How much money should constitute one minute?"),
 
-    MINIMUM_POWER("Main.Minimum PowerCell power", -30),
+    MINIMUM_POWER("Main.Minimum PowerCell power", -30,
+            "The minimum amount of power allowed before a claim",
+            "auto dissolves."),
 
-    POWERCELL_HOLOGRAMS("Main.Powercell Holograms", true),
+    POWERCELL_HOLOGRAMS("Main.Powercell Holograms", true,
+            "Should holograms be placed above powercells?"),
 
-    CHUNKS_MUST_TOUCH("Main.Chunks Must Touch", true),
+    CHUNKS_MUST_TOUCH("Main.Chunks Must Touch", true,
+            "Should chunks have to touch to be claimed?",
+            "This prevents people from claiming little pieces all over the place."),
 
-    INVITE_TIMEOUT("Main.Invite Timeout", 30),
+    INVITE_TIMEOUT("Main.Invite Timeout", 30,
+            "The amount of time before an invite times out."),
 
-    STARTING_POWER("Main.Starting Power", 10),
+    STARTING_POWER("Main.Starting Power", 10,
+            "The starting amount of power in minutes a claim gets.",
+            "This time should be used to create a powercell."),
 
-    MAX_CHUNKS("Main.Max Chunks", 10),
+    MAX_CHUNKS("Main.Max Chunks", 10,
+            "The maximum amount of chunks a claim can have."),
 
-    MAX_MEMBERS("Main.Max Members", 10),
+    MAX_MEMBERS("Main.Max Members", 10,
+            "The maximum amount of members a claim can have."),
 
     VAULT_ECONOMY("Economy.Use Vault Economy", true,
             "Should Vault be used?"),
