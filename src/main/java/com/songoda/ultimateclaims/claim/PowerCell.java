@@ -30,10 +30,13 @@ public class PowerCell {
 
     public int tick() {
 
-        int x = location.getBlockX() >> 4;
-        int z = location.getBlockZ() >> 4;
+        boolean loaded = false;
+        if (location == null) {
+            int x = location.getBlockX() >> 4;
+            int z = location.getBlockZ() >> 4;
 
-        boolean loaded = location.getWorld().isChunkLoaded(x, z);
+            loaded = location.getWorld().isChunkLoaded(x, z);
+        }
 
         UltimateClaims plugin = UltimateClaims.getInstance();
         if (this.currentPower <= 0 && getLocation() != null) {
