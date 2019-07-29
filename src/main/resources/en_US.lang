@@ -45,6 +45,9 @@ command.leave.left = "&6%player% &7left &6%claim%&7."
 command.leave.owner = "&cYou cannot leave your own claim."
 command.lock.locked = "&7You locked your claim."
 command.lock.unlocked = "&7You unlocked your claim."
+command.sethome.set = "&7You set the home for your claim."
+command.home.none = "&cThat claim doesn't have a home set..."
+command.home.success = "&7You teleported to your claims home."
 
 #Interface Messages
 
