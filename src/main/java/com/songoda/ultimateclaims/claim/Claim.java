@@ -7,6 +7,7 @@ import com.songoda.ultimateclaims.member.ClaimPermissionsBuilder;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.Methods;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -22,6 +23,8 @@ public class Claim {
     private final Set<ClaimMember> members = new HashSet<>();
     private final Set<Chunk> claimedChunks = new HashSet<>();
     private final Set<UUID> bannedPlayers = new HashSet<>();
+
+    private Location home = null;
 
     private boolean locked = false;
 
@@ -166,5 +169,13 @@ public class Claim {
 
     public void setLocked(boolean locked) {
         this.locked = locked;
+    }
+
+    public Location getHome() {
+        return home;
+    }
+
+    public void setHome(Location home) {
+        this.home = home;
     }
 }
