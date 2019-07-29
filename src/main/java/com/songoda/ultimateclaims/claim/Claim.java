@@ -26,6 +26,8 @@ public class Claim {
     private Location home = null;
     private boolean locked = false;
 
+    private ClaimSettings claimSettings = new ClaimSettings();
+
     private ClaimPermissions memberPermissions = new ClaimPermissionsBuilder()
             .setCanBuild(true)
             .setCanInteract(true)
@@ -202,5 +204,9 @@ public class Claim {
 
     public void setHome(Location home) {
         this.home = home;
+    }
+
+    public ClaimSettings getClaimSettings() {
+        return claimSettings;
     }
 }

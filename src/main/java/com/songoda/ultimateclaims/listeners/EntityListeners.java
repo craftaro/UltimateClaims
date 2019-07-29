@@ -5,8 +5,12 @@ import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
+import org.bukkit.entity.Monster;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 public class EntityListeners implements Listener {
@@ -69,6 +73,18 @@ public class EntityListeners implements Listener {
                 plugin.getLocale().getMessage("event.claim.enter")
                         .processPlaceholder("claim", claim.getName())
                         .sendPrefixedMessage(event.getPlayer());
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onSpawn(EntitySpawnEvent event) {
+        ClaimManager claimManager = plugin.getClaimManager();
+
+        if (claimManager.hasClaim(event.getLocation().getChunk())) {
+            Claim claim = claimManager.getClaim(event.getLocation().getChunk());
+            if (!claim.getClaimSettings().isHostileMobSpawning() && event.getEntity() instanceof Monster) {
+                event.setCancelled(true);
             }
         }
     }

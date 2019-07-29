@@ -3,6 +3,7 @@ package com.songoda.ultimateclaims.member;
 import com.songoda.ultimateclaims.claim.Claim;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 

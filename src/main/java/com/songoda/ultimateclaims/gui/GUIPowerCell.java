@@ -137,12 +137,22 @@ public class GUIPowerCell extends AbstractGUI {
         bannedMeta.setLore(bannedLore);
         banned.setItemMeta(bannedMeta);
 
+        ItemStack settings = new ItemStack(Material.REDSTONE);
+        ItemMeta settingsMeta = settings.getItemMeta();
+        settingsMeta.setDisplayName(plugin.getLocale().getMessage("interface.powercell.settingstitle").getMessage());
+        List<String> settingsLore = new ArrayList<>();
+        String[] settingsSplit = plugin.getLocale().getMessage("interface.powercell.settingslore").getMessage().split("\\|");
+        for (String line : settingsSplit) settingsLore.add(line);
+        settingsMeta.setLore(settingsLore);
+        settings.setItemMeta(settingsMeta);
+
         inventory.setItem(2, economy);
         inventory.setItem(4, total);
         inventory.setItem(6, valuables);
-        inventory.setItem(49, info);
-        inventory.setItem(48, banned);
-        inventory.setItem(50, members);
+        inventory.setItem(50, info);
+        inventory.setItem(51, members);
+        inventory.setItem(47, banned);
+        inventory.setItem(48, settings);
     }
 
     private void runTask() {
@@ -184,11 +194,14 @@ public class GUIPowerCell extends AbstractGUI {
             abstractChatConfirm.setOnClose(() -> new GUIPowerCell(player, claim));
         });
 
-        registerClickable(50, (player, inventory, cursor, slot, type)
+        registerClickable(51, (player, inventory, cursor, slot, type)
                 -> new GUIMembers(player, claim, true));
 
-        registerClickable(48, (player, inventory, cursor, slot, type)
+        registerClickable(47, (player, inventory, cursor, slot, type)
                 -> new GUIBans(player, claim, true));
+
+        registerClickable(48, (player, inventory, cursor, slot, type)
+                -> new GUISettings(player, claim, true));
     }
 
     @Override

@@ -270,11 +270,11 @@ public class GUIMembers extends AbstractGUI {
         });
 
         registerClickable(39, (player, inventory, cursor, slot, type) -> {
-            new GUISettings(player, claim, ClaimRole.VISITOR, true);
+            new GUIPermSettings(player, claim, ClaimRole.VISITOR, true);
         });
 
         registerClickable(41, (player, inventory, cursor, slot, type) -> {
-            new GUISettings(player, claim, ClaimRole.MEMBER, true);
+            new GUIPermSettings(player, claim, ClaimRole.MEMBER, true);
         });
     }
 
