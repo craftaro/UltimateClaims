@@ -140,9 +140,12 @@ public class GUIBans extends AbstractGUI {
                 inventory.setItem((9*i) + j, skull);
                 current++;
 
-                final UUID playerUUID = toDisplay.get(current);
+                final UUID playerUUID = skullPlayer.getUniqueId();
 
-                registerClickable((9 * i) + j, (player, inventory, cursor, slot, type) -> claim.unBanPlayer(playerUUID));
+                registerClickable((9 * i) + j, (player, inventory, cursor, slot, type) -> {
+                    claim.unBanPlayer(playerUUID);
+                    constructGUI();
+                });
             }
         }
     }
