@@ -4,6 +4,7 @@ import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -72,6 +73,18 @@ public class ClaimBuilder {
             this.claim.banPlayer(uuid);
         return this;
     }
+
+    public ClaimBuilder setLocked(boolean locked) {
+        this.setLocked(locked);
+        return this;
+    }
+
+    public ClaimBuilder setHome(Location home) {
+        this.setHome(home);
+        return this;
+    }
+
+
 
     public Claim build() {
         return this.claim;
