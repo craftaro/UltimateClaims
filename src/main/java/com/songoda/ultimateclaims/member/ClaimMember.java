@@ -11,7 +11,7 @@ public class ClaimMember {
     private ClaimRole role;
     private boolean isPresent = false;
     private long playTime;
-    private long memberSince = System.currentTimeMillis();;
+    private long memberSince = System.currentTimeMillis();
 
     public ClaimMember(Claim claim, UUID uuid, ClaimRole role) {
         this.claim = claim;

@@ -2,6 +2,7 @@ package com.songoda.ultimateclaims.database;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.function.Consumer;
 
 import com.songoda.ultimateclaims.database.DatabaseConnector;
 import com.zaxxer.hikari.HikariConfig;
@@ -41,7 +42,7 @@ public class MySQLConnector implements DatabaseConnector {
 
     public void connect(ConnectionCallback callback) {
         try (Connection connection = this.hikari.getConnection()) {
-            callback.execute(connection);
+            callback.accept(connection);
         } catch (SQLException ex) {
             this.plugin.getLogger().severe("An error occurred retrieving a MySQL database connection: " + ex.getMessage());
         }

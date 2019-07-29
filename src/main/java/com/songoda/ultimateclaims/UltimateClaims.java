@@ -2,6 +2,11 @@ package com.songoda.ultimateclaims;
 
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.command.CommandManager;
+import com.songoda.ultimateclaims.database.DataManager;
+import com.songoda.ultimateclaims.database.DataMigrationManager;
+import com.songoda.ultimateclaims.database.DatabaseConnector;
+import com.songoda.ultimateclaims.database.MySQLConnector;
+import com.songoda.ultimateclaims.database.SQLiteConnector;
 import com.songoda.ultimateclaims.economy.Economy;
 import com.songoda.ultimateclaims.economy.PlayerPointsEconomy;
 import com.songoda.ultimateclaims.economy.ReserveEconomy;
@@ -38,10 +43,13 @@ public class UltimateClaims extends JavaPlugin {
     private Locale locale;
     private Economy economy;
     private Hologram hologram;
+    private DatabaseConnector databaseConnector;
 
     private SettingsManager settingsManager;
     private CommandManager commandManager;
     private ClaimManager claimManager;
+    private DataMigrationManager dataMigrationManager;
+    private DataManager dataManager;
 
     private InviteTask inviteTask;
 
@@ -110,6 +118,31 @@ public class UltimateClaims extends JavaPlugin {
 
         // Start Metrics
         new Metrics(this);
+
+        // Database stuff, go!
+        try {
+            if (Setting.MYSQL_ENABLED.getBoolean()) {
+                String hostname = Setting.MYSQL_HOSTNAME.getString();
+                int port = Setting.MYSQL_PORT.getInt();
+                String database = Setting.MYSQL_DATABASE.getString();
+                String username = Setting.MYSQL_USERNAME.getString();
+                String password = Setting.MYSQL_PASSWORD.getString();
+                boolean useSSL = Setting.MYSQL_USE_SSL.getBoolean();
+
+                this.databaseConnector = new MySQLConnector(this, hostname, port, database, username, password, useSSL);
+                this.getLogger().info("Data handler connected using MySQL.");
+            } else {
+                this.databaseConnector = new SQLiteConnector(this);
+                this.getLogger().info("Data handler connected using SQLite.");
+            }
+        } catch (Exception ex) {
+            this.getLogger().severe("Fatal error trying to connect to database. Please make sure all your connection settings are correct and try again. Plugin has been disabled.");
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
+
+        this.dataManager = new DataManager(this);
+        this.dataMigrationManager = new DataMigrationManager(this.databaseConnector, this.dataManager);
+        this.dataMigrationManager.runMigrations();
 
         console.sendMessage(Methods.formatText("&a============================="));
     }

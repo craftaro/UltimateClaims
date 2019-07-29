@@ -6,6 +6,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.function.Consumer;
 
 public class SQLiteConnector implements DatabaseConnector {
 
@@ -16,6 +17,12 @@ public class SQLiteConnector implements DatabaseConnector {
     public SQLiteConnector(Plugin plugin) {
         this.plugin = plugin;
         this.connectionString = "jdbc:sqlite:" + plugin.getDataFolder() + File.separator + plugin.getDescription().getName().toLowerCase() + ".db";
+
+        try {
+            Class.forName("org.sqlite.JDBC"); // This is required to put here for Spigot 1.10 and below for some reason
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isInitialized() {
@@ -42,8 +49,8 @@ public class SQLiteConnector implements DatabaseConnector {
         }
 
         try {
-            callback.execute(this.connection);
-        } catch (SQLException ex) {
+            callback.accept(this.connection);
+        } catch (Exception ex) {
             this.plugin.getLogger().severe("An error occurred retrieving the SQLite database connection: " + ex.getMessage());
         }
     }

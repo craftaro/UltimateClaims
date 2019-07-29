@@ -2,6 +2,7 @@ package com.songoda.ultimateclaims.database;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.function.Consumer;
 
 public interface DatabaseConnector {
 
@@ -25,10 +26,10 @@ public interface DatabaseConnector {
     void connect(ConnectionCallback callback);
 
     /**
-     * Allows Lambda expressions to be used to reduce duplicated code for getting connections
+     * Wraps a connection in a callback which will automagically handle catching sql errors
      */
     interface ConnectionCallback {
-        void execute(Connection connection) throws SQLException;
+        void accept(Connection connection) throws SQLException;
     }
 
 }
