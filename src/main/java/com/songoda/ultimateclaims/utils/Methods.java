@@ -1,10 +1,6 @@
 package com.songoda.ultimateclaims.utils;
 
 import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.ultimateclaims.claim.Claim;
-import com.songoda.ultimateclaims.claim.ClaimManager;
-import com.songoda.ultimateclaims.member.ClaimMember;
-import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -19,18 +15,18 @@ public class Methods {
     private static final Random random = new Random();
 
     public static void animateChunk(Chunk chunk, Player player, Material material) {
-        int bx = chunk.getX()<<4;
-        int bz = chunk.getZ()<<4;
+        int bx = chunk.getX() << 4;
+        int bz = chunk.getZ() << 4;
 
         World world = player.getWorld();
 
-        for(int xx = bx; xx < bx+16; xx++) {
-            for(int zz = bz; zz < bz+16; zz++) {
-                for(int yy = player.getLocation().getBlockY() - 5; yy < player.getLocation().getBlockY() + 5; yy++) {
+        for (int xx = bx; xx < bx + 16; xx++) {
+            for (int zz = bz; zz < bz + 16; zz++) {
+                for (int yy = player.getLocation().getBlockY() - 5; yy < player.getLocation().getBlockY() + 5; yy++) {
                     Block block = world.getBlockAt(xx, yy, zz);
                     if (block.getType() == Material.AIR || block.isPassable()) continue;
                     Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () -> {
-                        player.sendBlockChange(block.getLocation(), material, (byte)0);
+                        player.sendBlockChange(block.getLocation(), material, (byte) 0);
                         Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () ->
                                 player.sendBlockChange(block.getLocation(), block.getType(), block.getData()), random.nextInt(30) + 1);
                         player.playSound(block.getLocation(), Sound.BLOCK_METAL_STEP, 1F, .2F);
@@ -39,6 +35,7 @@ public class Methods {
             }
         }
     }
+
     public static ItemStack getGlass() {
         UltimateClaims instance = UltimateClaims.getInstance();
         return Methods.getGlass(instance.getConfig().getBoolean("Interfaces.Replace Glass Type 1 With Rainbow Glass"), instance.getConfig().getInt("Interfaces.Glass Type 1"));

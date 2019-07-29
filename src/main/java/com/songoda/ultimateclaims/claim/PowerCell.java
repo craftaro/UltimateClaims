@@ -119,15 +119,15 @@ public class PowerCell {
         }
     }
 
-    public int getCurrentPower() {
+    public long getCurrentPower() {
         return currentPower;
     }
 
-    public int getTotalPower() {
+    public long getTotalPower() {
         return getItemPower() + getEconomyPower() + currentPower;
     }
 
-    public int getItemPower() {
+    public long getItemPower() {
         int total = 0;
         List<String> materials = Setting.ITEM_VALUES.getStringList();
         for (String value : materials) {
@@ -139,11 +139,11 @@ public class PowerCell {
         return total;
     }
 
-    public int getEconomyPower() {
-        return (int) Math.floor(economyBalance / getEconomyValue());
+    public long getEconomyPower() {
+        return (long) Math.floor(economyBalance / getEconomyValue());
     }
 
-    private int getItemValue(Material material) {
+    private long getItemValue(Material material) {
         List<String> materials = Setting.ITEM_VALUES.getStringList();
         for (String value : materials) {
             if (material == Material.valueOf(value.split(":")[0]))
@@ -152,8 +152,8 @@ public class PowerCell {
         return 0;
     }
 
-    public int getEconomyValue() {
-        return (int) Math.floor(Setting.ECONOMY_VALUE.getDouble() * claim.getClaimSize());
+    public long getEconomyValue() {
+        return (long) Math.floor(Setting.ECONOMY_VALUE.getDouble() * claim.getClaimSize());
     }
 
     public List<ItemStack> getItems() {
