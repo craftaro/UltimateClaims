@@ -63,7 +63,7 @@ public class DataMigrationManager {
                 try (PreparedStatement statement = connection.prepareStatement(selectVersion)) {
                     ResultSet result = statement.executeQuery();
                     result.next();
-                    currentMigration = result.getInt(0);
+                    currentMigration = result.getInt("migration_version");
                 }
             }
 
@@ -79,8 +79,11 @@ public class DataMigrationManager {
             if (requiredMigrations.isEmpty())
                 return;
 
-            requiredMigrations.forEach(x -> x.migrate(connection, this.dataManager.getTablePrefix()));
+            // Migrate the data
+            for (DataMigration dataMigration : requiredMigrations)
+                dataMigration.migrate(connection, this.dataManager.getTablePrefix());
 
+            // Set the new current migration to be the highest migrated to
             currentMigration = requiredMigrations
                     .stream()
                     .map(DataMigration::getRevision)
@@ -90,7 +93,6 @@ public class DataMigrationManager {
             String updateVersion = "UPDATE " + this.getMigrationsTableName() + " SET migration_version = ?";
             try (PreparedStatement statement = connection.prepareStatement(updateVersion)) {
                 statement.setInt(1, currentMigration);
-
                 statement.execute();
             }
         }));

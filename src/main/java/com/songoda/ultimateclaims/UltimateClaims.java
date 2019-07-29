@@ -48,6 +48,7 @@ public class UltimateClaims extends JavaPlugin {
     private SettingsManager settingsManager;
     private CommandManager commandManager;
     private ClaimManager claimManager;
+
     private DataMigrationManager dataMigrationManager;
     private DataManager dataManager;
 
@@ -60,8 +61,11 @@ public class UltimateClaims extends JavaPlugin {
     @Override
     public void onDisable() {
         console.sendMessage(Methods.formatText("&a============================="));
-        console.sendMessage(Methods.formatText("&7UltimateStacker " + this.getDescription().getVersion() + " by &5Songoda <3!"));
+        console.sendMessage(Methods.formatText("&7UltimateClaims " + this.getDescription().getVersion() + " by &5Songoda <3!"));
         console.sendMessage(Methods.formatText("&7Action: &cDisabling&7..."));
+
+        this.databaseConnector.closeConnection();
+
         console.sendMessage(Methods.formatText("&a============================="));
     }
 
@@ -70,7 +74,7 @@ public class UltimateClaims extends JavaPlugin {
         INSTANCE = this;
 
         console.sendMessage(Methods.formatText("&a============================="));
-        console.sendMessage(Methods.formatText("&7EpicHoppers " + this.getDescription().getVersion() + " by &5Songoda <3&7!"));
+        console.sendMessage(Methods.formatText("&7UltimateClaims " + this.getDescription().getVersion() + " by &5Songoda <3&7!"));
         console.sendMessage(Methods.formatText("&7Action: &aEnabling&7..."));
 
         this.settingsManager = new SettingsManager(this);
@@ -186,6 +190,14 @@ public class UltimateClaims extends JavaPlugin {
 
     public ClaimManager getClaimManager() {
         return claimManager;
+    }
+
+    public DataMigrationManager getDataMigrationManager() {
+        return this.dataMigrationManager;
+    }
+
+    public DataManager getDataManager() {
+        return this.dataManager;
     }
 
     public InviteTask getInviteTask() {

@@ -46,15 +46,15 @@ public class CommandClaim extends AbstractCommand {
             }
 
             if (Setting.CHUNKS_MUST_TOUCH.getBoolean()
-                    && !claim.getClaimedChunks().contains(chunk.getWorld().getChunkAt(chunk.getX() + 1, chunk.getZ()))
-                    && !claim.getClaimedChunks().contains(chunk.getWorld().getChunkAt(chunk.getX() - 1, chunk.getZ()))
-                    && !claim.getClaimedChunks().contains(chunk.getWorld().getChunkAt(chunk.getX(), chunk.getZ() + 1))
-                    && !claim.getClaimedChunks().contains(chunk.getWorld().getChunkAt(chunk.getX(), chunk.getZ() - 1))) {
+                    && !claim.containsChunk(chunk.getWorld().getChunkAt(chunk.getX() + 1, chunk.getZ()))
+                    && !claim.containsChunk(chunk.getWorld().getChunkAt(chunk.getX() - 1, chunk.getZ()))
+                    && !claim.containsChunk(chunk.getWorld().getChunkAt(chunk.getX(), chunk.getZ() + 1))
+                    && !claim.containsChunk(chunk.getWorld().getChunkAt(chunk.getX(), chunk.getZ() - 1))) {
                 instance.getLocale().getMessage("command.claim.nottouching").sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
             }
 
-            if (claim.getClaimedChunks().size() >= Setting.MAX_CHUNKS.getInt()) {
+            if (claim.getClaimSize() >= Setting.MAX_CHUNKS.getInt()) {
                 instance.getLocale().getMessage("command.claim.toomany")
                         .processPlaceholder("amount", Setting.MAX_CHUNKS.getInt())
                         .sendPrefixedMessage(player);

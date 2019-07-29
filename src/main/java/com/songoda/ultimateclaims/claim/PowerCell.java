@@ -144,13 +144,13 @@ public class PowerCell {
         List<String> materials = Setting.ITEM_VALUES.getStringList();
         for (String value : materials) {
             if (material == Material.valueOf(value.split(":")[0]))
-                return (int) Math.floor(Integer.parseInt(value.split(":")[1]) / claim.getClaimedChunks().size());
+                return (int) Math.floor(Integer.parseInt(value.split(":")[1]) / claim.getClaimSize());
         }
         return 0;
     }
 
     public int getEconomyValue() {
-        return (int) Math.floor(Setting.ECONOMY_VALUE.getDouble() * claim.getClaimedChunks().size());
+        return (int) Math.floor(Setting.ECONOMY_VALUE.getDouble() * claim.getClaimSize());
     }
 
     public List<ItemStack> getItems() {

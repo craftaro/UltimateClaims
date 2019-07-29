@@ -41,7 +41,7 @@ public class CommandUnClaim extends AbstractCommand {
 
         claim.removeClaimedChunk(chunk, player);
 
-        if (claim.getClaimedChunks().size() == 0) {
+        if (claim.getClaimSize() == 0) {
             instance.getLocale().getMessage("general.claim.dissolve")
                     .processPlaceholder("claim", claim.getName())
                     .sendPrefixedMessage(player);

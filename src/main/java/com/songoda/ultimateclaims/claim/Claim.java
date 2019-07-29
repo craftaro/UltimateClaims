@@ -21,7 +21,7 @@ public class Claim {
     private String name = null;
     private ClaimMember owner;
     private final Set<ClaimMember> members = new HashSet<>();
-    private final Set<Chunk> claimedChunks = new HashSet<>();
+    private final Set<ClaimedChunk> claimedChunks = new HashSet<>();
     private final Set<UUID> bannedPlayers = new HashSet<>();
 
     private Location home = null;
@@ -94,13 +94,22 @@ public class Claim {
         this.removeMember(player.getUniqueId());
     }
 
-    public Set<Chunk> getClaimedChunks() {
-        return claimedChunks;
+    public boolean containsChunk(Chunk chunk) {
+        return this.claimedChunks.stream().anyMatch(x -> x.equals(new ClaimedChunk(chunk)));
     }
 
+    public int getClaimSize() {
+        return this.claimedChunks.size();
+    }
+
+    // If you really, really need this in the future feel free to uncomment it.
+    // You should probably be using containsChunk(Chunk) or getClaimSize() instead.
+//    public Set<ClaimedChunk> getClaimedChunks() {
+//        return claimedChunks;
+//    }
 
     public void addClaimedChunk(Chunk chunk) {
-        this.claimedChunks.add(chunk);
+        this.claimedChunks.add(new ClaimedChunk(chunk));
     }
 
     public void addClaimedChunk(Chunk chunk, Player player) {
@@ -109,12 +118,12 @@ public class Claim {
     }
 
     public void removeClaimedChunk(Chunk chunk) {
-        this.claimedChunks.remove(chunk);
+        this.claimedChunks.remove(new ClaimedChunk(chunk));
     }
 
     public void removeClaimedChunk(Chunk chunk, Player player) {
         Methods.animateChunk(chunk, player, Material.REDSTONE_BLOCK);
-        this.claimedChunks.remove(chunk);
+        this.removeClaimedChunk(chunk);
     }
 
     public PowerCell getPowerCell() {

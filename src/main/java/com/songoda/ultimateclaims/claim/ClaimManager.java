@@ -28,7 +28,7 @@ public class ClaimManager {
 
     public boolean hasClaim(Chunk chunk) {
         return this.registeredClaims.values().stream()
-                .anyMatch(claim -> claim.getClaimedChunks().contains(chunk));
+                .anyMatch(claim -> claim.containsChunk(chunk));
     }
 
     public Claim getClaim(UUID owner) {
@@ -41,7 +41,7 @@ public class ClaimManager {
 
     public Claim getClaim(Chunk chunk) {
         return this.registeredClaims.values().stream()
-                .filter(claim -> claim.getClaimedChunks().contains(chunk)).findFirst().orElse(null);
+                .filter(claim -> claim.containsChunk(chunk)).findFirst().orElse(null);
     }
 
     public void removeClaim(Claim claim) {

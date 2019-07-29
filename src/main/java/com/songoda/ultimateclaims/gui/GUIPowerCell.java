@@ -111,9 +111,9 @@ public class GUIPowerCell extends AbstractGUI {
         infoMeta.setDisplayName(plugin.getLocale().getMessage("interface.powercell.infotitle").getMessage());
         List<String> infoLore = new ArrayList<>();
         String[] infoSplit = plugin.getLocale().getMessage("interface.powercell.infolore")
-                .processPlaceholder("chunks", claim.getClaimedChunks().size())
+                .processPlaceholder("chunks", claim.getClaimSize())
                 .processPlaceholder("members",
-                        claim.getMembers().stream().filter(m -> m.getRole() == ClaimRole.MEMBER).count())
+                        claim.getMembers().stream().filter(m -> m.getRole() == ClaimRole.MEMBER || m.getRole() == ClaimRole.OWNER).count())
                 .getMessage().split("\\|");
         for (String line : infoSplit) infoLore.add(line);
         infoMeta.setLore(infoLore);
