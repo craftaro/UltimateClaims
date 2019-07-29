@@ -7,6 +7,7 @@ import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.Methods;
 import com.songoda.ultimateclaims.utils.ServerVersion;
 import com.songoda.ultimateclaims.utils.gui.AbstractGUI;
+import com.songoda.ultimateclaims.utils.settings.Setting;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -109,7 +110,10 @@ public class GUIMembers extends AbstractGUI {
         ItemMeta statsMeta = stats.getItemMeta();
         statsMeta.setDisplayName(plugin.getLocale().getMessage("interface.members.statstitle").getMessage());
         List<String> statsLore = new ArrayList<>();
-        String[] statsSplit = plugin.getLocale().getMessage("interface.members.statslore").getMessage().split("\\|");
+        String[] statsSplit = plugin.getLocale().getMessage("interface.members.statslore")
+                .processPlaceholder("totalmembers", claim.getOwnerAndMembers().size())
+                .processPlaceholder("maxmembers", Setting.MAX_MEMBERS.getInt())
+                .processPlaceholder("members", claim.getMembers().size()).getMessage().split("\\|");
         for (String line : statsSplit) statsLore.add(line);
         statsMeta.setLore(statsLore);
         stats.setItemMeta(statsMeta);
@@ -163,10 +167,6 @@ public class GUIMembers extends AbstractGUI {
                     .collect(Collectors.toList());
 
         Collections.reverse(toDisplay);
-
-        for (int i = 0; i < 100; i++) {
-            toDisplay.add(toDisplay.get(0));
-        }
 
         if (page > 1) {
             inventory.setItem(37, previous);
