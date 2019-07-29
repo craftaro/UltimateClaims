@@ -39,6 +39,7 @@ public class CommandManager implements CommandExecutor {
         addCommand(new CommandSetHome(commandUltimateClaims));
         addCommand(new CommandBan(commandUltimateClaims));
         addCommand(new CommandUnBan(commandUltimateClaims));
+        addCommand(new CommandRecipe(commandUltimateClaims));
 
         for (AbstractCommand abstractCommand : commands) {
             if (abstractCommand.getParent() != null) continue;

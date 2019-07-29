@@ -7,21 +7,12 @@ import com.songoda.ultimateclaims.command.AbstractCommand;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.Methods;
 import com.songoda.ultimateclaims.utils.settings.Setting;
-import com.songoda.ultimateclaims.utils.spigotmaps.MapBuilder;
-import com.songoda.ultimateclaims.utils.spigotmaps.rendering.ImageRenderer;
-import com.songoda.ultimateclaims.utils.spigotmaps.util.ImageTools;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class CommandClaim extends AbstractCommand {
 
@@ -75,26 +66,6 @@ public class CommandClaim extends AbstractCommand {
                             .addClaimedChunk(chunk, player)
                             .build());
 
-            if (Setting.GIVE_RECIPE_MAP.getBoolean()) {
-                try {
-                    BufferedImage catImage = ImageIO.read(instance.getResource("recipe.png"));
-                    catImage = ImageTools.resizeToMapSize(catImage);
-                    ImageRenderer renderer = ImageRenderer.builder()
-                            .image(catImage)
-                            .build();
-                    ItemStack mapItem = MapBuilder.create()
-                            .addRenderers(renderer).build().createItemStack();
-                    ItemMeta meta = mapItem.getItemMeta();
-                    meta.setDisplayName(instance.getLocale().getMessage("general.powercellrecipe").getMessage());
-                    mapItem.setItemMeta(meta);
-                    Map<Integer, ItemStack> items = player.getInventory().addItem(mapItem);
-                    for (ItemStack item : items.values())
-                        player.getLocation().getWorld().dropItemNaturally(player.getLocation(), item);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
             instance.getLocale().getMessage("command.claim.info")
                     .processPlaceholder("time", Methods.makeReadable((long) (Setting.STARTING_POWER.getInt() * 60 * 1000)))
                     .sendPrefixedMessage(sender);
@@ -110,8 +81,8 @@ public class CommandClaim extends AbstractCommand {
         if (args.length == 1) {
             List<String> claims = new ArrayList<>();
             for (Claim claim : instance.getClaimManager().getRegisteredClaims()) {
-                if (claim.getMember((Player)sender) == null
-                        || claim.getMember((Player)sender).getRole() == ClaimRole.VISITOR) continue;
+                if (claim.getMember((Player) sender) == null
+                        || claim.getMember((Player) sender).getRole() == ClaimRole.VISITOR) continue;
                 claims.add(claim.getName());
             }
             return claims;
