@@ -51,7 +51,7 @@ public class EntityListeners implements Listener {
                         return;
                     }
 
-                    if (event.getPlayer().hasPermission("ultimateclaims.bypass")) {
+                    if (!event.getPlayer().hasPermission("ultimateclaims.bypass")) {
                         claim.addMember(event.getPlayer(), ClaimRole.VISITOR);
                         member = claim.getMember(event.getPlayer());
                     }

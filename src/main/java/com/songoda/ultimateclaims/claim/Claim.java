@@ -1,10 +1,7 @@
 package com.songoda.ultimateclaims.claim;
 
 import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.ultimateclaims.member.ClaimMember;
-import com.songoda.ultimateclaims.member.ClaimPermissions;
-import com.songoda.ultimateclaims.member.ClaimPermissionsBuilder;
-import com.songoda.ultimateclaims.member.ClaimRole;
+import com.songoda.ultimateclaims.member.*;
 import com.songoda.ultimateclaims.utils.Methods;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -98,6 +95,15 @@ public class Claim {
 
     public void removeMember(OfflinePlayer player) {
         this.removeMember(player.getUniqueId());
+    }
+
+    public boolean playerHasPerms(Player player, ClaimPerm claimPerm) {
+        ClaimMember member = getMember(player);
+        if (player.hasPermission("ultimateclaims.bypass")
+                || player.getUniqueId() == owner.getUniqueId()) return true;
+        if (member == null) return false;
+        return member.getRole() == ClaimRole.VISITOR && getVisitorPermissions().hasPermission(claimPerm)
+                || member.getRole() == ClaimRole.MEMBER && getMemberPermissions().hasPermission(claimPerm);
     }
 
     public boolean isOwnerOrMember(OfflinePlayer player) {

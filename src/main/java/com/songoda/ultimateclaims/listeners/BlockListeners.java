@@ -5,8 +5,8 @@ import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
+import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -35,12 +35,7 @@ public class BlockListeners implements Listener {
 
         Claim claim = claimManager.getClaim(chunk);
 
-        ClaimMember member = claim.getMember(event.getPlayer());
-
-        if ((member == null
-                ||member.getRole() == ClaimRole.VISITOR && !claim.getVisitorPermissions().canPlace()
-                || member.getRole() == ClaimRole.MEMBER && !claim.getMemberPermissions().canPlace())
-                && !event.getPlayer().hasPermission("ultimateclaims.bypass")) {
+        if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.PLACE)) {
             plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
             event.setCancelled(true);
         }
@@ -59,19 +54,18 @@ public class BlockListeners implements Listener {
         Claim claim = claimManager.getClaim(chunk);
         PowerCell powerCell = claim.getPowerCell();
 
-        ClaimMember member = claim.getMember(event.getPlayer());
 
-        if ((member == null
-                || member.getRole() == ClaimRole.VISITOR && !claim.getVisitorPermissions().canBreak()
-                || member.getRole() == ClaimRole.MEMBER && !claim.getMemberPermissions().canBreak())
-                && !event.getPlayer().hasPermission("ultimateclaims.bypass")) {
+        if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.BREAK)) {
             plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
             event.setCancelled(true);
             return;
         }
 
+        ClaimMember member = claim.getMember(event.getPlayer());
+
+
         if (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation())) {
-            if (member.getRole() == ClaimRole.OWNER || event.getPlayer().hasPermission("ultimateclaims.bypass")) {
+            if ((member != null && member.getRole() == ClaimRole.OWNER) || event.getPlayer().hasPermission("ultimateclaims.bypass")) {
                 powerCell.destroy();
             } else {
                 plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());

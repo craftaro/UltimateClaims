@@ -5,6 +5,7 @@ import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.gui.GUIPowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
+import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Chunk;
 import org.bukkit.event.EventHandler;
@@ -31,20 +32,18 @@ public class InteractListeners implements Listener {
 
         Claim claim = claimManager.getClaim(chunk);
 
-        ClaimMember member = claim.getMember(event.getPlayer());
-
-        if ((member == null
-                || member.getRole() == ClaimRole.VISITOR && !claim.getVisitorPermissions().canInteract()
-                || member.getRole() == ClaimRole.MEMBER && !claim.getMemberPermissions().canInteract())
-                && !event.getPlayer().hasPermission("ultimateclaims.bypass")) {
+        if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.INTERACT)) {
             plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
             event.setCancelled(true);
             return;
         }
+
+        ClaimMember member = claim.getMember(event.getPlayer());
+
         if (claim.getPowerCell().hasLocation()
                 && claim.getPowerCell().getLocation().equals(event.getClickedBlock().getLocation())
                 && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (member.getRole() == ClaimRole.OWNER || event.getPlayer().hasPermission("ultimateclaims.bypass")) {
+            if ((member != null && member.getRole() == ClaimRole.OWNER) || event.getPlayer().hasPermission("ultimateclaims.bypass")) {
                 new GUIPowerCell(event.getPlayer(), claim);
             } else {
                 plugin.getLocale().getMessage("event.powercell.failopen").sendPrefixedMessage(event.getPlayer());

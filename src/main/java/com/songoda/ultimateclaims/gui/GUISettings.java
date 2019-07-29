@@ -2,6 +2,7 @@ package com.songoda.ultimateclaims.gui;
 
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.Methods;
 import com.songoda.ultimateclaims.utils.ServerVersion;
@@ -72,7 +73,7 @@ public class GUISettings extends AbstractGUI {
         List<String> breakLore = new ArrayList<>();
         String[] breakSplit = plugin.getLocale().getMessage("general.interface.current")
                 .processPlaceholder("current", role == ClaimRole.MEMBER
-                        ? claim.getMemberPermissions().canBreak() : claim.getVisitorPermissions().canBreak())
+                        ? claim.getMemberPermissions().hasPermission(ClaimPerm.BREAK) : claim.getVisitorPermissions().hasPermission(ClaimPerm.BREAK))
                 .getMessage().split("\\|");
         for (String line : breakSplit) breakLore.add(line);
         breakMeta.setLore(breakLore);
@@ -84,7 +85,7 @@ public class GUISettings extends AbstractGUI {
         List<String> placeLore = new ArrayList<>();
         String[] placeSplit = plugin.getLocale().getMessage("general.interface.current")
                 .processPlaceholder("current", role == ClaimRole.MEMBER
-                        ? claim.getMemberPermissions().canPlace() : claim.getVisitorPermissions().canPlace())
+                        ? claim.getMemberPermissions().hasPermission(ClaimPerm.PLACE) : claim.getVisitorPermissions().hasPermission(ClaimPerm.PLACE))
                 .getMessage().split("\\|");
         for (String line : placeSplit) placeLore.add(line);
         placeMeta.setLore(placeLore);
@@ -96,7 +97,7 @@ public class GUISettings extends AbstractGUI {
         List<String> interactLore = new ArrayList<>();
         String[] interactSplit = plugin.getLocale().getMessage("general.interface.current")
                 .processPlaceholder("current", role == ClaimRole.MEMBER
-                        ? claim.getMemberPermissions().canInteract() : claim.getVisitorPermissions().canInteract())
+                        ? claim.getMemberPermissions().hasPermission(ClaimPerm.INTERACT) : claim.getVisitorPermissions().hasPermission(ClaimPerm.INTERACT))
                 .getMessage().split("\\|");
         for (String line : interactSplit) interactLore.add(line);
         interactMeta.setLore(interactLore);
@@ -120,27 +121,27 @@ public class GUISettings extends AbstractGUI {
         registerClickable(11, (player, inventory, cursor, slot, type) -> {
             // Toggle block break perms
             if (role == ClaimRole.MEMBER)
-                claim.getMemberPermissions().setCanBreak(!claim.getMemberPermissions().canBreak());
+                claim.getMemberPermissions().setCanBreak(!claim.getMemberPermissions().hasPermission(ClaimPerm.BREAK));
             else
-                claim.getVisitorPermissions().setCanBreak(!claim.getVisitorPermissions().canBreak());
+                claim.getVisitorPermissions().setCanBreak(!claim.getVisitorPermissions().hasPermission(ClaimPerm.BREAK));
             constructGUI();
         });
 
         registerClickable(13, (player, inventory, cursor, slot, type) -> {
             // Toggle block place perms
             if (role == ClaimRole.MEMBER)
-                claim.getMemberPermissions().setCanPlace(!claim.getMemberPermissions().canPlace());
+                claim.getMemberPermissions().setCanPlace(!claim.getMemberPermissions().hasPermission(ClaimPerm.PLACE));
             else
-                claim.getVisitorPermissions().setCanPlace(!claim.getVisitorPermissions().canPlace());
+                claim.getVisitorPermissions().setCanPlace(!claim.getVisitorPermissions().hasPermission(ClaimPerm.PLACE));
             constructGUI();
         });
 
         registerClickable(15, (player, inventory, cursor, slot, type) -> {
             // Toggle block interact perms
             if (role == ClaimRole.MEMBER)
-                claim.getMemberPermissions().setCanInteract(!claim.getMemberPermissions().canInteract());
+                claim.getMemberPermissions().setCanInteract(!claim.getMemberPermissions().hasPermission(ClaimPerm.INTERACT));
             else
-                claim.getVisitorPermissions().setCanInteract(!claim.getVisitorPermissions().canInteract());
+                claim.getVisitorPermissions().setCanInteract(!claim.getVisitorPermissions().hasPermission(ClaimPerm.INTERACT));
             constructGUI();
         });
     }
