@@ -72,22 +72,24 @@ public class CommandClaim extends AbstractCommand {
                             .addClaimedChunk(chunk, player)
                             .build());
 
-            try {
-                BufferedImage catImage = ImageIO.read(instance.getResource("recipe.png"));
-                catImage = ImageTools.resizeToMapSize(catImage);
-                ImageRenderer renderer = ImageRenderer.builder()
-                        .image(catImage)
-                        .build();
-                ItemStack mapItem = MapBuilder.create()
-                        .addRenderers(renderer).build().createItemStack();
-                ItemMeta meta = mapItem.getItemMeta();
-                meta.setDisplayName(instance.getLocale().getMessage("general.powercellrecipe").getMessage());
-                mapItem.setItemMeta(meta);
-                Map<Integer, ItemStack> items = player.getInventory().addItem(mapItem);
-                for (ItemStack item : items.values())
-                    player.getLocation().getWorld().dropItemNaturally(player.getLocation(), item);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (Setting.GIVE_RECIPE_MAP.getBoolean()) {
+                try {
+                    BufferedImage catImage = ImageIO.read(instance.getResource("recipe.png"));
+                    catImage = ImageTools.resizeToMapSize(catImage);
+                    ImageRenderer renderer = ImageRenderer.builder()
+                            .image(catImage)
+                            .build();
+                    ItemStack mapItem = MapBuilder.create()
+                            .addRenderers(renderer).build().createItemStack();
+                    ItemMeta meta = mapItem.getItemMeta();
+                    meta.setDisplayName(instance.getLocale().getMessage("general.powercellrecipe").getMessage());
+                    mapItem.setItemMeta(meta);
+                    Map<Integer, ItemStack> items = player.getInventory().addItem(mapItem);
+                    for (ItemStack item : items.values())
+                        player.getLocation().getWorld().dropItemNaturally(player.getLocation(), item);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
             instance.getLocale().getMessage("command.claim.info")

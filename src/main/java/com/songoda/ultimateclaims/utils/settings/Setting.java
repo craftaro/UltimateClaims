@@ -48,6 +48,9 @@ public enum Setting {
     MAX_MEMBERS("Main.Max Members", 10,
             "The maximum amount of members a claim can have."),
 
+    GIVE_RECIPE_MAP("Main.Give Recipe Map", true,
+            "The map given when a new claim is created."),
+
     VAULT_ECONOMY("Economy.Use Vault Economy", true,
             "Should Vault be used?"),
 
