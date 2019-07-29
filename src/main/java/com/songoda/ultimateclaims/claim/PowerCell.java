@@ -30,14 +30,14 @@ public class PowerCell {
 
     public int tick() {
         UltimateClaims plugin = UltimateClaims.getInstance();
-        if (this.currentPower <= 0) {
+        if (this.currentPower <= 0 && getLocation() != null) {
             List<String> materials = Setting.ITEM_VALUES.getStringList();
             for (String value : materials) {
                 Material material = Material.valueOf(value.split(":")[0]);
                 if (getMaterialAmount(material) == 0) continue;
                 this.removeOneMaterial(material);
                 this.currentPower += getItemValue(material);
-                if (location != null && plugin.getHologram() != null)
+                if (plugin.getHologram() != null)
                     plugin.getHologram().update(this);
                 return this.currentPower;
             }
@@ -45,7 +45,7 @@ public class PowerCell {
             if (economyBalance >= economyValue) {
                 this.economyBalance -= economyValue;
                 this.currentPower += 1;
-                if (location != null && plugin.getHologram() != null)
+                if (plugin.getHologram() != null)
                     plugin.getHologram().update(this);
                 return this.currentPower;
             }
@@ -144,7 +144,7 @@ public class PowerCell {
     }
 
     public int getEconomyValue() {
-        return (int) Math.floor(Setting.ECONOMY_VALUE.getDouble() / claim.getClaimedChunks().size());
+        return (int) Math.floor(Setting.ECONOMY_VALUE.getDouble() * claim.getClaimedChunks().size());
     }
 
     public List<ItemStack> getItems() {

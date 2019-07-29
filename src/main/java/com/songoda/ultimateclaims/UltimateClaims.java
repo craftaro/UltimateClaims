@@ -8,10 +8,7 @@ import com.songoda.ultimateclaims.economy.ReserveEconomy;
 import com.songoda.ultimateclaims.economy.VaultEconomy;
 import com.songoda.ultimateclaims.hologram.Hologram;
 import com.songoda.ultimateclaims.hologram.HologramHolographicDisplays;
-import com.songoda.ultimateclaims.listeners.BlockListeners;
-import com.songoda.ultimateclaims.listeners.EntityListeners;
-import com.songoda.ultimateclaims.listeners.InteractListeners;
-import com.songoda.ultimateclaims.listeners.InventoryListeners;
+import com.songoda.ultimateclaims.listeners.*;
 import com.songoda.ultimateclaims.tasks.AnimateTask;
 import com.songoda.ultimateclaims.tasks.InviteTask;
 import com.songoda.ultimateclaims.tasks.PowerCellTask;
@@ -92,6 +89,7 @@ public class UltimateClaims extends JavaPlugin {
         pluginManager.registerEvents(new BlockListeners(this), this);
         pluginManager.registerEvents(new InteractListeners(this), this);
         pluginManager.registerEvents(new InventoryListeners(this), this);
+        pluginManager.registerEvents(new LoginListeners(this), this);
 
         // Managers
         this.commandManager = new CommandManager(this);
