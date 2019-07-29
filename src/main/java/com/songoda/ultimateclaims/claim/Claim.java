@@ -169,6 +169,10 @@ public class Claim {
         this.bannedPlayers.remove(uuid);
     }
 
+    public boolean isBanned(UUID uuid) {
+        return this.bannedPlayers.contains(uuid);
+    }
+
     public void destroy() {
         this.claimedChunks.clear();
         this.powerCell.destroy();
