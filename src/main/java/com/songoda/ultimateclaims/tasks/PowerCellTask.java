@@ -27,7 +27,7 @@ public class PowerCellTask extends BukkitRunnable {
         plugin = plug;
         if (instance == null) {
             instance = new PowerCellTask(plugin);
-            instance.runTaskTimer(plugin, 0, 20); // 60 * 20
+            instance.runTaskTimer(plugin, 0, 60 * 20); // 60 * 20
         }
 
         return instance;
