@@ -4,6 +4,7 @@ import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimSettings;
 import com.songoda.ultimateclaims.claim.ClaimedChunk;
 import com.songoda.ultimateclaims.member.ClaimMember;
+import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
 import com.songoda.ultimateclaims.settings.PluginSettings;
 import org.bukkit.Bukkit;
@@ -80,13 +81,72 @@ public class DataManager {
 
     public void createClaim(Claim claim) {
         this.async(() -> this.databaseConnector.connect(connection -> {
-            String createClaim = "INSERT INTO " + this.getTablePrefix() + "claim () VALUES ()";
+            String createClaim = "INSERT INTO " + this.getTablePrefix() + "claim (name, power, eco_bal, locked) VALUES (?, ?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(createClaim)) {
-                statement.setInt(1, claim.getId());
+                statement.setString(1, claim.getName());
+                statement.setInt(2, claim.getPowerCell().getCurrentPower());
+                statement.setDouble(3, claim.getPowerCell().getEconomyBalance());
+                statement.setInt(4, claim.isLocked() ? 1 : 0);
                 statement.executeUpdate();
             }
 
-            this.sync(() -> claim.setId(this.lastInsertedId(connection)));
+            int claimId = this.lastInsertedId(connection);
+
+            this.sync(() -> claim.setId(claimId));
+
+            String createMemberOwner = "INSERT INTO " + this.getTablePrefix() + "member (claim_id, player_uuid, role, play_time, member_since) VALUES (?, ?, ?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(createMemberOwner)) {
+                statement.setInt(1, claimId);
+                statement.setString(2, claim.getOwner().getUniqueId().toString());
+                statement.setInt(3, claim.getOwner().getRole().getIndex());
+                statement.setLong(4, claim.getOwner().getPlayTime());
+                statement.setLong(5, claim.getOwner().getMemberSince());
+                statement.executeUpdate();
+            }
+
+            ClaimedChunk chunk = claim.getFirstClaimedChunk();
+
+            String createChunk = "INSERT INTO " + this.getTablePrefix() + "chunk (claim_id, world, x, z) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(createChunk)) {
+                statement.setInt(1, claimId);
+                statement.setString(2, chunk.getChunk().getWorld().getName());
+                statement.setInt(3, chunk.getChunk().getX());
+                statement.setInt(4, chunk.getChunk().getZ());
+                statement.executeUpdate();
+            }
+
+            String createSettings = "INSERT INTO " + this.getTablePrefix() + "settings (claim_id, hostile_mob_spawning, fire_spread, mob_griefing, leaf_decay, pvp) VALUES (?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(createSettings)) {
+                statement.setInt(1, claimId);
+                statement.setInt(2, claim.getClaimSettings().isHostileMobSpawning() ? 1 : 0);
+                statement.setInt(3, claim.getClaimSettings().isFireSpread() ? 1 : 0);
+                statement.setInt(4, claim.getClaimSettings().isMobGriefing() ? 1 : 0);
+                statement.setInt(5, claim.getClaimSettings().isLeafDecay() ? 1 : 0);
+                statement.setInt(6, claim.getClaimSettings().isPvp() ? 1 : 0);
+                statement.executeUpdate();
+            }
+
+            String createMemberPermissions = "INSERT INTO " + this.getTablePrefix() + "permissions (claim_id, type, interact, break, place, mob_kill) VALUES (?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(createMemberPermissions)) {
+                statement.setInt(1, claimId);
+                statement.setString(2, "member");
+                statement.setInt(3, claim.getMemberPermissions().hasPermission(ClaimPerm.INTERACT) ? 1 : 0);
+                statement.setInt(4, claim.getMemberPermissions().hasPermission(ClaimPerm.BREAK) ? 1 : 0);
+                statement.setInt(5, claim.getMemberPermissions().hasPermission(ClaimPerm.PLACE) ? 1 : 0);
+                statement.setInt(6, claim.getMemberPermissions().hasPermission(ClaimPerm.MOB_KILLING) ? 1 : 0);
+                statement.executeUpdate();
+            }
+
+            String createVisitorPermissions = "INSERT INTO " + this.getTablePrefix() + "permissions (claim_id, type, interact, break, place, mob_kill) VALUES (?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(createVisitorPermissions)) {
+                statement.setInt(1, claimId);
+                statement.setString(2, "visitor");
+                statement.setInt(3, claim.getVisitorPermissions().hasPermission(ClaimPerm.INTERACT) ? 1 : 0);
+                statement.setInt(4, claim.getVisitorPermissions().hasPermission(ClaimPerm.BREAK) ? 1 : 0);
+                statement.setInt(5, claim.getVisitorPermissions().hasPermission(ClaimPerm.PLACE) ? 1 : 0);
+                statement.setInt(6, claim.getVisitorPermissions().hasPermission(ClaimPerm.MOB_KILLING) ? 1 : 0);
+                statement.executeUpdate();
+            }
         }));
     }
 

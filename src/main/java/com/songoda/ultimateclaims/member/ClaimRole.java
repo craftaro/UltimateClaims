@@ -11,6 +11,13 @@ public enum ClaimRole {
     }
 
     public int getIndex() {
-        return index;
+        return this.index;
+    }
+
+    public static ClaimRole fromIndex(int index) {
+        for (ClaimRole role : values())
+            if (role.getIndex() == index)
+                return role;
+        return null;
     }
 }

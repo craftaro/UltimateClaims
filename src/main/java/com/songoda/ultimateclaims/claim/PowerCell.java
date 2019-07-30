@@ -119,7 +119,7 @@ public class PowerCell {
         }
     }
 
-    public long getCurrentPower() {
+    public int getCurrentPower() {
         return currentPower;
     }
 
@@ -137,6 +137,10 @@ public class PowerCell {
             total += getMaterialAmount(material) * getItemValue(material);
         }
         return total;
+    }
+
+    public double getEconomyBalance() {
+        return this.economyBalance;
     }
 
     public long getEconomyPower() {

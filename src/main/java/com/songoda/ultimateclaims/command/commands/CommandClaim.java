@@ -60,11 +60,13 @@ public class CommandClaim extends AbstractCommand {
             if (instance.getHologram() != null)
                 instance.getHologram().update(claim.getPowerCell());
         } else {
-            instance.getClaimManager().addClaim(player,
-                    new ClaimBuilder()
-                            .setOwner(player)
-                            .addClaimedChunk(chunk, player)
-                            .build());
+            Claim newClaim = new ClaimBuilder()
+                    .setOwner(player)
+                    .addClaimedChunk(chunk, player)
+                    .build();
+            instance.getClaimManager().addClaim(player, newClaim);
+
+            instance.getDataManager().createClaim(newClaim);
 
             instance.getLocale().getMessage("command.claim.info")
                     .processPlaceholder("time", Methods.makeReadable((long) (Setting.STARTING_POWER.getInt() * 60 * 1000)))

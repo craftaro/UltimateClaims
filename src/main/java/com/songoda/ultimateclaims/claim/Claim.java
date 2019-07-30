@@ -20,6 +20,7 @@ public class Claim {
     private String name = null;
     private ClaimMember owner;
     private final Set<ClaimMember> members = new HashSet<>();
+
     private final Set<ClaimedChunk> claimedChunks = new HashSet<>();
     private final Set<UUID> bannedPlayers = new HashSet<>();
 
@@ -50,6 +51,10 @@ public class Claim {
 
     public int getId() {
         return this.id;
+    }
+
+    public ClaimedChunk getFirstClaimedChunk() {
+        return this.claimedChunks.iterator().next();
     }
 
     public String getName() {
