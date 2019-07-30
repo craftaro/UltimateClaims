@@ -67,6 +67,19 @@ public class _1_InitialMigration extends DataMigration {
                     "z INTEGER NULLABLE" +
                     ")");
         }
+
+        // Create settings table
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("CREATE TABLE " + tablePrefix + "settings (" +
+                    "id INTEGER PRIMARY KEY, " +
+                    "claim_id INTEGER NOT NULL, " +
+                    "hostile_mob_spawning TINYINT NOT NULL, " +
+                    "fire_spread TINYINT NOT NULL, " +
+                    "mob_griefing TINYINT NOT NULL" +
+                    "leaf_decay TINYINT NOT NULL" +
+                    "pvp TINYINT NOT NULL" +
+                    ")");
+        }
     }
 
 }
