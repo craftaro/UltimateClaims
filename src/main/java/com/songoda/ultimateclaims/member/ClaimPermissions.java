@@ -7,20 +7,24 @@ public class ClaimPermissions {
     private boolean canPlace = false;
     private boolean canMobKill = false;
 
-    public void setCanInteract(boolean canInteract) {
+    public ClaimPermissions setCanInteract(boolean canInteract) {
         this.canInteract = canInteract;
+        return this;
     }
 
-    public void setCanBreak(boolean canBreak) {
+    public ClaimPermissions setCanBreak(boolean canBreak) {
         this.canBreak = canBreak;
+        return this;
     }
 
-    public void setCanPlace(boolean canPlace) {
+    public ClaimPermissions setCanPlace(boolean canPlace) {
         this.canPlace = canPlace;
+        return this;
     }
 
-    public void setCanMobKill(boolean canMobKill) {
+    public ClaimPermissions setCanMobKill(boolean canMobKill) {
         this.canMobKill = canMobKill;
+        return this;
     }
 
     public boolean hasPermission(ClaimPerm perm) {

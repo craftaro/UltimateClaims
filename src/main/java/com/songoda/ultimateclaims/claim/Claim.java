@@ -29,19 +29,17 @@ public class Claim {
 
     private ClaimSettings claimSettings = new ClaimSettings();
 
-    private ClaimPermissions memberPermissions = new ClaimPermissionsBuilder()
-            .setCanBuild(true)
+    private ClaimPermissions memberPermissions = new ClaimPermissions()
+            .setCanBreak(true)
             .setCanInteract(true)
             .setCanPlace(true)
-            .setMobKill(true)
-            .build();
+            .setCanMobKill(true);
 
-    private ClaimPermissions visitorPermissions = new ClaimPermissionsBuilder()
-            .setCanBuild(false)
+    private ClaimPermissions visitorPermissions = new ClaimPermissions()
+            .setCanBreak(false)
             .setCanInteract(false)
             .setCanPlace(false)
-            .setMobKill(false)
-            .build();
+            .setCanMobKill(false);
 
     private PowerCell powerCell = new PowerCell(this);
 
