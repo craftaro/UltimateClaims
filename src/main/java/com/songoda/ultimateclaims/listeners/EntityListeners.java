@@ -94,6 +94,7 @@ public class EntityListeners implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onChange(EntityChangeBlockEvent event) {
         ClaimManager claimManager = plugin.getClaimManager();
+        if (event.getEntity() instanceof Player) return;
 
         if (claimManager.hasClaim(event.getBlock().getLocation().getChunk())) {
             Claim claim = claimManager.getClaim(event.getBlock().getLocation().getChunk());
