@@ -42,5 +42,14 @@ public class TrackerTask extends BukkitRunnable {
             if (claim.isBanned(player.getUniqueId()) || claim.isLocked() && claim.getMember(player).getRole() == ClaimRole.VISITOR)
                 member.eject();
         }
+        for (Claim claim : plugin.getClaimManager().getRegisteredClaims()) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                ClaimMember member = claim.getMember(player);
+                if (member == null || !member.isPresent()) continue;
+                Claim in = plugin.getClaimManager().getClaim(player.getLocation().getChunk());
+                if (in != claim)
+                    member.setPresent(false);
+            }
+        }
     }
 }
