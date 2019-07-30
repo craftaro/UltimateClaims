@@ -18,6 +18,7 @@ import com.songoda.ultimateclaims.settings.PluginSettings;
 import com.songoda.ultimateclaims.tasks.AnimateTask;
 import com.songoda.ultimateclaims.tasks.InviteTask;
 import com.songoda.ultimateclaims.tasks.PowerCellTask;
+import com.songoda.ultimateclaims.tasks.TrackerTask;
 import com.songoda.ultimateclaims.utils.Metrics;
 import com.songoda.ultimateclaims.utils.ServerVersion;
 import com.songoda.ultimateclaims.utils.locale.Locale;
@@ -114,6 +115,7 @@ public class UltimateClaims extends JavaPlugin {
         this.inviteTask = InviteTask.startTask(this);
         AnimateTask.startTask(this);
         PowerCellTask.startTask(this);
+        TrackerTask.startTask(this);
 
         // Setup Economy
         if (Setting.VAULT_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("Vault"))
@@ -147,7 +149,7 @@ public class UltimateClaims extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
-        this.dataManager = new DataManager(this);
+        this.dataManager = new DataManager(this.databaseConnector, this);
         this.dataMigrationManager = new DataMigrationManager(this.databaseConnector, this.dataManager);
         this.dataMigrationManager.runMigrations();
 

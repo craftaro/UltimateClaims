@@ -1,9 +1,10 @@
 package com.songoda.ultimateclaims.member;
 
+import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
@@ -73,5 +74,13 @@ public class ClaimMember {
 
     public OfflinePlayer getPlayer() {
         return Bukkit.getOfflinePlayer(uuid);
+    }
+
+    public void eject() {
+        if (!isPresent || !getPlayer().isOnline()) return;
+        Location spawn = UltimateClaims.getInstance().getPluginSettings().getSpawnPoint();
+        if (spawn == null) return;
+        this.getPlayer().getPlayer().teleport(UltimateClaims.getInstance().getPluginSettings().getSpawnPoint());
+        this.isPresent = false;
     }
 }

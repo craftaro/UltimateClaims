@@ -8,7 +8,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,7 +53,9 @@ public class CommandBan extends AbstractCommand {
                 .processPlaceholder("claim", claim.getName())
                 .sendPrefixedMessage(player);
 
-        claim.removeMember(toBan.getUniqueId());
+        if (claim.getMember(toBan) != null)
+            claim.getMember(toBan).eject();
+        claim.removeMember(toBan);
         claim.banPlayer(toBan.getUniqueId());
         return ReturnType.SUCCESS;
     }

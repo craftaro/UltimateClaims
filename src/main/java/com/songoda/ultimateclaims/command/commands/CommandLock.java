@@ -3,10 +3,13 @@ package com.songoda.ultimateclaims.command.commands;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.command.AbstractCommand;
+import com.songoda.ultimateclaims.member.ClaimMember;
+import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CommandLock extends AbstractCommand {
 
@@ -25,10 +28,14 @@ public class CommandLock extends AbstractCommand {
 
         Claim claim = instance.getClaimManager().getClaim(player);
 
-        if (!claim.isLocked())
+        if (!claim.isLocked()) {
             instance.getLocale().getMessage("command.lock.locked")
                     .sendPrefixedMessage(player);
-        else
+            for (ClaimMember member : claim.getMembers().stream().filter(m -> m.getRole() == ClaimRole.VISITOR)
+                    .collect(Collectors.toList())) {
+                member.eject();
+            }
+        } else
             instance.getLocale().getMessage("command.lock.unlocked")
                     .sendPrefixedMessage(player);
 
