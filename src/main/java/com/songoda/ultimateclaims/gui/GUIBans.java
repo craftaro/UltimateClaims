@@ -77,7 +77,8 @@ public class GUIBans extends AbstractGUI {
         ItemMeta infoMeta = info.getItemMeta();
         infoMeta.setDisplayName(plugin.getLocale().getMessage("interface.bans.infotitle").getMessage());
         List<String> infoLore = new ArrayList<>();
-        String[] infoSplit = plugin.getLocale().getMessage("interface.bans.infolore").getMessage().split("\\|");
+        String[] infoSplit = plugin.getLocale().getMessage("interface.bans.infolore")
+                .processPlaceholder("bancount", claim.getBannedPlayers().size()).getMessage().split("\\|");
         for (String line : infoSplit) infoLore.add(line);
         infoMeta.setLore(infoLore);
         info.setItemMeta(infoMeta);

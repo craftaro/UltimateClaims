@@ -73,6 +73,7 @@ interface.powercell.settingstitle = "&6&lSettings"
 interface.powercell.settingslore = "&7Change your claims settings."
 
 interface.members.title = "Members"
+interface.members.statslore = "&7Total Members: &6%totalmembers%&7.|&7Max Members: &6%maxmembers%&7.|&7Members: &6%members%&7."
 interface.members.skulllore = "&7Role: &a%role%|&7Playtime: &b%playtime%|&7Member Since: &d%membersince%"
 interface.members.changetypetitle = "&7Change Type"
 interface.members.changetypelore = "&7Currently: &d%current%|&7Click to change type."
@@ -92,6 +93,7 @@ interface.permsettings.interacttitle = "&7Interact"
 interface.bans.title = "Bans"
 interface.bans.infotitle = "&7Info"
 interface.bans.skulllore = "&7Click to unban."
+interface.bans.infolore = "&7Ban count: &6%bancount%&7."
 
 interface.settings.title = "Settings"
 
