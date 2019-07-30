@@ -9,6 +9,7 @@ import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,6 +20,8 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
+import org.bukkit.event.vehicle.VehicleMoveEvent;
 
 import java.util.ArrayList;
 
@@ -37,6 +40,16 @@ public class EntityListeners implements Listener {
             event.setCancelled(true);
 
     }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onMove(VehicleMoveEvent event) {
+        for (Entity entity : event.getVehicle().getPassengers()) {
+            if (!(entity instanceof Player)) continue;
+            if (playerMove(event.getFrom().getChunk(), event.getTo().getChunk(), (Player) entity))
+                event.getVehicle().eject();
+        }
+    }
+
 
     private boolean playerMove(Chunk from, Chunk to, Player player) {
         if (from == to) return false;
@@ -95,6 +108,14 @@ public class EntityListeners implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent event) {
         if (playerMove(event.getFrom().getChunk(), event.getTo().getChunk(), event.getPlayer()))
+            event.setCancelled(true);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void ongetIn(VehicleEnterEvent event) {
+        if (!(event.getEntered() instanceof Player)) return;
+        if (playerMove(event.getEntered().getLocation().getChunk(),
+                event.getVehicle().getLocation().getChunk(), (Player) event.getEntered()))
             event.setCancelled(true);
     }
 
