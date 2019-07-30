@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GUIPermSettings extends AbstractGUI {
@@ -75,7 +76,7 @@ public class GUIPermSettings extends AbstractGUI {
                 .processPlaceholder("current", role == ClaimRole.MEMBER
                         ? claim.getMemberPermissions().hasPermission(ClaimPerm.BREAK) : claim.getVisitorPermissions().hasPermission(ClaimPerm.BREAK))
                 .getMessage().split("\\|");
-        for (String line : breakSplit) breakLore.add(line);
+        breakLore.addAll(Arrays.asList(breakSplit));
         breakMeta.setLore(breakLore);
         blockBreak.setItemMeta(breakMeta);
 
@@ -87,7 +88,7 @@ public class GUIPermSettings extends AbstractGUI {
                 .processPlaceholder("current", role == ClaimRole.MEMBER
                         ? claim.getMemberPermissions().hasPermission(ClaimPerm.PLACE) : claim.getVisitorPermissions().hasPermission(ClaimPerm.PLACE))
                 .getMessage().split("\\|");
-        for (String line : placeSplit) placeLore.add(line);
+        placeLore.addAll(Arrays.asList(placeSplit));
         placeMeta.setLore(placeLore);
         place.setItemMeta(placeMeta);
 
@@ -99,15 +100,28 @@ public class GUIPermSettings extends AbstractGUI {
                 .processPlaceholder("current", role == ClaimRole.MEMBER
                         ? claim.getMemberPermissions().hasPermission(ClaimPerm.INTERACT) : claim.getVisitorPermissions().hasPermission(ClaimPerm.INTERACT))
                 .getMessage().split("\\|");
-        for (String line : interactSplit) interactLore.add(line);
+        interactLore.addAll(Arrays.asList(interactSplit));
         interactMeta.setLore(interactLore);
         interact.setItemMeta(interactMeta);
 
+        ItemStack mobKill = new ItemStack(Material.DIAMOND_SWORD);
+        ItemMeta mobKillMeta = mobKill.getItemMeta();
+        mobKillMeta.setDisplayName(plugin.getLocale().getMessage("interface.permsettings.mobkilltitle").getMessage());
+        List<String> mobKillLore = new ArrayList<>();
+        String[] mobKillSplit = plugin.getLocale().getMessage("general.interface.current")
+                .processPlaceholder("current", role == ClaimRole.MEMBER
+                        ? claim.getMemberPermissions().hasPermission(ClaimPerm.MOB_KILLING) : claim.getVisitorPermissions().hasPermission(ClaimPerm.MOB_KILLING))
+                .getMessage().split("\\|");
+        mobKillLore.addAll(Arrays.asList(mobKillSplit));
+        mobKillMeta.setLore(mobKillLore);
+        mobKill.setItemMeta(mobKillMeta);
+
         inventory.setItem(0, exit);
         inventory.setItem(8, exit);
-        inventory.setItem(11, blockBreak);
-        inventory.setItem(13, place);
-        inventory.setItem(15, interact);
+        inventory.setItem(10, blockBreak);
+        inventory.setItem(12, place);
+        inventory.setItem(14, interact);
+        inventory.setItem(16, mobKill);
     }
 
     @Override
@@ -118,7 +132,7 @@ public class GUIPermSettings extends AbstractGUI {
         registerClickable(8, (player, inventory, cursor, slot, type) ->
                 new GUIMembers(player, claim, back));
 
-        registerClickable(11, (player, inventory, cursor, slot, type) -> {
+        registerClickable(10, (player, inventory, cursor, slot, type) -> {
             // Toggle block break perms
             if (role == ClaimRole.MEMBER)
                 claim.getMemberPermissions().setCanBreak(!claim.getMemberPermissions().hasPermission(ClaimPerm.BREAK));
@@ -127,7 +141,7 @@ public class GUIPermSettings extends AbstractGUI {
             constructGUI();
         });
 
-        registerClickable(13, (player, inventory, cursor, slot, type) -> {
+        registerClickable(12, (player, inventory, cursor, slot, type) -> {
             // Toggle block place perms
             if (role == ClaimRole.MEMBER)
                 claim.getMemberPermissions().setCanPlace(!claim.getMemberPermissions().hasPermission(ClaimPerm.PLACE));
@@ -136,12 +150,21 @@ public class GUIPermSettings extends AbstractGUI {
             constructGUI();
         });
 
-        registerClickable(15, (player, inventory, cursor, slot, type) -> {
+        registerClickable(14, (player, inventory, cursor, slot, type) -> {
             // Toggle block interact perms
             if (role == ClaimRole.MEMBER)
                 claim.getMemberPermissions().setCanInteract(!claim.getMemberPermissions().hasPermission(ClaimPerm.INTERACT));
             else
                 claim.getVisitorPermissions().setCanInteract(!claim.getVisitorPermissions().hasPermission(ClaimPerm.INTERACT));
+            constructGUI();
+        });
+
+        registerClickable(16, (player, inventory, cursor, slot, type) -> {
+            // Toggle block interact perms
+            if (role == ClaimRole.MEMBER)
+                claim.getMemberPermissions().setCanMobKill(!claim.getMemberPermissions().hasPermission(ClaimPerm.MOB_KILLING));
+            else
+                claim.getVisitorPermissions().setCanMobKill(!claim.getVisitorPermissions().hasPermission(ClaimPerm.MOB_KILLING));
             constructGUI();
         });
     }

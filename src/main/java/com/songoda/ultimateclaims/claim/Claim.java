@@ -32,12 +32,14 @@ public class Claim {
             .setCanBuild(true)
             .setCanInteract(true)
             .setCanPlace(true)
+            .setMobKill(true)
             .build();
 
     private ClaimPermissions visitorPermissions = new ClaimPermissionsBuilder()
             .setCanBuild(false)
             .setCanInteract(false)
             .setCanPlace(false)
+            .setMobKill(false)
             .build();
 
     private PowerCell powerCell = new PowerCell(this);

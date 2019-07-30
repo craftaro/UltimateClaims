@@ -23,6 +23,11 @@ public class ClaimPermissionsBuilder {
         return this;
     }
 
+    public ClaimPermissionsBuilder setMobKill(boolean option) {
+        this.claimPermissions.setCanMobKill(option);
+        return this;
+    }
+
     public ClaimPermissions build() {
         return claimPermissions;
     }

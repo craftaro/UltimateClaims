@@ -46,7 +46,7 @@ public class CommandBan extends AbstractCommand {
 
         if (toBan.isOnline())
             instance.getLocale().getMessage("command.ban.banned")
-                    .processPlaceholder("claim", toBan.getName())
+                    .processPlaceholder("claim", claim.getName())
                     .sendPrefixedMessage(toBan.getPlayer());
 
         instance.getLocale().getMessage("command.ban.ban")

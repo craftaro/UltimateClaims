@@ -3,17 +3,24 @@ package com.songoda.ultimateclaims.listeners;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
+import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
+import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Chunk;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+
+import java.util.ArrayList;
 
 public class EntityListeners implements Listener {
 
@@ -25,14 +32,21 @@ public class EntityListeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onMove(PlayerMoveEvent event) {
-        if (event.getFrom().getChunk() == event.getTo().getChunk()) return;
+        if (event.getTo() == null) return;
+        if (playerMove(event.getFrom().getChunk(), event.getTo().getChunk(), event.getPlayer()))
+            event.setCancelled(true);
+
+    }
+
+    private boolean playerMove(Chunk from, Chunk to, Player player) {
+        if (from == to) return false;
 
         ClaimManager claimManager = plugin.getClaimManager();
 
-        if (claimManager.hasClaim(event.getFrom().getChunk())) {
-            Claim claim = claimManager.getClaim(event.getFrom().getChunk());
-            if (claimManager.getClaim(event.getTo().getChunk()) != claim) {
-                ClaimMember member = claim.getMember(event.getPlayer());
+        if (claimManager.hasClaim(from)) {
+            Claim claim = claimManager.getClaim(from);
+            if (claimManager.getClaim(to) != claim) {
+                ClaimMember member = claim.getMember(player);
                 if (member != null) {
                     if (member.getRole() == ClaimRole.VISITOR)
                         claim.removeMember(member);
@@ -41,25 +55,24 @@ public class EntityListeners implements Listener {
                 }
                 plugin.getLocale().getMessage("event.claim.exit")
                         .processPlaceholder("claim", claim.getName())
-                        .sendPrefixedMessage(event.getPlayer());
+                        .sendPrefixedMessage(player);
             }
         }
 
-        if (claimManager.hasClaim(event.getTo().getChunk())) {
-            Claim claim = claimManager.getClaim(event.getTo().getChunk());
-            if (claimManager.getClaim(event.getFrom().getChunk()) != claim) {
-                ClaimMember member = claim.getMember(event.getPlayer());
+        if (claimManager.hasClaim(to)) {
+            Claim claim = claimManager.getClaim(to);
+            if (claimManager.getClaim(from) != claim) {
+                ClaimMember member = claim.getMember(player);
                 if (member == null) {
-                    if (claim.isLocked() && !event.getPlayer().hasPermission("ultimateclaims.bypass")) {
+                    if (claim.isLocked() && !player.hasPermission("ultimateclaims.bypass")) {
                         plugin.getLocale().getMessage("event.claim.locked")
-                                .sendPrefixedMessage(event.getPlayer());
-                        event.setCancelled(true);
-                        return;
+                                .sendPrefixedMessage(player);
+                        return true;
                     }
 
-                    if (!event.getPlayer().hasPermission("ultimateclaims.bypass")) {
-                        claim.addMember(event.getPlayer(), ClaimRole.VISITOR);
-                        member = claim.getMember(event.getPlayer());
+                    if (!player.hasPermission("ultimateclaims.bypass")) {
+                        claim.addMember(player, ClaimRole.VISITOR);
+                        member = claim.getMember(player);
                     }
                 }
                 if (member != null)
@@ -67,16 +80,22 @@ public class EntityListeners implements Listener {
 
                 if (member != null && claim.isBanned(member.getUniqueId())) {
                     plugin.getLocale().getMessage("event.claim.locked")
-                            .sendPrefixedMessage(event.getPlayer());
-                    event.setCancelled(true);
-                    return;
+                            .sendPrefixedMessage(player);
+                    return true;
                 }
 
                 plugin.getLocale().getMessage("event.claim.enter")
                         .processPlaceholder("claim", claim.getName())
-                        .sendPrefixedMessage(event.getPlayer());
+                        .sendPrefixedMessage(player);
             }
         }
+        return false;
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onTeleport(PlayerTeleportEvent event) {
+        if (playerMove(event.getFrom().getChunk(), event.getTo().getChunk(), event.getPlayer()))
+            event.setCancelled(true);
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -106,17 +125,36 @@ public class EntityListeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onDamage(EntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof Player)
-                || !(event.getDamager() instanceof Player)) return;
+        if (!(event.getDamager() instanceof Player)) return;
 
         ClaimManager claimManager = plugin.getClaimManager();
-
         Chunk chunk = event.getEntity().getLocation().getChunk();
 
         if (claimManager.hasClaim(chunk)) {
             Claim claim = claimManager.getClaim(chunk);
+            if (!(event.getEntity() instanceof Player)) {
+                if (!claim.playerHasPerms((Player) event.getDamager(), ClaimPerm.MOB_KILLING))
+                    event.setCancelled(true);
+                return;
+            }
+
             if (!claim.getClaimSettings().isPvp()) {
                 event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onBlowUp(EntityExplodeEvent event) {
+        ClaimManager claimManager = plugin.getClaimManager();
+        for (Block block : new ArrayList<>(event.blockList())) {
+            if (!claimManager.hasClaim(block.getChunk())) return;
+
+            Claim claim = claimManager.getClaim(block.getChunk());
+            PowerCell powerCell = claim.getPowerCell();
+
+            if (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation())) {
+                event.blockList().remove(block);
             }
         }
     }
