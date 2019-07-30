@@ -24,12 +24,13 @@ public class Methods {
             for (int zz = bz; zz < bz + 16; zz++) {
                 for (int yy = player.getLocation().getBlockY() - 5; yy < player.getLocation().getBlockY() + 5; yy++) {
                     Block block = world.getBlockAt(xx, yy, zz);
-                    if (block.getType() == Material.AIR || block.isPassable()) continue;
+                    if (block.getType() == Material.AIR) continue; //  || block.isPassable()
                     Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () -> {
                         player.sendBlockChange(block.getLocation(), material, (byte) 0);
                         Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () ->
                                 player.sendBlockChange(block.getLocation(), block.getType(), block.getData()), random.nextInt(30) + 1);
-                        player.playSound(block.getLocation(), Sound.BLOCK_METAL_STEP, 1F, .2F);
+                        if (UltimateClaims.getInstance().isServerVersionAtLeast(ServerVersion.V1_9))
+                            player.playSound(block.getLocation(), Sound.BLOCK_METAL_STEP, 1F, .2F);
                     }, random.nextInt(30) + 1);
                 }
             }

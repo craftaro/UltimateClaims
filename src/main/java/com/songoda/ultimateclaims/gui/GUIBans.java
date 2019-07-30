@@ -125,7 +125,6 @@ public class GUIBans extends AbstractGUI {
                         Material.PLAYER_HEAD : Material.valueOf("SKULL"));
                 if (!plugin.isServerVersionAtLeast(ServerVersion.V1_13)) skull.setDurability((short) 3);
                 SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-                skullMeta.setOwningPlayer(skullPlayer);
                 if (plugin.isServerVersionAtLeast(ServerVersion.V1_13))
                     skullMeta.setOwningPlayer(skullPlayer);
                 else

@@ -118,7 +118,7 @@ public class GUIMembers extends AbstractGUI {
         statsMeta.setLore(statsLore);
         stats.setItemMeta(statsMeta);
 
-        ItemStack visitor = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_SIGN : Material.valueOf("SIGN"));
+        ItemStack visitor = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_14) ? Material.OAK_SIGN : Material.valueOf("SIGN"));
         ItemMeta visitorMeta = visitor.getItemMeta();
         visitorMeta.setDisplayName(plugin.getLocale().getMessage("interface.members.visitorsettingstitle").getMessage());
         List<String> visitorLore = new ArrayList<>();
@@ -195,7 +195,6 @@ public class GUIMembers extends AbstractGUI {
                         Material.PLAYER_HEAD : Material.valueOf("SKULL"));
                 if (!plugin.isServerVersionAtLeast(ServerVersion.V1_13)) skull.setDurability((short) 3);
                 SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-                skullMeta.setOwningPlayer(skullPlayer);
                 if (plugin.isServerVersionAtLeast(ServerVersion.V1_13))
                     skullMeta.setOwningPlayer(skullPlayer);
                 else

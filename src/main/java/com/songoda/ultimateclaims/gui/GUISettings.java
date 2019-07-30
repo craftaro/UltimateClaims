@@ -64,7 +64,7 @@ public class GUISettings extends AbstractGUI {
 
         int i = 11;
         if (player.hasPermission("ultimateclaims.toggle.hostilemobspawning")) {
-            ItemStack hostileMobSpawning = new ItemStack(Material.ZOMBIE_SPAWN_EGG);
+            ItemStack hostileMobSpawning = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.ZOMBIE_SPAWN_EGG : Material.valueOf("MONSTER_EGG"));
             ItemMeta hostileMobSpawningMeta = hostileMobSpawning.getItemMeta();
             hostileMobSpawningMeta.setDisplayName(plugin.getLocale().getMessage("interface.settings.hostilemobspawningtitle").getMessage());
             List<String> hostileMobSpawningLore = new ArrayList<>();
@@ -127,7 +127,7 @@ public class GUISettings extends AbstractGUI {
         }
 
         if (player.hasPermission("ultimateclaims.toggle.mobgriefing")) {
-            ItemStack mobGriefing = new ItemStack(Material.GUNPOWDER);
+            ItemStack mobGriefing = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.GUNPOWDER : Material.valueOf("SULPHUR"));
             ItemMeta mobGriefingMeta = mobGriefing.getItemMeta();
             mobGriefingMeta.setDisplayName(plugin.getLocale().getMessage("interface.settings.mobgriefingtitle").getMessage());
             List<String> mobGriefingLore = new ArrayList<>();
@@ -148,7 +148,7 @@ public class GUISettings extends AbstractGUI {
         }
 
         if (player.hasPermission("ultimateclaims.toggle.leafdecay")) {
-            ItemStack leafDecay = new ItemStack(Material.OAK_LEAVES);
+            ItemStack leafDecay = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_LEAVES : Material.valueOf("LEAVES"));
             ItemMeta leafDecayMeta = leafDecay.getItemMeta();
             leafDecayMeta.setDisplayName(plugin.getLocale().getMessage("interface.settings.leafdecaytitle").getMessage());
             List<String> leafDecayLore = new ArrayList<>();

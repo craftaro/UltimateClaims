@@ -84,7 +84,7 @@ public class GUIPowerCell extends AbstractGUI {
     }
 
     private void createButtons() {
-        ItemStack economy = new ItemStack(Material.SUNFLOWER);
+        ItemStack economy = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SUNFLOWER : Material.valueOf("DOUBLE_PLANT"));
         ItemMeta economyMeta = economy.getItemMeta();
         economyMeta.setDisplayName(plugin.getLocale().getMessage("interface.powercell.economytitle")
                 .processPlaceholder("time", Methods.makeReadable((long) powercell.getEconomyPower() * 60 * 1000)).getMessage());
