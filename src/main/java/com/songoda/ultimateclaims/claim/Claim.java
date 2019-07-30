@@ -44,6 +44,10 @@ public class Claim {
 
     private PowerCell powerCell = new PowerCell(this);
 
+    public int getId() {
+        return this.id;
+    }
+
     public String getName() {
         return name;
     }
@@ -117,7 +121,7 @@ public class Claim {
     }
 
     public boolean containsChunk(Chunk chunk) {
-        return this.claimedChunks.stream().anyMatch(x -> x.equals(new ClaimedChunk(chunk)));
+        return this.claimedChunks.stream().anyMatch(x -> x.equals(new ClaimedChunk(this, chunk)));
     }
 
     public int getClaimSize() {
@@ -125,7 +129,7 @@ public class Claim {
     }
 
     public void addClaimedChunk(Chunk chunk) {
-        this.claimedChunks.add(new ClaimedChunk(chunk));
+        this.claimedChunks.add(new ClaimedChunk(this, chunk));
     }
 
     public void addClaimedChunk(Chunk chunk, Player player) {
@@ -134,7 +138,7 @@ public class Claim {
     }
 
     public void removeClaimedChunk(Chunk chunk) {
-        this.claimedChunks.remove(new ClaimedChunk(chunk));
+        this.claimedChunks.remove(new ClaimedChunk(this, chunk));
     }
 
     public void removeClaimedChunk(Chunk chunk, Player player) {

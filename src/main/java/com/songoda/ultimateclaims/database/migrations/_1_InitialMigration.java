@@ -75,9 +75,22 @@ public class _1_InitialMigration extends DataMigration {
                     "claim_id INTEGER NOT NULL, " +
                     "hostile_mob_spawning TINYINT NOT NULL, " +
                     "fire_spread TINYINT NOT NULL, " +
-                    "mob_griefing TINYINT NOT NULL" +
-                    "leaf_decay TINYINT NOT NULL" +
+                    "mob_griefing TINYINT NOT NULL, " +
+                    "leaf_decay TINYINT NOT NULL, " +
                     "pvp TINYINT NOT NULL" +
+                    ")");
+        }
+
+        // Create permissions table
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("CREATE TABLE " + tablePrefix + "permissions (" +
+                    "id INTEGER PRIMARY KEY, " +
+                    "claim_id INTEGER NOT NULL, " +
+                    "type TEXT NOT NULL, " +
+                    "interact TINYINT NOT NULL, " +
+                    "break TINYINT NOT NULL, " +
+                    "place TINYINT NOT NULL, " +
+                    "mob_kill TINYINT NOT NULL" +
                     ")");
         }
     }

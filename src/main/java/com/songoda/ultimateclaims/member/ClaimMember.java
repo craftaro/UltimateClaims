@@ -23,6 +23,14 @@ public class ClaimMember {
         this.role = role;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
     public Claim getClaim() {
         return claim;
     }

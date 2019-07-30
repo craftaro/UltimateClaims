@@ -14,14 +14,27 @@ public class ClaimedChunk {
     private final int x;
     private final int z;
 
-    public ClaimedChunk(Chunk chunk) {
-        this(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
+    public ClaimedChunk(Claim claim, Chunk chunk) {
+        this(claim, chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
     }
 
-    public ClaimedChunk(String world, int x, int z) {
+    public ClaimedChunk(Claim claim, String world, int x, int z) {
+        this.claim = claim;
         this.world = world;
         this.x = x;
         this.z = z;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public Claim getClaim() {
+        return this.claim;
     }
 
     public Chunk getChunk() {
