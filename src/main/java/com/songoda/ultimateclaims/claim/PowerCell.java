@@ -39,7 +39,7 @@ public class PowerCell {
         }
 
         UltimateClaims plugin = UltimateClaims.getInstance();
-        if (this.currentPower <= 0 && getLocation() != null) {
+        if (this.currentPower <= 0 && location != null) {
             List<String> materials = Setting.ITEM_VALUES.getStringList();
             for (String value : materials) {
                 Material material = Material.valueOf(value.split(":")[0]);

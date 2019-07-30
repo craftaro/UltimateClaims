@@ -36,8 +36,11 @@ public class EntityListeners implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onMove(PlayerMoveEvent event) {
         if (event.getTo() == null) return;
-        if (playerMove(event.getFrom().getChunk(), event.getTo().getChunk(), event.getPlayer()))
+        if (playerMove(event.getFrom().getChunk(), event.getTo().getChunk(), event.getPlayer())) {
+            if (event.getPlayer().isInsideVehicle())
+                event.getPlayer().leaveVehicle();
             event.setCancelled(true);
+        }
 
     }
 
@@ -45,8 +48,9 @@ public class EntityListeners implements Listener {
     public void onMove(VehicleMoveEvent event) {
         for (Entity entity : event.getVehicle().getPassengers()) {
             if (!(entity instanceof Player)) continue;
-            if (playerMove(event.getFrom().getChunk(), event.getTo().getChunk(), (Player) entity))
-                event.getVehicle().eject();
+            if (playerMove(event.getFrom().getChunk(), event.getTo().getChunk(), (Player) entity)) {
+                entity.leaveVehicle();
+            }
         }
     }
 
