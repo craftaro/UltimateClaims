@@ -55,61 +55,6 @@ public class EntityListeners implements Listener {
         }
     }
 
-
-    private boolean playerMove(Chunk from, Chunk to, Player player) {
-        if (from == to) return false;
-
-        ClaimManager claimManager = plugin.getClaimManager();
-
-        if (claimManager.hasClaim(from)) {
-            Claim claim = claimManager.getClaim(from);
-            if (claimManager.getClaim(to) != claim) {
-                ClaimMember member = claim.getMember(player);
-                if (member != null) {
-                    if (member.getRole() == ClaimRole.VISITOR)
-                        claim.removeMember(member);
-                    else
-                        member.setPresent(false);
-                }
-                plugin.getLocale().getMessage("event.claim.exit")
-                        .processPlaceholder("claim", claim.getName())
-                        .sendPrefixedMessage(player);
-            }
-        }
-
-        if (claimManager.hasClaim(to)) {
-            Claim claim = claimManager.getClaim(to);
-            if (claimManager.getClaim(from) != claim) {
-                ClaimMember member = claim.getMember(player);
-                if (member == null) {
-                    if (claim.isLocked() && !player.hasPermission("ultimateclaims.bypass")) {
-                        plugin.getLocale().getMessage("event.claim.locked")
-                                .sendPrefixedMessage(player);
-                        return true;
-                    }
-
-                    if (!player.hasPermission("ultimateclaims.bypass")) {
-                        claim.addMember(player, ClaimRole.VISITOR);
-                        member = claim.getMember(player);
-                    }
-                }
-                if (member != null)
-                    member.setPresent(true);
-
-                if (member != null && claim.isBanned(member.getUniqueId())) {
-                    plugin.getLocale().getMessage("event.claim.locked")
-                            .sendPrefixedMessage(player);
-                    return true;
-                }
-
-                plugin.getLocale().getMessage("event.claim.enter")
-                        .processPlaceholder("claim", claim.getName())
-                        .sendPrefixedMessage(player);
-            }
-        }
-        return false;
-    }
-
     @EventHandler(ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent event) {
         if (playerMove(event.getFrom().getChunk(), event.getTo().getChunk(), event.getPlayer()))
@@ -188,5 +133,59 @@ public class EntityListeners implements Listener {
                 event.blockList().remove(block);
             }
         }
+    }
+
+    private boolean playerMove(Chunk from, Chunk to, Player player) {
+        if (from == to) return false;
+
+        ClaimManager claimManager = plugin.getClaimManager();
+
+        if (claimManager.hasClaim(from)) {
+            Claim claim = claimManager.getClaim(from);
+            if (claimManager.getClaim(to) != claim) {
+                ClaimMember member = claim.getMember(player);
+                if (member != null) {
+                    if (member.getRole() == ClaimRole.VISITOR)
+                        claim.removeMember(member);
+                    else
+                        member.setPresent(false);
+                }
+                plugin.getLocale().getMessage("event.claim.exit")
+                        .processPlaceholder("claim", claim.getName())
+                        .sendPrefixedMessage(player);
+            }
+        }
+
+        if (claimManager.hasClaim(to)) {
+            Claim claim = claimManager.getClaim(to);
+            if (claimManager.getClaim(from) != claim) {
+                ClaimMember member = claim.getMember(player);
+                if (member == null) {
+                    if (claim.isLocked() && !player.hasPermission("ultimateclaims.bypass")) {
+                        plugin.getLocale().getMessage("event.claim.locked")
+                                .sendPrefixedMessage(player);
+                        return true;
+                    }
+
+                    if (!player.hasPermission("ultimateclaims.bypass")) {
+                        claim.addMember(player, ClaimRole.VISITOR);
+                        member = claim.getMember(player);
+                    }
+                }
+                if (member != null)
+                    member.setPresent(true);
+
+                if (member != null && claim.isBanned(member.getUniqueId())) {
+                    plugin.getLocale().getMessage("event.claim.locked")
+                            .sendPrefixedMessage(player);
+                    return true;
+                }
+
+                plugin.getLocale().getMessage("event.claim.enter")
+                        .processPlaceholder("claim", claim.getName())
+                        .sendPrefixedMessage(player);
+            }
+        }
+        return false;
     }
 }

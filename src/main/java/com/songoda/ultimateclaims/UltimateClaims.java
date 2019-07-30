@@ -80,10 +80,11 @@ public class UltimateClaims extends JavaPlugin {
         console.sendMessage(Methods.formatText("&7UltimateClaims " + this.getDescription().getVersion() + " by &5Songoda <3&7!"));
         console.sendMessage(Methods.formatText("&7Action: &aEnabling&7..."));
 
+        // Setup Setting Manager
         this.settingsManager = new SettingsManager(this);
         this.settingsManager.setupConfig();
 
-        // Setup language
+        // Setup Language
         new Locale(this, "en_US");
         this.locale = Locale.getLocale(getConfig().getString("System.Language Mode"));
 

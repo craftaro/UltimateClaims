@@ -175,7 +175,7 @@ public class PowerCell {
     }
 
     public Location getLocation() {
-        return location.clone();
+        return location == null ? null : location.clone();
     }
 
     public boolean hasLocation() {
