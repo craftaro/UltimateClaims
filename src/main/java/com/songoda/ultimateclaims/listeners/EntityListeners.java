@@ -10,6 +10,7 @@ import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -177,6 +178,11 @@ public class EntityListeners implements Listener {
 
             Claim claim = claimManager.getClaim(block.getChunk());
             PowerCell powerCell = claim.getPowerCell();
+
+            if (event.getEntity().getType() == EntityType.CREEPER
+                    && claim.getClaimSettings().isMobGriefing()) {
+                event.blockList().remove(block);
+            }
 
             if (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation())) {
                 event.blockList().remove(block);

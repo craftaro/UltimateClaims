@@ -14,6 +14,7 @@ import com.songoda.ultimateclaims.economy.VaultEconomy;
 import com.songoda.ultimateclaims.hologram.Hologram;
 import com.songoda.ultimateclaims.hologram.HologramHolographicDisplays;
 import com.songoda.ultimateclaims.listeners.*;
+import com.songoda.ultimateclaims.settings.PluginSettings;
 import com.songoda.ultimateclaims.tasks.AnimateTask;
 import com.songoda.ultimateclaims.tasks.InviteTask;
 import com.songoda.ultimateclaims.tasks.PowerCellTask;
@@ -43,6 +44,7 @@ public class UltimateClaims extends JavaPlugin {
     private Locale locale;
     private Economy economy;
     private Hologram hologram;
+    private PluginSettings pluginSettings;
     private DatabaseConnector databaseConnector;
 
     private SettingsManager settingsManager;
@@ -106,6 +108,7 @@ public class UltimateClaims extends JavaPlugin {
         // Managers
         this.commandManager = new CommandManager(this);
         this.claimManager = new ClaimManager();
+        this.pluginSettings = new PluginSettings();
 
         // Tasks
         this.inviteTask = InviteTask.startTask(this);
@@ -206,5 +209,9 @@ public class UltimateClaims extends JavaPlugin {
 
     public Hologram getHologram() {
         return hologram;
+    }
+
+    public PluginSettings getPluginSettings() {
+        return pluginSettings;
     }
 }
