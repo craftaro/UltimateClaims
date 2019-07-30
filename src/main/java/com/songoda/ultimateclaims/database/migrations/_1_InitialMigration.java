@@ -14,6 +14,18 @@ public class _1_InitialMigration extends DataMigration {
 
     @Override
     public void migrate(Connection connection, String tablePrefix) throws SQLException {
+        // Create plugin settings table
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("CREATE TABLE " + tablePrefix + "plugin_settings (" +
+                    "spawn_world TEXT NULLABLE, " +
+                    "spawn_x DOUBLE NULLABLE, " +
+                    "spawn_y DOUBLE NULLABLE, " +
+                    "spawn_z DOUBLE NULLABLE, " +
+                    "spawn_pitch DOUBLE NULLABLE, " +
+                    "spawn_yaw DOUBLE NULLABLE" +
+                    ")");
+        }
+
         // Create claim table
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE " + tablePrefix + "claim (" +

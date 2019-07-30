@@ -44,6 +44,10 @@ public class Claim {
 
     private PowerCell powerCell = new PowerCell(this);
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public int getId() {
         return this.id;
     }
