@@ -183,6 +183,7 @@ public class GUIPowerCell extends AbstractGUI {
                             return;
                         }
                         double amount = Double.parseDouble(event.getMessage());
+                        if (amount < 1) return;
                         if (plugin.getEconomy().hasBalance(player, amount)) {
                             plugin.getEconomy().withdrawBalance(player, amount);
                             powercell.addEconomy(amount);

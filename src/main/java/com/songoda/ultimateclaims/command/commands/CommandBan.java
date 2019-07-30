@@ -39,7 +39,7 @@ public class CommandBan extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        if (player.getUniqueId() == toBan.getUniqueId()) {
+        if (player.getUniqueId().equals(toBan.getUniqueId())) {
             instance.getLocale().getMessage("command.ban.notself").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }

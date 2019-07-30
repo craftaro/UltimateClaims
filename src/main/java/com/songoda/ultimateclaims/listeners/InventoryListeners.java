@@ -46,7 +46,7 @@ public class InventoryListeners implements Listener {
 
         Claim claim = claimManager.getClaim(chunk);
 
-        if (claim.getOwner().getUniqueId() != player.getUniqueId()
+        if (!claim.getOwner().getUniqueId().equals(player.getUniqueId())
                 || claim.getPowerCell().hasLocation()) return;
 
         List<String> recipe = Setting.POWERCELL_RECIPE.getStringList();

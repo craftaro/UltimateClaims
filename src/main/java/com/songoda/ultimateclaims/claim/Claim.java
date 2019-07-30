@@ -77,9 +77,9 @@ public class Claim {
     }
 
     public ClaimMember getMember(UUID uuid) {
-        if (owner.getUniqueId() == uuid)
+        if (owner.getUniqueId().equals(uuid))
             return owner;
-        Optional<ClaimMember> optional = this.members.stream().filter(member -> member.getUniqueId() == uuid).findFirst();
+        Optional<ClaimMember> optional = this.members.stream().filter(member -> member.getUniqueId().equals(uuid)).findFirst();
         return optional.orElse(null);
     }
 
@@ -88,7 +88,7 @@ public class Claim {
     }
 
     public void removeMember(UUID uuid) {
-        Optional<ClaimMember> optional = this.members.stream().filter(member -> member.getUniqueId() == uuid).findFirst();
+        Optional<ClaimMember> optional = this.members.stream().filter(member -> member.getUniqueId().equals(uuid)).findFirst();
         optional.ifPresent(this.members::remove);
     }
 
@@ -103,14 +103,14 @@ public class Claim {
     public boolean playerHasPerms(Player player, ClaimPerm claimPerm) {
         ClaimMember member = getMember(player);
         if (player.hasPermission("ultimateclaims.bypass")
-                || player.getUniqueId() == owner.getUniqueId()) return true;
+                || player.getUniqueId().equals(owner.getUniqueId())) return true;
         if (member == null) return false;
         return member.getRole() == ClaimRole.VISITOR && getVisitorPermissions().hasPermission(claimPerm)
                 || member.getRole() == ClaimRole.MEMBER && getMemberPermissions().hasPermission(claimPerm);
     }
 
     public boolean isOwnerOrMember(OfflinePlayer player) {
-        if (player.getUniqueId() == owner.getUniqueId()) return true;
+        if (player.getUniqueId().equals(owner.getUniqueId())) return true;
         return this.members.stream().anyMatch(member -> member.getRole() == ClaimRole.MEMBER);
     }
 

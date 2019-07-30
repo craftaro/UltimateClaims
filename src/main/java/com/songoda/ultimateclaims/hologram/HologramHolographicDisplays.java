@@ -14,7 +14,6 @@ public class HologramHolographicDisplays extends Hologram {
 
     @Override
     public void add(Location location, String line) {
-        fixLocation(location);
         com.gmail.filoghost.holographicdisplays.api.Hologram hologram = HologramsAPI.createHologram(plugin, location);
         hologram.appendTextLine(line);
     }
@@ -32,8 +31,8 @@ public class HologramHolographicDisplays extends Hologram {
 
     @Override
     public void update(Location location, String line) {
+        fixLocation(location);
         for (com.gmail.filoghost.holographicdisplays.api.Hologram hologram : HologramsAPI.getHolograms(plugin)) {
-            fixLocation(location);
             if (hologram.getX() != location.getX()
                     || hologram.getY() != location.getY()
                     || hologram.getZ() != location.getZ()) continue;

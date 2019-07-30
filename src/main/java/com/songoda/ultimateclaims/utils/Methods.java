@@ -24,7 +24,7 @@ public class Methods {
             for (int zz = bz; zz < bz + 16; zz++) {
                 for (int yy = player.getLocation().getBlockY() - 5; yy < player.getLocation().getBlockY() + 5; yy++) {
                     Block block = world.getBlockAt(xx, yy, zz);
-                    if (block.getType() == Material.AIR) continue; //  || block.isPassable()
+                    if (block.getType() == Material.AIR || UltimateClaims.getInstance().isServerVersionAtLeast(ServerVersion.V1_12) && block.isPassable()) continue;
                     Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () -> {
                         player.sendBlockChange(block.getLocation(), material, (byte) 0);
                         Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () ->

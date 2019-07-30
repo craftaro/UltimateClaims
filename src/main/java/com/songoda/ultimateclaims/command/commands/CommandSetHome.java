@@ -27,7 +27,7 @@ public class CommandSetHome extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        if (claim.getOwner().getUniqueId() != player.getUniqueId()) {
+        if (!claim.getOwner().getUniqueId().equals(player.getUniqueId())) {
             instance.getLocale().getMessage("command.general.notyourclaim").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }

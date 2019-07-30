@@ -100,7 +100,7 @@ interface.settings.hostilemobspawningtitle = "&6&lHostile Mob Spawning"
 interface.settings.firespreadtitle = "&6&lFire Spread"
 interface.settings.pvptitle = "&6&lPVP"
 interface.settings.mobgriefingtitle = "&6&lMob Griefing"
-interface.settings.leafdecaytitle" = "&6&lLeaf Decay"
+interface.settings.leafdecaytitle = "&6&lLeaf Decay"
 
 interface.recipe.title = "Powercell Recipe"
 

@@ -21,6 +21,19 @@ permissions:
       ultimateclaims.toggle.pvp: true
       ultimateclaims.toggle.mobgriefing: true
       ultimateclaims.toggle.leafdecay: true
+      ultimateclaims.accept: true
+      ultimateclaims.ban: true
+      ultimateclaims.claim: true
+      ultimateclaims.dissolve: true
+      ultimateclaims.home: true
+      ultimateclaims.invite: true
+      ultimateclaims.kick: true
+      ultimateclaims.leave: true
+      ultimateclaims.lock: true
+      ultimateclaims.recipe: true
+      ultimateclaims.sethome: true
+      ultimateclaims.unban: true
+      ultimateclaims.unclaim: true
   ultimateclaims.bypass:
     description: Allows a player or admin to bypass claim restrictions.
     default: op
@@ -38,4 +51,43 @@ permissions:
     default: op
   ultimateclaims.toggle.leafdecay:
     description: Allows the claim owner to toggle leaf decay.
+    default: op
+  ultimateclaims.accept:
+    description: Accept the latest claim invitation.
+    default: op
+  ultimateclaims.ban:
+    description: Ban a member from your claim.
+    default: op
+  ultimateclaims.claim:
+    description: Claim the land you are currently standing in for your claim.
+    default: op
+  ultimateclaims.dissolve:
+    description: Dissolve your claim.
+    default: op
+  ultimateclaims.home:
+    description: Go to a claims home.
+    default: op
+  ultimateclaims.invite:
+    description: Invite a player to join your claim.
+    default: op
+  ultimateclaims.kick:
+    description: Kick a member from your claim.
+    default: op
+  ultimateclaims.leave:
+    description: Leave a claim that you are a member of.
+    default: op
+  ultimateclaims.lock:
+    description: Lock or unlock your claim.
+    default: op
+  ultimateclaims.recipe:
+    description: View the recipe for a powercell.
+    default: op
+  ultimateclaims.sethome:
+    description: Set the home for your claim.
+    default: op
+  ultimateclaims.unban:
+    description: Unban a member from your claim.
+    default: op
+  ultimateclaims.unclaim:
+    description: Unclaim land from your claim.
     default: op

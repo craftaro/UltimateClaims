@@ -42,12 +42,13 @@ public class CommandInvite extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        if (player.getUniqueId() == invited.getUniqueId()) {
+        if (player.getUniqueId().equals(invited.getUniqueId())) {
             instance.getLocale().getMessage("command.invite.notself").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
-        if (claim.getMembers().stream().anyMatch(m -> m.getUniqueId() == invited.getUniqueId())) {
+        if (claim.getMembers().stream().anyMatch(m -> m.getRole() == ClaimRole.MEMBER
+                && m.getUniqueId().equals(invited.getUniqueId()))) {
             instance.getLocale().getMessage("command.invite.already").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
