@@ -203,10 +203,11 @@ public class PowerCell {
             if (UltimateClaims.getInstance().getHologram() != null)
                 UltimateClaims.getInstance().getHologram().remove(this);
         }
+        this.items.clear();
         if (opened != null)
             for (HumanEntity entity : opened.getViewers())
                 entity.closeInventory();
-
+        this.opened = null;
         this.clearItems();
         this.location = null;
     }
