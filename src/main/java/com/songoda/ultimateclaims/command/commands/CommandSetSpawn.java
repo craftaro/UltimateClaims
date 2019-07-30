@@ -17,6 +17,7 @@ public class CommandSetSpawn extends AbstractCommand {
     protected ReturnType runCommand(UltimateClaims instance, CommandSender sender, String... args) {
         Player player = (Player)sender;
         instance.getPluginSettings().setSpawnPoint(player.getLocation());
+        instance.getDataManager().createOrUpdatePluginSettings(instance.getPluginSettings());
         instance.getLocale().newMessage("&aSpawn point set!").sendPrefixedMessage(player);
         return ReturnType.SUCCESS;
     }

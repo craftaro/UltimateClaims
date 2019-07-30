@@ -39,7 +39,7 @@ public class DataManager {
 
     public void createOrUpdatePluginSettings(PluginSettings pluginSettings) {
         this.async(() -> this.databaseConnector.connect(connection -> {
-            String selectPluginSettings = "SELECT COUNT(*) FROM plugin_settings";
+            String selectPluginSettings = "SELECT * FROM " + this.getTablePrefix() + "plugin_settings";
             try (Statement statement = connection.createStatement()) {
                 ResultSet result = statement.executeQuery(selectPluginSettings);
                 if (!result.next()) {

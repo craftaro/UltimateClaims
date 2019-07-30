@@ -22,7 +22,7 @@ public class TrackerTask extends BukkitRunnable {
         plugin = plug;
         if (instance == null) {
             instance = new TrackerTask(plugin);
-            instance.runTaskTimer(plugin, 0, 20);
+            instance.runTaskTimer(plugin, 30, 20);
         }
 
         return instance;
@@ -30,7 +30,6 @@ public class TrackerTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        Location spawn = plugin.getPluginSettings().getSpawnPoint();
         for (Player player : Bukkit.getOnlinePlayers()) {
             Claim claim = plugin.getClaimManager().getClaim(player.getLocation().getChunk());
             if (claim == null) continue;
@@ -40,10 +39,8 @@ public class TrackerTask extends BukkitRunnable {
                 member = claim.getMember(player);
             }
             member.setPresent(true);
-            if (claim.isBanned(player.getUniqueId()) ||
-                    claim.isLocked() && claim.getMember(player).getRole() == ClaimRole.VISITOR)
-                player.teleport(spawn);
-
+            if (claim.isBanned(player.getUniqueId()) || claim.isLocked() && claim.getMember(player).getRole() == ClaimRole.VISITOR)
+                member.eject();
         }
     }
 }

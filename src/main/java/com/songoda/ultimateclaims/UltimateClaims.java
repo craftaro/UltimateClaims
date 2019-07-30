@@ -110,7 +110,10 @@ public class UltimateClaims extends JavaPlugin {
         // Managers
         this.commandManager = new CommandManager(this);
         this.claimManager = new ClaimManager();
-        this.pluginSettings = new PluginSettings();
+
+        Bukkit.getScheduler().runTaskLater(this,
+                () -> this.dataManager.getPluginSettings(
+                        (pluginSettings) -> this.pluginSettings = pluginSettings), 20L);
 
         // Tasks
         this.inviteTask = InviteTask.startTask(this);
