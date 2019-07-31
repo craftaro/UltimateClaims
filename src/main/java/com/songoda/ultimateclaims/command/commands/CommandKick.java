@@ -3,6 +3,7 @@ package com.songoda.ultimateclaims.command.commands;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.command.AbstractCommand;
+import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -58,7 +59,9 @@ public class CommandKick extends AbstractCommand {
                 .processPlaceholder("name", toKick.getName())
                 .processPlaceholder("claim", claim.getName())
                 .sendPrefixedMessage(player);
-        claim.getMember(toKick.getUniqueId()).setRole(ClaimRole.VISITOR);
+        ClaimMember target = claim.getMember(toKick.getUniqueId());
+        target.setRole(ClaimRole.VISITOR);
+        instance.getDataManager().deleteMember(target);
         return ReturnType.SUCCESS;
     }
 

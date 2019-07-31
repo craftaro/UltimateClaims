@@ -41,6 +41,8 @@ public class CommandLock extends AbstractCommand {
 
         claim.setLocked(!claim.isLocked());
 
+        instance.getDataManager().updateClaim(claim);
+
         return ReturnType.SUCCESS;
     }
 

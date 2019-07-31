@@ -123,6 +123,14 @@ public class PowerCell {
         return currentPower;
     }
 
+    public void setCurrentPower(int currentPower) {
+        this.currentPower = currentPower;
+    }
+
+    public void setEconomyBalance(double economyBalance) {
+        this.economyBalance = economyBalance;
+    }
+
     public long getTotalPower() {
         return getItemPower() + getEconomyPower() + currentPower;
     }
@@ -164,6 +172,10 @@ public class PowerCell {
         if (opened != null)
             updateItems();
         return new ArrayList<>(this.items);
+    }
+
+    public void setItems(List<ItemStack> items) {
+        this.items = items;
     }
 
     public void addItem(ItemStack item) {

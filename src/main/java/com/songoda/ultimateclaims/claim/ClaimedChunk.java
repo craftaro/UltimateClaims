@@ -8,7 +8,6 @@ import java.util.Objects;
 
 public class ClaimedChunk {
 
-    private int id;
     private Claim claim;
     private final String world;
     private final int x;
@@ -25,12 +24,16 @@ public class ClaimedChunk {
         this.z = z;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getWorld() {
+        return this.world;
     }
 
-    public int getId() {
-        return this.id;
+    public int getX() {
+        return this.x;
+    }
+
+    public int getZ() {
+        return this.z;
     }
 
     public Claim getClaim() {

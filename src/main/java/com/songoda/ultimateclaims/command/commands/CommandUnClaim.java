@@ -2,6 +2,7 @@ package com.songoda.ultimateclaims.command.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.ultimateclaims.claim.ClaimedChunk;
 import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.command.AbstractCommand;
 import org.bukkit.Chunk;
@@ -41,7 +42,7 @@ public class CommandUnClaim extends AbstractCommand {
             }
         }
 
-        claim.removeClaimedChunk(chunk, player);
+        ClaimedChunk removedChunk = claim.removeClaimedChunk(chunk, player);
 
         if (claim.getClaimSize() == 0) {
             instance.getLocale().getMessage("general.claim.dissolve")
@@ -49,6 +50,8 @@ public class CommandUnClaim extends AbstractCommand {
                     .sendPrefixedMessage(player);
             claim.destroy();
         } else {
+            instance.getDataManager().deleteChunk(removedChunk);
+
             instance.getLocale().getMessage("command.unclaim.success").sendPrefixedMessage(sender);
         }
 

@@ -33,6 +33,9 @@ public class CommandSetHome extends AbstractCommand {
         }
 
         claim.setHome(player.getLocation());
+
+        instance.getDataManager().updateClaim(claim);
+
         instance.getLocale().getMessage("command.sethome.set").sendPrefixedMessage(sender);
 
         return ReturnType.SUCCESS;

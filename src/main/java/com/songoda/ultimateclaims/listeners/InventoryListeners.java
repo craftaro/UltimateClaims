@@ -67,6 +67,9 @@ public class InventoryListeners implements Listener {
         event.getInventory().clear();
         Location location = chest.getLocation();
         claim.getPowerCell().setLocation(location.clone());
+
+        plugin.getDataManager().updateClaim(claim);
+
         if (plugin.getHologram() != null)
             plugin.getHologram().update(claim.getPowerCell());
 

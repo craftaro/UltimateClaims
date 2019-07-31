@@ -3,6 +3,8 @@ package com.songoda.ultimateclaims.command.commands;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.command.AbstractCommand;
+import com.songoda.ultimateclaims.member.ClaimMember;
+import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -53,10 +55,16 @@ public class CommandBan extends AbstractCommand {
                 .processPlaceholder("claim", claim.getName())
                 .sendPrefixedMessage(player);
 
-        if (claim.getMember(toBan) != null)
-            claim.getMember(toBan).eject();
-        claim.removeMember(toBan);
+        ClaimMember memberToBan = claim.getMember(toBan);
+        if (memberToBan != null) {
+            claim.removeMember(toBan);
+            memberToBan.eject();
+            if (memberToBan.getRole() == ClaimRole.MEMBER)
+                instance.getDataManager().deleteMember(memberToBan);
+        }
+
         claim.banPlayer(toBan.getUniqueId());
+        instance.getDataManager().createBan(claim, toBan.getUniqueId());
         return ReturnType.SUCCESS;
     }
 

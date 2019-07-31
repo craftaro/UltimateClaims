@@ -81,12 +81,19 @@ public class Claim {
         return members;
     }
 
-    public void addMember(UUID uuid, ClaimRole role) {
-        this.members.add(new ClaimMember(this, uuid, role));
+    public ClaimMember addMember(ClaimMember member) {
+        this.members.add(member);
+        return member;
     }
 
-    public void addMember(OfflinePlayer player, ClaimRole role) {
-        addMember(player.getUniqueId(), role);
+    public ClaimMember addMember(UUID uuid, ClaimRole role) {
+        ClaimMember newMember = new ClaimMember(this, uuid, role);
+        this.members.add(newMember);
+        return newMember;
+    }
+
+    public ClaimMember addMember(OfflinePlayer player, ClaimRole role) {
+        return addMember(player.getUniqueId(), role);
     }
 
     public ClaimMember getMember(UUID uuid) {
@@ -135,22 +142,32 @@ public class Claim {
         return this.claimedChunks.size();
     }
 
-    public void addClaimedChunk(Chunk chunk) {
-        this.claimedChunks.add(new ClaimedChunk(this, chunk));
+    public ClaimedChunk addClaimedChunk(Chunk chunk) {
+        ClaimedChunk newChunk = new ClaimedChunk(this, chunk);
+        this.claimedChunks.add(newChunk);
+        return newChunk;
     }
 
-    public void addClaimedChunk(Chunk chunk, Player player) {
+    public ClaimedChunk addClaimedChunk(String world, int x, int z) {
+        ClaimedChunk newChunk = new ClaimedChunk(this, world, x, z);
+        this.claimedChunks.add(newChunk);
+        return newChunk;
+    }
+
+    public ClaimedChunk addClaimedChunk(Chunk chunk, Player player) {
         Methods.animateChunk(chunk, player, Material.EMERALD_BLOCK);
-        addClaimedChunk(chunk);
+        return addClaimedChunk(chunk);
     }
 
-    public void removeClaimedChunk(Chunk chunk) {
-        this.claimedChunks.remove(new ClaimedChunk(this, chunk));
+    public ClaimedChunk removeClaimedChunk(Chunk chunk) {
+        ClaimedChunk removedChunk = new ClaimedChunk(this, chunk);
+        this.claimedChunks.remove(removedChunk);
+        return removedChunk;
     }
 
-    public void removeClaimedChunk(Chunk chunk, Player player) {
+    public ClaimedChunk removeClaimedChunk(Chunk chunk, Player player) {
         Methods.animateChunk(chunk, player, Material.REDSTONE_BLOCK);
-        this.removeClaimedChunk(chunk);
+        return this.removeClaimedChunk(chunk);
     }
 
     public PowerCell getPowerCell() {
@@ -192,6 +209,7 @@ public class Claim {
     public void destroy() {
         this.claimedChunks.clear();
         this.powerCell.destroy();
+        UltimateClaims.getInstance().getDataManager().deleteClaim(this);
         UltimateClaims.getInstance().getClaimManager().removeClaim(this);
     }
 

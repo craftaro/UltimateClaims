@@ -44,7 +44,8 @@ public class MySQLConnector implements DatabaseConnector {
         try (Connection connection = this.hikari.getConnection()) {
             callback.accept(connection);
         } catch (SQLException ex) {
-            this.plugin.getLogger().severe("An error occurred retrieving a MySQL database connection: " + ex.getMessage());
+            this.plugin.getLogger().severe("An error occurred executing a MySQL query: " + ex.getMessage());
+            ex.printStackTrace();
         }
     }
 

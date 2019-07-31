@@ -187,6 +187,7 @@ public class GUIPowerCell extends AbstractGUI {
                         if (plugin.getEconomy().hasBalance(player, amount)) {
                             plugin.getEconomy().withdrawBalance(player, amount);
                             powercell.addEconomy(amount);
+                            plugin.getDataManager().updateClaim(claim);
                         } else {
                             plugin.getLocale().getMessage("general.notenoughfunds").sendPrefixedMessage(player);
                         }

@@ -134,37 +134,49 @@ public class GUIPermSettings extends AbstractGUI {
 
         registerClickable(10, (player, inventory, cursor, slot, type) -> {
             // Toggle block break perms
-            if (role == ClaimRole.MEMBER)
+            if (role == ClaimRole.MEMBER) {
                 claim.getMemberPermissions().setCanBreak(!claim.getMemberPermissions().hasPermission(ClaimPerm.BREAK));
-            else
+                plugin.getDataManager().updatePermissions(claim, claim.getMemberPermissions(), ClaimRole.MEMBER);
+            } else {
                 claim.getVisitorPermissions().setCanBreak(!claim.getVisitorPermissions().hasPermission(ClaimPerm.BREAK));
+                plugin.getDataManager().updatePermissions(claim, claim.getVisitorPermissions(), ClaimRole.VISITOR);
+            }
             constructGUI();
         });
 
         registerClickable(12, (player, inventory, cursor, slot, type) -> {
             // Toggle block place perms
-            if (role == ClaimRole.MEMBER)
+            if (role == ClaimRole.MEMBER) {
                 claim.getMemberPermissions().setCanPlace(!claim.getMemberPermissions().hasPermission(ClaimPerm.PLACE));
-            else
+                plugin.getDataManager().updatePermissions(claim, claim.getMemberPermissions(), ClaimRole.MEMBER);
+            } else {
                 claim.getVisitorPermissions().setCanPlace(!claim.getVisitorPermissions().hasPermission(ClaimPerm.PLACE));
+                plugin.getDataManager().updatePermissions(claim, claim.getVisitorPermissions(), ClaimRole.VISITOR);
+            }
             constructGUI();
         });
 
         registerClickable(14, (player, inventory, cursor, slot, type) -> {
             // Toggle block interact perms
-            if (role == ClaimRole.MEMBER)
+            if (role == ClaimRole.MEMBER) {
                 claim.getMemberPermissions().setCanInteract(!claim.getMemberPermissions().hasPermission(ClaimPerm.INTERACT));
-            else
+                plugin.getDataManager().updatePermissions(claim, claim.getMemberPermissions(), ClaimRole.MEMBER);
+            } else {
                 claim.getVisitorPermissions().setCanInteract(!claim.getVisitorPermissions().hasPermission(ClaimPerm.INTERACT));
+                plugin.getDataManager().updatePermissions(claim, claim.getVisitorPermissions(), ClaimRole.VISITOR);
+            }
             constructGUI();
         });
 
         registerClickable(16, (player, inventory, cursor, slot, type) -> {
             // Toggle block interact perms
-            if (role == ClaimRole.MEMBER)
+            if (role == ClaimRole.MEMBER) {
                 claim.getMemberPermissions().setCanMobKill(!claim.getMemberPermissions().hasPermission(ClaimPerm.MOB_KILLING));
-            else
+                plugin.getDataManager().updatePermissions(claim, claim.getMemberPermissions(), ClaimRole.MEMBER);
+            } else {
                 claim.getVisitorPermissions().setCanMobKill(!claim.getVisitorPermissions().hasPermission(ClaimPerm.MOB_KILLING));
+                plugin.getDataManager().updatePermissions(claim, claim.getVisitorPermissions(), ClaimRole.VISITOR);
+            }
             constructGUI();
         });
     }

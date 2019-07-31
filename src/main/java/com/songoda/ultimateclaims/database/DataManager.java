@@ -6,9 +6,12 @@ import com.songoda.ultimateclaims.claim.ClaimedChunk;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
+import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.PluginSettings;
+import com.songoda.ultimateclaims.utils.ItemSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.sql.Connection;
@@ -17,7 +20,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -151,7 +157,115 @@ public class DataManager {
     }
 
     public void updateClaim(Claim claim) {
+        this.async(() -> this.databaseConnector.connect(connection -> {
+            String updateClaim = "UPDATE " + this.getTablePrefix() + "claim SET name = ?, power = ?, eco_bal = ?, locked = ?, home_world = ?, home_x = ?, home_y = ?, home_z = ?, home_pitch = ?, home_yaw = ?, powercell_world = ?, powercell_x = ?, powercell_y = ?, powercell_z = ?, powercell_inventory = ? WHERE id = ?";
+            try (PreparedStatement statement = connection.prepareStatement(updateClaim)) {
+                statement.setString(1, claim.getName());
+                statement.setInt(2, claim.getPowerCell().getCurrentPower());
+                statement.setDouble(3, claim.getPowerCell().getEconomyBalance());
+                statement.setInt(4, claim.isLocked() ? 1 : 0);
 
+                if (claim.getHome() != null) {
+                    Location location = claim.getHome();
+                    statement.setString(5, location.getWorld().getName());
+                    statement.setDouble(6, location.getX());
+                    statement.setDouble(7, location.getY());
+                    statement.setDouble(8, location.getZ());
+                    statement.setDouble(9, location.getPitch());
+                    statement.setDouble(10, location.getYaw());
+                } else {
+                    statement.setString(5, null);
+                    statement.setNull(6, Types.DOUBLE);
+                    statement.setNull(7, Types.DOUBLE);
+                    statement.setNull(8, Types.DOUBLE);
+                    statement.setNull(9, Types.DOUBLE);
+                    statement.setNull(10, Types.DOUBLE);
+                }
+
+                if (claim.getPowerCell().hasLocation()) {
+                    Location location = claim.getPowerCell().getLocation();
+                    statement.setString(11, location.getWorld().getName());
+                    statement.setInt(12, location.getBlockX());
+                    statement.setInt(13, location.getBlockY());
+                    statement.setInt(14, location.getBlockZ());
+                    statement.setString(15, ItemSerializer.toBase64(claim.getPowerCell().getItems()));
+                } else {
+                    statement.setString(11, null);
+                    statement.setNull(12, Types.INTEGER);
+                    statement.setNull(13, Types.INTEGER);
+                    statement.setNull(14, Types.INTEGER);
+                    statement.setString(15, null);
+                }
+
+                statement.setInt(16, claim.getId());
+                statement.executeUpdate();
+            }
+        }));
+    }
+
+    public void bulkUpdateClaims(Collection<Claim> claims) {
+        this.databaseConnector.connect(connection -> {
+            String updateClaim = "UPDATE " + this.getTablePrefix() + "claim SET name = ?, power = ?, eco_bal = ?, locked = ?, home_world = ?, home_x = ?, home_y = ?, home_z = ?, home_pitch = ?, home_yaw = ?, powercell_world = ?, powercell_x = ?, powercell_y = ?, powercell_z = ?, powercell_inventory = ? WHERE id = ?";
+            try (PreparedStatement statement = connection.prepareStatement(updateClaim)) {
+                for (Claim claim : claims) {
+                    statement.setString(1, claim.getName());
+                    statement.setInt(2, claim.getPowerCell().getCurrentPower());
+                    statement.setDouble(3, claim.getPowerCell().getEconomyBalance());
+                    statement.setInt(4, claim.isLocked() ? 1 : 0);
+
+                    if (claim.getHome() != null) {
+                        Location location = claim.getHome();
+                        statement.setString(5, location.getWorld().getName());
+                        statement.setDouble(6, location.getX());
+                        statement.setDouble(7, location.getY());
+                        statement.setDouble(8, location.getZ());
+                        statement.setDouble(9, location.getPitch());
+                        statement.setDouble(10, location.getYaw());
+                    } else {
+                        statement.setString(5, null);
+                        statement.setNull(6, Types.DOUBLE);
+                        statement.setNull(7, Types.DOUBLE);
+                        statement.setNull(8, Types.DOUBLE);
+                        statement.setNull(9, Types.DOUBLE);
+                        statement.setNull(10, Types.DOUBLE);
+                    }
+
+                    if (claim.getPowerCell().hasLocation()) {
+                        Location location = claim.getPowerCell().getLocation();
+                        statement.setString(11, location.getWorld().getName());
+                        statement.setInt(12, location.getBlockX());
+                        statement.setInt(13, location.getBlockY());
+                        statement.setInt(14, location.getBlockZ());
+                        statement.setString(15, ItemSerializer.toBase64(claim.getPowerCell().getItems()));
+                    } else {
+                        statement.setString(11, null);
+                        statement.setNull(12, Types.INTEGER);
+                        statement.setNull(13, Types.INTEGER);
+                        statement.setNull(14, Types.INTEGER);
+                        statement.setString(15, null);
+                    }
+
+                    statement.setInt(16, claim.getId());
+                    statement.addBatch();
+                }
+
+                statement.executeBatch();
+            }
+
+            String updateMember = "UPDATE " + this.getTablePrefix() + "member SET play_time = ? WHERE claim_id = ? AND player_uuid = ?";
+            try (PreparedStatement statement = connection.prepareStatement(updateMember)) {
+                for (Claim claim : claims) {
+                    for (ClaimMember member : claim.getOwnerAndMembers()) {
+                        statement.setLong(1, member.getPlayTime());
+                        statement.setInt(2, claim.getId());
+                        statement.setString(3, member.getUniqueId().toString());
+                        statement.addBatch();
+                    }
+                }
+
+                statement.executeBatch();
+            }
+        });
     }
 
     public void deleteClaim(Claim claim) {
@@ -196,13 +310,22 @@ public class DataManager {
     }
 
     public void createMember(ClaimMember member) {
-
+        this.async(() -> this.databaseConnector.connect(connection -> {
+            String createMember = "INSERT INTO " + this.getTablePrefix() + "member (claim_id, player_uuid, role, play_time, member_since) VALUES (?, ?, ?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(createMember)) {
+                statement.setInt(1, member.getClaim().getId());
+                statement.setString(2, member.getUniqueId().toString());
+                statement.setInt(3, member.getRole().getIndex());
+                statement.setLong(4, member.getPlayTime());
+                statement.setLong(5, member.getMemberSince());
+                statement.executeUpdate();
+            }
+        }));
     }
 
     public void deleteMember(ClaimMember member) {
         this.async(() -> this.databaseConnector.connect(connection -> {
             String deleteMember = "DELETE FROM " + this.getTablePrefix() + "member WHERE id = ?";
-
             try (PreparedStatement statement = connection.prepareStatement(deleteMember)) {
                 statement.setInt(1, member.getId());
                 statement.executeUpdate();
@@ -211,13 +334,19 @@ public class DataManager {
     }
 
     public void createBan(Claim claim, UUID playerUUID) {
-
+        this.async(() -> this.databaseConnector.connect(connection -> {
+            String createBan = "INSERT INTO " + this.getTablePrefix() + "ban (claim_id, player_uuid) VALUES (?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(createBan)) {
+                statement.setInt(1, claim.getId());
+                statement.setString(2, playerUUID.toString());
+                statement.executeUpdate();
+            }
+        }));
     }
 
     public void deleteBan(Claim claim, UUID playerUUID) {
         this.async(() -> this.databaseConnector.connect(connection -> {
             String deleteBan = "DELETE FROM " + this.getTablePrefix() + "ban WHERE claim_id = ? AND player_uuid = ?";
-
             try (PreparedStatement statement = connection.prepareStatement(deleteBan)) {
                 statement.setInt(1, claim.getId());
                 statement.setString(2, playerUUID.toString());
@@ -227,32 +356,64 @@ public class DataManager {
     }
 
     public void createChunk(ClaimedChunk chunk) {
-
-    }
-
-    public void deleteChunk(ClaimedChunk chunk) {
         this.async(() -> this.databaseConnector.connect(connection -> {
-            String deleteChunk = "DELETE FROM " + this.getTablePrefix() + "chunk WHERE id = ?";
-
-            try (PreparedStatement statement = connection.prepareStatement(deleteChunk)) {
-                statement.setInt(1, chunk.getId());
+            String createChunk = "INSERT INTO " + this.getTablePrefix() + "chunk (claim_id, world, x, z) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(createChunk)) {
+                statement.setInt(1, chunk.getClaim().getId());
+                statement.setString(2, chunk.getWorld());
+                statement.setInt(3, chunk.getX());
+                statement.setInt(4, chunk.getZ());
                 statement.executeUpdate();
             }
         }));
     }
 
-    public void updateSettings(ClaimSettings settings) {
-
+    public void deleteChunk(ClaimedChunk chunk) {
+        this.async(() -> this.databaseConnector.connect(connection -> {
+            String deleteChunk = "DELETE FROM " + this.getTablePrefix() + "chunk WHERE claim_id = ? AND world = ? AND x = ? and z = ?";
+            try (PreparedStatement statement = connection.prepareStatement(deleteChunk)) {
+                statement.setInt(1, chunk.getClaim().getId());
+                statement.setString(2, chunk.getWorld());
+                statement.setInt(3, chunk.getX());
+                statement.setInt(4, chunk.getZ());
+                statement.executeUpdate();
+            }
+        }));
     }
 
-    public void updatePermissions(ClaimPermissions permissions) {
+    public void updateSettings(Claim claim, ClaimSettings settings) {
+        this.async(() -> this.databaseConnector.connect(connection -> {
+            String updateClaim = "UPDATE " + this.getTablePrefix() + "settings SET hostile_mob_spawning = ?, fire_spread = ?, mob_griefing = ?, leaf_decay = ?, pvp = ? WHERE claim_id = ?";
+            try (PreparedStatement statement = connection.prepareStatement(updateClaim)) {
+                statement.setInt(1, settings.isHostileMobSpawning() ? 1 : 0);
+                statement.setInt(2, settings.isFireSpread() ? 1 : 0);
+                statement.setInt(3, settings.isMobGriefing() ? 1 : 0);
+                statement.setInt(4, settings.isLeafDecay() ? 1 : 0);
+                statement.setInt(5, settings.isPvp() ? 1 : 0);
+                statement.setInt(6, claim.getId());
+                statement.executeUpdate();
+            }
+        }));
+    }
 
+    public void updatePermissions(Claim claim, ClaimPermissions permissions, ClaimRole role) {
+        this.async(() -> this.databaseConnector.connect(connection -> {
+            String updateClaim = "UPDATE " + this.getTablePrefix() + "permissions SET interact = ?, break = ?, place = ?, mob_kill = ? WHERE claim_id = ? AND type = ?";
+            try (PreparedStatement statement = connection.prepareStatement(updateClaim)) {
+                statement.setInt(1, permissions.hasPermission(ClaimPerm.INTERACT) ? 1 : 0);
+                statement.setInt(2, permissions.hasPermission(ClaimPerm.BREAK) ? 1 : 0);
+                statement.setInt(3, permissions.hasPermission(ClaimPerm.PLACE) ? 1 : 0);
+                statement.setInt(4, permissions.hasPermission(ClaimPerm.MOB_KILLING) ? 1 : 0);
+                statement.setInt(5, claim.getId());
+                statement.setString(6, role.name().toLowerCase());
+                statement.executeUpdate();
+            }
+        }));
     }
 
     public void getPluginSettings(Consumer<PluginSettings> callback) {
         this.async(() -> this.databaseConnector.connect(connection -> {
             String selectPluginSettings = "SELECT * FROM " + this.getTablePrefix() + "plugin_settings";
-
             try (Statement statement = connection.createStatement()) {
                 ResultSet result = statement.executeQuery(selectPluginSettings);
 
@@ -271,13 +432,162 @@ public class DataManager {
                     }
                 }
 
-                callback.accept(pluginSettings);
+                this.sync(() -> callback.accept(pluginSettings));
             }
         }));
     }
 
-    public void getClaims(Consumer<List<Claim>> callback) {
+    public void getClaims(Consumer<Map<UUID, Claim>> callback) {
+        this.async(() -> this.databaseConnector.connect(connection -> {
+            String selectClaims = "SELECT * FROM " + this.getTablePrefix() + "claim";
+            String selectMembers = "SELECT * FROM " + this.getTablePrefix() + "member";
+            String selectBans = "SELECT * FROM " + this.getTablePrefix() + "ban";
+            String selectChunks = "SELECT * FROM " + this.getTablePrefix() + "chunk";
+            String selectSettings = "SELECT * FROM " + this.getTablePrefix() + "settings";
+            String selectPermissions = "SELECT * FROM " + this.getTablePrefix() + "permissions";
 
+            Map<Integer, Claim> claims = new HashMap<>();
+
+            try (Statement statement = connection.createStatement()) {
+                ResultSet result = statement.executeQuery(selectClaims);
+                while (result.next()) {
+                    Claim claim = new Claim();
+
+                    int claimId = result.getInt("id");
+                    claim.setId(claimId);
+                    claim.setName(result.getString("name"));
+
+                    String homeWorld = result.getString("home_world");
+                    if (homeWorld != null) {
+                        double x = result.getDouble("home_x");
+                        double y = result.getDouble("home_y");
+                        double z = result.getDouble("home_z");
+                        double pitch = result.getDouble("home_pitch");
+                        double yaw = result.getDouble("home_yaw");
+                        Location location = new Location(Bukkit.getWorld(homeWorld), x, y, z, (float) yaw, (float) pitch);
+                        claim.setHome(location);
+                    }
+
+                    String powercellWorld = result.getString("powercell_world");
+                    if (powercellWorld != null) {
+                        double x = result.getDouble("powercell_x");
+                        double y = result.getDouble("powercell_y");
+                        double z = result.getDouble("powercell_z");
+                        Location location = new Location(Bukkit.getWorld(powercellWorld), x, y, z);
+                        claim.getPowerCell().setLocation(location);
+
+                        List<ItemStack> items = ItemSerializer.fromBase64(result.getString("powercell_inventory"));
+                        claim.getPowerCell().setItems(items);
+                    }
+
+                    claim.getPowerCell().setCurrentPower(result.getInt("power"));
+                    claim.getPowerCell().setEconomyBalance(result.getDouble("eco_bal"));
+                    claim.setLocked(result.getInt("locked") == 1);
+
+                    claims.put(claimId, claim);
+                }
+            }
+
+            try (Statement statement = connection.createStatement()) {
+                ResultSet result = statement.executeQuery(selectMembers);
+                while (result.next()) {
+                    int claimId = result.getInt("claim_id");
+                    Claim claim = claims.get(claimId);
+                    if (claim == null)
+                        continue;
+
+                    UUID playerUUID = UUID.fromString(result.getString("player_uuid"));
+                    ClaimRole role = ClaimRole.fromIndex(result.getInt("role"));
+
+                    ClaimMember claimMember = new ClaimMember(claim, playerUUID, role);
+                    claimMember.setPlayTime(result.getLong("play_time"));
+                    claimMember.setMemberSince(result.getLong("member_since"));
+
+                    claim.addMember(claimMember);
+
+                    if (claimMember.getRole() == ClaimRole.OWNER)
+                        claim.setOwner(claimMember);
+                }
+            }
+
+            try (Statement statement = connection.createStatement()) {
+                ResultSet result = statement.executeQuery(selectBans);
+                while (result.next()) {
+                    int claimId = result.getInt("claim_id");
+                    Claim claim = claims.get(claimId);
+                    if (claim == null)
+                        continue;
+
+                    UUID playerUUID = UUID.fromString(result.getString("player_uuid"));
+                    claim.banPlayer(playerUUID);
+                }
+            }
+
+            try (Statement statement = connection.createStatement()) {
+                ResultSet result = statement.executeQuery(selectChunks);
+                while (result.next()) {
+                    int claimId = result.getInt("claim_id");
+                    Claim claim = claims.get(claimId);
+                    if (claim == null)
+                        continue;
+
+                    String world = result.getString("world");
+                    int x = result.getInt("x");
+                    int z = result.getInt("z");
+
+                    claim.addClaimedChunk(world, x, z);
+                }
+            }
+
+            try (Statement statement = connection.createStatement()) {
+                ResultSet result = statement.executeQuery(selectSettings);
+                while (result.next()) {
+                    int claimId = result.getInt("claim_id");
+                    Claim claim = claims.get(claimId);
+                    if (claim == null)
+                        continue;
+
+                    claim.getClaimSettings()
+                            .setHostileMobSpawning(result.getInt("hostile_mob_spawning") == 1)
+                            .setFireSpread(result.getInt("fire_spread") == 1)
+                            .setMobGriefing(result.getInt("mob_griefing") == 1)
+                            .setLeafDecay(result.getInt("leaf_decay") == 1)
+                            .setPvp(result.getInt("pvp") == 1);
+                }
+            }
+
+            try (Statement statement = connection.createStatement()) {
+                ResultSet result = statement.executeQuery(selectPermissions);
+                while (result.next()) {
+                    int claimId = result.getInt("claim_id");
+                    Claim claim = claims.get(claimId);
+                    if (claim == null)
+                        continue;
+
+                    ClaimPermissions permissions = new ClaimPermissions()
+                            .setCanInteract(result.getInt("interact") == 1)
+                            .setCanBreak(result.getInt("break") == 1)
+                            .setCanPlace(result.getInt("place") == 1)
+                            .setCanMobKill(result.getInt("mob_kill") == 1);
+
+                    String type = result.getString("type");
+                    switch (type) {
+                        case "member":
+                            claim.setMemberPermissions(permissions);
+                            break;
+                        case "visitor":
+                            claim.setVisitorPermissions(permissions);
+                            break;
+                    }
+                }
+            }
+
+            Map<UUID, Claim> returnClaims = new HashMap<>();
+            for (Claim claim : claims.values())
+                returnClaims.put(claim.getOwner().getUniqueId(), claim);
+
+            this.sync(() -> callback.accept(returnClaims));
+        }));
     }
 
     private int lastInsertedId(Connection connection) {

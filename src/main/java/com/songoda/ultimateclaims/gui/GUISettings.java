@@ -77,6 +77,7 @@ public class GUISettings extends AbstractGUI {
 
             registerClickable(i, (player, inventory, cursor, slot, type) -> {
                 claim.getClaimSettings().setHostileMobSpawning(!claim.getClaimSettings().isHostileMobSpawning());
+                plugin.getDataManager().updateSettings(claim, claim.getClaimSettings());
                 constructGUI();
             });
 
@@ -98,6 +99,7 @@ public class GUISettings extends AbstractGUI {
 
             registerClickable(i, (player, inventory, cursor, slot, type) -> {
                 claim.getClaimSettings().setFireSpread(!claim.getClaimSettings().isFireSpread());
+                plugin.getDataManager().updateSettings(claim, claim.getClaimSettings());
                 constructGUI();
             });
 
@@ -119,6 +121,7 @@ public class GUISettings extends AbstractGUI {
 
             registerClickable(i, (player, inventory, cursor, slot, type) -> {
                 claim.getClaimSettings().setPvp(!claim.getClaimSettings().isPvp());
+                plugin.getDataManager().updateSettings(claim, claim.getClaimSettings());
                 constructGUI();
             });
 
@@ -140,6 +143,7 @@ public class GUISettings extends AbstractGUI {
 
             registerClickable(i, (player, inventory, cursor, slot, type) -> {
                 claim.getClaimSettings().setMobGriefing(!claim.getClaimSettings().isMobGriefing());
+                plugin.getDataManager().updateSettings(claim, claim.getClaimSettings());
                 constructGUI();
             });
 
@@ -161,6 +165,7 @@ public class GUISettings extends AbstractGUI {
 
             registerClickable(i, (player, inventory, cursor, slot, type) -> {
                 claim.getClaimSettings().setLeafDecay(!claim.getClaimSettings().isLeafDecay());
+                plugin.getDataManager().updateSettings(claim, claim.getClaimSettings());
                 constructGUI();
             });
 

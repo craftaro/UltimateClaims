@@ -51,7 +51,8 @@ public class SQLiteConnector implements DatabaseConnector {
         try {
             callback.accept(this.connection);
         } catch (Exception ex) {
-            this.plugin.getLogger().severe("An error occurred retrieving the SQLite database connection: " + ex.getMessage());
+            this.plugin.getLogger().severe("An error occurred executing an SQLite query: " + ex.getMessage());
+            ex.printStackTrace();
         }
     }
 

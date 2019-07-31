@@ -67,6 +67,8 @@ public class UltimateClaims extends JavaPlugin {
         console.sendMessage(Methods.formatText("&7UltimateClaims " + this.getDescription().getVersion() + " by &5Songoda <3!"));
         console.sendMessage(Methods.formatText("&7Action: &cDisabling&7..."));
 
+        this.dataManager.bulkUpdateClaims(this.claimManager.getRegisteredClaims());
+
         this.databaseConnector.closeConnection();
 
         console.sendMessage(Methods.formatText("&a============================="));
@@ -111,9 +113,14 @@ public class UltimateClaims extends JavaPlugin {
         this.commandManager = new CommandManager(this);
         this.claimManager = new ClaimManager();
 
-        Bukkit.getScheduler().runTaskLater(this,
-                () -> this.dataManager.getPluginSettings(
-                        (pluginSettings) -> this.pluginSettings = pluginSettings), 20L);
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            this.dataManager.getPluginSettings((pluginSettings) -> this.pluginSettings = pluginSettings);
+            this.dataManager.getClaims((claims) -> {
+                this.claimManager.addClaims(claims);
+                if (this.hologram != null)
+                    this.claimManager.getRegisteredClaims().forEach(x -> this.hologram.update(x.getPowerCell()));
+            });
+        }, 20L);
 
         // Tasks
         this.inviteTask = InviteTask.startTask(this);

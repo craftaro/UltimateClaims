@@ -31,6 +31,11 @@ public class HologramHolographicDisplays extends Hologram {
 
     @Override
     public void update(Location location, String line) {
+        int x = location.getBlockX() >> 4;
+        int z = location.getBlockZ() >> 4;
+        if (location.getWorld() == null || !location.getWorld().isChunkLoaded(x, z))
+            return;
+
         fixLocation(location);
         for (com.gmail.filoghost.holographicdisplays.api.Hologram hologram : HologramsAPI.getHolograms(plugin)) {
             if (hologram.getX() != location.getX()

@@ -3,6 +3,7 @@ package com.songoda.ultimateclaims.command.commands;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.command.AbstractCommand;
 import com.songoda.ultimateclaims.invite.Invite;
+import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.settings.Setting;
 import org.bukkit.Bukkit;
@@ -34,14 +35,17 @@ public class CommandAccept extends AbstractCommand {
                 return ReturnType.FAILURE;
             }
 
-            if (invite.getClaim().getMember(player) == null)
-                invite.getClaim().addMember(player, ClaimRole.MEMBER);
-
-            if (invite.getClaim().getMember(player).getRole() == ClaimRole.VISITOR)
-                invite.getClaim().getMember(player).setRole(ClaimRole.MEMBER);
-
+            ClaimMember newMember = invite.getClaim().getMember(player);
+            if (newMember == null) {
+                newMember = invite.getClaim().addMember(player, ClaimRole.MEMBER);
+            } else if (newMember.getRole() == ClaimRole.VISITOR) {
+                newMember.setRole(ClaimRole.MEMBER);
+            }
 
             invite.accepted();
+
+            instance.getDataManager().createMember(newMember);
+
             instance.getLocale().getMessage("command.accept.success")
                     .processPlaceholder("claim", invite.getClaim().getName())
                     .sendPrefixedMessage(player);

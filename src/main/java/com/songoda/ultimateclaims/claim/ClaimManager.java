@@ -18,6 +18,10 @@ public class ClaimManager {
         return addClaim(owner.getUniqueId(), claim);
     }
 
+    public void addClaims(Map<UUID, Claim> claims) {
+        this.registeredClaims.putAll(claims);
+    }
+
     public boolean hasClaim(UUID owner) {
         return this.registeredClaims.containsKey(owner);
     }

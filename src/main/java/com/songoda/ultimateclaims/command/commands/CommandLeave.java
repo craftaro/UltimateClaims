@@ -34,7 +34,7 @@ public class CommandLeave extends AbstractCommand {
         }
         String claimStr = claimBuilder.toString().trim();
 
-        Optional oClaim = instance.getClaimManager().getRegisteredClaims().stream()
+        Optional<Claim> oClaim = instance.getClaimManager().getRegisteredClaims().stream()
                 .filter(c -> c.getName().toLowerCase().equals(claimStr.toLowerCase())
                         && c.getMember(player) != null).findFirst();
 
@@ -43,12 +43,15 @@ public class CommandLeave extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        if (player.getUniqueId().equals(((Claim)oClaim.get()).getOwner().getUniqueId())) {
+        if (player.getUniqueId().equals((oClaim.get()).getOwner().getUniqueId())) {
             instance.getLocale().getMessage("command.leave.owner").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
-        Claim claim = (Claim) oClaim.get();
+        Claim claim = oClaim.get();
+        ClaimMember memberToRemove = claim.getMember(player);
+
+        instance.getDataManager().deleteMember(memberToRemove);
 
         claim.removeMember(player);
 

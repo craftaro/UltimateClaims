@@ -3,6 +3,7 @@ package com.songoda.ultimateclaims.command.commands;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimBuilder;
+import com.songoda.ultimateclaims.claim.ClaimedChunk;
 import com.songoda.ultimateclaims.command.AbstractCommand;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.Methods;
@@ -55,7 +56,9 @@ public class CommandClaim extends AbstractCommand {
                 return ReturnType.FAILURE;
             }
 
-            claim.addClaimedChunk(chunk, player);
+            ClaimedChunk newChunk = claim.addClaimedChunk(chunk, player);
+
+            instance.getDataManager().createChunk(newChunk);
 
             if (instance.getHologram() != null)
                 instance.getHologram().update(claim.getPowerCell());
