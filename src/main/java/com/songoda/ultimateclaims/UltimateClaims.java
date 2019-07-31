@@ -113,15 +113,6 @@ public class UltimateClaims extends JavaPlugin {
         this.commandManager = new CommandManager(this);
         this.claimManager = new ClaimManager();
 
-        Bukkit.getScheduler().runTaskLater(this, () -> {
-            this.dataManager.getPluginSettings((pluginSettings) -> this.pluginSettings = pluginSettings);
-            this.dataManager.getClaims((claims) -> {
-                this.claimManager.addClaims(claims);
-                if (this.hologram != null)
-                    this.claimManager.getRegisteredClaims().forEach(x -> this.hologram.update(x.getPowerCell()));
-            });
-        }, 20L);
-
         // Tasks
         this.inviteTask = InviteTask.startTask(this);
         AnimateTask.startTask(this);
@@ -163,6 +154,15 @@ public class UltimateClaims extends JavaPlugin {
         this.dataManager = new DataManager(this.databaseConnector, this);
         this.dataMigrationManager = new DataMigrationManager(this.databaseConnector, this.dataManager);
         this.dataMigrationManager.runMigrations();
+
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            this.dataManager.getPluginSettings((pluginSettings) -> this.pluginSettings = pluginSettings);
+            this.dataManager.getClaims((claims) -> {
+                this.claimManager.addClaims(claims);
+                if (this.hologram != null)
+                    this.claimManager.getRegisteredClaims().forEach(x -> this.hologram.update(x.getPowerCell()));
+            });
+        }, 20L);
 
         console.sendMessage(Methods.formatText("&a============================="));
     }

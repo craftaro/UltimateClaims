@@ -17,12 +17,12 @@ public class _1_InitialMigration extends DataMigration {
         // Create plugin settings table
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE " + tablePrefix + "plugin_settings (" +
-                    "spawn_world TEXT NULLABLE, " +
-                    "spawn_x DOUBLE NULLABLE, " +
-                    "spawn_y DOUBLE NULLABLE, " +
-                    "spawn_z DOUBLE NULLABLE, " +
-                    "spawn_pitch DOUBLE NULLABLE, " +
-                    "spawn_yaw DOUBLE NULLABLE" +
+                    "spawn_world TEXT, " +
+                    "spawn_x DOUBLE, " +
+                    "spawn_y DOUBLE, " +
+                    "spawn_z DOUBLE, " +
+                    "spawn_pitch DOUBLE, " +
+                    "spawn_yaw DOUBLE" +
                     ")");
         }
 
@@ -31,17 +31,17 @@ public class _1_InitialMigration extends DataMigration {
             statement.execute("CREATE TABLE " + tablePrefix + "claim (" +
                     "id INTEGER PRIMARY KEY, " +
                     "name TEXT NOT NULL, " +
-                    "home_world TEXT NULLABLE, " +
-                    "home_x DOUBLE NULLABLE, " +
-                    "home_y DOUBLE NULLABLE, " +
-                    "home_z DOUBLE NULLABLE, " +
-                    "home_pitch DOUBLE NULLABLE, " +
-                    "home_yaw DOUBLE NULLABLE, " +
-                    "powercell_world TEXT NULLABLE, " +
-                    "powercell_x INTEGER NULLABLE, " +
-                    "powercell_y INTEGER NULLABLE, " +
-                    "powercell_z INTEGER NULLABLE, " +
-                    "powercell_inventory TEXT NULLABLE, " +
+                    "home_world TEXT, " +
+                    "home_x DOUBLE, " +
+                    "home_y DOUBLE, " +
+                    "home_z DOUBLE, " +
+                    "home_pitch DOUBLE, " +
+                    "home_yaw DOUBLE, " +
+                    "powercell_world TEXT, " +
+                    "powercell_x INTEGER, " +
+                    "powercell_y INTEGER, " +
+                    "powercell_z INTEGER, " +
+                    "powercell_inventory TEXT, " +
                     "power INTEGER NOT NULL, " +
                     "eco_bal DOUBLE NOT NULL, " +
                     "locked TINYINT NOT NULL" +
@@ -74,9 +74,9 @@ public class _1_InitialMigration extends DataMigration {
             statement.execute("CREATE TABLE " + tablePrefix + "chunk (" +
                     "id INTEGER PRIMARY KEY, " +
                     "claim_id INTEGER NOT NULL, " +
-                    "world TEXT NULLABLE, " +
-                    "x INTEGER NULLABLE, " +
-                    "z INTEGER NULLABLE" +
+                    "world TEXT, " +
+                    "x INTEGER, " +
+                    "z INTEGER" +
                     ")");
         }
 
