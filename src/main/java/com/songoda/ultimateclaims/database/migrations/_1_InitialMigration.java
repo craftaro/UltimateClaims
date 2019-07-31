@@ -1,6 +1,8 @@
 package com.songoda.ultimateclaims.database.migrations;
 
+import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.database.DataMigration;
+import com.songoda.ultimateclaims.database.MySQLConnector;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -14,6 +16,8 @@ public class _1_InitialMigration extends DataMigration {
 
     @Override
     public void migrate(Connection connection, String tablePrefix) throws SQLException {
+        String autoIncrement = UltimateClaims.getInstance().getDatabaseConnector() instanceof MySQLConnector ? " AUTO_INCREMENT" : "";
+
         // Create plugin settings table
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE " + tablePrefix + "plugin_settings (" +
@@ -29,7 +33,7 @@ public class _1_InitialMigration extends DataMigration {
         // Create claim table
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE " + tablePrefix + "claim (" +
-                    "id INTEGER PRIMARY KEY, " +
+                    "id INTEGER PRIMARY KEY" + autoIncrement + ", " +
                     "name TEXT NOT NULL, " +
                     "home_world TEXT, " +
                     "home_x DOUBLE, " +
@@ -51,7 +55,7 @@ public class _1_InitialMigration extends DataMigration {
         // Create member table
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE " + tablePrefix + "member (" +
-                    "id INTEGER PRIMARY KEY, " +
+                    "id INTEGER PRIMARY KEY" + autoIncrement + ", " +
                     "claim_id INTEGER NOT NULL, " +
                     "player_uuid VARCHAR(36) NOT NULL, " +
                     "role TINYINT NOT NULL, " +
@@ -63,7 +67,7 @@ public class _1_InitialMigration extends DataMigration {
         // Create ban table
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE " + tablePrefix + "ban (" +
-                    "id INTEGER PRIMARY KEY, " +
+                    "id INTEGER PRIMARY KEY" + autoIncrement + ", " +
                     "claim_id INTEGER NOT NULL, " +
                     "player_uuid VARCHAR(36) NOT NULL" +
                     ")");
@@ -72,7 +76,7 @@ public class _1_InitialMigration extends DataMigration {
         // Create chunk table
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE " + tablePrefix + "chunk (" +
-                    "id INTEGER PRIMARY KEY, " +
+                    "id INTEGER PRIMARY KEY" + autoIncrement + ", " +
                     "claim_id INTEGER NOT NULL, " +
                     "world TEXT, " +
                     "x INTEGER, " +
@@ -83,7 +87,7 @@ public class _1_InitialMigration extends DataMigration {
         // Create settings table
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE " + tablePrefix + "settings (" +
-                    "id INTEGER PRIMARY KEY, " +
+                    "id INTEGER PRIMARY KEY" + autoIncrement + ", " +
                     "claim_id INTEGER NOT NULL, " +
                     "hostile_mob_spawning TINYINT NOT NULL, " +
                     "fire_spread TINYINT NOT NULL, " +
@@ -96,7 +100,7 @@ public class _1_InitialMigration extends DataMigration {
         // Create permissions table
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE " + tablePrefix + "permissions (" +
-                    "id INTEGER PRIMARY KEY, " +
+                    "id INTEGER PRIMARY KEY" + autoIncrement + ", " +
                     "claim_id INTEGER NOT NULL, " +
                     "type TEXT NOT NULL, " +
                     "interact TINYINT NOT NULL, " +

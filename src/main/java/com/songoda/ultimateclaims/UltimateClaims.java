@@ -46,6 +46,7 @@ public class UltimateClaims extends JavaPlugin {
     private Economy economy;
     private Hologram hologram;
     private PluginSettings pluginSettings;
+
     private DatabaseConnector databaseConnector;
 
     private SettingsManager settingsManager;
@@ -214,6 +215,10 @@ public class UltimateClaims extends JavaPlugin {
 
     public DataManager getDataManager() {
         return this.dataManager;
+    }
+
+    public DatabaseConnector getDatabaseConnector() {
+        return this.databaseConnector;
     }
 
     public InviteTask getInviteTask() {
