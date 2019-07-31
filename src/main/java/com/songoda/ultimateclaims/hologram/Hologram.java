@@ -15,7 +15,7 @@ public abstract class Hologram {
     }
 
     public void update(PowerCell powerCell) {
-        if (powerCell.getCurrentPower() > 1) {
+        if (powerCell.getTotalPower() > 1) {
             update(powerCell.getLocation(), plugin.getLocale().getMessage("general.claim.powercell")
                     .processPlaceholder("time", Methods.makeReadable(powerCell.getTotalPower() * 60 * 1000))
                     .getMessage());

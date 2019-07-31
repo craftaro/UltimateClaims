@@ -44,8 +44,17 @@ public class PowerCell {
             for (String value : materials) {
                 Material material = Material.valueOf(value.split(":")[0]);
                 if (getMaterialAmount(material) == 0) continue;
-                this.removeOneMaterial(material);
-                this.currentPower += getItemValue(material);
+                double itemValue = getItemValue(material);
+                if (itemValue < 1) { // Remove items based on number of claimed chunks
+                    int itemsToRemove = (int) Math.ceil(1 / itemValue);
+                    for (int i = 0; i < itemsToRemove; i++)
+                        this.removeOneMaterial(material);
+                    this.currentPower += getItemValue(material) * itemsToRemove;
+                } else { // Remove only one item
+                    this.removeOneMaterial(material);
+                    this.currentPower += getItemValue(material);
+                }
+
                 if (loaded && plugin.getHologram() != null)
                     plugin.getHologram().update(this);
                 return this.currentPower;
@@ -136,7 +145,7 @@ public class PowerCell {
     }
 
     public long getItemPower() {
-        int total = 0;
+        double total = 0;
         List<String> materials = Setting.ITEM_VALUES.getStringList();
         for (String value : materials) {
             Material material = Material.valueOf(value.split(":")[0]);
@@ -144,7 +153,7 @@ public class PowerCell {
 
             total += getMaterialAmount(material) * getItemValue(material);
         }
-        return total;
+        return (int) total;
     }
 
     public double getEconomyBalance() {
@@ -155,11 +164,11 @@ public class PowerCell {
         return (long) Math.floor(economyBalance / getEconomyValue());
     }
 
-    private long getItemValue(Material material) {
+    private double getItemValue(Material material) {
         List<String> materials = Setting.ITEM_VALUES.getStringList();
         for (String value : materials) {
             if (material == Material.valueOf(value.split(":")[0]))
-                return (int) Math.floor(Integer.parseInt(value.split(":")[1]) / claim.getClaimSize());
+                return Double.parseDouble(value.split(":")[1]) / claim.getClaimSize();
         }
         return 0;
     }
