@@ -135,7 +135,7 @@ public class Claim {
     }
 
     public boolean containsChunk(Chunk chunk) {
-        return this.claimedChunks.stream().anyMatch(x -> x.equals(new ClaimedChunk(this, chunk)));
+        return this.claimedChunks.stream().anyMatch(x -> x.getX() == chunk.getX() && x.getZ() == chunk.getZ());
     }
 
     public int getClaimSize() {
