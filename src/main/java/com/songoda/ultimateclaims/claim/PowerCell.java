@@ -141,7 +141,7 @@ public class PowerCell {
     }
 
     public long getTotalPower() {
-        return getItemPower() + getEconomyPower() + currentPower;
+        return getItemPower() + (long) getEconomyPower() + currentPower;
     }
 
     public long getItemPower() {
@@ -160,8 +160,8 @@ public class PowerCell {
         return this.economyBalance;
     }
 
-    public long getEconomyPower() {
-        return (long) Math.floor(economyBalance / getEconomyValue());
+    public double getEconomyPower() {
+        return economyBalance / getEconomyValue();
     }
 
     private double getItemValue(Material material) {
@@ -173,8 +173,8 @@ public class PowerCell {
         return 0;
     }
 
-    public long getEconomyValue() {
-        return (long) Math.floor(Setting.ECONOMY_VALUE.getDouble() * claim.getClaimSize());
+    public double getEconomyValue() {
+        return Setting.ECONOMY_VALUE.getDouble() * claim.getClaimSize();
     }
 
     public List<ItemStack> getItems() {
