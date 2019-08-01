@@ -33,13 +33,17 @@ public class Claim {
             .setCanBreak(true)
             .setCanInteract(true)
             .setCanPlace(true)
-            .setCanMobKill(true);
+            .setCanMobKill(true)
+            .setCanRedstone(true)
+            .setCanDoors(true);
 
     private ClaimPermissions visitorPermissions = new ClaimPermissions()
             .setCanBreak(false)
             .setCanInteract(false)
             .setCanPlace(false)
-            .setCanMobKill(false);
+            .setCanMobKill(false)
+            .setCanRedstone(false)
+            .setCanDoors(false);
 
     private PowerCell powerCell = new PowerCell(this);
 
