@@ -25,6 +25,7 @@ import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 
 import java.util.ArrayList;
+import org.bukkit.event.block.BlockExplodeEvent;
 
 public class EntityListeners implements Listener {
 
@@ -119,17 +120,27 @@ public class EntityListeners implements Listener {
     public void onBlowUp(EntityExplodeEvent event) {
         ClaimManager claimManager = plugin.getClaimManager();
         for (Block block : new ArrayList<>(event.blockList())) {
-            if (!claimManager.hasClaim(block.getChunk())) return;
+            if (!claimManager.hasClaim(block.getChunk())) continue;
 
-            Claim claim = claimManager.getClaim(block.getChunk());
-            PowerCell powerCell = claim.getPowerCell();
-
-            if (event.getEntity().getType() == EntityType.CREEPER
-                    && claim.getClaimSettings().isMobGriefing()) {
+            if (event.getEntity().getType() == EntityType.CREEPER) {
+                Claim claim = claimManager.getClaim(block.getChunk());
+                PowerCell powerCell = claim.getPowerCell();
+                if (claim.getClaimSettings().isMobGriefing()
+                        || (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation()))) {
+                    event.blockList().remove(block);
+                }
+            } else {
                 event.blockList().remove(block);
             }
+        }
+    }
 
-            if (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation())) {
+    @EventHandler(ignoreCancelled = true)
+    public void onBlockExplode(BlockExplodeEvent event) {
+        ClaimManager claimManager = plugin.getClaimManager();
+        for (Block block : new ArrayList<>(event.blockList())) {
+            if (claimManager.hasClaim(block.getChunk())) {
+                // todo? setting to allow/disallow these in a claim?
                 event.blockList().remove(block);
             }
         }
@@ -152,7 +163,7 @@ public class EntityListeners implements Listener {
                 }
                 plugin.getLocale().getMessage("event.claim.exit")
                         .processPlaceholder("claim", claim.getName())
-                        .sendPrefixedMessage(player);
+                        .sendTitle(player);
             }
         }
 
@@ -163,7 +174,7 @@ public class EntityListeners implements Listener {
                 if (member == null) {
                     if (claim.isLocked() && !player.hasPermission("ultimateclaims.bypass")) {
                         plugin.getLocale().getMessage("event.claim.locked")
-                                .sendPrefixedMessage(player);
+                                .sendTitle(player);
                         return true;
                     }
 
@@ -177,13 +188,13 @@ public class EntityListeners implements Listener {
 
                 if (member != null && claim.isBanned(member.getUniqueId())) {
                     plugin.getLocale().getMessage("event.claim.locked")
-                            .sendPrefixedMessage(player);
+                            .sendTitle(player);
                     return true;
                 }
 
                 plugin.getLocale().getMessage("event.claim.enter")
                         .processPlaceholder("claim", claim.getName())
-                        .sendPrefixedMessage(player);
+                        .sendTitle(player);
             }
         }
         return false;

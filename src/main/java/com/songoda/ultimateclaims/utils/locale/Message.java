@@ -52,6 +52,19 @@ public class Message {
     }
 
     /**
+     * Format and send the held message to a player as a title message
+     *
+     * @param sender command sender to send the message to
+     */
+    public void sendTitle(CommandSender sender) {
+        if(sender instanceof Player) {
+            ((Player) sender).sendTitle("", this.getMessage(), 10, 20, 10);
+        } else {
+            sender.sendMessage(this.getMessage());
+        }
+    }
+
+    /**
      * Format and send the held message with the
      * appended plugin prefix to a command sender
      *

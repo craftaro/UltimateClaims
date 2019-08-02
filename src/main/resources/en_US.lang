@@ -55,6 +55,7 @@ command.leave.owner = "&cYou cannot leave your own claim."
 command.lock.locked = "&7You locked your claim."
 command.lock.unlocked = "&7You unlocked your claim."
 command.sethome.set = "&7You set the home for your claim."
+command.name.set = "&7The name for your claim changed to %name%"
 command.home.none = "&cThat claim doesn't have a home set..."
 command.home.success = "&7You teleported to your claims home."
 
