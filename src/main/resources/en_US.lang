@@ -93,6 +93,8 @@ interface.permsettings.breaktitle = "&7Block Break"
 interface.permsettings.placetitle = "&7Block Place"
 interface.permsettings.interacttitle = "&7Interact"
 interface.permsettings.mobkilltitle = "&7Mob Killing"
+interface.permsettings.redstonetitle = "&7Redstone"
+interface.permsettings.doorstitle = "&7Doors"
 
 interface.bans.title = "Bans"
 interface.bans.infotitle = "&7Info"

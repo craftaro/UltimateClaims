@@ -104,6 +104,18 @@ public class GUIPermSettings extends AbstractGUI {
         interactMeta.setLore(interactLore);
         interact.setItemMeta(interactMeta);
 
+        ItemStack doors = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_DOOR : Material.valueOf("WOOD_DOOR"));
+        ItemMeta doorsMeta = doors.getItemMeta();
+        doorsMeta.setDisplayName(plugin.getLocale().getMessage("interface.permsettings.doorstitle").getMessage());
+        List<String> doorsLore = new ArrayList<>();
+        String[] doorsSplit = plugin.getLocale().getMessage("general.interface.current")
+                .processPlaceholder("current", role == ClaimRole.MEMBER
+                        ? claim.getMemberPermissions().hasPermission(ClaimPerm.DOORS) : claim.getVisitorPermissions().hasPermission(ClaimPerm.DOORS))
+                .getMessage().split("\\|");
+        doorsLore.addAll(Arrays.asList(doorsSplit));
+        doorsMeta.setLore(doorsLore);
+        doors.setItemMeta(doorsMeta);
+
         ItemStack mobKill = new ItemStack(Material.DIAMOND_SWORD);
         ItemMeta mobKillMeta = mobKill.getItemMeta();
         mobKillMeta.setDisplayName(plugin.getLocale().getMessage("interface.permsettings.mobkilltitle").getMessage());
@@ -116,12 +128,26 @@ public class GUIPermSettings extends AbstractGUI {
         mobKillMeta.setLore(mobKillLore);
         mobKill.setItemMeta(mobKillMeta);
 
+        ItemStack redstone = new ItemStack(Material.REDSTONE);
+        ItemMeta redstoneMeta = redstone.getItemMeta();
+        redstoneMeta.setDisplayName(plugin.getLocale().getMessage("interface.permsettings.redstonetitle").getMessage());
+        List<String> redstoneLore = new ArrayList<>();
+        String[] redstoneSplit = plugin.getLocale().getMessage("general.interface.current")
+                .processPlaceholder("current", role == ClaimRole.MEMBER
+                        ? claim.getMemberPermissions().hasPermission(ClaimPerm.REDSTONE) : claim.getVisitorPermissions().hasPermission(ClaimPerm.REDSTONE))
+                .getMessage().split("\\|");
+        redstoneLore.addAll(Arrays.asList(redstoneSplit));
+        redstoneMeta.setLore(redstoneLore);
+        redstone.setItemMeta(redstoneMeta);
+
         inventory.setItem(0, exit);
         inventory.setItem(8, exit);
         inventory.setItem(10, blockBreak);
-        inventory.setItem(12, place);
-        inventory.setItem(14, interact);
-        inventory.setItem(16, mobKill);
+        inventory.setItem(11, place);
+        inventory.setItem(12, interact);
+        inventory.setItem(14, doors);
+        inventory.setItem(15, mobKill);
+        inventory.setItem(16, redstone);
     }
 
     @Override
@@ -144,7 +170,7 @@ public class GUIPermSettings extends AbstractGUI {
             constructGUI();
         });
 
-        registerClickable(12, (player, inventory, cursor, slot, type) -> {
+        registerClickable(11, (player, inventory, cursor, slot, type) -> {
             // Toggle block place perms
             if (role == ClaimRole.MEMBER) {
                 claim.getMemberPermissions().setCanPlace(!claim.getMemberPermissions().hasPermission(ClaimPerm.PLACE));
@@ -156,7 +182,7 @@ public class GUIPermSettings extends AbstractGUI {
             constructGUI();
         });
 
-        registerClickable(14, (player, inventory, cursor, slot, type) -> {
+        registerClickable(12, (player, inventory, cursor, slot, type) -> {
             // Toggle block interact perms
             if (role == ClaimRole.MEMBER) {
                 claim.getMemberPermissions().setCanInteract(!claim.getMemberPermissions().hasPermission(ClaimPerm.INTERACT));
@@ -168,13 +194,37 @@ public class GUIPermSettings extends AbstractGUI {
             constructGUI();
         });
 
-        registerClickable(16, (player, inventory, cursor, slot, type) -> {
+        registerClickable(14, (player, inventory, cursor, slot, type) -> {
+            // Toggle block interact perms
+            if (role == ClaimRole.MEMBER) {
+                claim.getMemberPermissions().setCanDoors(!claim.getMemberPermissions().hasPermission(ClaimPerm.DOORS));
+                plugin.getDataManager().updatePermissions(claim, claim.getMemberPermissions(), ClaimRole.MEMBER);
+            } else {
+                claim.getVisitorPermissions().setCanDoors(!claim.getVisitorPermissions().hasPermission(ClaimPerm.DOORS));
+                plugin.getDataManager().updatePermissions(claim, claim.getVisitorPermissions(), ClaimRole.VISITOR);
+            }
+            constructGUI();
+        });
+
+        registerClickable(15, (player, inventory, cursor, slot, type) -> {
             // Toggle block interact perms
             if (role == ClaimRole.MEMBER) {
                 claim.getMemberPermissions().setCanMobKill(!claim.getMemberPermissions().hasPermission(ClaimPerm.MOB_KILLING));
                 plugin.getDataManager().updatePermissions(claim, claim.getMemberPermissions(), ClaimRole.MEMBER);
             } else {
                 claim.getVisitorPermissions().setCanMobKill(!claim.getVisitorPermissions().hasPermission(ClaimPerm.MOB_KILLING));
+                plugin.getDataManager().updatePermissions(claim, claim.getVisitorPermissions(), ClaimRole.VISITOR);
+            }
+            constructGUI();
+        });
+
+        registerClickable(16, (player, inventory, cursor, slot, type) -> {
+            // Toggle block interact perms
+            if (role == ClaimRole.MEMBER) {
+                claim.getMemberPermissions().setCanRedstone(!claim.getMemberPermissions().hasPermission(ClaimPerm.REDSTONE));
+                plugin.getDataManager().updatePermissions(claim, claim.getMemberPermissions(), ClaimRole.MEMBER);
+            } else {
+                claim.getVisitorPermissions().setCanRedstone(!claim.getVisitorPermissions().hasPermission(ClaimPerm.REDSTONE));
                 plugin.getDataManager().updatePermissions(claim, claim.getVisitorPermissions(), ClaimRole.VISITOR);
             }
             constructGUI();

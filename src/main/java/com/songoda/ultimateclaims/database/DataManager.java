@@ -132,7 +132,7 @@ public class DataManager {
                 statement.executeUpdate();
             }
 
-            String createMemberPermissions = "INSERT INTO " + this.getTablePrefix() + "permissions (claim_id, type, interact, break, place, mob_kill) VALUES (?, ?, ?, ?, ?, ?)";
+            String createMemberPermissions = "INSERT INTO " + this.getTablePrefix() + "permissions (claim_id, type, interact, break, place, mob_kill, redstone, doors) VALUES (?, ?, ?, ?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(createMemberPermissions)) {
                 statement.setInt(1, claimId);
                 statement.setString(2, "member");
@@ -140,10 +140,12 @@ public class DataManager {
                 statement.setInt(4, claim.getMemberPermissions().hasPermission(ClaimPerm.BREAK) ? 1 : 0);
                 statement.setInt(5, claim.getMemberPermissions().hasPermission(ClaimPerm.PLACE) ? 1 : 0);
                 statement.setInt(6, claim.getMemberPermissions().hasPermission(ClaimPerm.MOB_KILLING) ? 1 : 0);
+                statement.setInt(7, claim.getMemberPermissions().hasPermission(ClaimPerm.REDSTONE) ? 1 : 0);
+                statement.setInt(8, claim.getMemberPermissions().hasPermission(ClaimPerm.DOORS) ? 1 : 0);
                 statement.executeUpdate();
             }
 
-            String createVisitorPermissions = "INSERT INTO " + this.getTablePrefix() + "permissions (claim_id, type, interact, break, place, mob_kill) VALUES (?, ?, ?, ?, ?, ?)";
+            String createVisitorPermissions = "INSERT INTO " + this.getTablePrefix() + "permissions (claim_id, type, interact, break, place, mob_kill, redstone) VALUES (?, ?, ?, ?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(createVisitorPermissions)) {
                 statement.setInt(1, claimId);
                 statement.setString(2, "visitor");
@@ -151,6 +153,8 @@ public class DataManager {
                 statement.setInt(4, claim.getVisitorPermissions().hasPermission(ClaimPerm.BREAK) ? 1 : 0);
                 statement.setInt(5, claim.getVisitorPermissions().hasPermission(ClaimPerm.PLACE) ? 1 : 0);
                 statement.setInt(6, claim.getVisitorPermissions().hasPermission(ClaimPerm.MOB_KILLING) ? 1 : 0);
+                statement.setInt(7, claim.getVisitorPermissions().hasPermission(ClaimPerm.REDSTONE) ? 1 : 0);
+                statement.setInt(8, claim.getVisitorPermissions().hasPermission(ClaimPerm.DOORS) ? 1 : 0);
                 statement.executeUpdate();
             }
         }));
@@ -398,14 +402,16 @@ public class DataManager {
 
     public void updatePermissions(Claim claim, ClaimPermissions permissions, ClaimRole role) {
         this.async(() -> this.databaseConnector.connect(connection -> {
-            String updateClaim = "UPDATE " + this.getTablePrefix() + "permissions SET interact = ?, break = ?, place = ?, mob_kill = ? WHERE claim_id = ? AND type = ?";
+            String updateClaim = "UPDATE " + this.getTablePrefix() + "permissions SET interact = ?, break = ?, place = ?, mob_kill = ?, redstone = ?, doors = ? WHERE claim_id = ? AND type = ?";
             try (PreparedStatement statement = connection.prepareStatement(updateClaim)) {
                 statement.setInt(1, permissions.hasPermission(ClaimPerm.INTERACT) ? 1 : 0);
                 statement.setInt(2, permissions.hasPermission(ClaimPerm.BREAK) ? 1 : 0);
                 statement.setInt(3, permissions.hasPermission(ClaimPerm.PLACE) ? 1 : 0);
                 statement.setInt(4, permissions.hasPermission(ClaimPerm.MOB_KILLING) ? 1 : 0);
-                statement.setInt(5, claim.getId());
-                statement.setString(6, role.name().toLowerCase());
+                statement.setInt(5, permissions.hasPermission(ClaimPerm.REDSTONE) ? 1 : 0);
+                statement.setInt(6, permissions.hasPermission(ClaimPerm.DOORS) ? 1 : 0);
+                statement.setInt(7, claim.getId());
+                statement.setString(8, role.name().toLowerCase());
                 statement.executeUpdate();
             }
         }));
@@ -568,7 +574,9 @@ public class DataManager {
                             .setCanInteract(result.getInt("interact") == 1)
                             .setCanBreak(result.getInt("break") == 1)
                             .setCanPlace(result.getInt("place") == 1)
-                            .setCanMobKill(result.getInt("mob_kill") == 1);
+                            .setCanMobKill(result.getInt("mob_kill") == 1)
+                            .setCanRedstone(result.getInt("redstone") == 1)
+                            .setCanDoors(result.getInt("doors") == 1);
 
                     String type = result.getString("type");
                     switch (type) {

@@ -8,7 +8,6 @@ public class ClaimSettings {
     private boolean leafDecay = true;
     private boolean pvp = true;
 
-
     public boolean isHostileMobSpawning() {
         return this.hostileMobSpawning;
     }

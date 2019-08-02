@@ -6,6 +6,8 @@ public class ClaimPermissions {
     private boolean canBreak = false;
     private boolean canPlace = false;
     private boolean canMobKill = false;
+    private boolean canRedstone = false;
+    private boolean canDoors = false;
 
     public ClaimPermissions setCanInteract(boolean canInteract) {
         this.canInteract = canInteract;
@@ -27,6 +29,16 @@ public class ClaimPermissions {
         return this;
     }
 
+    public ClaimPermissions setCanRedstone(boolean canRedstone) {
+        this.canRedstone = canRedstone;
+        return this;
+    }
+
+    public ClaimPermissions setCanDoors(boolean canDoors) {
+        this.canDoors = canDoors;
+        return this;
+    }
+
     public boolean hasPermission(ClaimPerm perm) {
         switch (perm) {
             case BREAK:
@@ -37,6 +49,10 @@ public class ClaimPermissions {
                 return canInteract;
             case MOB_KILLING:
                 return canMobKill;
+            case REDSTONE:
+                return canRedstone;
+            case DOORS:
+                return canDoors;
             default:
                 return false;
         }
