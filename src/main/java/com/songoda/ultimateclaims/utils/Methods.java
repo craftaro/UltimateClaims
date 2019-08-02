@@ -24,7 +24,7 @@ public class Methods {
             for (int zz = bz; zz < bz + 16; zz++) {
                 for (int yy = player.getLocation().getBlockY() - 5; yy < player.getLocation().getBlockY() + 5; yy++) {
                     Block block = world.getBlockAt(xx, yy, zz);
-                    if (block.getType() == Material.AIR || UltimateClaims.getInstance().isServerVersionAtLeast(ServerVersion.V1_12) && block.isPassable()) continue;
+                    if (!block.getType().isOccluding()) continue;
                     Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () -> {
                         player.sendBlockChange(block.getLocation(), material, (byte) 0);
                         Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () ->
@@ -34,6 +34,45 @@ public class Methods {
                     }, random.nextInt(30) + 1);
                 }
             }
+        }
+    }
+
+    private static boolean isAnimated(Material material) {
+        switch (material) {
+            case AIR:
+            case ACACIA_FENCE:
+            case BIRCH_FENCE:
+            case DARK_OAK_FENCE:
+            case JUNGLE_FENCE:
+            case NETHER_BRICK_FENCE:
+            case OAK_FENCE:
+            case SPRUCE_FENCE:
+            case ANDESITE_WALL:
+            case BRICK_WALL:
+            case COBBLESTONE_WALL:
+            case END_STONE_BRICK_WALL:
+            case DIORITE_WALL:
+            case GRANITE_WALL:
+            case MOSSY_COBBLESTONE_WALL:
+            case MOSSY_STONE_BRICK_WALL:
+            case NETHER_BRICK_WALL:
+            case PRISMARINE_WALL:
+            case RED_NETHER_BRICK_WALL:
+            case RED_SANDSTONE_WALL:
+            case SANDSTONE_WALL:
+            case STONE_BRICK_WALL:
+            case SANDSTONE_SLAB:
+            case SMOOTH_QUARTZ_SLAB:
+            case ACACIA_SLAB:
+            case SMOOTH_RED_SANDSTONE_SLAB:
+            case SMOOTH_SANDSTONE_SLAB:
+            case SMOOTH_STONE_SLAB:
+            case SPRUCE_SLAB:
+            case STONE_BRICK_SLAB:
+            case STONE_SLAB:
+                return false;
+            default:
+                return true;
         }
     }
 
