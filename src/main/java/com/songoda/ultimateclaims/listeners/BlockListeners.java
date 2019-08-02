@@ -122,12 +122,12 @@ public class BlockListeners implements Listener {
         ClaimManager claimManager = plugin.getClaimManager();
         Block piston = event.getBlock();
         final BlockFace dir = event.getDirection();
-        final int cx = piston.getX() >> 4, cz = piston.getZ() >> 4;
+        final int chunkX = piston.getX() >> 4, chunkZ = piston.getZ() >> 4;
         Claim fromClaim = claimManager.getClaim(piston.getChunk());
-        for (Block b : blocks) {
+        for (Block block : blocks) {
             // only check if this block is in a different chunk, or going into another chunk
-            if (b.getX() >> 4 != cx || b.getZ() >> 4 != cz) {
-                Claim toClaim = claimManager.getClaim(b.getChunk());
+            if (block.getX() >> 4 != chunkX || block.getZ() >> 4 != chunkZ) {
+                Claim toClaim = claimManager.getClaim(block.getChunk());
                 // if we're moving across a claim boundary, cancel the event
                 if (fromClaim != null && toClaim != null) {
                     if(!fromClaim.equals(toClaim)) {
@@ -140,8 +140,8 @@ public class BlockListeners implements Listener {
                     event.setCancelled(true);
                     return;
                 }
-            } else if ((b.getX() + dir.getModX()) >> 4 != cx || (b.getZ() + dir.getModZ()) >> 4 != cz) {
-                Claim toClaim = claimManager.getClaim(b.getRelative(dir).getChunk());
+            } else if ((block.getX() + dir.getModX()) >> 4 != chunkX || (block.getZ() + dir.getModZ()) >> 4 != chunkZ) {
+                Claim toClaim = claimManager.getClaim(block.getRelative(dir).getChunk());
                 // if we're moving across a claim boundary, cancel the event
                 if (fromClaim != null && toClaim != null) {
                     if(!fromClaim.equals(toClaim)) {
