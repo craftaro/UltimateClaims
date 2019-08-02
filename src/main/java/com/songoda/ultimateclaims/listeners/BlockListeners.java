@@ -7,13 +7,18 @@ import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
+import java.util.List;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockPistonEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 
@@ -97,6 +102,58 @@ public class BlockListeners implements Listener {
             Claim claim = claimManager.getClaim(event.getBlock().getChunk());
             if (!claim.getClaimSettings().isLeafDecay()) {
                 event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onPistonExtend(BlockPistonExtendEvent event) {
+        // don't push into a protected region
+        pistonCheck(event, event.getBlocks());
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onPistonRetract(BlockPistonRetractEvent event) {
+        // don't pull from a protected region
+        pistonCheck(event, event.getBlocks());
+    }
+
+    void pistonCheck(BlockPistonEvent event, List<Block> blocks) {
+        ClaimManager claimManager = plugin.getClaimManager();
+        Block piston = event.getBlock();
+        final BlockFace dir = event.getDirection();
+        final int cx = piston.getX() >> 4, cz = piston.getZ() >> 4;
+        Claim fromClaim = claimManager.getClaim(piston.getChunk());
+        for (Block b : blocks) {
+            // only check if this block is in a different chunk, or going into another chunk
+            if (b.getX() >> 4 != cx || b.getZ() >> 4 != cz) {
+                Claim toClaim = claimManager.getClaim(b.getChunk());
+                // if we're moving across a claim boundary, cancel the event
+                if (fromClaim != null && toClaim != null) {
+                    if(!fromClaim.equals(toClaim)) {
+                        // different claims!
+                        event.setCancelled(true);
+                        return;
+                    }
+                } else if (toClaim != null) {
+                    // trying to alter another claim
+                    event.setCancelled(true);
+                    return;
+                }
+            } else if ((b.getX() + dir.getModX()) >> 4 != cx || (b.getZ() + dir.getModZ()) >> 4 != cz) {
+                Claim toClaim = claimManager.getClaim(b.getRelative(dir).getChunk());
+                // if we're moving across a claim boundary, cancel the event
+                if (fromClaim != null && toClaim != null) {
+                    if(!fromClaim.equals(toClaim)) {
+                        // different claims!
+                        event.setCancelled(true);
+                        return;
+                    }
+                } else if (toClaim != null) {
+                    // trying to alter another claim
+                    event.setCancelled(true);
+                    return;
+                }
             }
         }
     }

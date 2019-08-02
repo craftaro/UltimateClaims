@@ -244,4 +244,11 @@ public class Claim {
     public ClaimSettings getClaimSettings() {
         return claimSettings;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        return this.id == ((Claim) obj).id;
+    }
 }
