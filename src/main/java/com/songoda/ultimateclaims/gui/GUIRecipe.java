@@ -1,22 +1,13 @@
 package com.songoda.ultimateclaims.gui;
 
 import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.utils.Methods;
-import com.songoda.ultimateclaims.utils.ServerVersion;
 import com.songoda.ultimateclaims.utils.gui.AbstractGUI;
 import com.songoda.ultimateclaims.utils.settings.Setting;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class GUIRecipe extends AbstractGUI {
 
@@ -31,6 +22,9 @@ public class GUIRecipe extends AbstractGUI {
 
     @Override
     protected void constructGUI() {
+
+        for (int i = 0; i < 27; i++)
+            inventory.setItem(i, Methods.getGlass());
 
         List<String> recipe = Setting.POWERCELL_RECIPE.getStringList();
         for (String line : recipe) {
