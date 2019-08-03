@@ -13,6 +13,10 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import org.bukkit.Bukkit;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 
 public class Claim {
 
@@ -47,6 +51,9 @@ public class Claim {
 
     private PowerCell powerCell = new PowerCell(this);
 
+    private BossBar bossBarVisitor = null;
+    private BossBar bossBarMember = null;
+
     public void setId(int id) {
         this.id = id;
     }
@@ -65,6 +72,22 @@ public class Claim {
 
     public void setName(String name) {
         this.name = name;
+        if(bossBarMember != null)
+            bossBarMember.setTitle(name);
+        if(bossBarVisitor != null)
+            bossBarVisitor.setTitle(name);
+    }
+
+    public BossBar getVisitorBossBar() {
+        if(bossBarVisitor == null)
+            bossBarVisitor = Bukkit.getServer().createBossBar(this.name, BarColor.YELLOW, BarStyle.SOLID);
+        return bossBarVisitor;
+    }
+
+    public BossBar getMemberBossBar() {
+        if(bossBarMember == null)
+            bossBarMember = Bukkit.getServer().createBossBar(this.name, BarColor.GREEN, BarStyle.SOLID);
+        return bossBarMember;
     }
 
     public ClaimMember getOwner() {

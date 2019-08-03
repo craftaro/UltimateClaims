@@ -7,6 +7,7 @@ import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
+import com.songoda.ultimateclaims.utils.settings.Setting;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -161,9 +162,14 @@ public class EntityListeners implements Listener {
                     else
                         member.setPresent(false);
                 }
-                plugin.getLocale().getMessage("event.claim.exit")
-                        .processPlaceholder("claim", claim.getName())
-                        .sendTitle(player);
+                if(Setting.CLAIMS_BOSSBAR.getBoolean()) {
+                    claim.getVisitorBossBar().removePlayer(player);
+                    claim.getMemberBossBar().removePlayer(player);
+                } else {
+                    plugin.getLocale().getMessage("event.claim.exit")
+                            .processPlaceholder("claim", claim.getName())
+                            .sendTitle(player);
+                }
             }
         }
 
@@ -192,9 +198,17 @@ public class EntityListeners implements Listener {
                     return true;
                 }
 
-                plugin.getLocale().getMessage("event.claim.enter")
-                        .processPlaceholder("claim", claim.getName())
-                        .sendTitle(player);
+                if(Setting.CLAIMS_BOSSBAR.getBoolean()) {
+                    if(member == null || member.getRole() == ClaimRole.VISITOR) {
+                        claim.getVisitorBossBar().addPlayer(player);
+                    } else {
+                        claim.getMemberBossBar().addPlayer(player);
+                    }
+                } else {
+                    plugin.getLocale().getMessage("event.claim.enter")
+                            .processPlaceholder("claim", claim.getName())
+                            .sendTitle(player);
+                }
             }
         }
         return false;

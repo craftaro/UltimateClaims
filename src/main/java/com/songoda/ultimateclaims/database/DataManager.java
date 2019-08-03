@@ -132,7 +132,7 @@ public class DataManager {
                 statement.executeUpdate();
             }
 
-            String createMemberPermissions = "INSERT INTO " + this.getTablePrefix() + "permissions (claim_id, type, interact, break, place, mob_kill, redstone, doors) VALUES (?, ?, ?, ?, ?, ?)";
+            String createMemberPermissions = "INSERT INTO " + this.getTablePrefix() + "permissions (claim_id, type, interact, break, place, mob_kill, redstone, doors) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(createMemberPermissions)) {
                 statement.setInt(1, claimId);
                 statement.setString(2, "member");
@@ -145,7 +145,7 @@ public class DataManager {
                 statement.executeUpdate();
             }
 
-            String createVisitorPermissions = "INSERT INTO " + this.getTablePrefix() + "permissions (claim_id, type, interact, break, place, mob_kill, redstone) VALUES (?, ?, ?, ?, ?, ?)";
+            String createVisitorPermissions = "INSERT INTO " + this.getTablePrefix() + "permissions (claim_id, type, interact, break, place, mob_kill, redstone, doors) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(createVisitorPermissions)) {
                 statement.setInt(1, claimId);
                 statement.setString(2, "visitor");
