@@ -9,7 +9,6 @@ import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import java.util.List;
 import org.bukkit.Chunk;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
@@ -109,7 +108,7 @@ public class BlockListeners implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onBlockFromToEventMonitor(BlockFromToEvent event) {
+    public void onBlockFromToEventMonitor(BlockFromToEvent event) {
         // prevent water/lava/egg griefs
         ClaimManager claimManager = plugin.getClaimManager();
         Claim fromClaim = claimManager.getClaim(event.getBlock().getChunk());
@@ -123,7 +122,7 @@ public class BlockListeners implements Listener {
             // moving from unclaimed to a claim
             event.setCancelled(true);
         }
-	}
+    }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPistonExtend(BlockPistonExtendEvent event) {
