@@ -9,12 +9,14 @@ import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import java.util.List;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPistonEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
@@ -105,6 +107,23 @@ public class BlockListeners implements Listener {
             }
         }
     }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void onBlockFromToEventMonitor(BlockFromToEvent event) {
+        // prevent water/lava/egg griefs
+        ClaimManager claimManager = plugin.getClaimManager();
+        Claim fromClaim = claimManager.getClaim(event.getBlock().getChunk());
+        Claim toClaim = claimManager.getClaim(event.getToBlock().getChunk());
+        // if we're moving across a claim boundary, cancel the event
+        if (fromClaim != null && toClaim != null) {
+            if(!fromClaim.equals(toClaim)) {
+                event.setCancelled(true);
+            }
+        } else if(toClaim != null) {
+            // moving from unclaimed to a claim
+            event.setCancelled(true);
+        }
+	}
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPistonExtend(BlockPistonExtendEvent event) {
