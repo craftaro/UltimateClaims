@@ -77,6 +77,11 @@ public class UltimateClaims extends JavaPlugin {
         if(Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays"))
             HologramsAPI.getHolograms(this).stream().forEach(x -> x.delete());
 
+        // cleanup boss bars
+        if(Setting.CLAIMS_BOSSBAR.getBoolean()) {
+            this.claimManager.getRegisteredClaims().forEach(x -> {x.getVisitorBossBar().removeAll();x.getMemberBossBar().removeAll();});
+        }
+
         console.sendMessage(Methods.formatText("&a============================="));
     }
 
