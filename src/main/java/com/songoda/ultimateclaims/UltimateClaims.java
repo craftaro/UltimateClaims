@@ -1,5 +1,6 @@
 package com.songoda.ultimateclaims;
 
+import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.command.CommandManager;
 import com.songoda.ultimateclaims.database.DataManager;
@@ -68,9 +69,13 @@ public class UltimateClaims extends JavaPlugin {
         console.sendMessage(Methods.formatText("&7UltimateClaims " + this.getDescription().getVersion() + " by &5Songoda <3!"));
         console.sendMessage(Methods.formatText("&7Action: &cDisabling&7..."));
 
+        // save all claims data
         this.dataManager.bulkUpdateClaims(this.claimManager.getRegisteredClaims());
-
         this.databaseConnector.closeConnection();
+
+        // cleanup holograms
+        if(Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays"))
+            HologramsAPI.getHolograms(this).stream().forEach(x -> x.delete());
 
         console.sendMessage(Methods.formatText("&a============================="));
     }
