@@ -37,7 +37,7 @@ public class CommandInvite extends AbstractCommand {
 
         OfflinePlayer invited = Bukkit.getPlayer(args[1]);
 
-        if (invited == null && !invited.isOnline()) {
+        if (invited == null || !invited.isOnline()) {
             instance.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
