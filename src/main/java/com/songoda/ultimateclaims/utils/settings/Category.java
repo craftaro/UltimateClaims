@@ -8,13 +8,7 @@ public enum Category {
             "They are used in GUI's to make paterns, change them up then open up a",
             "GUI to see how it works."),
 
-    ENTITIES("Stacked Entity Settings."),
-
-    ITEMS("Stacked Item Settings."),
-
-    SPAWNERS("Stacked Spawner Settings."),
-
-    DATABASE("Settings regarding the Database."),
+    MYSQL("Settings regarding the Database."),
 
     SYSTEM("System related settings.");
 
