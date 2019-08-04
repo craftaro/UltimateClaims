@@ -74,7 +74,7 @@ public class UltimateClaims extends JavaPlugin {
         this.databaseConnector.closeConnection();
 
         // cleanup holograms
-        if(Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays"))
+        if (getHologram() != null)
             HologramsAPI.getHolograms(this).stream().forEach(x -> x.delete());
 
         // cleanup boss bars
