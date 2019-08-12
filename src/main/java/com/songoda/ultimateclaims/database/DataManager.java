@@ -126,7 +126,7 @@ public class DataManager {
                 statement.setInt(1, claimId);
                 statement.setInt(2, claim.getClaimSettings().isHostileMobSpawning() ? 1 : 0);
                 statement.setInt(3, claim.getClaimSettings().isFireSpread() ? 1 : 0);
-                statement.setInt(4, claim.getClaimSettings().isMobGriefing() ? 1 : 0);
+                statement.setInt(4, claim.getClaimSettings().isMobGriefingAllowed() ? 1 : 0);
                 statement.setInt(5, claim.getClaimSettings().isLeafDecay() ? 1 : 0);
                 statement.setInt(6, claim.getClaimSettings().isPvp() ? 1 : 0);
                 statement.executeUpdate();
@@ -391,7 +391,7 @@ public class DataManager {
             try (PreparedStatement statement = connection.prepareStatement(updateClaim)) {
                 statement.setInt(1, settings.isHostileMobSpawning() ? 1 : 0);
                 statement.setInt(2, settings.isFireSpread() ? 1 : 0);
-                statement.setInt(3, settings.isMobGriefing() ? 1 : 0);
+                statement.setInt(3, settings.isMobGriefingAllowed() ? 1 : 0);
                 statement.setInt(4, settings.isLeafDecay() ? 1 : 0);
                 statement.setInt(5, settings.isPvp() ? 1 : 0);
                 statement.setInt(6, claim.getId());
@@ -556,7 +556,7 @@ public class DataManager {
                     claim.getClaimSettings()
                             .setHostileMobSpawning(result.getInt("hostile_mob_spawning") == 1)
                             .setFireSpread(result.getInt("fire_spread") == 1)
-                            .setMobGriefing(result.getInt("mob_griefing") == 1)
+                            .setMobGriefingAllowed(result.getInt("mob_griefing") == 1)
                             .setLeafDecay(result.getInt("leaf_decay") == 1)
                             .setPvp(result.getInt("pvp") == 1);
                 }

@@ -135,14 +135,14 @@ public class GUISettings extends AbstractGUI {
             mobGriefingMeta.setDisplayName(plugin.getLocale().getMessage("interface.settings.mobgriefingtitle").getMessage());
             List<String> mobGriefingLore = new ArrayList<>();
             String[] mobGriefingSplit = plugin.getLocale().getMessage("general.interface.current")
-                    .processPlaceholder("current", claim.getClaimSettings().isMobGriefing())
+                    .processPlaceholder("current", claim.getClaimSettings().isMobGriefingAllowed())
                     .getMessage().split("\\|");
             for (String line : mobGriefingSplit) mobGriefingLore.add(line);
             mobGriefingMeta.setLore(mobGriefingLore);
             mobGriefing.setItemMeta(mobGriefingMeta);
 
             registerClickable(i, (player, inventory, cursor, slot, type) -> {
-                claim.getClaimSettings().setMobGriefing(!claim.getClaimSettings().isMobGriefing());
+                claim.getClaimSettings().setMobGriefingAllowed(!claim.getClaimSettings().isMobGriefingAllowed());
                 plugin.getDataManager().updateSettings(claim, claim.getClaimSettings());
                 constructGUI();
             });

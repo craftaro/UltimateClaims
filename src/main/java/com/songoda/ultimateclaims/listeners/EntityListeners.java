@@ -90,7 +90,7 @@ public class EntityListeners implements Listener {
 
         if (claimManager.hasClaim(event.getBlock().getLocation().getChunk())) {
             Claim claim = claimManager.getClaim(event.getBlock().getLocation().getChunk());
-            if (!claim.getClaimSettings().isMobGriefing()) {
+            if (!claim.getClaimSettings().isMobGriefingAllowed()) {
                 event.setCancelled(true);
             }
         }
@@ -126,7 +126,7 @@ public class EntityListeners implements Listener {
             if (event.getEntity().getType() == EntityType.CREEPER) {
                 Claim claim = claimManager.getClaim(block.getChunk());
                 PowerCell powerCell = claim.getPowerCell();
-                if (claim.getClaimSettings().isMobGriefing()
+                if (!claim.getClaimSettings().isMobGriefingAllowed()
                         || (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation()))) {
                     event.blockList().remove(block);
                 }
