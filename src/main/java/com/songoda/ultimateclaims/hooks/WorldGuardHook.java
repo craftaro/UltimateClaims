@@ -149,8 +149,15 @@ public class WorldGuardHook {
     public static Boolean getBooleanFlag(Location l, String flag) {
         if (wgPlugin == null || !wgPlugin) return null;
         Object flagObj = flags.get(flag);
+        // There's a different way to get this in the old version
+        if (legacy)
+            return flagObj == null ? null : getBooleanFlagLegacy(l, flagObj);
+
+        // for convinience, we can load a flag if we don't know it
         if (flagObj == null && !legacy)
             flags.put(flag, flagObj = WorldGuard.getInstance().getFlagRegistry().get(flag));
+
+        // so, what's up?
         if (flagObj instanceof StateFlag) {
             RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
             RegionQuery query = container.createQuery();
@@ -186,19 +193,56 @@ public class WorldGuardHook {
                 BlockVector3.at(c.getX() << 4, c.getWorld().getMaxHeight(), c.getZ() << 4),
                 BlockVector3.at((c.getX() << 4) + 15, 0, (c.getZ() << 4) + 15));
             ApplicableRegionSet set = worldManager.getApplicableRegions(chunkRegion);
-            if (set.size() == 0)
-                return null;
             State result = set.queryState((RegionAssociable) null, (StateFlag) flagObj);
+            if (result == null && set.size() == 0)
+                return null;
             return result == State.ALLOW;
         }
         return null;
     }
 
     static Method legacy_getRegionManager = null;
-    static Method legacy_getApplicableRegions = null;
+    static Method legacy_getApplicableRegions_Region = null;
+    static Method legacy_getApplicableRegions_Location = null;
     static Constructor legacy_newProtectedCuboidRegion;
     static Class legacy_blockVectorClazz;
     static Constructor legacy_newblockVector;
+
+    private static Boolean getBooleanFlagLegacy(Location l, Object flag) {
+        try {
+            // cache reflection methods
+            if (legacy_getRegionManager == null) {
+                legacy_getRegionManager = worldGuardPlugin.getClass()
+                        .getDeclaredMethod("getRegionManager", org.bukkit.World.class);
+                legacy_getApplicableRegions_Region = RegionManager.class.getDeclaredMethod("getApplicableRegions", 
+                        Class.forName("com.sk89q.worldguard.protection.regions.ProtectedRegion"));
+                legacy_getApplicableRegions_Location = RegionManager.class.getDeclaredMethod("getApplicableRegions", 
+                        Location.class);
+                legacy_blockVectorClazz = Class.forName("com.sk89q.worldedit.BlockVector");
+                legacy_newblockVector = legacy_blockVectorClazz.getConstructor(int.class, int.class, int.class);
+                legacy_newProtectedCuboidRegion = Class.forName("com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion")
+                        .getConstructor(String.class, legacy_blockVectorClazz, legacy_blockVectorClazz);
+            }
+
+            // grab the applicable manager for this world
+            Object worldManager = (RegionManager) legacy_getRegionManager.invoke(worldGuardPlugin, l.getWorld());
+            if (worldManager == null)
+                return null;
+
+            // now look for any intersecting regions
+            ApplicableRegionSet set = (ApplicableRegionSet) legacy_getApplicableRegions_Region.invoke(worldManager, l);
+
+            // so what's the verdict?
+            State result = set.queryState((RegionAssociable) null, (StateFlag) flag);
+            if (result == null && set.size() == 0)
+                return null;
+            return result == State.ALLOW;
+
+        } catch (Exception ex) {
+			Bukkit.getServer().getLogger().log(Level.WARNING, "Could not grab flags from WorldGuard", ex);
+        }
+        return null;
+    }
 
     private static Boolean getBooleanFlagLegacy(Chunk c, Object flag) {
         // ApplicableRegionSet and RegionManager have the same classpath as the current version
@@ -208,8 +252,10 @@ public class WorldGuardHook {
             if (legacy_getRegionManager == null) {
                 legacy_getRegionManager = worldGuardPlugin.getClass()
                         .getDeclaredMethod("getRegionManager", org.bukkit.World.class);
-                legacy_getApplicableRegions = RegionManager.class.getDeclaredMethod("getApplicableRegions", 
+                legacy_getApplicableRegions_Region = RegionManager.class.getDeclaredMethod("getApplicableRegions", 
                         Class.forName("com.sk89q.worldguard.protection.regions.ProtectedRegion"));
+                legacy_getApplicableRegions_Location = RegionManager.class.getDeclaredMethod("getApplicableRegions", 
+                        Location.class);
                 legacy_blockVectorClazz = Class.forName("com.sk89q.worldedit.BlockVector");
                 legacy_newblockVector = legacy_blockVectorClazz.getConstructor(int.class, int.class, int.class);
                 legacy_newProtectedCuboidRegion = Class.forName("com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion")
@@ -227,12 +273,12 @@ public class WorldGuardHook {
                 legacy_newblockVector.newInstance((c.getX() << 4) + 15, 0, (c.getZ() << 4) + 15));
 
             // now look for any intersecting regions
-            ApplicableRegionSet set = (ApplicableRegionSet) legacy_getApplicableRegions.invoke(worldManager, chunkRegion);
-            if (set.size() == 0)
-                return null;
+            ApplicableRegionSet set = (ApplicableRegionSet) legacy_getApplicableRegions_Region.invoke(worldManager, chunkRegion);
 
             // so what's the verdict?
             State result = set.queryState((RegionAssociable) null, (StateFlag) flag);
+            if (result == null && set.size() == 0)
+                return null;
             return result == State.ALLOW;
 
         } catch (Exception ex) {
