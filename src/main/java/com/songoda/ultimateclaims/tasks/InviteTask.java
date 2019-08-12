@@ -38,7 +38,7 @@ public class InviteTask extends BukkitRunnable {
         if(waitingInventations.isEmpty())
             return;
 
-        final long now = System.currentTimeMillis(), 
+        final long now = System.currentTimeMillis(),
                 timeout = Setting.INVITE_TIMEOUT.getInt() * 1000;
 
         // clean up expired invites

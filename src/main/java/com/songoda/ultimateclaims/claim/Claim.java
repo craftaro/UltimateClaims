@@ -101,7 +101,7 @@ public class Claim {
     public ClaimMember setOwner(Player owner) {
         return this.owner = new ClaimMember(this, owner.getUniqueId(), owner.getName(), ClaimRole.OWNER);
     }
-    
+
     public Set<ClaimMember> getMembers() {
         return members;
     }

@@ -14,6 +14,7 @@ import com.songoda.ultimateclaims.economy.ReserveEconomy;
 import com.songoda.ultimateclaims.economy.VaultEconomy;
 import com.songoda.ultimateclaims.hologram.Hologram;
 import com.songoda.ultimateclaims.hologram.HologramHolographicDisplays;
+import com.songoda.ultimateclaims.hooks.WorldGuardHook;
 import com.songoda.ultimateclaims.listeners.*;
 import com.songoda.ultimateclaims.settings.PluginSettings;
 import com.songoda.ultimateclaims.tasks.AnimateTask;
@@ -62,6 +63,11 @@ public class UltimateClaims extends JavaPlugin {
     public static UltimateClaims getInstance() {
         return INSTANCE;
     }
+
+	@Override
+	public void onLoad() {
+        WorldGuardHook.addHook("allow-claims", false);
+	}
 
     @Override
     public void onDisable() {

@@ -5,6 +5,7 @@ import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimBuilder;
 import com.songoda.ultimateclaims.claim.ClaimedChunk;
 import com.songoda.ultimateclaims.command.AbstractCommand;
+import com.songoda.ultimateclaims.hooks.WorldGuardHook;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.Methods;
@@ -34,6 +35,13 @@ public class CommandClaim extends AbstractCommand {
 
         Chunk chunk = player.getLocation().getChunk();
         Claim claim;
+
+        // firstly, can we even claim this chunk?
+        Boolean flag;
+        if((flag = WorldGuardHook.getBooleanFlag(chunk, "allow-claims")) != null && !flag) {
+            instance.getLocale().getMessage("command.claim.noregion").sendPrefixedMessage(player);
+            return ReturnType.FAILURE;
+        }
 
         if (instance.getClaimManager().hasClaim(player)) {
             claim = instance.getClaimManager().getClaim(player);

@@ -21,7 +21,8 @@ public class DataMigrationManager {
         this.databaseConnector = databaseConnector;
         this.dataManager = dataManager;
 
-        this.migrations = Arrays.asList(new _1_InitialMigration(),
+        this.migrations = Arrays.asList(
+                new _1_InitialMigration(),
                 new _2_NewPermissions(),
                 new _3_MemberNames()
         );
