@@ -162,7 +162,8 @@ public class Claim {
     }
 
     public boolean containsChunk(Chunk chunk) {
-        return this.claimedChunks.stream().anyMatch(x -> x.getX() == chunk.getX() && x.getZ() == chunk.getZ());
+        final String world = chunk.getWorld().getName();
+        return this.claimedChunks.stream().anyMatch(x -> x.getWorld().equals(world) && x.getX() == chunk.getX() && x.getZ() == chunk.getZ());
     }
 
     public int getClaimSize() {
