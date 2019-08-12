@@ -340,9 +340,10 @@ public class DataManager {
 
     public void deleteMember(ClaimMember member) {
         this.async(() -> this.databaseConnector.connect(connection -> {
-            String deleteMember = "DELETE FROM " + this.getTablePrefix() + "member WHERE id = ?";
+            String deleteMember = "DELETE FROM " + this.getTablePrefix() + "member WHERE player_uuid = ? AND claim_id = ?";
             try (PreparedStatement statement = connection.prepareStatement(deleteMember)) {
-                statement.setInt(1, member.getId());
+                statement.setString(1, member.getUniqueId().toString());
+                statement.setInt(2, member.getClaim().getId());
                 statement.executeUpdate();
             }
         }));
