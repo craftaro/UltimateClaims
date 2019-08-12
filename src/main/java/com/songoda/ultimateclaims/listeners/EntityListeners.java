@@ -26,7 +26,9 @@ import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 
 import java.util.ArrayList;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.projectiles.ProjectileSource;
 
 public class EntityListeners implements Listener {
 
@@ -120,18 +122,35 @@ public class EntityListeners implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onBlowUp(EntityExplodeEvent event) {
         ClaimManager claimManager = plugin.getClaimManager();
-        for (Block block : new ArrayList<>(event.blockList())) {
-            if (!claimManager.hasClaim(block.getChunk())) continue;
 
-            if (event.getEntity().getType() == EntityType.CREEPER) {
-                Claim claim = claimManager.getClaim(block.getChunk());
-                PowerCell powerCell = claim.getPowerCell();
-                if (!claim.getClaimSettings().isMobGriefingAllowed()
-                        || (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation()))) {
+        // Who is responsible for this?
+        Entity entity = event.getEntity();
+        if(entity instanceof Projectile && ((Projectile) entity).getShooter() instanceof Entity) {
+            entity = (Entity) ((Projectile) entity).getShooter();
+        }
+
+        // Does this concern us?
+        for (Block block : new ArrayList<>(event.blockList())) {
+            if (!claimManager.hasClaim(block.getChunk()))
+                continue; // nope - you're not important
+
+            // Pay special attention to mobs
+            switch (entity.getType()) {
+                case CREEPER:
+                case GHAST:
+                case FIREBALL:
+                case WITHER:
+                    // For explosions caused by mobs, check if allowed
+                    Claim claim = claimManager.getClaim(block.getChunk());
+                    PowerCell powerCell = claim.getPowerCell();
+                    if (!claim.getClaimSettings().isMobGriefingAllowed()
+                            || (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation()))) {
+                        event.blockList().remove(block);
+                    }
+                    break;
+                default:
+                    // Cancel block damage from all other explosions
                     event.blockList().remove(block);
-                }
-            } else {
-                event.blockList().remove(block);
             }
         }
     }
