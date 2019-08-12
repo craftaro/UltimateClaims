@@ -28,7 +28,7 @@ import org.bukkit.event.vehicle.VehicleMoveEvent;
 import java.util.ArrayList;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.block.BlockExplodeEvent;
-import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.event.player.PlayerLoginEvent;
 
 public class EntityListeners implements Listener {
 
@@ -36,6 +36,16 @@ public class EntityListeners implements Listener {
 
     public EntityListeners(UltimateClaims plugin) {
         this.plugin = plugin;
+    }
+
+    @EventHandler
+    public void onPlayerLogin(PlayerLoginEvent event) {
+        // update cached username on login
+        final Player player = event.getPlayer();
+        plugin.getClaimManager().getRegisteredClaims().stream()
+                .map(claim -> claim.getMember(player))
+                .filter(member -> member != null)
+                .forEach(member -> member.setName(player.getName()));
     }
 
     @EventHandler(ignoreCancelled = true)

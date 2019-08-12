@@ -22,23 +22,19 @@ public class ClaimBuilder {
         return this;
     }
 
-    public ClaimBuilder setOwner(UUID owner) {
-        this.claim.setOwner(owner);
-        return this;
-    }
-
     public ClaimBuilder setOwner(Player player) {
         if (claim.getName() == null)
             claim.setName(UltimateClaims.getInstance().getLocale()
                     .getMessage("general.claim.defaultname")
                     .processPlaceholder("name", player.getName())
                     .getMessage());
-        return this.setOwner(player.getUniqueId());
+        claim.setOwner(player.getUniqueId()).setName(player.getName());
+        return this;
     }
 
-    public ClaimBuilder addMembers(UUID... uuids) {
-        for (UUID uuid : uuids)
-            this.claim.addMember(uuid, ClaimRole.MEMBER);
+    public ClaimBuilder addMembers(Player... players) {
+        for (Player player : players)
+            this.claim.addMember(player, ClaimRole.MEMBER);
         return this;
     }
 

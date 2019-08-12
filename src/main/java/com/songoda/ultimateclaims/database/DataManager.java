@@ -46,10 +46,12 @@ public class DataManager {
 
     public void createOrUpdatePluginSettings(PluginSettings pluginSettings) {
         this.async(() -> this.databaseConnector.connect(connection -> {
+            // first check to see if there is a data row for plugin settings
             String selectPluginSettings = "SELECT * FROM " + this.getTablePrefix() + "plugin_settings";
             try (Statement statement = connection.createStatement()) {
                 ResultSet result = statement.executeQuery(selectPluginSettings);
                 if (!result.next()) {
+                    // no data, so let's make some!
                     String createPluginSettings = "INSERT INTO " + this.getTablePrefix() + "plugin_settings (spawn_world, spawn_x, spawn_y, spawn_z, spawn_pitch, spawn_yaw) VALUES (?, ?, ?, ?, ?, ?)";
                     try (PreparedStatement createStatement = connection.prepareStatement(createPluginSettings)) {
                         createStatement.setString(1, null);
@@ -63,7 +65,8 @@ public class DataManager {
                 }
             }
 
-            String updatePluginSettings = "UPDATE " + this.getTablePrefix() + "plugin_settings SET spawn_world = ?, spawn_x = ?, spawn_y = ?, spawn_z = ?, spawn_pitch = ?, spawn_yaw = ?";
+            String updatePluginSettings = "UPDATE " + this.getTablePrefix() + "plugin_settings "
+                    + "SET spawn_world = ?, spawn_x = ?, spawn_y = ?, spawn_z = ?, spawn_pitch = ?, spawn_yaw = ?";
             try (PreparedStatement statement = connection.prepareStatement(updatePluginSettings)) {
                 if (pluginSettings.getSpawnPoint() != null) {
                     statement.setString(1, pluginSettings.getSpawnPoint().getWorld().getName());
@@ -256,13 +259,17 @@ public class DataManager {
                 statement.executeBatch();
             }
 
-            String updateMember = "UPDATE " + this.getTablePrefix() + "member SET play_time = ? WHERE claim_id = ? AND player_uuid = ?";
+            String updateMember = "UPDATE " + this.getTablePrefix() + "member SET play_time = ?, player_name = ? WHERE claim_id = ? AND player_uuid = ?";
             try (PreparedStatement statement = connection.prepareStatement(updateMember)) {
                 for (Claim claim : claims) {
                     for (ClaimMember member : claim.getOwnerAndMembers()) {
                         statement.setLong(1, member.getPlayTime());
-                        statement.setInt(2, claim.getId());
-                        statement.setString(3, member.getUniqueId().toString());
+                        if(member.getName() == null)
+                            statement.setNull(2, Types.VARCHAR);
+                        else
+                            statement.setString(2, member.getName());
+                        statement.setInt(3, claim.getId());
+                        statement.setString(4, member.getUniqueId().toString());
                         statement.addBatch();
                     }
                 }
@@ -315,13 +322,17 @@ public class DataManager {
 
     public void createMember(ClaimMember member) {
         this.async(() -> this.databaseConnector.connect(connection -> {
-            String createMember = "INSERT INTO " + this.getTablePrefix() + "member (claim_id, player_uuid, role, play_time, member_since) VALUES (?, ?, ?, ?, ?)";
+            String createMember = "INSERT INTO " + this.getTablePrefix() + "member (claim_id, player_uuid, player_name, role, play_time, member_since) VALUES (?, ?, ?, ?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(createMember)) {
                 statement.setInt(1, member.getClaim().getId());
                 statement.setString(2, member.getUniqueId().toString());
-                statement.setInt(3, member.getRole().getIndex());
-                statement.setLong(4, member.getPlayTime());
-                statement.setLong(5, member.getMemberSince());
+                if(member.getName() == null)
+                    statement.setNull(3, Types.VARCHAR);
+                else
+                    statement.setString(3, member.getName());
+                statement.setInt(4, member.getRole().getIndex());
+                statement.setLong(5, member.getPlayTime());
+                statement.setLong(6, member.getMemberSince());
                 statement.executeUpdate();
             }
         }));
@@ -505,7 +516,7 @@ public class DataManager {
                     UUID playerUUID = UUID.fromString(result.getString("player_uuid"));
                     ClaimRole role = ClaimRole.fromIndex(result.getInt("role"));
 
-                    ClaimMember claimMember = new ClaimMember(claim, playerUUID, role);
+                    ClaimMember claimMember = new ClaimMember(claim, playerUUID, result.getString("player_name"), role);
                     claimMember.setPlayTime(result.getLong("play_time"));
                     claimMember.setMemberSince(result.getLong("member_since"));
 

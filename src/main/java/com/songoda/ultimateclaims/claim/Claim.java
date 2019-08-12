@@ -94,10 +94,14 @@ public class Claim {
         return owner;
     }
 
-    public void setOwner(UUID owner) {
-        this.owner = new ClaimMember(this, owner, ClaimRole.OWNER);
+    public ClaimMember setOwner(UUID owner) {
+        return this.owner = new ClaimMember(this, owner, null, ClaimRole.OWNER);
     }
 
+    public ClaimMember setOwner(Player owner) {
+        return this.owner = new ClaimMember(this, owner.getUniqueId(), owner.getName(), ClaimRole.OWNER);
+    }
+    
     public Set<ClaimMember> getMembers() {
         return members;
     }
@@ -112,22 +116,40 @@ public class Claim {
         this.members.add(member);
         return member;
     }
-
-    public ClaimMember addMember(UUID uuid, ClaimRole role) {
-        ClaimMember newMember = new ClaimMember(this, uuid, role);
-        this.members.add(newMember);
-        return newMember;
-    }
+//
+//    public ClaimMember addMember(UUID uuid, ClaimRole role) {
+//        ClaimMember newMember = new ClaimMember(this, uuid, null, role);
+//        this.members.add(newMember);
+//        return newMember;
+//    }
 
     public ClaimMember addMember(OfflinePlayer player, ClaimRole role) {
-        return addMember(player.getUniqueId(), role);
+        ClaimMember newMember = new ClaimMember(this, player.getUniqueId(), player.getName(), role);
+        this.members.add(newMember);
+        return newMember;
     }
 
     public ClaimMember getMember(UUID uuid) {
         if (owner.getUniqueId().equals(uuid))
             return owner;
-        Optional<ClaimMember> optional = this.members.stream().filter(member -> member.getUniqueId().equals(uuid)).findFirst();
-        return optional.orElse(null);
+        return members.stream()
+                .filter(member -> member.getUniqueId().equals(uuid))
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Search for a member by username
+     * @param name name to search
+     * @return Member instance matching this username, if any
+     */
+    public ClaimMember getMember(String name) {
+        if(name == null) return null;
+        if(name.equals(owner.getName())) return owner;
+        return members.stream()
+                .filter(member -> name.equals(member.getName()))
+                .findFirst()
+                .orElse(null);
     }
 
     public ClaimMember getMember(OfflinePlayer player) {

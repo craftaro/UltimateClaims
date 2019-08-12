@@ -8,16 +8,16 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public class InviteTask extends BukkitRunnable {
 
     private static InviteTask instance;
     private static UltimateClaims plugin;
 
-    private final Set<Invite> waitingInventations = new HashSet<>();
+    private final Set<Invite> waitingInventations = new CopyOnWriteArraySet<>();
 
     public InviteTask(UltimateClaims plug) {
         plugin = plug;
@@ -27,7 +27,7 @@ public class InviteTask extends BukkitRunnable {
         plugin = plug;
         if (instance == null) {
             instance = new InviteTask(plugin);
-            instance.runTaskTimer(plugin, 0, 20);
+            instance.runTaskTimerAsynchronously(plugin, 60, 60);
         }
 
         return instance;
@@ -35,12 +35,18 @@ public class InviteTask extends BukkitRunnable {
 
     @Override
     public void run() {
+        if(waitingInventations.isEmpty())
+            return;
+
+        final long now = System.currentTimeMillis(), 
+                timeout = Setting.INVITE_TIMEOUT.getInt() * 1000;
+
+        // clean up expired invites
         for (Invite invite : new ArrayList<>(waitingInventations)) {
             if (invite.isAccepted() || !plugin.getClaimManager().hasClaim(invite.getInviter()))
                 this.waitingInventations.remove(invite);
 
-            if (System.currentTimeMillis() - invite.getCreated()
-                    >= Setting.INVITE_TIMEOUT.getInt() * 1000) {
+            if (now - invite.getCreated() >= timeout) {
                 OfflinePlayer inviter = Bukkit.getPlayer(invite.getInviter());
                 OfflinePlayer invited = Bukkit.getPlayer(invite.getInvited());
 

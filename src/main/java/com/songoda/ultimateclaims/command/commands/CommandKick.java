@@ -32,34 +32,43 @@ public class CommandKick extends AbstractCommand {
         }
 
         Claim claim = instance.getClaimManager().getClaim(player);
+        ClaimMember target = claim.getMember(args[1]);
+        OfflinePlayer toKick;
 
-        OfflinePlayer toKick = Bukkit.getPlayer(args[1]);
+        if(target != null) {
+            toKick = target.getPlayer();
+        } else {
+            // unknown player: double-check
+            toKick = Bukkit.getOfflinePlayer(args[1]);
 
-        if (toKick == null) {
-            instance.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
-            return ReturnType.FAILURE;
+            if (toKick == null || !(toKick.hasPlayedBefore() || toKick.isOnline())) {
+                instance.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
+                return ReturnType.FAILURE;
+            } else if (player.getUniqueId().equals(toKick.getUniqueId())) {
+                instance.getLocale().getMessage("command.kick.notself").sendPrefixedMessage(sender);
+                return ReturnType.FAILURE;
+            }
+
+            // all good!
+            target = claim.getMember(toKick.getUniqueId());
         }
 
-        if (claim.getMember(toKick.getUniqueId()).getRole() != ClaimRole.MEMBER) {
+        if (target == null || target.getRole() != ClaimRole.MEMBER) {
             instance.getLocale().getMessage("command.general.notinclaim").sendPrefixedMessage(sender);
-            return ReturnType.FAILURE;
-        }
-
-        if (player.getUniqueId().equals(toKick.getUniqueId())) {
-            instance.getLocale().getMessage("command.kick.notself").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         if (toKick.isOnline())
             instance.getLocale().getMessage("command.kick.kicked")
-                    .processPlaceholder("claim", toKick.getName())
+                    .processPlaceholder("claim", claim.getName())
                     .sendPrefixedMessage(toKick.getPlayer());
 
         instance.getLocale().getMessage("command.kick.kick")
                 .processPlaceholder("name", toKick.getName())
                 .processPlaceholder("claim", claim.getName())
                 .sendPrefixedMessage(player);
-        ClaimMember target = claim.getMember(toKick.getUniqueId());
+
+        // and YEET!
         target.setRole(ClaimRole.VISITOR);
         instance.getDataManager().deleteMember(target);
         return ReturnType.SUCCESS;
@@ -68,7 +77,11 @@ public class CommandKick extends AbstractCommand {
     @Override
     protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
         if (args.length == 2) {
-            return Bukkit.getOnlinePlayers().stream().filter(p -> p != sender)
+            final Player player = sender instanceof Player ? (Player) sender : null;
+            return Bukkit.getOnlinePlayers().stream()
+                    .filter(p -> p != sender
+                            && p.getName().toLowerCase().startsWith(args[1].toLowerCase())
+                            && (player == null || (player.canSee(p) && p.getMetadata("vanished").isEmpty())))
                     .map(Player::getName).collect(Collectors.toList());
         }
         return null;

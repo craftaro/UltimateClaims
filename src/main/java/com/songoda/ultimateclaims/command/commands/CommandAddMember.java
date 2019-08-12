@@ -13,10 +13,10 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CommandInvite extends AbstractCommand {
+public class CommandAddMember extends AbstractCommand {
 
-    public CommandInvite(AbstractCommand parent) {
-        super(parent, true, "invite");
+    public CommandAddMember(AbstractCommand parent) {
+        super(parent, true, "addmember");
     }
 
     @Override
@@ -33,39 +33,36 @@ public class CommandInvite extends AbstractCommand {
 
         Claim claim = instance.getClaimManager().getClaim(player);
 
-        OfflinePlayer invited = Bukkit.getPlayer(args[1]);
+        OfflinePlayer toInvite = Bukkit.getOfflinePlayer(args[1]);
 
-        if (invited == null || !invited.isOnline()) {
+        if (toInvite == null || !(toInvite.hasPlayedBefore() || toInvite.isOnline())) {
             instance.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
-        if (player.getUniqueId().equals(invited.getUniqueId())) {
+        if (player.getUniqueId().equals(toInvite.getUniqueId())) {
             instance.getLocale().getMessage("command.invite.notself").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         if (claim.getMembers().stream()
                 .filter(m -> m.getRole() == ClaimRole.MEMBER)
-                .anyMatch(m -> m.getUniqueId().equals(invited.getUniqueId()))) {
+                .anyMatch(m -> m.getUniqueId().equals(toInvite.getUniqueId()))) {
             instance.getLocale().getMessage("command.invite.already").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
-        if (instance.getInviteTask().getInvite(player.getUniqueId()) != null) {
-            instance.getLocale().getMessage("command.invite.alreadyinvited").sendPrefixedMessage(sender);
-            return ReturnType.FAILURE;
-        }
+        claim.addMember(toInvite, ClaimRole.MEMBER);
 
-        instance.getInviteTask().addInvite(new Invite(player.getUniqueId(), invited.getUniqueId(), claim));
+        if(toInvite.isOnline())
+            instance.getLocale().getMessage("command.addmember.added")
+                    .processPlaceholder("claim", claim.getName())
+                    .sendPrefixedMessage(toInvite.getPlayer());
 
-        instance.getLocale().getMessage("command.invite.invite")
-                .processPlaceholder("name", invited.getName())
+        instance.getLocale().getMessage("command.addmember.add")
+                .processPlaceholder("name", toInvite.getName())
                 .sendPrefixedMessage(player);
 
-        instance.getLocale().getMessage("command.invite.invited")
-                .processPlaceholder("claim", claim.getName())
-                .sendPrefixedMessage(invited.getPlayer());
         return ReturnType.SUCCESS;
     }
 
@@ -85,16 +82,16 @@ public class CommandInvite extends AbstractCommand {
 
     @Override
     public String getPermissionNode() {
-        return "ultimateclaims.invite";
+        return "ultimateclaims.addmember";
     }
 
     @Override
     public String getSyntax() {
-        return "/c invite <player>";
+        return "/c addmember <player>";
     }
 
     @Override
     public String getDescription() {
-        return "Invite a player to join your claim.";
+        return "Add a player to access your claim.";
     }
 }
