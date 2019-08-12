@@ -7,6 +7,7 @@ import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
+import com.songoda.ultimateclaims.tasks.VisualizeTask;
 import com.songoda.ultimateclaims.utils.settings.Setting;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class EntityListeners implements Listener {
 
@@ -46,6 +48,11 @@ public class EntityListeners implements Listener {
                 .map(claim -> claim.getMember(player))
                 .filter(member -> member != null)
                 .forEach(member -> member.setName(player.getName()));
+    }
+
+    @EventHandler
+    public void onPlayerLogout(PlayerQuitEvent event) {
+        VisualizeTask.removePlayer(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true)

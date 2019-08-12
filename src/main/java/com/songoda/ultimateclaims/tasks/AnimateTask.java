@@ -53,8 +53,8 @@ public class AnimateTask extends BukkitRunnable {
                 location.getWorld().spawnParticle(Particle.REDSTONE, location, 5, xx, yy, zz, 1, new Particle.DustOptions(powerCell.getCurrentPower() >= 0 ? Color.LIME : Color.RED, 1F));
             else if (plugin.isServerVersionAtLeast(ServerVersion.V1_12))
                 location.getWorld().spawnParticle(Particle.REDSTONE, location, 5, xx, yy, zz);
-            else if (plugin.isServerVersionAtLeast(ServerVersion.V1_8))
-                location.getWorld().spawnParticle(Particle.REDSTONE, location, 5, xx, yy, zz, 1, 1F);
+            //else if (plugin.isServerVersionAtLeast(ServerVersion.V1_8))
+                // 1.8 requires PacketPlayOutWorldParticles for this. todo?
         }
     }
 }

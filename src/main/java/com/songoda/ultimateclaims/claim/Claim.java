@@ -188,6 +188,10 @@ public class Claim {
         return this.claimedChunks.stream().anyMatch(x -> x.getWorld().equals(world) && x.getX() == chunk.getX() && x.getZ() == chunk.getZ());
     }
 
+    public boolean containsChunk(String world, int chunkX, int chunkZ) {
+        return this.claimedChunks.stream().anyMatch(x -> x.getWorld().equals(world) && x.getX() == chunkX && x.getZ() == chunkZ);
+    }
+
     public int getClaimSize() {
         return this.claimedChunks.size();
     }
