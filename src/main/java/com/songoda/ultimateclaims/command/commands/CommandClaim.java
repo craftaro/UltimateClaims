@@ -5,6 +5,7 @@ import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimBuilder;
 import com.songoda.ultimateclaims.claim.ClaimedChunk;
 import com.songoda.ultimateclaims.command.AbstractCommand;
+import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.Methods;
 import com.songoda.ultimateclaims.utils.settings.Setting;
@@ -14,6 +15,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.bukkit.Bukkit;
 
 public class CommandClaim extends AbstractCommand {
 
@@ -31,9 +33,10 @@ public class CommandClaim extends AbstractCommand {
         }
 
         Chunk chunk = player.getLocation().getChunk();
+        Claim claim;
 
         if (instance.getClaimManager().hasClaim(player)) {
-            Claim claim = instance.getClaimManager().getClaim(player);
+            claim = instance.getClaimManager().getClaim(player);
 
             if (!claim.getPowerCell().hasLocation()) {
                 instance.getLocale().getMessage("command.claim.nocell").sendPrefixedMessage(player);
@@ -63,17 +66,39 @@ public class CommandClaim extends AbstractCommand {
             if (instance.getHologram() != null)
                 instance.getHologram().update(claim.getPowerCell());
         } else {
-            Claim newClaim = new ClaimBuilder()
+            claim = new ClaimBuilder()
                     .setOwner(player)
                     .addClaimedChunk(chunk, player)
                     .build();
-            instance.getClaimManager().addClaim(player, newClaim);
+            instance.getClaimManager().addClaim(player, claim);
 
-            instance.getDataManager().createClaim(newClaim);
+            instance.getDataManager().createClaim(claim);
 
             instance.getLocale().getMessage("command.claim.info")
                     .processPlaceholder("time", Methods.makeReadable((long) (Setting.STARTING_POWER.getInt() * 60 * 1000)))
                     .sendPrefixedMessage(sender);
+        }
+
+        // we've just claimed the chunk we're in, so we've "moved" into the claim
+        // Note: Can't use streams here because `Bukkit.getOnlinePlayers()` has a different protoype in legacy
+        for(Player p : Bukkit.getOnlinePlayers()) {
+            if(p.getLocation().getChunk().equals(chunk)) {
+                ClaimMember member = claim.getMember(p);
+
+                if (member != null)
+                    member.setPresent(true);
+                else
+                    // todo: expunge banned players
+                    member = claim.addMember(p, ClaimRole.VISITOR);
+
+                if(Setting.CLAIMS_BOSSBAR.getBoolean()) {
+                    if(member.getRole() == ClaimRole.VISITOR) {
+                        claim.getVisitorBossBar().addPlayer(p);
+                    } else {
+                        claim.getMemberBossBar().addPlayer(p);
+                    }
+                }
+            }
         }
 
         instance.getLocale().getMessage("command.claim.success").sendPrefixedMessage(sender);
