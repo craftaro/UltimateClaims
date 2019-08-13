@@ -10,10 +10,12 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PowerCell {
 
     private final Claim claim;
+    private final UltimateClaims plugin = UltimateClaims.getInstance();
 
     private Location location = null;
 
@@ -38,7 +40,6 @@ public class PowerCell {
             loaded = location.getWorld().isChunkLoaded(x, z);
         }
 
-        UltimateClaims plugin = UltimateClaims.getInstance();
         if (this.currentPower <= 0 && location != null) {
             List<String> materials = Setting.ITEM_VALUES.getStringList();
             for (String value : materials) {
@@ -92,6 +93,31 @@ public class PowerCell {
                 this.items.remove(item);
             updateInventory(opened);
             return;
+        }
+    }
+
+    public void rejectUnusable() {
+        if (location == null)
+            return;
+        // list of all valid materials with positive value
+        List<Material> materials = Setting.ITEM_VALUES.getStringList().stream()
+                .filter(value -> value.indexOf(':') != -1 && Double.parseDouble(value.split(":")[1]) > 0)
+                .map(value -> Material.valueOf(value.split(":")[0]))
+                .filter(value -> value != null)
+                .collect(Collectors.toList());
+
+        // list of items in the inventory that are worthless and removed from our inventory
+        List<ItemStack> rejects = new ArrayList();
+        for (int i = items.size() - 1; i >= 0; i--) {
+            final ItemStack item = items.get(i);
+            if (item != null && !materials.stream().anyMatch(m -> m == item.getType()))
+                rejects.add(items.remove(i));
+        }
+
+        if(!rejects.isEmpty()) {
+            // YEET
+            updateInventory(opened);
+            rejects.stream().forEach(item -> location.getWorld().dropItemNaturally(location, item));
         }
     }
 

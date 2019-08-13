@@ -29,8 +29,10 @@ public class CommandManager implements CommandExecutor {
         addCommand(new CommandReload(commandUltimateClaims));
         addCommand(new CommandClaim(commandUltimateClaims));
         addCommand(new CommandUnClaim(commandUltimateClaims));
+        addCommand(new CommandShow(commandUltimateClaims));
         addCommand(new CommandInvite(commandUltimateClaims));
         addCommand(new CommandAccept(commandUltimateClaims));
+        addCommand(new CommandAddMember(commandUltimateClaims));
         addCommand(new CommandKick(commandUltimateClaims));
         addCommand(new CommandDissolve(commandUltimateClaims));
         addCommand(new CommandLeave(commandUltimateClaims));

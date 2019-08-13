@@ -32,17 +32,25 @@ public class CommandBan extends AbstractCommand {
         }
 
         Claim claim = instance.getClaimManager().getClaim(player);
+        ClaimMember target = claim.getMember(args[1]);
+        OfflinePlayer toBan;
 
-        OfflinePlayer toBan = Bukkit.getPlayer(args[1]);
+        if(target != null) {
+            toBan = target.getPlayer();
+        } else {
+            // unknown player: double-check
+            toBan = Bukkit.getOfflinePlayer(args[1]);
 
-        if (toBan == null) {
-            instance.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
-            return ReturnType.FAILURE;
-        }
+            if (toBan == null || !(toBan.hasPlayedBefore() || toBan.isOnline())) {
+                instance.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
+                return ReturnType.FAILURE;
+            } else if (player.getUniqueId().equals(toBan.getUniqueId())) {
+                instance.getLocale().getMessage("command.kick.notself").sendPrefixedMessage(sender);
+                return ReturnType.FAILURE;
+            }
 
-        if (player.getUniqueId().equals(toBan.getUniqueId())) {
-            instance.getLocale().getMessage("command.ban.notself").sendPrefixedMessage(sender);
-            return ReturnType.FAILURE;
+            // all good!
+            target = claim.getMember(toBan.getUniqueId());
         }
 
         if (toBan.isOnline())
@@ -55,12 +63,11 @@ public class CommandBan extends AbstractCommand {
                 .processPlaceholder("claim", claim.getName())
                 .sendPrefixedMessage(player);
 
-        ClaimMember memberToBan = claim.getMember(toBan);
-        if (memberToBan != null) {
+        if (target != null) {
             claim.removeMember(toBan);
-            memberToBan.eject();
-            if (memberToBan.getRole() == ClaimRole.MEMBER)
-                instance.getDataManager().deleteMember(memberToBan);
+            target.eject();
+            if (target.getRole() == ClaimRole.MEMBER)
+                instance.getDataManager().deleteMember(target);
         }
 
         claim.banPlayer(toBan.getUniqueId());
@@ -71,7 +78,11 @@ public class CommandBan extends AbstractCommand {
     @Override
     protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
         if (args.length == 2) {
-            return Bukkit.getOnlinePlayers().stream().filter(p -> p != sender)
+            final Player player = sender instanceof Player ? (Player) sender : null;
+            return Bukkit.getOnlinePlayers().stream()
+                    .filter(p -> p != sender
+                            && p.getName().toLowerCase().startsWith(args[1].toLowerCase())
+                            && (player == null || (player.canSee(p) && p.getMetadata("vanished").isEmpty())))
                     .map(Player::getName).collect(Collectors.toList());
         }
         return null;
