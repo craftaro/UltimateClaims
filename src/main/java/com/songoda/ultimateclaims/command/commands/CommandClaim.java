@@ -67,8 +67,8 @@ public class CommandClaim extends AbstractCommand {
             for (PermissionAttachmentInfo perms : player.getEffectivePermissions()) {
                 int amount;
                 String a;
-                if (perms.getPermission().startsWith("ultimateclaims.maxclaims.") 
-                        && (a = perms.getPermission().substring("ultimateclaims.maxclaims.".length())).matches("^[0-9]+$")
+                if (perms.getPermission().startsWith("ultimateclaims.maxchunks.") 
+                        && (a = perms.getPermission().substring("ultimateclaims.maxchunks.".length())).matches("^[0-9]+$")
                         && (amount = Integer.parseInt(a)) > maxClaimable)
                     maxClaimable = amount;
             }
