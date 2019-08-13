@@ -65,17 +65,14 @@ public class BlockListeners implements Listener {
         Claim claim = claimManager.getClaim(chunk);
         PowerCell powerCell = claim.getPowerCell();
 
-
         if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.BREAK)) {
             plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
             event.setCancelled(true);
             return;
         }
 
-        ClaimMember member = claim.getMember(event.getPlayer());
-
-
         if (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation())) {
+            ClaimMember member = claim.getMember(event.getPlayer());
             if ((member != null && member.getRole() == ClaimRole.OWNER) || event.getPlayer().hasPermission("ultimateclaims.bypass")) {
                 powerCell.destroy();
             } else {

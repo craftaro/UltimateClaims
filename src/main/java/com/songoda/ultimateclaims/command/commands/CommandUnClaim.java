@@ -54,6 +54,16 @@ public class CommandUnClaim extends AbstractCommand {
             instance.getLocale().getMessage("general.claim.dissolve")
                     .processPlaceholder("claim", claim.getName())
                     .sendPrefixedMessage(player);
+
+            // return cash to the player
+            double claimBank = claim.getPowerCell().getEconomyBalance();
+            if (claimBank > 0) {
+                UltimateClaims.getInstance().getEconomy().deposit(player, claimBank);
+                 instance.getLocale().getMessage("general.claim.returnfunds")
+                        .processPlaceholder("amount", claimBank)
+                        .sendPrefixedMessage(player);
+            }
+
             claim.destroy();
         } else {
             instance.getDataManager().deleteChunk(removedChunk);
