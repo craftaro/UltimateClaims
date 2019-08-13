@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Bukkit;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 public class CommandClaim extends AbstractCommand {
 
@@ -60,7 +61,19 @@ public class CommandClaim extends AbstractCommand {
                 return ReturnType.FAILURE;
             }
 
-            if (claim.getClaimSize() >= Setting.MAX_CHUNKS.getInt()) {
+            int maxClaimable = Setting.MAX_CHUNKS.getInt();
+
+            // allow permission overrides
+            for (PermissionAttachmentInfo perms : player.getEffectivePermissions()) {
+                int amount;
+                String a;
+                if (perms.getPermission().startsWith("ultimateclaims.maxclaims.") 
+                        && (a = perms.getPermission().substring("ultimateclaims.maxclaims.".length())).matches("^[0-9]+$")
+                        && (amount = Integer.parseInt(a)) > maxClaimable)
+                    maxClaimable = amount;
+            }
+
+            if (claim.getClaimSize() >= maxClaimable) {
                 instance.getLocale().getMessage("command.claim.toomany")
                         .processPlaceholder("amount", Setting.MAX_CHUNKS.getInt())
                         .sendPrefixedMessage(player);
