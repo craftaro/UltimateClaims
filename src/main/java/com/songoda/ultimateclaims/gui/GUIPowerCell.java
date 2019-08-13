@@ -208,5 +208,6 @@ public class GUIPowerCell extends AbstractGUI {
 
     @Override
     protected void registerOnCloses() {
+        registerOnClose((player, inventory) -> this.powercell.rejectUnusable());
     }
 }
