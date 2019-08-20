@@ -1,38 +1,25 @@
 package com.songoda.ultimateclaims;
 
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import com.songoda.core.Plugin;
+import com.songoda.core.SongodaCore;
 import com.songoda.core.library.economy.EconomyManager;
+import com.songoda.core.library.locale.Locale;
+import com.songoda.core.modules.common.LocaleModule;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.command.CommandManager;
-import com.songoda.ultimateclaims.database.DataManager;
-import com.songoda.ultimateclaims.database.DataMigrationManager;
-import com.songoda.ultimateclaims.database.DatabaseConnector;
-import com.songoda.ultimateclaims.database.MySQLConnector;
-import com.songoda.ultimateclaims.database.SQLiteConnector;
+import com.songoda.ultimateclaims.database.*;
 import com.songoda.ultimateclaims.economy.Economy;
-import com.songoda.ultimateclaims.economy.PlayerPointsEconomy;
-import com.songoda.ultimateclaims.economy.ReserveEconomy;
-import com.songoda.ultimateclaims.economy.VaultEconomy;
 import com.songoda.ultimateclaims.hologram.Hologram;
 import com.songoda.ultimateclaims.hologram.HologramHolographicDisplays;
 import com.songoda.ultimateclaims.hooks.WorldGuardHook;
 import com.songoda.ultimateclaims.listeners.*;
 import com.songoda.ultimateclaims.settings.PluginSettings;
-import com.songoda.ultimateclaims.tasks.AnimateTask;
-import com.songoda.ultimateclaims.tasks.InviteTask;
-import com.songoda.ultimateclaims.tasks.PowerCellTask;
-import com.songoda.ultimateclaims.tasks.TrackerTask;
-import com.songoda.ultimateclaims.tasks.VisualizeTask;
+import com.songoda.ultimateclaims.tasks.*;
+import com.songoda.ultimateclaims.utils.Methods;
 import com.songoda.ultimateclaims.utils.Metrics;
-import com.songoda.ultimateclaims.utils.ServerVersion;
-import com.songoda.ultimateclaims.utils.locale.Locale;
 import com.songoda.ultimateclaims.utils.settings.Setting;
 import com.songoda.ultimateclaims.utils.settings.SettingsManager;
-import com.songoda.ultimateclaims.utils.updateModules.LocaleModule;
-import com.songoda.core.Plugin;
-import com.songoda.core.SongodaCore;
-import com.songoda.ultimateclaims.utils.Methods;
-import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.PluginManager;
@@ -43,8 +30,6 @@ public class UltimateClaims extends JavaPlugin {
     private static UltimateClaims INSTANCE;
 
     private ConsoleCommandSender console = Bukkit.getConsoleSender();
-
-    private ServerVersion serverVersion = ServerVersion.fromPackageName(Bukkit.getServer().getClass().getPackage().getName());
 
     private Locale locale;
     private Economy economy;
@@ -66,10 +51,10 @@ public class UltimateClaims extends JavaPlugin {
         return INSTANCE;
     }
 
-	@Override
-	public void onLoad() {
+    @Override
+    public void onLoad() {
         WorldGuardHook.addHook("allow-claims", false);
-	}
+    }
 
     @Override
     public void onDisable() {
@@ -86,8 +71,11 @@ public class UltimateClaims extends JavaPlugin {
             HologramsAPI.getHolograms(this).stream().forEach(x -> x.delete());
 
         // cleanup boss bars
-        if(Setting.CLAIMS_BOSSBAR.getBoolean()) {
-            this.claimManager.getRegisteredClaims().forEach(x -> {x.getVisitorBossBar().removeAll();x.getMemberBossBar().removeAll();});
+        if (Setting.CLAIMS_BOSSBAR.getBoolean()) {
+            this.claimManager.getRegisteredClaims().forEach(x -> {
+                x.getVisitorBossBar().removeAll();
+                x.getMemberBossBar().removeAll();
+            });
         }
 
         console.sendMessage(Methods.formatText("&a============================="));
@@ -101,6 +89,9 @@ public class UltimateClaims extends JavaPlugin {
         console.sendMessage(Methods.formatText("&7UltimateClaims " + this.getDescription().getVersion() + " by &5Songoda <3&7!"));
         console.sendMessage(Methods.formatText("&7Action: &aEnabling&7..."));
 
+        // Setup Economy
+        EconomyManager.load();
+
         // Setup Setting Manager
         this.settingsManager = new SettingsManager(this);
         this.settingsManager.setupConfig();
@@ -109,7 +100,7 @@ public class UltimateClaims extends JavaPlugin {
         new Locale(this, "en_US");
         this.locale = Locale.getLocale(getConfig().getString("System.Language Mode"));
 
-        // Running Songoda Updater
+        // Running Songoda Core
         Plugin plugin = new Plugin(this, 65);
         plugin.addModule(new LocaleModule());
         SongodaCore.load(plugin);
@@ -138,9 +129,6 @@ public class UltimateClaims extends JavaPlugin {
         PowerCellTask.startTask(this);
         TrackerTask.startTask(this);
         VisualizeTask.startTask(this);
-
-        // Setup Economy
-        EconomyManager.load();
 
         // Start Metrics
         new Metrics(this);
@@ -185,22 +173,6 @@ public class UltimateClaims extends JavaPlugin {
     public void reload() {
         this.locale = Locale.getLocale(getConfig().getString("System.Language Mode"));
         this.locale.reloadMessages();
-    }
-
-    public ServerVersion getServerVersion() {
-        return serverVersion;
-    }
-
-    public boolean isServerVersion(ServerVersion version) {
-        return serverVersion == version;
-    }
-
-    public boolean isServerVersion(ServerVersion... versions) {
-        return ArrayUtils.contains(versions, serverVersion);
-    }
-
-    public boolean isServerVersionAtLeast(ServerVersion version) {
-        return serverVersion.ordinal() >= version.ordinal();
     }
 
     public SettingsManager getSettingsManager() {

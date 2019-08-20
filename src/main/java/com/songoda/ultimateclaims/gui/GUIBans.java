@@ -3,7 +3,7 @@ package com.songoda.ultimateclaims.gui;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.utils.Methods;
-import com.songoda.ultimateclaims.utils.ServerVersion;
+import com.songoda.core.library.ServerVersion;
 import com.songoda.ultimateclaims.utils.gui.AbstractGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -67,7 +67,7 @@ public class GUIBans extends AbstractGUI {
         inventory.setItem(50, Methods.getBackgroundGlass(false));
         inventory.setItem(51, Methods.getBackgroundGlass(false));
 
-        ItemStack exit = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_FENCE_GATE : Material.valueOf("FENCE_GATE"));
+        ItemStack exit = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_FENCE_GATE : Material.valueOf("FENCE_GATE"));
         ItemMeta exitMeta = exit.getItemMeta();
         if (back) exitMeta.setDisplayName(plugin.getLocale().getMessage("general.interface.back").getMessage());
         else exitMeta.setDisplayName(plugin.getLocale().getMessage("general.interface.exit").getMessage());
@@ -121,11 +121,11 @@ public class GUIBans extends AbstractGUI {
 
                 OfflinePlayer skullPlayer = Bukkit.getOfflinePlayer(toDisplay.get(current));
 
-                ItemStack skull = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ?
+                ItemStack skull = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ?
                         Material.PLAYER_HEAD : Material.valueOf("SKULL"));
-                if (!plugin.isServerVersionAtLeast(ServerVersion.V1_13)) skull.setDurability((short) 3);
+                if (!ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)) skull.setDurability((short) 3);
                 SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-                if (plugin.isServerVersionAtLeast(ServerVersion.V1_13))
+                if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))
                     skullMeta.setOwningPlayer(skullPlayer);
                 else
                     skullMeta.setOwner(skullPlayer.getName());

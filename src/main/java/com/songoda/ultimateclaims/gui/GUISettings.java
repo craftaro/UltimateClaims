@@ -3,7 +3,7 @@ package com.songoda.ultimateclaims.gui;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.utils.Methods;
-import com.songoda.ultimateclaims.utils.ServerVersion;
+import com.songoda.core.library.ServerVersion;
 import com.songoda.ultimateclaims.utils.gui.AbstractGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -57,14 +57,14 @@ public class GUISettings extends AbstractGUI {
         inventory.setItem(24, Methods.getBackgroundGlass(false));
 
 
-        ItemStack exit = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_FENCE_GATE : Material.valueOf("FENCE_GATE"));
+        ItemStack exit = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_FENCE_GATE : Material.valueOf("FENCE_GATE"));
         ItemMeta exitMeta = exit.getItemMeta();
         exitMeta.setDisplayName(plugin.getLocale().getMessage("general.interface.back").getMessage());
         exit.setItemMeta(exitMeta);
 
         int i = 11;
         if (player.hasPermission("ultimateclaims.toggle.hostilemobspawning")) {
-            ItemStack hostileMobSpawning = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.ZOMBIE_SPAWN_EGG : Material.valueOf("MONSTER_EGG"));
+            ItemStack hostileMobSpawning = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.ZOMBIE_SPAWN_EGG : Material.valueOf("MONSTER_EGG"));
             ItemMeta hostileMobSpawningMeta = hostileMobSpawning.getItemMeta();
             hostileMobSpawningMeta.setDisplayName(plugin.getLocale().getMessage("interface.settings.hostilemobspawningtitle").getMessage());
             List<String> hostileMobSpawningLore = new ArrayList<>();
@@ -130,7 +130,7 @@ public class GUISettings extends AbstractGUI {
         }
 
         if (player.hasPermission("ultimateclaims.toggle.mobgriefing")) {
-            ItemStack mobGriefing = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.GUNPOWDER : Material.valueOf("SULPHUR"));
+            ItemStack mobGriefing = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.GUNPOWDER : Material.valueOf("SULPHUR"));
             ItemMeta mobGriefingMeta = mobGriefing.getItemMeta();
             mobGriefingMeta.setDisplayName(plugin.getLocale().getMessage("interface.settings.mobgriefingtitle").getMessage());
             List<String> mobGriefingLore = new ArrayList<>();
@@ -152,7 +152,7 @@ public class GUISettings extends AbstractGUI {
         }
 
         if (player.hasPermission("ultimateclaims.toggle.leafdecay")) {
-            ItemStack leafDecay = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_LEAVES : Material.valueOf("LEAVES"));
+            ItemStack leafDecay = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_LEAVES : Material.valueOf("LEAVES"));
             ItemMeta leafDecayMeta = leafDecay.getItemMeta();
             leafDecayMeta.setDisplayName(plugin.getLocale().getMessage("interface.settings.leafdecaytitle").getMessage());
             List<String> leafDecayLore = new ArrayList<>();

@@ -3,7 +3,7 @@ package com.songoda.ultimateclaims.listeners;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
-import com.songoda.ultimateclaims.utils.ServerVersion;
+import com.songoda.core.library.ServerVersion;
 import com.songoda.ultimateclaims.utils.settings.Setting;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -77,7 +77,7 @@ public class InventoryListeners implements Listener {
         float yy = (float) (0 + (Math.random() * 2));
         float zz = (float) (0 + (Math.random() * 1));
 
-        if (plugin.isServerVersionAtLeast(ServerVersion.V1_9)) {
+        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
             location.getWorld().spawnParticle(Particle.LAVA, location.add(.5, .5, .5), 25, xx, yy, zz, 0);
 
             player.playSound(location, Sound.ENTITY_BLAZE_DEATH, 1F, .4F);

@@ -5,7 +5,7 @@ import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.Methods;
-import com.songoda.ultimateclaims.utils.ServerVersion;
+import com.songoda.core.library.ServerVersion;
 import com.songoda.ultimateclaims.utils.gui.AbstractGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -63,7 +63,7 @@ public class GUIPermSettings extends AbstractGUI {
         inventory.setItem(24, Methods.getBackgroundGlass(false));
 
 
-        ItemStack exit = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_FENCE_GATE : Material.valueOf("FENCE_GATE"));
+        ItemStack exit = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_FENCE_GATE : Material.valueOf("FENCE_GATE"));
         ItemMeta exitMeta = exit.getItemMeta();
         exitMeta.setDisplayName(plugin.getLocale().getMessage("general.interface.back").getMessage());
         exit.setItemMeta(exitMeta);
@@ -104,7 +104,7 @@ public class GUIPermSettings extends AbstractGUI {
         interactMeta.setLore(interactLore);
         interact.setItemMeta(interactMeta);
 
-        ItemStack doors = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_DOOR : Material.valueOf("WOOD_DOOR"));
+        ItemStack doors = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_DOOR : Material.valueOf("WOOD_DOOR"));
         ItemMeta doorsMeta = doors.getItemMeta();
         doorsMeta.setDisplayName(plugin.getLocale().getMessage("interface.permsettings.doorstitle").getMessage());
         List<String> doorsLore = new ArrayList<>();

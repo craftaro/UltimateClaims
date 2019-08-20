@@ -6,7 +6,7 @@ import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.AbstractChatConfirm;
 import com.songoda.ultimateclaims.utils.Methods;
-import com.songoda.ultimateclaims.utils.ServerVersion;
+import com.songoda.core.library.ServerVersion;
 import com.songoda.ultimateclaims.utils.gui.AbstractGUI;
 import com.songoda.ultimateclaims.utils.gui.Range;
 import org.bukkit.Bukkit;
@@ -84,7 +84,7 @@ public class GUIPowerCell extends AbstractGUI {
     }
 
     private void createButtons() {
-        ItemStack economy = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SUNFLOWER : Material.valueOf("DOUBLE_PLANT"));
+        ItemStack economy = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SUNFLOWER : Material.valueOf("DOUBLE_PLANT"));
         ItemMeta economyMeta = economy.getItemMeta();
         economyMeta.setDisplayName(plugin.getLocale().getMessage("interface.powercell.economytitle")
                 .processPlaceholder("time", Methods.makeReadable((long) powercell.getEconomyPower() * 60 * 1000)).getMessage());
@@ -94,7 +94,7 @@ public class GUIPowerCell extends AbstractGUI {
         economyMeta.setLore(economyLore);
         economy.setItemMeta(economyMeta);
 
-        ItemStack total = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.CLOCK : Material.valueOf("WATCH"));
+        ItemStack total = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.CLOCK : Material.valueOf("WATCH"));
         ItemMeta totalMeta = total.getItemMeta();
         totalMeta.setDisplayName(plugin.getLocale().getMessage("interface.powercell.totaltitle")
                 .processPlaceholder("time", Methods.makeReadable((long) powercell.getTotalPower() * 60 * 1000)).getMessage());

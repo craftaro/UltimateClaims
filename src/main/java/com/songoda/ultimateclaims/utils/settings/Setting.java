@@ -1,6 +1,8 @@
 package com.songoda.ultimateclaims.utils.settings;
 
 
+import com.songoda.core.library.economy.EconomyManager;
+import com.songoda.core.library.economy.economies.Economy;
 import com.songoda.ultimateclaims.UltimateClaims;
 import org.bukkit.Material;
 
@@ -20,6 +22,11 @@ public enum Setting {
     ITEM_VALUES("Main.PowerCell Item Values",
             Arrays.asList("DIAMOND:120", "IRON_INGOT:30"),
                     "The value in minutes of each item put into the powercell."),
+
+    ECONOMY("Economy.Economy", "Vault",
+            "Which economy plugin should be used?",
+            "You can choose from \"" + EconomyManager.getRegisteredEconomies().stream().map(Economy::getName)
+                    .collect(Collectors.joining(", ")) + "\"."),
 
     ECONOMY_VALUE("Main.PowerCell Economy Value", 100,
             "How much money should constitute one minute?"),
@@ -51,15 +58,6 @@ public enum Setting {
 
     MAX_MEMBERS("Main.Max Members", 10,
             "The maximum amount of members a claim can have."),
-
-    VAULT_ECONOMY("Economy.Use Vault Economy", true,
-            "Should Vault be used?"),
-
-    RESERVE_ECONOMY("Economy.Use Reserve Economy", true,
-            "Should Reserve be used?"),
-
-    PLAYER_POINTS_ECONOMY("Economy.Use Player Points Economy", false,
-            "Should PlayerPoints be used?"),
 
     GLASS_TYPE_1("Interfaces.Glass Type 1", 7),
     GLASS_TYPE_2("Interfaces.Glass Type 2", 11),

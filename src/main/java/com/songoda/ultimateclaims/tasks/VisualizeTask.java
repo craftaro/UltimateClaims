@@ -3,7 +3,7 @@ package com.songoda.ultimateclaims.tasks;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
-import com.songoda.ultimateclaims.utils.ServerVersion;
+import com.songoda.core.library.ServerVersion;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -105,17 +105,17 @@ public class VisualizeTask extends BukkitRunnable {
                 if(show) {
                     final Location loc = b.getLocation().add(.5, 1.5, .5);
                     
-                    if (plugin.isServerVersionAtLeast(ServerVersion.V1_13)) {
+                    if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)) {
                         if(canBuild)
                             player.spawnParticle(Particle.VILLAGER_HAPPY, loc, 0, 0, 0, 0, 1);
                         else
                             player.spawnParticle(Particle.REDSTONE, loc, 0, 0, 0, 0, 1, new Particle.DustOptions(canBuild ? Color.LIME : Color.RED, 2F));
-                    } else if (plugin.isServerVersionAtLeast(ServerVersion.V1_12)) {
+                    } else if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_12)) {
                         if(canBuild)
                             player.spawnParticle(Particle.VILLAGER_HAPPY, loc, 0, 0, 0, 0, 1);
                         else
                             player.spawnParticle(Particle.REDSTONE, loc, 0, 1.0F, 0.1F, 0.1F, 1.0); // xyz = r b g
-                    }// else if (plugin.isServerVersionAtLeast(ServerVersion.V1_8))
+                    }// else if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_8))
                         // 1.8 requires PacketPlayOutWorldParticles for this. todo?
                 }
             }
