@@ -1,6 +1,7 @@
 package com.songoda.ultimateclaims;
 
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import com.songoda.core.library.economy.EconomyManager;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.command.CommandManager;
 import com.songoda.ultimateclaims.database.DataManager;
@@ -28,9 +29,9 @@ import com.songoda.ultimateclaims.utils.locale.Locale;
 import com.songoda.ultimateclaims.utils.settings.Setting;
 import com.songoda.ultimateclaims.utils.settings.SettingsManager;
 import com.songoda.ultimateclaims.utils.updateModules.LocaleModule;
-import com.songoda.update.Plugin;
-import com.songoda.update.SongodaUpdate;
-import com.songoda.update.utils.Methods;
+import com.songoda.core.Plugin;
+import com.songoda.core.SongodaCore;
+import com.songoda.ultimateclaims.utils.Methods;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
@@ -111,7 +112,7 @@ public class UltimateClaims extends JavaPlugin {
         // Running Songoda Updater
         Plugin plugin = new Plugin(this, 65);
         plugin.addModule(new LocaleModule());
-        SongodaUpdate.load(plugin);
+        SongodaCore.load(plugin);
 
         PluginManager pluginManager = Bukkit.getPluginManager();
 
@@ -139,12 +140,7 @@ public class UltimateClaims extends JavaPlugin {
         VisualizeTask.startTask(this);
 
         // Setup Economy
-        if (Setting.VAULT_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("Vault"))
-            this.economy = new VaultEconomy();
-        else if (Setting.RESERVE_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("Reserve"))
-            this.economy = new ReserveEconomy();
-        else if (Setting.PLAYER_POINTS_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("PlayerPoints"))
-            this.economy = new PlayerPointsEconomy();
+        EconomyManager.load();
 
         // Start Metrics
         new Metrics(this);

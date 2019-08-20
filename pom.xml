@@ -32,7 +32,7 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <artifactSet>
                                 <includes>
-                                    <include>com.songoda:songodaupdater</include>
+                                    <include>com.songoda:core</include>
                                     <include>com.zaxxer:HikariCP</include>
                                     <include>org.slf4j:slf4j-api</include>
                                     <include>org.slf4j:slf4j-nop</include>
@@ -48,6 +48,12 @@
                                     </excludes>
                                 </filter>
                             </filters>
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.songoda.core</pattern>
+                                    <shadedPattern>${project.groupId}.ultimateclaims.core</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
@@ -90,8 +96,9 @@
         </dependency>
         <dependency>
             <groupId>com.songoda</groupId>
-            <artifactId>songodaupdater</artifactId>
+            <artifactId>songodacore</artifactId>
             <version>1</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.tnemc</groupId>

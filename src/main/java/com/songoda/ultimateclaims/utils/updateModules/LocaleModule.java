@@ -1,8 +1,8 @@
 package com.songoda.ultimateclaims.utils.updateModules;
 
 import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.update.Module;
-import com.songoda.update.Plugin;
+import com.songoda.core.Module;
+import com.songoda.core.Plugin;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
