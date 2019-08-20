@@ -37,7 +37,7 @@ public class Methods {
             }
         }
     }
-    
+
     public static ItemStack getGlass() {
         UltimateClaims instance = UltimateClaims.getInstance();
         return Methods.getGlass(instance.getConfig().getBoolean("Interfaces.Replace Glass Type 1 With Rainbow Glass"), instance.getConfig().getInt("Interfaces.Glass Type 1"));

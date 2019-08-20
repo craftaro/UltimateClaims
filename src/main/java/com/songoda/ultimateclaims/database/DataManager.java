@@ -1,5 +1,7 @@
 package com.songoda.ultimateclaims.database;
 
+import com.songoda.core.library.database.DataManagerAbstract;
+import com.songoda.core.library.database.DatabaseConnector;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimSettings;
 import com.songoda.ultimateclaims.claim.ClaimedChunk;
@@ -27,21 +29,10 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class DataManager {
-
-    private final DatabaseConnector databaseConnector;
-    private final Plugin plugin;
+public class DataManager extends DataManagerAbstract {
 
     public DataManager(DatabaseConnector databaseConnector, Plugin plugin) {
-        this.databaseConnector = databaseConnector;
-        this.plugin = plugin;
-    }
-
-    /**
-     * @return the prefix to be used by all table names
-     */
-    public String getTablePrefix() {
-        return this.plugin.getDescription().getName().toLowerCase() + '_';
+        super(databaseConnector, plugin);
     }
 
     public void createOrUpdatePluginSettings(PluginSettings pluginSettings) {
@@ -609,31 +600,4 @@ public class DataManager {
             this.sync(() -> callback.accept(returnClaims));
         }));
     }
-
-    private int lastInsertedId(Connection connection) {
-        String query;
-        if (this.databaseConnector instanceof SQLiteConnector) {
-            query = "SELECT last_insert_rowid()";
-        } else {
-            query = "SELECT LAST_INSERT_ID()";
-        }
-
-        try (Statement statement = connection.createStatement()) {
-            ResultSet result = statement.executeQuery(query);
-            result.next();
-            return result.getInt(1);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    public void async(Runnable runnable) {
-        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, runnable);
-    }
-
-    public void sync(Runnable runnable) {
-        Bukkit.getScheduler().runTask(this.plugin, runnable);
-    }
-
 }

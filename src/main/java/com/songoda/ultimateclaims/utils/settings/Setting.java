@@ -23,7 +23,7 @@ public enum Setting {
             Arrays.asList("DIAMOND:120", "IRON_INGOT:30"),
                     "The value in minutes of each item put into the powercell."),
 
-    ECONOMY("Economy.Economy", "Vault",
+    ECONOMY("Main.Economy", "Vault",
             "Which economy plugin should be used?",
             "You can choose from \"" + EconomyManager.getRegisteredEconomies().stream().map(Economy::getName)
                     .collect(Collectors.joining(", ")) + "\"."),

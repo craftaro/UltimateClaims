@@ -3,13 +3,20 @@ package com.songoda.ultimateclaims;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.songoda.core.Plugin;
 import com.songoda.core.SongodaCore;
+import com.songoda.core.library.database.DataMigrationManager;
+import com.songoda.core.library.database.DatabaseConnector;
+import com.songoda.core.library.database.MySQLConnector;
+import com.songoda.core.library.database.SQLiteConnector;
 import com.songoda.core.library.economy.EconomyManager;
+import com.songoda.core.library.economy.economies.Economy;
 import com.songoda.core.library.locale.Locale;
 import com.songoda.core.modules.common.LocaleModule;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.command.CommandManager;
 import com.songoda.ultimateclaims.database.*;
-import com.songoda.ultimateclaims.economy.Economy;
+import com.songoda.ultimateclaims.database.migrations._1_InitialMigration;
+import com.songoda.ultimateclaims.database.migrations._2_NewPermissions;
+import com.songoda.ultimateclaims.database.migrations._3_MemberNames;
 import com.songoda.ultimateclaims.hologram.Hologram;
 import com.songoda.ultimateclaims.hologram.HologramHolographicDisplays;
 import com.songoda.ultimateclaims.hooks.WorldGuardHook;
@@ -89,12 +96,15 @@ public class UltimateClaims extends JavaPlugin {
         console.sendMessage(Methods.formatText("&7UltimateClaims " + this.getDescription().getVersion() + " by &5Songoda <3&7!"));
         console.sendMessage(Methods.formatText("&7Action: &aEnabling&7..."));
 
-        // Setup Economy
+        // Load Economy
         EconomyManager.load();
 
         // Setup Setting Manager
         this.settingsManager = new SettingsManager(this);
         this.settingsManager.setupConfig();
+
+        // Setup Economy
+        this.economy = EconomyManager.getEconomy(Setting.ECONOMY.getString());
 
         // Setup Language
         new Locale(this, "en_US");
@@ -155,7 +165,10 @@ public class UltimateClaims extends JavaPlugin {
         }
 
         this.dataManager = new DataManager(this.databaseConnector, this);
-        this.dataMigrationManager = new DataMigrationManager(this.databaseConnector, this.dataManager);
+        this.dataMigrationManager = new DataMigrationManager(this.databaseConnector, this.dataManager,
+                new _1_InitialMigration(),
+                new _2_NewPermissions(),
+                new _3_MemberNames());
         this.dataMigrationManager.runMigrations();
 
         Bukkit.getScheduler().runTaskLater(this, () -> {
