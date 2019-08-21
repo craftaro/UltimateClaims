@@ -1,7 +1,7 @@
-package com.songoda.ultimateclaims.command.commands;
+package com.songoda.ultimateclaims.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.ultimateclaims.command.AbstractCommand;
+import com.songoda.core.library.commands.AbstractCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -9,18 +9,21 @@ import java.util.List;
 
 public class CommandSettings extends AbstractCommand {
 
-    public CommandSettings(AbstractCommand parent) {
+    private final UltimateClaims plugin;
+
+    public CommandSettings(UltimateClaims plugin, AbstractCommand parent) {
         super(parent, true, "Settings");
+        this.plugin = plugin;
     }
 
     @Override
-    protected ReturnType runCommand(UltimateClaims instance, CommandSender sender, String... args) {
-        instance.getSettingsManager().openSettingsManager((Player) sender);
+    protected ReturnType runCommand(CommandSender sender, String... args) {
+        plugin.getSettingsManager().openSettingsManager((Player) sender);
         return ReturnType.SUCCESS;
     }
 
     @Override
-    protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
+    protected List<String> onTab(CommandSender sender, String... args) {
         return null;
     }
 

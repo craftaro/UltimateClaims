@@ -1,7 +1,7 @@
-package com.songoda.ultimateclaims.command.commands;
+package com.songoda.ultimateclaims.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.ultimateclaims.command.AbstractCommand;
+import com.songoda.core.library.commands.AbstractCommand;
 import com.songoda.ultimateclaims.invite.Invite;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
@@ -10,28 +10,31 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
 public class CommandAccept extends AbstractCommand {
 
-    public CommandAccept(AbstractCommand parent) {
+    private final UltimateClaims plugin;
+
+    public CommandAccept(UltimateClaims plugin, AbstractCommand parent) {
         super(parent, true, "accept");
+        this.plugin = plugin;
     }
 
     @Override
-    protected ReturnType runCommand(UltimateClaims instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(CommandSender sender, String... args) {
         Player player = (Player) sender;
 
-
-        Invite invite = instance.getInviteTask().getInvite(player.getUniqueId());
+        Invite invite = plugin.getInviteTask().getInvite(player.getUniqueId());
 
         if (invite == null) {
-            instance.getLocale().getMessage("command.accept.none").sendPrefixedMessage(player);
+            plugin.getLocale().getMessage("command.accept.none").sendPrefixedMessage(player);
         } else {
             if (Math.toIntExact(invite.getClaim().getMembers().stream()
                     .filter(member -> member.getRole() == ClaimRole.MEMBER).count()) >= Setting.MAX_MEMBERS.getInt()) {
-                instance.getLocale().getMessage("command.accept.maxed").sendPrefixedMessage(player);
+                plugin.getLocale().getMessage("command.accept.maxed").sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
             }
 
@@ -44,16 +47,16 @@ public class CommandAccept extends AbstractCommand {
 
             invite.accepted();
 
-            instance.getDataManager().createMember(newMember);
+            plugin.getDataManager().createMember(newMember);
 
-            instance.getLocale().getMessage("command.accept.success")
+            plugin.getLocale().getMessage("command.accept.success")
                     .processPlaceholder("claim", invite.getClaim().getName())
                     .sendPrefixedMessage(player);
 
             OfflinePlayer owner = Bukkit.getPlayer(invite.getInviter());
 
             if (owner != null && owner.isOnline())
-                instance.getLocale().getMessage("command.accept.accepted")
+                plugin.getLocale().getMessage("command.accept.accepted")
                         .processPlaceholder("name", player.getName())
                         .sendPrefixedMessage(owner.getPlayer());
         }
@@ -62,7 +65,7 @@ public class CommandAccept extends AbstractCommand {
     }
 
     @Override
-    protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
+    protected List<String> onTab(CommandSender sender, String... args) {
         return null;
     }
 

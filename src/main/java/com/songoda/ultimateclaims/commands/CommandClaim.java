@@ -1,10 +1,10 @@
-package com.songoda.ultimateclaims.command.commands;
+package com.songoda.ultimateclaims.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimBuilder;
 import com.songoda.ultimateclaims.claim.ClaimedChunk;
-import com.songoda.ultimateclaims.command.AbstractCommand;
+import com.songoda.core.library.commands.AbstractCommand;
 import com.songoda.ultimateclaims.hooks.WorldGuardHook;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
@@ -21,16 +21,19 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 
 public class CommandClaim extends AbstractCommand {
 
-    public CommandClaim(AbstractCommand parent) {
+    private final UltimateClaims plugin;
+
+    public CommandClaim(UltimateClaims plugin, AbstractCommand parent) {
         super(parent, true, "claim");
+        this.plugin = plugin;
     }
 
     @Override
-    protected ReturnType runCommand(UltimateClaims instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(CommandSender sender, String... args) {
         Player player = (Player) sender;
 
-        if (instance.getClaimManager().hasClaim(player.getLocation().getChunk())) {
-            instance.getLocale().getMessage("command.general.claimed").sendPrefixedMessage(player);
+        if (plugin.getClaimManager().hasClaim(player.getLocation().getChunk())) {
+            plugin.getLocale().getMessage("command.general.claimed").sendPrefixedMessage(player);
             return ReturnType.FAILURE;
         }
 
@@ -40,15 +43,15 @@ public class CommandClaim extends AbstractCommand {
         // firstly, can we even claim this chunk?
         Boolean flag;
         if((flag = WorldGuardHook.getBooleanFlag(chunk, "allow-claims")) != null && !flag) {
-            instance.getLocale().getMessage("command.claim.noregion").sendPrefixedMessage(player);
+            plugin.getLocale().getMessage("command.claim.noregion").sendPrefixedMessage(player);
             return ReturnType.FAILURE;
         }
 
-        if (instance.getClaimManager().hasClaim(player)) {
-            claim = instance.getClaimManager().getClaim(player);
+        if (plugin.getClaimManager().hasClaim(player)) {
+            claim = plugin.getClaimManager().getClaim(player);
 
             if (!claim.getPowerCell().hasLocation()) {
-                instance.getLocale().getMessage("command.claim.nocell").sendPrefixedMessage(player);
+                plugin.getLocale().getMessage("command.claim.nocell").sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
             }
 
@@ -57,7 +60,7 @@ public class CommandClaim extends AbstractCommand {
                     && !claim.containsChunk(chunk.getWorld().getChunkAt(chunk.getX() - 1, chunk.getZ()))
                     && !claim.containsChunk(chunk.getWorld().getChunkAt(chunk.getX(), chunk.getZ() + 1))
                     && !claim.containsChunk(chunk.getWorld().getChunkAt(chunk.getX(), chunk.getZ() - 1))) {
-                instance.getLocale().getMessage("command.claim.nottouching").sendPrefixedMessage(player);
+                plugin.getLocale().getMessage("command.claim.nottouching").sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
             }
 
@@ -74,7 +77,7 @@ public class CommandClaim extends AbstractCommand {
             }
 
             if (claim.getClaimSize() >= maxClaimable) {
-                instance.getLocale().getMessage("command.claim.toomany")
+                plugin.getLocale().getMessage("command.claim.toomany")
                         .processPlaceholder("amount", Setting.MAX_CHUNKS.getInt())
                         .sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
@@ -82,20 +85,20 @@ public class CommandClaim extends AbstractCommand {
 
             ClaimedChunk newChunk = claim.addClaimedChunk(chunk, player);
 
-            instance.getDataManager().createChunk(newChunk);
+            plugin.getDataManager().createChunk(newChunk);
 
-            if (instance.getHologram() != null)
-                instance.getHologram().update(claim.getPowerCell());
+            if (plugin.getHologram() != null)
+                plugin.getHologram().update(claim.getPowerCell());
         } else {
             claim = new ClaimBuilder()
                     .setOwner(player)
                     .addClaimedChunk(chunk, player)
                     .build();
-            instance.getClaimManager().addClaim(player, claim);
+            plugin.getClaimManager().addClaim(player, claim);
 
-            instance.getDataManager().createClaim(claim);
+            plugin.getDataManager().createClaim(claim);
 
-            instance.getLocale().getMessage("command.claim.info")
+            plugin.getLocale().getMessage("command.claim.info")
                     .processPlaceholder("time", Methods.makeReadable((long) (Setting.STARTING_POWER.getInt() * 60 * 1000)))
                     .sendPrefixedMessage(sender);
         }
@@ -122,16 +125,16 @@ public class CommandClaim extends AbstractCommand {
             }
         }
 
-        instance.getLocale().getMessage("command.claim.success").sendPrefixedMessage(sender);
+        plugin.getLocale().getMessage("command.claim.success").sendPrefixedMessage(sender);
         return ReturnType.SUCCESS;
     }
 
     @Override
-    protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
+    protected List<String> onTab(CommandSender sender, String... args) {
         if (!(sender instanceof Player)) return null;
         if (args.length == 1) {
             List<String> claims = new ArrayList<>();
-            for (Claim claim : instance.getClaimManager().getRegisteredClaims()) {
+            for (Claim claim : plugin.getClaimManager().getRegisteredClaims()) {
                 if (claim.getMember((Player) sender) == null
                         || claim.getMember((Player) sender).getRole() == ClaimRole.VISITOR) continue;
                 claims.add(claim.getName());

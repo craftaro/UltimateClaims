@@ -1,8 +1,8 @@
-package com.songoda.ultimateclaims.command.commands;
+package com.songoda.ultimateclaims.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
-import com.songoda.ultimateclaims.command.AbstractCommand;
+import com.songoda.core.library.commands.AbstractCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -12,23 +12,26 @@ import java.util.List;
 
 public class CommandDissolve extends AbstractCommand {
 
-    public CommandDissolve(AbstractCommand parent) {
+    private final UltimateClaims plugin;
+
+    public CommandDissolve(UltimateClaims plugin, AbstractCommand parent) {
         super(parent, true, "dissolve");
+        this.plugin = plugin;
     }
 
     @Override
-    protected ReturnType runCommand(UltimateClaims instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(CommandSender sender, String... args) {
         Player player = (Player) sender;
 
-        if (!instance.getClaimManager().hasClaim(player)) {
-            instance.getLocale().getMessage("command.general.noclaim").sendPrefixedMessage(sender);
+        if (!plugin.getClaimManager().hasClaim(player)) {
+            plugin.getLocale().getMessage("command.general.noclaim").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
-        Claim claim = instance.getClaimManager().getClaim(player);
+        Claim claim = plugin.getClaimManager().getClaim(player);
 
         claim.destroy();
-        instance.getLocale().getMessage("general.claim.dissolve")
+        plugin.getLocale().getMessage("general.claim.dissolve")
                 .processPlaceholder("claim", claim.getName())
                 .sendPrefixedMessage(player);
 
@@ -36,7 +39,7 @@ public class CommandDissolve extends AbstractCommand {
     }
 
     @Override
-    protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
+    protected List<String> onTab(CommandSender sender, String... args) {
         return null;
     }
 

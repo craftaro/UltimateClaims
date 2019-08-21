@@ -1,8 +1,8 @@
-package com.songoda.ultimateclaims.command.commands;
+package com.songoda.ultimateclaims.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
-import com.songoda.ultimateclaims.command.AbstractCommand;
+import com.songoda.core.library.commands.AbstractCommand;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
@@ -15,23 +15,26 @@ import java.util.stream.Collectors;
 
 public class CommandBan extends AbstractCommand {
 
-    public CommandBan(AbstractCommand parent) {
+    private final UltimateClaims plugin;
+
+    public CommandBan(UltimateClaims plugin, AbstractCommand parent) {
         super(parent, true, "ban");
+        this.plugin = plugin;
     }
 
     @Override
-    protected ReturnType runCommand(UltimateClaims instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(CommandSender sender, String... args) {
         Player player = (Player) sender;
 
         if (args.length < 2)
             return ReturnType.SYNTAX_ERROR;
 
-        if (!instance.getClaimManager().hasClaim(player)) {
-            instance.getLocale().getMessage("command.general.noclaim").sendPrefixedMessage(sender);
+        if (!plugin.getClaimManager().hasClaim(player)) {
+            plugin.getLocale().getMessage("command.general.noclaim").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
-        Claim claim = instance.getClaimManager().getClaim(player);
+        Claim claim = plugin.getClaimManager().getClaim(player);
         ClaimMember target = claim.getMember(args[1]);
         OfflinePlayer toBan;
 
@@ -42,10 +45,10 @@ public class CommandBan extends AbstractCommand {
             toBan = Bukkit.getOfflinePlayer(args[1]);
 
             if (toBan == null || !(toBan.hasPlayedBefore() || toBan.isOnline())) {
-                instance.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
+                plugin.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
                 return ReturnType.FAILURE;
             } else if (player.getUniqueId().equals(toBan.getUniqueId())) {
-                instance.getLocale().getMessage("command.kick.notself").sendPrefixedMessage(sender);
+                plugin.getLocale().getMessage("command.kick.notself").sendPrefixedMessage(sender);
                 return ReturnType.FAILURE;
             }
 
@@ -54,11 +57,11 @@ public class CommandBan extends AbstractCommand {
         }
 
         if (toBan.isOnline())
-            instance.getLocale().getMessage("command.ban.banned")
+            plugin.getLocale().getMessage("command.ban.banned")
                     .processPlaceholder("claim", claim.getName())
                     .sendPrefixedMessage(toBan.getPlayer());
 
-        instance.getLocale().getMessage("command.ban.ban")
+        plugin.getLocale().getMessage("command.ban.ban")
                 .processPlaceholder("name", toBan.getName())
                 .processPlaceholder("claim", claim.getName())
                 .sendPrefixedMessage(player);
@@ -67,16 +70,16 @@ public class CommandBan extends AbstractCommand {
             claim.removeMember(toBan);
             target.eject();
             if (target.getRole() == ClaimRole.MEMBER)
-                instance.getDataManager().deleteMember(target);
+                plugin.getDataManager().deleteMember(target);
         }
 
         claim.banPlayer(toBan.getUniqueId());
-        instance.getDataManager().createBan(claim, toBan.getUniqueId());
+        plugin.getDataManager().createBan(claim, toBan.getUniqueId());
         return ReturnType.SUCCESS;
     }
 
     @Override
-    protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
+    protected List<String> onTab(CommandSender sender, String... args) {
         if (args.length == 2) {
             final Player player = sender instanceof Player ? (Player) sender : null;
             return Bukkit.getOnlinePlayers().stream()

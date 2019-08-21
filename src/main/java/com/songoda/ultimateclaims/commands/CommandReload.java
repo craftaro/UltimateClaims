@@ -1,26 +1,29 @@
-package com.songoda.ultimateclaims.command.commands;
+package com.songoda.ultimateclaims.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.ultimateclaims.command.AbstractCommand;
+import com.songoda.core.library.commands.AbstractCommand;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
 public class CommandReload extends AbstractCommand {
 
-    public CommandReload(AbstractCommand parent) {
+    private final UltimateClaims plugin;
+
+    public CommandReload(UltimateClaims plugin, AbstractCommand parent) {
         super(parent, false, "reload");
+        this.plugin = plugin;
     }
 
     @Override
-    protected AbstractCommand.ReturnType runCommand(UltimateClaims instance, CommandSender sender, String... args) {
-        instance.reload();
-        instance.getLocale().getMessage("&7Configuration and Language files reloaded.").sendPrefixedMessage(sender);
+    protected AbstractCommand.ReturnType runCommand(CommandSender sender, String... args) {
+        plugin.reload();
+        plugin.getLocale().getMessage("&7Configuration and Language files reloaded.").sendPrefixedMessage(sender);
         return ReturnType.SUCCESS;
     }
 
     @Override
-    protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
+    protected List<String> onTab(CommandSender sender, String... args) {
         return null;
     }
 

@@ -3,6 +3,8 @@ package com.songoda.ultimateclaims;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.songoda.core.Plugin;
 import com.songoda.core.SongodaCore;
+import com.songoda.core.library.commands.AbstractCommand;
+import com.songoda.core.library.commands.CommandManager;
 import com.songoda.core.library.database.DataMigrationManager;
 import com.songoda.core.library.database.DatabaseConnector;
 import com.songoda.core.library.database.MySQLConnector;
@@ -12,8 +14,8 @@ import com.songoda.core.library.economy.economies.Economy;
 import com.songoda.core.library.locale.Locale;
 import com.songoda.core.modules.common.LocaleModule;
 import com.songoda.ultimateclaims.claim.ClaimManager;
-import com.songoda.ultimateclaims.command.CommandManager;
-import com.songoda.ultimateclaims.database.*;
+import com.songoda.ultimateclaims.commands.*;
+import com.songoda.ultimateclaims.database.DataManager;
 import com.songoda.ultimateclaims.database.migrations._1_InitialMigration;
 import com.songoda.ultimateclaims.database.migrations._2_NewPermissions;
 import com.songoda.ultimateclaims.database.migrations._3_MemberNames;
@@ -129,8 +131,32 @@ public class UltimateClaims extends JavaPlugin {
         pluginManager.registerEvents(new InventoryListeners(this), this);
         pluginManager.registerEvents(new LoginListeners(this), this);
 
-        // Managers
-        this.commandManager = new CommandManager(this);
+        // Load Commands
+        this.commandManager = new CommandManager();
+        AbstractCommand commandUltimateClaims = this.commandManager.addCommand(new CommandUltimateClaims(this));
+        this.commandManager.setExecutor("UltimateClaims")
+                .addCommands(new CommandSettings(this, commandUltimateClaims),
+                        new CommandReload(this, commandUltimateClaims),
+                        new CommandClaim(this, commandUltimateClaims),
+                        new CommandUnClaim(this, commandUltimateClaims),
+                        new CommandShow(this, commandUltimateClaims),
+                        new CommandInvite(this, commandUltimateClaims),
+                        new CommandAccept(this, commandUltimateClaims),
+                        new CommandAddMember(this, commandUltimateClaims),
+                        new CommandKick(this, commandUltimateClaims),
+                        new CommandDissolve(this, commandUltimateClaims),
+                        new CommandLeave(this, commandUltimateClaims),
+                        new CommandLock(this, commandUltimateClaims),
+                        new CommandHome(this, commandUltimateClaims),
+                        new CommandSetHome(this, commandUltimateClaims),
+                        new CommandBan(this, commandUltimateClaims),
+                        new CommandUnBan(this, commandUltimateClaims),
+                        new CommandRecipe(this, commandUltimateClaims),
+                        new CommandSetSpawn(this, commandUltimateClaims),
+                        new CommandName(this, commandUltimateClaims))
+                .load(this);
+
+
         this.claimManager = new ClaimManager();
 
         // Tasks

@@ -1,8 +1,8 @@
-package com.songoda.ultimateclaims.command.commands;
+package com.songoda.ultimateclaims.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
-import com.songoda.ultimateclaims.command.AbstractCommand;
+import com.songoda.core.library.commands.AbstractCommand;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
@@ -15,12 +15,15 @@ import java.util.Optional;
 
 public class CommandLeave extends AbstractCommand {
 
-    public CommandLeave(AbstractCommand parent) {
+    private final UltimateClaims plugin;
+
+    public CommandLeave(UltimateClaims plugin, AbstractCommand parent) {
         super(parent, true, "leave");
+        this.plugin = plugin;
     }
 
     @Override
-    protected ReturnType runCommand(UltimateClaims instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(CommandSender sender, String... args) {
         Player player = (Player) sender;
 
         if (args.length < 2)
@@ -34,45 +37,45 @@ public class CommandLeave extends AbstractCommand {
         }
         String claimStr = claimBuilder.toString().trim();
 
-        Optional<Claim> oClaim = instance.getClaimManager().getRegisteredClaims().stream()
+        Optional<Claim> oClaim = plugin.getClaimManager().getRegisteredClaims().stream()
                 .filter(c -> c.getName().toLowerCase().equals(claimStr.toLowerCase())
                         && c.getMember(player) != null).findFirst();
 
         if (!oClaim.isPresent()) {
-            instance.getLocale().getMessage("command.general.notapartclaim").sendPrefixedMessage(sender);
+            plugin.getLocale().getMessage("command.general.notapartclaim").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         if (player.getUniqueId().equals((oClaim.get()).getOwner().getUniqueId())) {
-            instance.getLocale().getMessage("command.leave.owner").sendPrefixedMessage(sender);
+            plugin.getLocale().getMessage("command.leave.owner").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         Claim claim = oClaim.get();
         ClaimMember memberToRemove = claim.getMember(player);
 
-        instance.getDataManager().deleteMember(memberToRemove);
+        plugin.getDataManager().deleteMember(memberToRemove);
 
         claim.removeMember(player);
 
-        instance.getLocale().getMessage("command.leave.youleft")
+        plugin.getLocale().getMessage("command.leave.youleft")
                 .processPlaceholder("claim", claim.getName())
                 .sendPrefixedMessage(player);
 
         for (ClaimMember member : claim.getMembers())
-            this.notify(instance, member);
-        this.notify(instance, claim.getOwner());
+            this.notify(member);
+        this.notify(claim.getOwner());
 
         return ReturnType.SUCCESS;
     }
 
     @Override
-    protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
+    protected List<String> onTab(CommandSender sender, String... args) {
         if (!(sender instanceof Player)) return null;
         Player player = ((Player) sender);
         if (args.length == 2) {
             List<String> claims = new ArrayList<>();
-            for (Claim claim : instance.getClaimManager().getRegisteredClaims()) {
+            for (Claim claim : plugin.getClaimManager().getRegisteredClaims()) {
                 if (!claim.isOwnerOrMember(player)) continue;
                 claims.add(claim.getName());
             }
@@ -81,10 +84,10 @@ public class CommandLeave extends AbstractCommand {
         return null;
     }
 
-    private void notify(UltimateClaims instance, ClaimMember member) {
+    private void notify(ClaimMember member) {
         Player player = Bukkit.getPlayer(member.getUniqueId());
         if (player != null)
-            instance.getLocale().getMessage("command.leave.left")
+            plugin.getLocale().getMessage("command.leave.left")
                     .processPlaceholder("player", player.getName())
                     .processPlaceholder("claim", member.getClaim().getName())
                     .sendPrefixedMessage(player);

@@ -1,8 +1,8 @@
-package com.songoda.ultimateclaims.command.commands;
+package com.songoda.ultimateclaims.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
-import com.songoda.ultimateclaims.command.AbstractCommand;
+import com.songoda.core.library.commands.AbstractCommand;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.command.CommandSender;
@@ -13,41 +13,44 @@ import java.util.stream.Collectors;
 
 public class CommandLock extends AbstractCommand {
 
-    public CommandLock(AbstractCommand parent) {
+    private final UltimateClaims plugin;
+
+    public CommandLock(UltimateClaims plugin, AbstractCommand parent) {
         super(parent, true, "lock");
+        this.plugin = plugin;
     }
 
     @Override
-    protected ReturnType runCommand(UltimateClaims instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(CommandSender sender, String... args) {
         Player player = (Player) sender;
 
-        if (!instance.getClaimManager().hasClaim(player)) {
-            instance.getLocale().getMessage("command.general.noclaim").sendPrefixedMessage(sender);
+        if (!plugin.getClaimManager().hasClaim(player)) {
+            plugin.getLocale().getMessage("command.general.noclaim").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
-        Claim claim = instance.getClaimManager().getClaim(player);
+        Claim claim = plugin.getClaimManager().getClaim(player);
 
         if (!claim.isLocked()) {
-            instance.getLocale().getMessage("command.lock.locked")
+            plugin.getLocale().getMessage("command.lock.locked")
                     .sendPrefixedMessage(player);
             for (ClaimMember member : claim.getMembers().stream().filter(m -> m.getRole() == ClaimRole.VISITOR)
                     .collect(Collectors.toList())) {
                 member.eject();
             }
         } else
-            instance.getLocale().getMessage("command.lock.unlocked")
+            plugin.getLocale().getMessage("command.lock.unlocked")
                     .sendPrefixedMessage(player);
 
         claim.setLocked(!claim.isLocked());
 
-        instance.getDataManager().updateClaim(claim);
+        plugin.getDataManager().updateClaim(claim);
 
         return ReturnType.SUCCESS;
     }
 
     @Override
-    protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
+    protected List<String> onTab(CommandSender sender, String... args) {
         return null;
     }
 

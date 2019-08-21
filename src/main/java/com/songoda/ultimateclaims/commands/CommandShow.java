@@ -1,7 +1,7 @@
-package com.songoda.ultimateclaims.command.commands;
+package com.songoda.ultimateclaims.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.ultimateclaims.command.AbstractCommand;
+import com.songoda.core.library.commands.AbstractCommand;
 import com.songoda.ultimateclaims.tasks.VisualizeTask;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -11,12 +11,15 @@ import net.md_5.bungee.api.ChatColor;
 
 public class CommandShow extends AbstractCommand {
 
-    public CommandShow(AbstractCommand parent) {
+    private final UltimateClaims plugin;
+
+    public CommandShow(UltimateClaims plugin, AbstractCommand parent) {
         super(parent, true, "show");
+        this.plugin = plugin;
     }
 
     @Override
-    protected ReturnType runCommand(UltimateClaims instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(CommandSender sender, String... args) {
         if(!(sender instanceof Player)) {
             sender.sendMessage(ChatColor.RED + "Command must be called as a player");
             return ReturnType.FAILURE;
@@ -27,15 +30,15 @@ public class CommandShow extends AbstractCommand {
             return ReturnType.SYNTAX_ERROR;
 
         if(VisualizeTask.togglePlayer(player))
-            instance.getLocale().getMessage("command.show.start").sendPrefixedMessage(player);
+            plugin.getLocale().getMessage("command.show.start").sendPrefixedMessage(player);
         else
-            instance.getLocale().getMessage("command.show.stop").sendPrefixedMessage(player);
+            plugin.getLocale().getMessage("command.show.stop").sendPrefixedMessage(player);
 
         return ReturnType.SUCCESS;
     }
 
     @Override
-    protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
+    protected List<String> onTab(CommandSender sender, String... args) {
         return null;
     }
 
