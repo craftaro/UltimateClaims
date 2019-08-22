@@ -1,6 +1,5 @@
 package com.songoda.ultimateclaims;
 
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.songoda.core.SongodaCore;
 import com.songoda.core.library.commands.CommandManager;
 import com.songoda.core.library.database.DataMigrationManager;
