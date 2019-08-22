@@ -1,24 +1,19 @@
 package com.songoda.ultimateclaims.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.core.library.commands.AbstractCommand;
 import com.songoda.ultimateclaims.gui.GUIRecipe;
-import com.songoda.ultimateclaims.invite.Invite;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CommandRecipe extends AbstractCommand {
 
     private final UltimateClaims plugin;
 
-    public CommandRecipe(UltimateClaims plugin, AbstractCommand parent) {
-        super(parent, true, "recipe");
+    public CommandRecipe(UltimateClaims plugin) {
+        super(true, "recipe");
         this.plugin = plugin;
     }
 

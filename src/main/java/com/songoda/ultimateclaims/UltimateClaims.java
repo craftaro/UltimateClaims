@@ -1,18 +1,17 @@
 package com.songoda.ultimateclaims;
 
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
-import com.songoda.core.Plugin;
 import com.songoda.core.SongodaCore;
-import com.songoda.core.library.commands.AbstractCommand;
 import com.songoda.core.library.commands.CommandManager;
+import com.songoda.core.library.compatibility.ServerVersion;
 import com.songoda.core.library.database.DataMigrationManager;
 import com.songoda.core.library.database.DatabaseConnector;
 import com.songoda.core.library.database.MySQLConnector;
 import com.songoda.core.library.database.SQLiteConnector;
 import com.songoda.core.library.economy.EconomyManager;
 import com.songoda.core.library.economy.economies.Economy;
+import com.songoda.core.library.hooks.WorldGuardHook;
 import com.songoda.core.library.locale.Locale;
-import com.songoda.core.modules.common.LocaleModule;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.commands.*;
 import com.songoda.ultimateclaims.database.DataManager;
@@ -21,7 +20,6 @@ import com.songoda.ultimateclaims.database.migrations._2_NewPermissions;
 import com.songoda.ultimateclaims.database.migrations._3_MemberNames;
 import com.songoda.ultimateclaims.hologram.Hologram;
 import com.songoda.ultimateclaims.hologram.HologramHolographicDisplays;
-import com.songoda.ultimateclaims.hooks.WorldGuardHook;
 import com.songoda.ultimateclaims.listeners.*;
 import com.songoda.ultimateclaims.settings.PluginSettings;
 import com.songoda.ultimateclaims.tasks.*;
@@ -106,16 +104,14 @@ public class UltimateClaims extends JavaPlugin {
         this.settingsManager.setupConfig();
 
         // Setup Economy
-        this.economy = EconomyManager.getEconomy(Setting.ECONOMY.getString());
+        EconomyManager.setPreferredEconomy(Setting.ECONOMY.getString());
 
         // Setup Language
         new Locale(this, "en_US");
         this.locale = Locale.getLocale(getConfig().getString("System.Language Mode"));
 
-        // Running Songoda Core
-        Plugin plugin = new Plugin(this, 65);
-        plugin.addModule(new LocaleModule());
-        SongodaCore.load(plugin);
+        // Register in Songoda Core
+        SongodaCore.registerPlugin(this, 65);
 
         PluginManager pluginManager = Bukkit.getPluginManager();
 
@@ -132,30 +128,29 @@ public class UltimateClaims extends JavaPlugin {
         pluginManager.registerEvents(new LoginListeners(this), this);
 
         // Load Commands
-        this.commandManager = new CommandManager();
-        AbstractCommand commandUltimateClaims = this.commandManager.addCommand(new CommandUltimateClaims(this));
-        this.commandManager.setExecutor("UltimateClaims")
-                .addCommands(new CommandSettings(this, commandUltimateClaims),
-                        new CommandReload(this, commandUltimateClaims),
-                        new CommandClaim(this, commandUltimateClaims),
-                        new CommandUnClaim(this, commandUltimateClaims),
-                        new CommandShow(this, commandUltimateClaims),
-                        new CommandInvite(this, commandUltimateClaims),
-                        new CommandAccept(this, commandUltimateClaims),
-                        new CommandAddMember(this, commandUltimateClaims),
-                        new CommandKick(this, commandUltimateClaims),
-                        new CommandDissolve(this, commandUltimateClaims),
-                        new CommandLeave(this, commandUltimateClaims),
-                        new CommandLock(this, commandUltimateClaims),
-                        new CommandHome(this, commandUltimateClaims),
-                        new CommandSetHome(this, commandUltimateClaims),
-                        new CommandBan(this, commandUltimateClaims),
-                        new CommandUnBan(this, commandUltimateClaims),
-                        new CommandRecipe(this, commandUltimateClaims),
-                        new CommandSetSpawn(this, commandUltimateClaims),
-                        new CommandName(this, commandUltimateClaims))
-                .load(this);
-
+        this.commandManager = new CommandManager(this);
+        this.commandManager.addCommand(new CommandUltimateClaims(this))
+                .addSubCommands(
+                        new CommandSettings(this),
+                        new CommandReload(this),
+                        new CommandClaim(this),
+                        new CommandUnClaim(this),
+                        new CommandShow(this),
+                        new CommandInvite(this),
+                        new CommandAccept(this),
+                        new CommandAddMember(this),
+                        new CommandKick(this),
+                        new CommandDissolve(this),
+                        new CommandLeave(this),
+                        new CommandLock(this),
+                        new CommandHome(this),
+                        new CommandSetHome(this),
+                        new CommandBan(this),
+                        new CommandUnBan(this),
+                        new CommandRecipe(this),
+                        new CommandSetSpawn(this),
+                        new CommandName(this)
+                );
 
         this.claimManager = new ClaimManager();
 

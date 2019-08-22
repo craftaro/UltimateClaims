@@ -3,7 +3,7 @@ package com.songoda.ultimateclaims.tasks;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.PowerCell;
-import com.songoda.core.library.ServerVersion;
+import com.songoda.core.library.compatibility.ServerVersion;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;

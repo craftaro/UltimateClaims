@@ -6,7 +6,7 @@ import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.AbstractChatConfirm;
 import com.songoda.ultimateclaims.utils.Methods;
-import com.songoda.core.library.ServerVersion;
+import com.songoda.core.library.compatibility.ServerVersion;
 import com.songoda.ultimateclaims.utils.gui.AbstractGUI;
 import com.songoda.ultimateclaims.utils.gui.Range;
 import org.bukkit.Bukkit;

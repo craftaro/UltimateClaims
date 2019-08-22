@@ -14,8 +14,8 @@ public class CommandHome extends AbstractCommand {
 
     private final UltimateClaims plugin;
 
-    public CommandHome(UltimateClaims plugin, AbstractCommand parent) {
-        super(parent, true, "home");
+    public CommandHome(UltimateClaims plugin) {
+        super(true, "home");
         this.plugin = plugin;
     }
 
@@ -23,15 +23,10 @@ public class CommandHome extends AbstractCommand {
     protected ReturnType runCommand(CommandSender sender, String... args) {
         Player player = (Player) sender;
 
-        if (args.length < 2)
+        if (args.length < 1)
             return ReturnType.SYNTAX_ERROR;
 
-        StringBuilder claimBuilder = new StringBuilder();
-        for (int i = 1; i < args.length; i++) {
-            String line = args[i];
-            claimBuilder.append(line).append(" ");
-        }
-        String claimStr = claimBuilder.toString().trim();
+        String claimStr = String.join(" ", args);
 
         Optional oClaim = plugin.getClaimManager().getRegisteredClaims().stream()
                 .filter(c -> c.getName().toLowerCase().equals(claimStr.toLowerCase())
@@ -60,10 +55,11 @@ public class CommandHome extends AbstractCommand {
     protected List<String> onTab(CommandSender sender, String... args) {
         if (!(sender instanceof Player)) return null;
         Player player = ((Player) sender);
-        if (args.length == 2) {
+        if (args.length == 1) {
+            boolean bypass = sender.hasPermission("ultimateclaims.bypass");
             List<String> claims = new ArrayList<>();
             for (Claim claim : plugin.getClaimManager().getRegisteredClaims()) {
-                if (!claim.isOwnerOrMember(player) && !sender.hasPermission("ultimateclaims.bypass")) continue;
+                if (!claim.isOwnerOrMember(player) && !bypass) continue;
                 claims.add(claim.getName());
             }
             return claims;

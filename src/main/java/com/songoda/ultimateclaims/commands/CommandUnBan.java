@@ -17,8 +17,8 @@ public class CommandUnBan extends AbstractCommand {
 
     private final UltimateClaims plugin;
 
-    public CommandUnBan(UltimateClaims plugin, AbstractCommand parent) {
-        super(parent, true, "unban");
+    public CommandUnBan(UltimateClaims plugin) {
+        super(true, "unban");
         this.plugin = plugin;
     }
 
@@ -26,7 +26,7 @@ public class CommandUnBan extends AbstractCommand {
     protected ReturnType runCommand(CommandSender sender, String... args) {
         Player player = (Player) sender;
 
-        if (args.length < 2)
+        if (args.length < 1)
             return ReturnType.SYNTAX_ERROR;
 
         if (!plugin.getClaimManager().hasClaim(player)) {
@@ -36,7 +36,7 @@ public class CommandUnBan extends AbstractCommand {
 
         Claim claim = plugin.getClaimManager().getClaim(player);
 
-        OfflinePlayer toBan = Bukkit.getOfflinePlayer(args[1]);
+        OfflinePlayer toBan = Bukkit.getOfflinePlayer(args[0]);
 
         if (toBan == null || !(toBan.hasPlayedBefore() || toBan.isOnline())) {
             plugin.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
@@ -63,7 +63,7 @@ public class CommandUnBan extends AbstractCommand {
 
     @Override
     protected List<String> onTab(CommandSender sender, String... args) {
-        if (args.length == 2 && sender instanceof Player) {
+        if (args.length == 1 && sender instanceof Player) {
             // grab our ban list
             Claim claim = plugin.getClaimManager().getClaim((Player) sender);
             Set<UUID> bans;

@@ -8,21 +8,20 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.StringJoiner;
 
 public class CommandName extends AbstractCommand {
 
     private final UltimateClaims plugin;
 
-    public CommandName(UltimateClaims plugin, AbstractCommand parent) {
-        super(parent, true, "name");
+    public CommandName(UltimateClaims plugin) {
+        super(true, "name");
         this.plugin = plugin;
     }
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
 
-        if (args.length <= 1)
+        if (args.length < 1)
             return ReturnType.SYNTAX_ERROR;
 
         Player player = (Player) sender;
@@ -40,11 +39,7 @@ public class CommandName extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        StringJoiner nameTemp = new StringJoiner(" ");
-        for (int i = 1; i < args.length; ++i) {
-            nameTemp.add(args[i]);
-        }
-        final String name = nameTemp.toString();
+        final String name = String.join(" ", args);
 
         claim.setName(name);
 

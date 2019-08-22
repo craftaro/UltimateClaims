@@ -1,6 +1,6 @@
 package com.songoda.ultimateclaims.utils;
 
-import com.songoda.core.library.ServerVersion;
+import com.songoda.core.library.compatibility.ServerVersion;
 import com.songoda.ultimateclaims.UltimateClaims;
 import org.bukkit.*;
 import org.bukkit.block.Block;

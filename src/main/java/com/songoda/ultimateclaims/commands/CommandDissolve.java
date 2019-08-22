@@ -3,8 +3,6 @@ package com.songoda.ultimateclaims.commands;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.core.library.commands.AbstractCommand;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -14,8 +12,8 @@ public class CommandDissolve extends AbstractCommand {
 
     private final UltimateClaims plugin;
 
-    public CommandDissolve(UltimateClaims plugin, AbstractCommand parent) {
-        super(parent, true, "dissolve");
+    public CommandDissolve(UltimateClaims plugin) {
+        super(true, "dissolve");
         this.plugin = plugin;
     }
 

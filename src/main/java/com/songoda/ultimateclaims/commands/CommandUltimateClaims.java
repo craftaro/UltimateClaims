@@ -12,7 +12,7 @@ public class CommandUltimateClaims extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandUltimateClaims(UltimateClaims plugin) {
-        super(null, false, "UltimateClaims");
+        super(false, "UltimateClaims");
         this.plugin = plugin;
     }
 
@@ -22,7 +22,7 @@ public class CommandUltimateClaims extends AbstractCommand {
         plugin.getLocale().newMessage("&7Version " + plugin.getDescription().getVersion()
                 + " Created with <3 by &5&l&oSongoda").sendPrefixedMessage(sender);
 
-        for (AbstractCommand command : plugin.getCommandManager().getCommands()) {
+        for (AbstractCommand command : plugin.getCommandManager().getAllCommands()) {
             if (command.getPermissionNode() == null || sender.hasPermission(command.getPermissionNode())) {
                 sender.sendMessage(Methods.formatText("&8 - &a" + command.getSyntax() + "&7 - " + command.getDescription()));
             }

@@ -13,16 +13,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.stream.Stream;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 
 public class CommandUnClaim extends AbstractCommand {
 
     private final UltimateClaims plugin;
 
-    public CommandUnClaim(UltimateClaims plugin, AbstractCommand parent) {
-        super(parent, true, "unclaim");
+    public CommandUnClaim(UltimateClaims plugin) {
+        super(true, "unclaim");
         this.plugin = plugin;
     }
 

@@ -1,6 +1,6 @@
 package com.songoda.ultimateclaims.utils.gui;
 
-import com.songoda.core.library.ServerVersion;
+import com.songoda.core.library.compatibility.ServerVersion;
 import org.bukkit.Sound;
 import org.bukkit.event.inventory.ClickType;
 

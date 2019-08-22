@@ -3,6 +3,7 @@ package com.songoda.ultimateclaims.commands;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.core.library.commands.AbstractCommand;
+import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimateclaims.invite.Invite;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
@@ -17,8 +18,8 @@ public class CommandInvite extends AbstractCommand {
 
     private final UltimateClaims plugin;
 
-    public CommandInvite(UltimateClaims plugin, AbstractCommand parent) {
-        super(parent, true, "invite");
+    public CommandInvite(UltimateClaims plugin) {
+        super(true, "invite");
         this.plugin = plugin;
     }
 
@@ -26,7 +27,7 @@ public class CommandInvite extends AbstractCommand {
     protected ReturnType runCommand(CommandSender sender, String... args) {
         Player player = (Player) sender;
 
-        if (args.length < 2)
+        if (args.length < 1)
             return ReturnType.SYNTAX_ERROR;
 
         if (!plugin.getClaimManager().hasClaim(player)) {
@@ -36,7 +37,7 @@ public class CommandInvite extends AbstractCommand {
 
         Claim claim = plugin.getClaimManager().getClaim(player);
 
-        OfflinePlayer invited = Bukkit.getPlayer(args[1]);
+        OfflinePlayer invited = Bukkit.getPlayer(args[0]);
 
         if (invited == null || !invited.isOnline()) {
             plugin.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
@@ -74,13 +75,8 @@ public class CommandInvite extends AbstractCommand {
 
     @Override
     protected List<String> onTab(CommandSender sender, String... args) {
-        if (args.length == 2) {
-            final Player player = sender instanceof Player ? (Player) sender : null;
-            return Bukkit.getOnlinePlayers().stream()
-                    .filter(p -> p != sender
-                            && p.getName().toLowerCase().startsWith(args[1].toLowerCase())
-                            && (player == null || (player.canSee(p) && p.getMetadata("vanished").isEmpty())))
-                    .map(Player::getName).collect(Collectors.toList());
+        if (args.length == 1) {
+            return PlayerUtils.getVisiblePlayerNames(sender instanceof Player ? (Player) sender : null, args[0]);
         }
         return null;
     }

@@ -13,8 +13,8 @@ public class CommandShow extends AbstractCommand {
 
     private final UltimateClaims plugin;
 
-    public CommandShow(UltimateClaims plugin, AbstractCommand parent) {
-        super(parent, true, "show");
+    public CommandShow(UltimateClaims plugin) {
+        super(true, "show");
         this.plugin = plugin;
     }
 
@@ -26,7 +26,7 @@ public class CommandShow extends AbstractCommand {
         }
         Player player = (Player) sender;
 
-        if (args.length > 1)
+        if (args.length != 0)
             return ReturnType.SYNTAX_ERROR;
 
         if(VisualizeTask.togglePlayer(player))

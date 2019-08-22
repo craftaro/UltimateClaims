@@ -11,8 +11,8 @@ public class CommandSetSpawn extends AbstractCommand {
 
     private final UltimateClaims plugin;
 
-    public CommandSetSpawn(UltimateClaims plugin, AbstractCommand parent) {
-        super(parent, true, "setspawn");
+    public CommandSetSpawn(UltimateClaims plugin) {
+        super(true, "setspawn");
         this.plugin = plugin;
     }
 

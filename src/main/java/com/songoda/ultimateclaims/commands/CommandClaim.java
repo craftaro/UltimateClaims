@@ -5,7 +5,7 @@ import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimBuilder;
 import com.songoda.ultimateclaims.claim.ClaimedChunk;
 import com.songoda.core.library.commands.AbstractCommand;
-import com.songoda.ultimateclaims.hooks.WorldGuardHook;
+import com.songoda.core.library.hooks.WorldGuardHook;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.Methods;
@@ -23,8 +23,8 @@ public class CommandClaim extends AbstractCommand {
 
     private final UltimateClaims plugin;
 
-    public CommandClaim(UltimateClaims plugin, AbstractCommand parent) {
-        super(parent, true, "claim");
+    public CommandClaim(UltimateClaims plugin) {
+        super(true, "claim");
         this.plugin = plugin;
     }
 

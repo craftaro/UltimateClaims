@@ -11,8 +11,8 @@ public class CommandSettings extends AbstractCommand {
 
     private final UltimateClaims plugin;
 
-    public CommandSettings(UltimateClaims plugin, AbstractCommand parent) {
-        super(parent, true, "Settings");
+    public CommandSettings(UltimateClaims plugin) {
+        super(true, "Settings");
         this.plugin = plugin;
     }
 

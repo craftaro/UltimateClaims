@@ -15,8 +15,8 @@ public class CommandLock extends AbstractCommand {
 
     private final UltimateClaims plugin;
 
-    public CommandLock(UltimateClaims plugin, AbstractCommand parent) {
-        super(parent, true, "lock");
+    public CommandLock(UltimateClaims plugin) {
+        super(true, "lock");
         this.plugin = plugin;
     }
 

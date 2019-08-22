@@ -10,8 +10,8 @@ public class CommandReload extends AbstractCommand {
 
     private final UltimateClaims plugin;
 
-    public CommandReload(UltimateClaims plugin, AbstractCommand parent) {
-        super(parent, false, "reload");
+    public CommandReload(UltimateClaims plugin) {
+        super(false, "reload");
         this.plugin = plugin;
     }
 

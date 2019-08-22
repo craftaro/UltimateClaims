@@ -13,8 +13,8 @@ public class CommandSetHome extends AbstractCommand {
 
     private final UltimateClaims plugin;
 
-    public CommandSetHome(UltimateClaims plugin, AbstractCommand parent) {
-        super(parent, true, "sethome");
+    public CommandSetHome(UltimateClaims plugin) {
+        super(true, "sethome");
         this.plugin = plugin;
     }
 

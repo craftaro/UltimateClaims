@@ -3,6 +3,7 @@ package com.songoda.ultimateclaims.commands;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.core.library.commands.AbstractCommand;
+import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
@@ -17,8 +18,8 @@ public class CommandKick extends AbstractCommand {
 
     private final UltimateClaims plugin;
 
-    public CommandKick(UltimateClaims plugin, AbstractCommand parent) {
-        super(parent, true, "kick");
+    public CommandKick(UltimateClaims plugin) {
+        super(true, "kick");
         this.plugin = plugin;
     }
 
@@ -26,7 +27,7 @@ public class CommandKick extends AbstractCommand {
     protected ReturnType runCommand(CommandSender sender, String... args) {
         Player player = (Player) sender;
 
-        if (args.length < 2)
+        if (args.length < 1)
             return ReturnType.SYNTAX_ERROR;
 
         if (!plugin.getClaimManager().hasClaim(player)) {
@@ -35,14 +36,14 @@ public class CommandKick extends AbstractCommand {
         }
 
         Claim claim = plugin.getClaimManager().getClaim(player);
-        ClaimMember target = claim.getMember(args[1]);
+        ClaimMember target = claim.getMember(args[0]);
         OfflinePlayer toKick;
 
         if(target != null) {
             toKick = target.getPlayer();
         } else {
             // unknown player: double-check
-            toKick = Bukkit.getOfflinePlayer(args[1]);
+            toKick = Bukkit.getOfflinePlayer(args[0]);
 
             if (toKick == null || !(toKick.hasPlayedBefore() || toKick.isOnline())) {
                 plugin.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
@@ -79,13 +80,9 @@ public class CommandKick extends AbstractCommand {
 
     @Override
     protected List<String> onTab(CommandSender sender, String... args) {
-        if (args.length == 2) {
-            final Player player = sender instanceof Player ? (Player) sender : null;
-            return Bukkit.getOnlinePlayers().stream()
-                    .filter(p -> p != sender
-                            && p.getName().toLowerCase().startsWith(args[1].toLowerCase())
-                            && (player == null || (player.canSee(p) && p.getMetadata("vanished").isEmpty())))
-                    .map(Player::getName).collect(Collectors.toList());
+        if (args.length == 1) {
+            // todo: list out members in this player's owned claim
+            return PlayerUtils.getVisiblePlayerNames(sender instanceof Player ? (Player) sender : null, args[0]);
         }
         return null;
     }
