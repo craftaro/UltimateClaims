@@ -97,7 +97,7 @@ public class UltimateClaims extends JavaPlugin {
         EconomyManager.load();
 
         // Load Hologram
-        HologramManager.load();
+        HologramManager.load(this);
 
         // Setup Setting Manager
         this.settingsManager = new SettingsManager(this);

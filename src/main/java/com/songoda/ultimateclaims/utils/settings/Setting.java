@@ -25,12 +25,12 @@ public enum Setting {
             Arrays.asList("DIAMOND:120", "IRON_INGOT:30"),
                     "The value in minutes of each item put into the powercell."),
 
-    ECONOMY("Main.Economy", EconomyManager.getEconomy().getName(),
+    ECONOMY("Main.Economy", EconomyManager.getEconomy() == null ? "Vault" : EconomyManager.getEconomy().getName(),
             "Which economy plugin should be used?",
             "You can choose from \"" + EconomyManager.getRegisteredEconomies().stream().map(Economy::getName)
                     .collect(Collectors.joining(", ")) + "\"."),
 
-    HOLOGRAM("Main.Hologram", HologramManager.getHologram().getName(),
+    HOLOGRAM("Main.Hologram", HologramManager.getHologram() == null ? "HolographicDisplays" : HologramManager.getHologram().getName(),
             "Which hologram plugin should be used?",
             "You can choose from \"" + HologramManager.getRegisteredHolograms().stream().map(Hologram::getName)
                     .collect(Collectors.joining(", ")) + "\"."),
