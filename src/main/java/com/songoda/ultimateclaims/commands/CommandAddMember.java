@@ -3,6 +3,7 @@ package com.songoda.ultimateclaims.commands;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.core.library.commands.AbstractCommand;
+import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -10,7 +11,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CommandAddMember extends AbstractCommand {
 
@@ -71,12 +71,7 @@ public class CommandAddMember extends AbstractCommand {
     @Override
     protected List<String> onTab(CommandSender sender, String... args) {
         if (args.length == 1) {
-            final Player player = sender instanceof Player ? (Player) sender : null;
-            return Bukkit.getOnlinePlayers().stream()
-                    .filter(p -> p != sender
-                            && p.getName().toLowerCase().startsWith(args[0].toLowerCase())
-                            && (player == null || (player.canSee(p) && p.getMetadata("vanished").isEmpty())))
-                    .map(Player::getName).collect(Collectors.toList());
+            return PlayerUtils.getVisiblePlayerNames(sender, args[0]);
         }
         return null;
     }

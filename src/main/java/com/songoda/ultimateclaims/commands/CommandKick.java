@@ -12,7 +12,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CommandKick extends AbstractCommand {
 
@@ -82,7 +81,7 @@ public class CommandKick extends AbstractCommand {
     protected List<String> onTab(CommandSender sender, String... args) {
         if (args.length == 1) {
             // todo: list out members in this player's owned claim
-            return PlayerUtils.getVisiblePlayerNames(sender instanceof Player ? (Player) sender : null, args[0]);
+            return PlayerUtils.getVisiblePlayerNames(sender, args[0]);
         }
         return null;
     }

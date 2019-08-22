@@ -12,7 +12,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CommandInvite extends AbstractCommand {
 
@@ -76,7 +75,7 @@ public class CommandInvite extends AbstractCommand {
     @Override
     protected List<String> onTab(CommandSender sender, String... args) {
         if (args.length == 1) {
-            return PlayerUtils.getVisiblePlayerNames(sender instanceof Player ? (Player) sender : null, args[0]);
+            return PlayerUtils.getVisiblePlayerNames(sender, args[0]);
         }
         return null;
     }
