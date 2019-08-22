@@ -3,6 +3,8 @@ package com.songoda.ultimateclaims.utils.settings;
 
 import com.songoda.core.library.economy.EconomyManager;
 import com.songoda.core.library.economy.economies.Economy;
+import com.songoda.core.library.hologram.HologramManager;
+import com.songoda.core.library.hologram.holograms.Hologram;
 import com.songoda.ultimateclaims.UltimateClaims;
 import org.bukkit.Material;
 
@@ -23,9 +25,14 @@ public enum Setting {
             Arrays.asList("DIAMOND:120", "IRON_INGOT:30"),
                     "The value in minutes of each item put into the powercell."),
 
-    ECONOMY("Main.Economy", "Vault",
+    ECONOMY("Main.Economy", EconomyManager.getEconomy().getName(),
             "Which economy plugin should be used?",
             "You can choose from \"" + EconomyManager.getRegisteredEconomies().stream().map(Economy::getName)
+                    .collect(Collectors.joining(", ")) + "\"."),
+
+    HOLOGRAM("Main.Hologram", HologramManager.getHologram().getName(),
+            "Which hologram plugin should be used?",
+            "You can choose from \"" + HologramManager.getRegisteredHolograms().stream().map(Hologram::getName)
                     .collect(Collectors.joining(", ")) + "\"."),
 
     ECONOMY_VALUE("Main.PowerCell Economy Value", 100,

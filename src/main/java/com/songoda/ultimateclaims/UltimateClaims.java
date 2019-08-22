@@ -3,13 +3,12 @@ package com.songoda.ultimateclaims;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.songoda.core.SongodaCore;
 import com.songoda.core.library.commands.CommandManager;
-import com.songoda.core.library.compatibility.ServerVersion;
 import com.songoda.core.library.database.DataMigrationManager;
 import com.songoda.core.library.database.DatabaseConnector;
 import com.songoda.core.library.database.MySQLConnector;
 import com.songoda.core.library.database.SQLiteConnector;
 import com.songoda.core.library.economy.EconomyManager;
-import com.songoda.core.library.economy.economies.Economy;
+import com.songoda.core.library.hologram.HologramManager;
 import com.songoda.core.library.hooks.WorldGuardHook;
 import com.songoda.core.library.locale.Locale;
 import com.songoda.ultimateclaims.claim.ClaimManager;
@@ -19,7 +18,6 @@ import com.songoda.ultimateclaims.database.migrations._1_InitialMigration;
 import com.songoda.ultimateclaims.database.migrations._2_NewPermissions;
 import com.songoda.ultimateclaims.database.migrations._3_MemberNames;
 import com.songoda.ultimateclaims.hologram.Hologram;
-import com.songoda.ultimateclaims.hologram.HologramHolographicDisplays;
 import com.songoda.ultimateclaims.listeners.*;
 import com.songoda.ultimateclaims.settings.PluginSettings;
 import com.songoda.ultimateclaims.tasks.*;
@@ -39,7 +37,6 @@ public class UltimateClaims extends JavaPlugin {
     private ConsoleCommandSender console = Bukkit.getConsoleSender();
 
     private Locale locale;
-    private Economy economy;
     private Hologram hologram;
     private PluginSettings pluginSettings;
 
@@ -99,12 +96,18 @@ public class UltimateClaims extends JavaPlugin {
         // Load Economy
         EconomyManager.load();
 
+        // Load Hologram
+        HologramManager.load();
+
         // Setup Setting Manager
         this.settingsManager = new SettingsManager(this);
         this.settingsManager.setupConfig();
 
         // Setup Economy
         EconomyManager.setPreferredEconomy(Setting.ECONOMY.getString());
+
+        // Setup Hologram
+        HologramManager.setPreferredHologram(Setting.HOLOGRAM.getString());
 
         // Setup Language
         new Locale(this, "en_US");
@@ -116,9 +119,8 @@ public class UltimateClaims extends JavaPlugin {
         PluginManager pluginManager = Bukkit.getPluginManager();
 
         // Register Hologram Plugin
-        if (Setting.POWERCELL_HOLOGRAMS.getBoolean()
-                && pluginManager.isPluginEnabled("HolographicDisplays"))
-            hologram = new HologramHolographicDisplays(this);
+        if (Setting.POWERCELL_HOLOGRAMS.getBoolean())
+            hologram = new Hologram(this);
 
         // Listeners
         pluginManager.registerEvents(new EntityListeners(this), this);
@@ -211,10 +213,6 @@ public class UltimateClaims extends JavaPlugin {
 
     public SettingsManager getSettingsManager() {
         return settingsManager;
-    }
-
-    public Economy getEconomy() {
-        return this.economy;
     }
 
     public Locale getLocale() {

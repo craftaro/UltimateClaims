@@ -1,5 +1,6 @@
 package com.songoda.ultimateclaims.gui;
 
+import com.songoda.core.library.economy.EconomyManager;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.PowerCell;
@@ -184,8 +185,8 @@ public class GUIPowerCell extends AbstractGUI {
                         }
                         double amount = Double.parseDouble(event.getMessage());
                         if (amount < 1) return;
-                        if (plugin.getEconomy().hasBalance(player, amount)) {
-                            plugin.getEconomy().withdrawBalance(player, amount);
+                        if (EconomyManager.hasBalance(player, amount)) {
+                            EconomyManager.withdrawBalance(player, amount);
                             powercell.addEconomy(amount);
                             plugin.getDataManager().updateClaim(claim);
                         } else {

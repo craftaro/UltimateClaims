@@ -1,5 +1,6 @@
 package com.songoda.ultimateclaims.commands;
 
+import com.songoda.core.library.economy.EconomyManager;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimedChunk;
@@ -59,7 +60,7 @@ public class CommandUnClaim extends AbstractCommand {
             // return cash to the player
             double claimBank = claim.getPowerCell().getEconomyBalance();
             if (claimBank > 0) {
-                UltimateClaims.getInstance().getEconomy().deposit(player, claimBank);
+                EconomyManager.deposit(player, claimBank);
                  plugin.getLocale().getMessage("general.claim.returnfunds")
                         .processPlaceholder("amount", claimBank)
                         .sendPrefixedMessage(player);
