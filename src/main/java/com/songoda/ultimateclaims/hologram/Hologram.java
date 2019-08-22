@@ -17,18 +17,18 @@ public class Hologram {
 
     public void update(PowerCell powerCell) {
         if (powerCell.getTotalPower() > 1) {
-            HologramManager.update(powerCell.getLocation(), plugin.getLocale().getMessage("general.claim.powercell")
+            HologramManager.updateHologram(powerCell.getLocation(), plugin.getLocale().getMessage("general.claim.powercell")
                     .processPlaceholder("time", Methods.makeReadable(powerCell.getTotalPower() * 60 * 1000))
                     .getMessage());
         } else {
-            HologramManager.update(powerCell.getLocation(), plugin.getLocale().getMessage("general.claim.powercell.low")
+            HologramManager.updateHologram(powerCell.getLocation(), plugin.getLocale().getMessage("general.claim.powercell.low")
                     .processPlaceholder("time", Methods.makeReadable((powerCell.getTotalPower() + Setting.MINIMUM_POWER.getInt()) * 60 * 1000))
                     .getMessage());
         }
     }
 
     public void remove(PowerCell powerCell) {
-        HologramManager.remove(powerCell.getLocation());
+        HologramManager.removeHologram(powerCell.getLocation());
     }
 
 }

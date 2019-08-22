@@ -4,7 +4,7 @@ package com.songoda.ultimateclaims.utils.settings;
 import com.songoda.core.library.economy.EconomyManager;
 import com.songoda.core.library.economy.economies.Economy;
 import com.songoda.core.library.hologram.HologramManager;
-import com.songoda.core.library.hologram.holograms.Hologram;
+import com.songoda.core.library.hologram.holograms.Holograms;
 import com.songoda.ultimateclaims.UltimateClaims;
 import org.bukkit.Material;
 
@@ -30,9 +30,9 @@ public enum Setting {
             "You can choose from \"" + EconomyManager.getRegisteredEconomies().stream().map(Economy::getName)
                     .collect(Collectors.joining(", ")) + "\"."),
 
-    HOLOGRAM("Main.Hologram", HologramManager.getHologram() == null ? "HolographicDisplays" : HologramManager.getHologram().getName(),
+    HOLOGRAM("Main.Hologram", HologramManager.getHolograms() == null ? "HolographicDisplays" : HologramManager.getHolograms().getName(),
             "Which hologram plugin should be used?",
-            "You can choose from \"" + HologramManager.getRegisteredHolograms().stream().map(Hologram::getName)
+            "You can choose from \"" + HologramManager.getRegisteredHolograms().stream().map(Holograms::getName)
                     .collect(Collectors.joining(", ")) + "\"."),
 
     ECONOMY_VALUE("Main.PowerCell Economy Value", 100,

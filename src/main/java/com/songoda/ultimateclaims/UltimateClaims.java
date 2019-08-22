@@ -71,8 +71,7 @@ public class UltimateClaims extends JavaPlugin {
         this.databaseConnector.closeConnection();
 
         // cleanup holograms
-        if (getHologram() != null)
-            HologramsAPI.getHolograms(this).stream().forEach(x -> x.delete());
+        HologramManager.removeAllHolograms();
 
         // cleanup boss bars
         if (Setting.CLAIMS_BOSSBAR.getBoolean()) {
@@ -107,7 +106,7 @@ public class UltimateClaims extends JavaPlugin {
         EconomyManager.setPreferredEconomy(Setting.ECONOMY.getString());
 
         // Setup Hologram
-        HologramManager.setPreferredHologram(Setting.HOLOGRAM.getString());
+        HologramManager.setPreferredHologramPlugin(Setting.HOLOGRAM.getString());
 
         // Setup Language
         new Locale(this, "en_US");
