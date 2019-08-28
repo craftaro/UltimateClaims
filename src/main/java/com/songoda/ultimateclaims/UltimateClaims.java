@@ -1,15 +1,17 @@
 package com.songoda.ultimateclaims;
 
 import com.songoda.core.SongodaCore;
-import com.songoda.core.library.commands.CommandManager;
-import com.songoda.core.library.database.DataMigrationManager;
-import com.songoda.core.library.database.DatabaseConnector;
-import com.songoda.core.library.database.MySQLConnector;
-import com.songoda.core.library.database.SQLiteConnector;
-import com.songoda.core.library.economy.EconomyManager;
-import com.songoda.core.library.hologram.HologramManager;
-import com.songoda.core.library.hooks.WorldGuardHook;
-import com.songoda.core.library.locale.Locale;
+import com.songoda.core.SongodaPlugin;
+import com.songoda.core.commands.CommandManager;
+import com.songoda.core.compatibility.LegacyMaterials;
+import com.songoda.core.database.DataMigrationManager;
+import com.songoda.core.database.DatabaseConnector;
+import com.songoda.core.database.MySQLConnector;
+import com.songoda.core.database.SQLiteConnector;
+import com.songoda.core.hooks.EconomyManager;
+import com.songoda.core.hooks.HologramManager;
+import com.songoda.core.hooks.WorldGuardHook;
+import com.songoda.core.locale.Locale;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.commands.*;
 import com.songoda.ultimateclaims.database.DataManager;
@@ -21,21 +23,16 @@ import com.songoda.ultimateclaims.listeners.*;
 import com.songoda.ultimateclaims.settings.PluginSettings;
 import com.songoda.ultimateclaims.tasks.*;
 import com.songoda.ultimateclaims.utils.Methods;
-import com.songoda.ultimateclaims.utils.Metrics;
+import com.songoda.core.utils.Metrics;
 import com.songoda.ultimateclaims.utils.settings.Setting;
 import com.songoda.ultimateclaims.utils.settings.SettingsManager;
 import org.bukkit.Bukkit;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class UltimateClaims extends JavaPlugin {
+public class UltimateClaims extends SongodaPlugin {
 
     private static UltimateClaims INSTANCE;
 
-    private ConsoleCommandSender console = Bukkit.getConsoleSender();
-
-    private Locale locale;
     private Hologram hologram;
     private PluginSettings pluginSettings;
 
@@ -55,42 +52,13 @@ public class UltimateClaims extends JavaPlugin {
     }
 
     @Override
-    public void onLoad() {
+    public void onPluginLoad() {
+        INSTANCE = this;
         WorldGuardHook.addHook("allow-claims", false);
     }
 
     @Override
-    public void onDisable() {
-        console.sendMessage(Methods.formatText("&a============================="));
-        console.sendMessage(Methods.formatText("&7UltimateClaims " + this.getDescription().getVersion() + " by &5Songoda <3!"));
-        console.sendMessage(Methods.formatText("&7Action: &cDisabling&7..."));
-
-        // save all claims data
-        this.dataManager.bulkUpdateClaims(this.claimManager.getRegisteredClaims());
-        this.databaseConnector.closeConnection();
-
-        // cleanup holograms
-        HologramManager.removeAllHolograms();
-
-        // cleanup boss bars
-        if (Setting.CLAIMS_BOSSBAR.getBoolean()) {
-            this.claimManager.getRegisteredClaims().forEach(x -> {
-                x.getVisitorBossBar().removeAll();
-                x.getMemberBossBar().removeAll();
-            });
-        }
-
-        console.sendMessage(Methods.formatText("&a============================="));
-    }
-
-    @Override
-    public void onEnable() {
-        INSTANCE = this;
-
-        console.sendMessage(Methods.formatText("&a============================="));
-        console.sendMessage(Methods.formatText("&7UltimateClaims " + this.getDescription().getVersion() + " by &5Songoda <3&7!"));
-        console.sendMessage(Methods.formatText("&7Action: &aEnabling&7..."));
-
+    public void onPluginEnable() {
         // Load Economy
         EconomyManager.load();
 
@@ -102,17 +70,16 @@ public class UltimateClaims extends JavaPlugin {
         this.settingsManager.setupConfig();
 
         // Setup Economy
-        EconomyManager.setPreferredEconomy(Setting.ECONOMY.getString());
+        EconomyManager.getManager().setPreferredHook(Setting.ECONOMY.getString());
 
         // Setup Hologram
-        HologramManager.setPreferredHologramPlugin(Setting.HOLOGRAM.getString());
+        HologramManager.getManager().setPreferredHook(Setting.HOLOGRAM.getString());
 
         // Setup Language
-        new Locale(this, "en_US");
-        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode"));
+		this.setLocale(this.getConfig().getString("System.Language Mode"), false);
 
         // Register in Songoda Core
-        SongodaCore.registerPlugin(this, 65);
+        SongodaCore.registerPlugin(this, 65, LegacyMaterials.CHEST);
 
         PluginManager pluginManager = Bukkit.getPluginManager();
 
@@ -161,9 +128,6 @@ public class UltimateClaims extends JavaPlugin {
         TrackerTask.startTask(this);
         VisualizeTask.startTask(this);
 
-        // Start Metrics
-        new Metrics(this);
-
         // Database stuff, go!
         try {
             if (Setting.MYSQL_ENABLED.getBoolean()) {
@@ -200,21 +164,32 @@ public class UltimateClaims extends JavaPlugin {
                     this.claimManager.getRegisteredClaims().forEach(x -> this.hologram.update(x.getPowerCell()));
             });
         }, 20L);
+    }
 
-        console.sendMessage(Methods.formatText("&a============================="));
+    @Override
+    public void onPluginDisable() {
+        // save all claims data
+        this.dataManager.bulkUpdateClaims(this.claimManager.getRegisteredClaims());
+        this.databaseConnector.closeConnection();
+
+        // cleanup holograms
+        HologramManager.removeAllHolograms();
+
+        // cleanup boss bars
+        if (Setting.CLAIMS_BOSSBAR.getBoolean()) {
+            this.claimManager.getRegisteredClaims().forEach(x -> {
+                x.getVisitorBossBar().removeAll();
+                x.getMemberBossBar().removeAll();
+            });
+        }
     }
 
     public void reload() {
-        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode"));
-        this.locale.reloadMessages();
+        this.setLocale(this.getConfig().getString("System.Language Mode"), true);
     }
 
     public SettingsManager getSettingsManager() {
         return settingsManager;
-    }
-
-    public Locale getLocale() {
-        return this.locale;
     }
 
     public CommandManager getCommandManager() {

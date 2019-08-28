@@ -1,6 +1,6 @@
 package com.songoda.ultimateclaims.hologram;
 
-import com.songoda.core.library.hologram.HologramManager;
+import com.songoda.core.hooks.HologramManager;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.utils.Methods;

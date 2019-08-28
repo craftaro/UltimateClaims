@@ -1,6 +1,6 @@
 package com.songoda.ultimateclaims.utils.settings;
 
-import com.songoda.core.library.compatibility.ServerVersion;
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.utils.Methods;
 import org.bukkit.Bukkit;

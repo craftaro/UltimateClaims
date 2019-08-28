@@ -2,7 +2,7 @@ package com.songoda.ultimateclaims.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
-import com.songoda.core.library.commands.AbstractCommand;
+import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;

@@ -1,7 +1,7 @@
 package com.songoda.ultimateclaims.database;
 
-import com.songoda.core.library.database.DataManagerAbstract;
-import com.songoda.core.library.database.DatabaseConnector;
+import com.songoda.core.database.DataManagerAbstract;
+import com.songoda.core.database.DatabaseConnector;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimSettings;
 import com.songoda.ultimateclaims.claim.ClaimedChunk;

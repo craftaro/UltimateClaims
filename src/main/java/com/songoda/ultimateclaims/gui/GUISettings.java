@@ -3,7 +3,7 @@ package com.songoda.ultimateclaims.gui;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.utils.Methods;
-import com.songoda.core.library.compatibility.ServerVersion;
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.ultimateclaims.utils.gui.AbstractGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

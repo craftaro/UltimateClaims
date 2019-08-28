@@ -1,7 +1,7 @@
 package com.songoda.ultimateclaims.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.core.library.commands.AbstractCommand;
+import com.songoda.core.commands.AbstractCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

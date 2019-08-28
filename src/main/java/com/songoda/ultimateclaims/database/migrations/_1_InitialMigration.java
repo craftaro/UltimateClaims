@@ -1,7 +1,7 @@
 package com.songoda.ultimateclaims.database.migrations;
 
-import com.songoda.core.library.database.DataMigration;
-import com.songoda.core.library.database.MySQLConnector;
+import com.songoda.core.database.DataMigration;
+import com.songoda.core.database.MySQLConnector;
 import com.songoda.ultimateclaims.UltimateClaims;
 
 import java.sql.Connection;

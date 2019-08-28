@@ -3,7 +3,7 @@ package com.songoda.ultimateclaims.listeners;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
-import com.songoda.core.library.compatibility.ServerVersion;
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.ultimateclaims.utils.settings.Setting;
 import org.bukkit.Chunk;
 import org.bukkit.Location;

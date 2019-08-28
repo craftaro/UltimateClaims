@@ -3,7 +3,7 @@ package com.songoda.ultimateclaims.tasks;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
-import com.songoda.core.library.compatibility.ServerVersion;
+import com.songoda.core.compatibility.ServerVersion;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
