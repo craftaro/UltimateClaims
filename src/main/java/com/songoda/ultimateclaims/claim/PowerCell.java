@@ -1,11 +1,13 @@
 package com.songoda.ultimateclaims.claim;
 
+import com.songoda.core.compatibility.LegacyMaterials;
+import com.songoda.core.hooks.HologramManager;
 import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.ultimateclaims.utils.settings.Setting;
+import com.songoda.ultimateclaims.gui.PowerCellGui;
+import com.songoda.ultimateclaims.settings.Setting;
+import com.songoda.ultimateclaims.utils.Methods;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -14,17 +16,17 @@ import java.util.stream.Collectors;
 
 public class PowerCell {
 
-    private final Claim claim;
-    private final UltimateClaims plugin = UltimateClaims.getInstance();
+    protected final Claim claim;
+    protected final UltimateClaims plugin = UltimateClaims.getInstance();
 
-    private Location location = null;
+    protected Location location = null;
 
-    private List<ItemStack> items = new ArrayList<>();
+    protected List<ItemStack> items = new ArrayList<>();
 
-    private int currentPower = Setting.STARTING_POWER.getInt();
+    protected int currentPower = Setting.STARTING_POWER.getInt();
 
-    private double economyBalance = 0;
-    private Inventory opened = null;
+    protected double economyBalance = 0;
+    protected PowerCellGui opened = null;
 
     public PowerCell(Claim claim) {
         this.claim = claim;
@@ -33,7 +35,7 @@ public class PowerCell {
     public int tick() {
 
         boolean loaded = false;
-        if (location != null) {
+        if (location != null && location.getWorld() != null) {
             int x = location.getBlockX() >> 4;
             int z = location.getBlockZ() >> 4;
 
@@ -45,7 +47,7 @@ public class PowerCell {
                 updateItemsFromGui();
             List<String> materials = Setting.ITEM_VALUES.getStringList();
             for (String value : materials) {
-                Material material = Material.valueOf(value.split(":")[0]);
+                LegacyMaterials material = LegacyMaterials.getMaterial(value.split(":")[0]);
                 if (getMaterialAmount(material) == 0) continue;
                 double itemValue = getItemValue(material);
                 if (itemValue < 1) { // Remove items based on number of claimed chunks
@@ -58,49 +60,42 @@ public class PowerCell {
                     this.currentPower += getItemValue(material);
                 }
 
-                if (loaded && plugin.getHologram() != null)
-                    plugin.getHologram().update(this);
+                if (loaded && Setting.POWERCELL_HOLOGRAMS.getBoolean())
+                    updateHologram();
                 return this.currentPower;
             }
             double economyValue = getEconomyValue();
             if (economyBalance >= economyValue) {
                 this.economyBalance -= economyValue;
                 this.currentPower += 1;
-                if (loaded && plugin.getHologram() != null)
-                    plugin.getHologram().update(this);
+                if (loaded && Setting.POWERCELL_HOLOGRAMS.getBoolean())
+                    updateHologram();
                 return this.currentPower;
             }
         }
-        if (loaded && location != null && plugin.getHologram() != null)
-            plugin.getHologram().update(this);
+        if (loaded && Setting.POWERCELL_HOLOGRAMS.getBoolean())
+            updateHologram();
         return this.currentPower--;
     }
 
-    private int getMaterialAmount(Material material) {
-        int amount = 0;
-        for (ItemStack item : getItems()) {
-            if (item.getType() != material) continue;
-            amount += item.getAmount();
-        }
-        return amount;
+    private int getMaterialAmount(LegacyMaterials material) {
+        return getItems().stream().filter(item -> material.matches(item))
+                .map((item) -> item.getAmount())
+                .mapToInt(Integer::intValue).sum();
     }
 
-<<<<<<< HEAD
-    private void removeOneMaterial(Material material) {
-=======
     private void removeOneMaterial(LegacyMaterials material) {
         if(opened != null && opened.isOpen())
             updateItemsFromGui();
->>>>>>> dev
         for (ItemStack item : getItems()) {
-            if (item.getType() != material) continue;
+            if(material.matches(item)) {
+                item.setAmount(item.getAmount() - 1);
 
-            item.setAmount(item.getAmount() - 1);
-
-            if (item.getAmount() <= 0)
-                this.items.remove(item);
-            updateInventory(opened);
-            return;
+                if (item.getAmount() <= 0)
+                    this.items.remove(item);
+                updateGuiInventory();
+                return;
+            }
         }
     }
 
@@ -124,37 +119,20 @@ public class PowerCell {
 
         if(!rejects.isEmpty()) {
             // YEET
-            updateInventory(opened);
-            rejects.stream().forEach(item -> location.getWorld().dropItemNaturally(location, item));
+            updateGuiInventory();
+            rejects.stream().filter(item -> item.getType() != Material.AIR)
+                    .forEach(item -> location.getWorld().dropItemNaturally(location, item));
         }
     }
 
-<<<<<<< HEAD
-    public void updateInventory(Inventory opened) {
-        if (opened == null) return;
-        int j = 0;
-        for (int i = 10; i < 44; i++) {
-            if (i == 17
-                    || i == 18
-                    || i == 26
-                    || i == 27
-                    || i == 35
-                    || i == 36) continue;
-            if (items.size() <= j) {
-                opened.setItem(i, null);
-                continue;
-            }
-            opened.setItem(i, this.items.get(j));
-            j++;
-=======
     public void updateGuiInventory() {
         if (opened != null) {
             opened.updateGuiInventory(items);
->>>>>>> dev
         }
     }
 
-    public void updateItems() {
+    public void updateItemsFromGui() {
+        if (opened == null) return;
         items.clear();
         for (int i = 10; i < 44; i++) {
             if (i == 17
@@ -162,9 +140,30 @@ public class PowerCell {
                     || i == 26
                     || i == 27
                     || i == 35
-                    || i == 36
-                    || opened.getItem(i) == null) continue;
-            addItem(opened.getItem(i));
+                    || i == 36) continue;
+            ItemStack item = opened.getItem(i);
+            if(item != null && item.getType() != Material.AIR)
+                addItem(item);
+        }
+    }
+
+    public void updateHologram() {
+        if (location != null) {
+            if (getTotalPower() > 1) {
+                HologramManager.updateHologram(location, plugin.getLocale().getMessage("general.claim.powercell")
+                        .processPlaceholder("time", Methods.makeReadable(getTotalPower() * 60 * 1000))
+                        .getMessage());
+            } else {
+                HologramManager.updateHologram(location, plugin.getLocale().getMessage("general.claim.powercell.low")
+                        .processPlaceholder("time", Methods.makeReadable((getTotalPower() + Setting.MINIMUM_POWER.getInt()) * 60 * 1000))
+                        .getMessage());
+            }
+        }
+    }
+
+    public void removeHologram() {
+        if (location != null) {
+            HologramManager.removeHologram(location);
         }
     }
 
@@ -190,10 +189,11 @@ public class PowerCell {
         double total = 0;
         List<String> materials = Setting.ITEM_VALUES.getStringList();
         for (String value : materials) {
-            Material material = Material.valueOf(value.split(":")[0]);
-            if (getMaterialAmount(material) == 0) continue;
-
-            total += getMaterialAmount(material) * getItemValue(material);
+            String parts[] = value.split(":");
+            LegacyMaterials material;
+            if(parts.length == 2 && (material = LegacyMaterials.getMaterial(parts[0].trim())) != null) {
+                total += getMaterialAmount(material) * (Double.parseDouble(parts[1].trim()) / claim.getClaimSize());
+            }
         }
         return (int) total;
     }
@@ -206,11 +206,12 @@ public class PowerCell {
         return economyBalance / getEconomyValue();
     }
 
-    private double getItemValue(Material material) {
+    private double getItemValue(LegacyMaterials material) {
         List<String> materials = Setting.ITEM_VALUES.getStringList();
         for (String value : materials) {
-            if (material == Material.valueOf(value.split(":")[0]))
-                return Double.parseDouble(value.split(":")[1]) / claim.getClaimSize();
+            String parts[] = value.split(":");
+            if(parts.length == 2 && LegacyMaterials.getMaterial(parts[0].trim()) == material)
+                return Double.parseDouble(parts[1].trim()) / claim.getClaimSize();
         }
         return 0;
     }
@@ -251,27 +252,19 @@ public class PowerCell {
         this.location = location;
     }
 
-    public Inventory getOpened() {
-        return opened;
-    }
-
-    public void setOpened(Inventory opened) {
-        this.opened = opened;
+    public PowerCellGui getGui() {
+        return opened != null ? opened : (opened = new PowerCellGui(this.claim));
     }
 
     public void destroy() {
         if (location != null) {
-            for (ItemStack item : getItems()) {
-                if (item == null) continue;
-                location.getWorld().dropItemNaturally(location, item);
-            }
-            if (UltimateClaims.getInstance().getHologram() != null)
-                UltimateClaims.getInstance().getHologram().remove(this);
+            getItems().stream().filter(item -> item != null)
+                    .forEach(item -> location.getWorld().dropItemNaturally(location, item));
+            removeHologram();
         }
         this.items.clear();
         if (opened != null)
-            for (HumanEntity entity : opened.getViewers())
-                entity.closeInventory();
+            opened.exit();
         this.opened = null;
         this.clearItems();
         this.location = null;

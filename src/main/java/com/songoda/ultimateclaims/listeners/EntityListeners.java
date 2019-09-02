@@ -8,11 +8,10 @@ import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.tasks.VisualizeTask;
-import com.songoda.ultimateclaims.utils.settings.Setting;
+import com.songoda.ultimateclaims.settings.Setting;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,10 +26,14 @@ import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 
 import java.util.ArrayList;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.projectiles.ProjectileSource;
 
 public class EntityListeners implements Listener {
 
@@ -116,21 +119,48 @@ public class EntityListeners implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onDamage(EntityDamageByEntityEvent event) {
-        if (!(event.getDamager() instanceof Player)) return;
-
+    public void onDamage(EntityDamageEvent event) {
+        if (event.getEntity() instanceof Player) return;
+        
         ClaimManager claimManager = plugin.getClaimManager();
         Chunk chunk = event.getEntity().getLocation().getChunk();
+        Claim claim = claimManager.getClaim(chunk);
+        
+        if(claim != null) {
+            // General protections for stuff in a claim
+            event.setCancelled(true);
+        }
+    }
 
-        if (claimManager.hasClaim(chunk)) {
-            Claim claim = claimManager.getClaim(chunk);
-            if (!(event.getEntity() instanceof Player)) {
-                if (!claim.playerHasPerms((Player) event.getDamager(), ClaimPerm.MOB_KILLING))
-                    event.setCancelled(true);
-                return;
+    @EventHandler(ignoreCancelled = true)
+    public void onDamage(EntityDamageByEntityEvent event) {
+        ClaimManager claimManager = plugin.getClaimManager();
+        Chunk chunk = event.getEntity().getLocation().getChunk();
+        Claim claim = claimManager.getClaim(chunk);
+
+        if (claim != null) {
+            Entity source = event.getDamager();
+            if (source instanceof Projectile) {
+                ProjectileSource s = ((Projectile) source).getShooter();
+                if (s instanceof Player) {
+                    source = (Player) s;
+                }
             }
+            if (source instanceof Player) {
+                if (!(event.getEntity() instanceof Player)) {
+                    if(!(event.getEntity() instanceof LivingEntity) && event.getEntity().getType() != EntityType.ARMOR_STAND) {
+                        event.setCancelled(!claim.playerHasPerms((Player) source, ClaimPerm.BREAK));
+                    } else if (!claim.playerHasPerms((Player) source, ClaimPerm.MOB_KILLING)) {
+                        event.setCancelled(true);
+                    }
+                    return;
+                }
 
-            if (!claim.getClaimSettings().isPvp()) {
+                if (!claim.getClaimSettings().isPvp()) {
+                    event.setCancelled(true);
+                }
+            } else {
+                // general protections for stuff in a claim
                 event.setCancelled(true);
             }
         }
