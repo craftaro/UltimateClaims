@@ -1,17 +1,13 @@
 package com.songoda.ultimateclaims.listeners;
 
 import com.songoda.core.compatibility.CompatibleSounds;
-import com.songoda.core.compatibility.LegacyParticleEffects;
 import com.songoda.core.compatibility.ParticleHandler;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
-import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.ultimateclaims.settings.Setting;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

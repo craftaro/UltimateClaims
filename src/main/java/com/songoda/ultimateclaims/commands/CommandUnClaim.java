@@ -50,6 +50,24 @@ public class CommandUnClaim extends AbstractCommand {
             }
         }
 
+        // we've just unclaimed the chunk we're in, so we've "moved" out of the claim
+        // Note: Can't use streams here because `Bukkit.getOnlinePlayers()` has a different protoype in legacy
+        for(Player p : Bukkit.getOnlinePlayers()) {
+            if(p.getLocation().getChunk().equals(chunk)) {
+                ClaimMember member = claim.getMember(p);
+                if (member != null) {
+                    if (member.getRole() == ClaimRole.VISITOR)
+                        claim.removeMember(member);
+                    else
+                        member.setPresent(false);
+                }
+                if(Setting.CLAIMS_BOSSBAR.getBoolean()) {
+                    claim.getVisitorBossBar().removePlayer(p);
+                    claim.getMemberBossBar().removePlayer(p);
+                }
+            }
+        }
+
         // Remove chunk from claim
         ClaimedChunk removedChunk = claim.removeClaimedChunk(chunk, player);
         if (claim.getClaimSize() == 0) {
@@ -71,24 +89,6 @@ public class CommandUnClaim extends AbstractCommand {
             plugin.getDataManager().deleteChunk(removedChunk);
 
             plugin.getLocale().getMessage("command.unclaim.success").sendPrefixedMessage(sender);
-        }
-
-        // we've just unclaimed the chunk we're in, so we've "moved" out of the claim
-        // Note: Can't use streams here because `Bukkit.getOnlinePlayers()` has a different protoype in legacy
-        for(Player p : Bukkit.getOnlinePlayers()) {
-            if(p.getLocation().getChunk().equals(chunk)) {
-                ClaimMember member = claim.getMember(p);
-                if (member != null) {
-                    if (member.getRole() == ClaimRole.VISITOR)
-                        claim.removeMember(member);
-                    else
-                        member.setPresent(false);
-                }
-                if(Setting.CLAIMS_BOSSBAR.getBoolean()) {
-                    claim.getVisitorBossBar().removePlayer(p);
-                    claim.getMemberBossBar().removePlayer(p);
-                }
-            }
         }
 
         return ReturnType.SUCCESS;

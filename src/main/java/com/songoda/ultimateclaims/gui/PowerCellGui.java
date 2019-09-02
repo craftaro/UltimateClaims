@@ -85,24 +85,23 @@ public class PowerCellGui extends Gui {
         this.setOnOpen((event) -> refresh());
         this.setDefaultAction((event) -> refreshPower());
         this.setOnClose((event) -> closed());
-    }
 
-    void refresh() {
-        // update display inventory with the powercell's inventory
-        powercell.updateGuiInventory();
-        refreshPower();
-        // buttons at the bottom of the screen
-        // Claim info
-        this.setItem(5, 5, GuiUtils.updateItem(this.getItem(5, 5),
-                plugin.getLocale().getMessage("interface.powercell.infotitle").getMessage(),
-                plugin.getLocale().getMessage("interface.powercell.infolore")
-                        .processPlaceholder("chunks", claim.getClaimSize())
-                        .processPlaceholder("members",
-                                claim.getOwnerAndMembers().stream().filter(m -> m.getRole() == ClaimRole.MEMBER || m.getRole() == ClaimRole.OWNER).count())
-                        .getMessage().split("\\|")));
+        refresh();
     }
 
     long lastUpdate = 0;
+
+    void refresh() {
+        // don't allow spamming this function
+        long now = System.currentTimeMillis();
+        if (now - 1000 < lastUpdate) {
+            return;
+        }
+        // update display inventory with the powercell's inventory
+        powercell.updateGuiInventory();
+        refreshPower();
+        lastUpdate = now;
+    }
 
     void refreshPower() {
         // don't allow spamming this function
@@ -130,6 +129,15 @@ public class PowerCellGui extends Gui {
                         .processPlaceholder("time", Methods.makeReadable((long) powercell.getItemPower() * 60 * 1000)).getMessage(),
                 ChatColor.BLACK.toString()));
 
+        // buttons at the bottom of the screen
+        // Claim info
+        this.setItem(5, 5, GuiUtils.updateItem(this.getItem(5, 5),
+                plugin.getLocale().getMessage("interface.powercell.infotitle").getMessage(),
+                plugin.getLocale().getMessage("interface.powercell.infolore")
+                        .processPlaceholder("chunks", claim.getClaimSize())
+                        .processPlaceholder("members",
+                                claim.getOwnerAndMembers().stream().filter(m -> m.getRole() == ClaimRole.MEMBER || m.getRole() == ClaimRole.OWNER).count())
+                        .getMessage().split("\\|")));
     }
 
     void closed() {
