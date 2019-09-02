@@ -9,7 +9,7 @@ import com.songoda.core.hooks.WorldGuardHook;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.Methods;
-import com.songoda.ultimateclaims.utils.settings.Setting;
+import com.songoda.ultimateclaims.settings.Setting;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -87,8 +87,8 @@ public class CommandClaim extends AbstractCommand {
 
             plugin.getDataManager().createChunk(newChunk);
 
-            if (plugin.getHologram() != null)
-                plugin.getHologram().update(claim.getPowerCell());
+            if (Setting.POWERCELL_HOLOGRAMS.getBoolean())
+                claim.getPowerCell().updateHologram();
         } else {
             claim = new ClaimBuilder()
                     .setOwner(player)

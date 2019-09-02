@@ -2,7 +2,7 @@ package com.songoda.ultimateclaims.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.core.commands.AbstractCommand;
-import com.songoda.ultimateclaims.gui.GUIRecipe;
+import com.songoda.ultimateclaims.gui.RecipeDisplayGui;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -19,8 +19,7 @@ public class CommandRecipe extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-
-        new GUIRecipe((Player)sender);
+        plugin.getGuiManager().showGUI((Player) sender, new RecipeDisplayGui());
         return ReturnType.SUCCESS;
     }
 

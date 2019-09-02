@@ -4,28 +4,27 @@ import com.songoda.core.SongodaCore;
 import com.songoda.core.SongodaPlugin;
 import com.songoda.core.commands.CommandManager;
 import com.songoda.core.compatibility.LegacyMaterials;
+import com.songoda.core.configuration.Config;
 import com.songoda.core.database.DataMigrationManager;
 import com.songoda.core.database.DatabaseConnector;
 import com.songoda.core.database.MySQLConnector;
 import com.songoda.core.database.SQLiteConnector;
+import com.songoda.core.gui.GuiManager;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.hooks.HologramManager;
 import com.songoda.core.hooks.WorldGuardHook;
-import com.songoda.core.locale.Locale;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.commands.*;
 import com.songoda.ultimateclaims.database.DataManager;
 import com.songoda.ultimateclaims.database.migrations._1_InitialMigration;
 import com.songoda.ultimateclaims.database.migrations._2_NewPermissions;
 import com.songoda.ultimateclaims.database.migrations._3_MemberNames;
-import com.songoda.ultimateclaims.hologram.Hologram;
 import com.songoda.ultimateclaims.listeners.*;
 import com.songoda.ultimateclaims.settings.PluginSettings;
 import com.songoda.ultimateclaims.tasks.*;
-import com.songoda.ultimateclaims.utils.Methods;
-import com.songoda.core.utils.Metrics;
-import com.songoda.ultimateclaims.utils.settings.Setting;
-import com.songoda.ultimateclaims.utils.settings.SettingsManager;
+import com.songoda.ultimateclaims.settings.Setting;
+import java.util.Collections;
+import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
@@ -33,12 +32,11 @@ public class UltimateClaims extends SongodaPlugin {
 
     private static UltimateClaims INSTANCE;
 
-    private Hologram hologram;
     private PluginSettings pluginSettings;
 
     private DatabaseConnector databaseConnector;
 
-    private SettingsManager settingsManager;
+    private GuiManager guiManager = new GuiManager(this);
     private CommandManager commandManager;
     private ClaimManager claimManager;
 
@@ -59,35 +57,25 @@ public class UltimateClaims extends SongodaPlugin {
 
     @Override
     public void onPluginEnable() {
-        // Load Economy
-        EconomyManager.load();
-
-        // Load Hologram
-        HologramManager.load(this);
-
-        // Setup Setting Manager
-        this.settingsManager = new SettingsManager(this);
-        this.settingsManager.setupConfig();
-
-        // Setup Economy
-        EconomyManager.getManager().setPreferredHook(Setting.ECONOMY.getString());
-
-        // Setup Hologram
-        HologramManager.getManager().setPreferredHook(Setting.HOLOGRAM.getString());
-
-        // Setup Language
-		this.setLocale(this.getConfig().getString("System.Language Mode"), false);
-
         // Register in Songoda Core
         SongodaCore.registerPlugin(this, 65, LegacyMaterials.CHEST);
+        
+        // Load Economy & Hologram hooks
+        EconomyManager.load();
+        HologramManager.load(this);
+
+        // Setup Config
+        Setting.setupConfig();
+		this.setLocale(Setting.LANGUGE_MODE.getString(), false);
+
+        // Set Economy & Hologram preference
+        EconomyManager.getManager().setPreferredHook(Setting.ECONOMY.getString());
+        HologramManager.getManager().setPreferredHook(Setting.HOLOGRAM.getString());
 
         PluginManager pluginManager = Bukkit.getPluginManager();
 
-        // Register Hologram Plugin
-        if (Setting.POWERCELL_HOLOGRAMS.getBoolean())
-            hologram = new Hologram(this);
-
         // Listeners
+        guiManager.init();
         pluginManager.registerEvents(new EntityListeners(this), this);
         pluginManager.registerEvents(new BlockListeners(this), this);
         pluginManager.registerEvents(new InteractListeners(this), this);
@@ -119,14 +107,15 @@ public class UltimateClaims extends SongodaPlugin {
                         new CommandName(this)
                 );
 
-        this.claimManager = new ClaimManager();
-
         // Tasks
         this.inviteTask = InviteTask.startTask(this);
         AnimateTask.startTask(this);
         PowerCellTask.startTask(this);
         TrackerTask.startTask(this);
         VisualizeTask.startTask(this);
+
+        // Start our databases
+        this.claimManager = new ClaimManager();
 
         // Database stuff, go!
         try {
@@ -146,7 +135,7 @@ public class UltimateClaims extends SongodaPlugin {
             }
         } catch (Exception ex) {
             this.getLogger().severe("Fatal error trying to connect to database. Please make sure all your connection settings are correct and try again. Plugin has been disabled.");
-            Bukkit.getPluginManager().disablePlugin(this);
+            this.emergencyStop();
         }
 
         this.dataManager = new DataManager(this.databaseConnector, this);
@@ -158,10 +147,11 @@ public class UltimateClaims extends SongodaPlugin {
 
         Bukkit.getScheduler().runTaskLater(this, () -> {
             this.dataManager.getPluginSettings((pluginSettings) -> this.pluginSettings = pluginSettings);
+            final boolean useHolo = Setting.POWERCELL_HOLOGRAMS.getBoolean() && HologramManager.getManager().isEnabled();
             this.dataManager.getClaims((claims) -> {
                 this.claimManager.addClaims(claims);
-                if (this.hologram != null)
-                    this.claimManager.getRegisteredClaims().forEach(x -> this.hologram.update(x.getPowerCell()));
+                if(useHolo)
+                    this.claimManager.getRegisteredClaims().stream().filter(x -> x.hasPowerCell()).forEach(x -> x.getPowerCell().updateHologram());
             });
         }, 20L);
     }
@@ -184,12 +174,18 @@ public class UltimateClaims extends SongodaPlugin {
         }
     }
 
-    public void reload() {
-        this.setLocale(this.getConfig().getString("System.Language Mode"), true);
+    @Override
+    public List<Config> getExtraConfig() {
+        return Collections.EMPTY_LIST;
     }
 
-    public SettingsManager getSettingsManager() {
-        return settingsManager;
+    @Override
+    public void onConfigReload() {
+		this.setLocale(Setting.LANGUGE_MODE.getString(), true);
+    }
+
+    public GuiManager getGuiManager() {
+        return guiManager;
     }
 
     public CommandManager getCommandManager() {
@@ -214,10 +210,6 @@ public class UltimateClaims extends SongodaPlugin {
 
     public InviteTask getInviteTask() {
         return inviteTask;
-    }
-
-    public Hologram getHologram() {
-        return hologram;
     }
 
     public PluginSettings getPluginSettings() {

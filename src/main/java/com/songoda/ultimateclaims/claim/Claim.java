@@ -224,6 +224,10 @@ public class Claim {
         return this.removeClaimedChunk(chunk);
     }
 
+    public boolean hasPowerCell() {
+        return powerCell.location != null;
+    }
+
     public PowerCell getPowerCell() {
         return powerCell;
     }
