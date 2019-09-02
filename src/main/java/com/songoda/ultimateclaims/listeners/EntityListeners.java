@@ -26,6 +26,8 @@ import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 
 import java.util.ArrayList;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -146,7 +148,9 @@ public class EntityListeners implements Listener {
             }
             if (source instanceof Player) {
                 if (!(event.getEntity() instanceof Player)) {
-                    if (!claim.playerHasPerms((Player) event.getDamager(), ClaimPerm.MOB_KILLING)) {
+                    if(!(event.getEntity() instanceof LivingEntity) && event.getEntity().getType() != EntityType.ARMOR_STAND) {
+                        event.setCancelled(!claim.playerHasPerms((Player) source, ClaimPerm.BREAK));
+                    } else if (!claim.playerHasPerms((Player) source, ClaimPerm.MOB_KILLING)) {
                         event.setCancelled(true);
                     }
                     return;
