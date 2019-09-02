@@ -1,6 +1,7 @@
 package com.songoda.ultimateclaims.database.migrations;
 
-import com.songoda.ultimateclaims.database.DataMigration;
+import com.songoda.core.database.DataMigration;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;

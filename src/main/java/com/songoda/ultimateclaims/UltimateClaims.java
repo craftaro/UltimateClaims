@@ -1,58 +1,42 @@
 package com.songoda.ultimateclaims;
 
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import com.songoda.core.SongodaCore;
+import com.songoda.core.SongodaPlugin;
+import com.songoda.core.commands.CommandManager;
+import com.songoda.core.compatibility.LegacyMaterials;
+import com.songoda.core.configuration.Config;
+import com.songoda.core.database.DataMigrationManager;
+import com.songoda.core.database.DatabaseConnector;
+import com.songoda.core.database.MySQLConnector;
+import com.songoda.core.database.SQLiteConnector;
+import com.songoda.core.gui.GuiManager;
+import com.songoda.core.hooks.EconomyManager;
+import com.songoda.core.hooks.HologramManager;
+import com.songoda.core.hooks.WorldGuardHook;
 import com.songoda.ultimateclaims.claim.ClaimManager;
-import com.songoda.ultimateclaims.command.CommandManager;
+import com.songoda.ultimateclaims.commands.*;
 import com.songoda.ultimateclaims.database.DataManager;
-import com.songoda.ultimateclaims.database.DataMigrationManager;
-import com.songoda.ultimateclaims.database.DatabaseConnector;
-import com.songoda.ultimateclaims.database.MySQLConnector;
-import com.songoda.ultimateclaims.database.SQLiteConnector;
-import com.songoda.ultimateclaims.economy.Economy;
-import com.songoda.ultimateclaims.economy.PlayerPointsEconomy;
-import com.songoda.ultimateclaims.economy.ReserveEconomy;
-import com.songoda.ultimateclaims.economy.VaultEconomy;
-import com.songoda.ultimateclaims.hologram.Hologram;
-import com.songoda.ultimateclaims.hologram.HologramHolographicDisplays;
-import com.songoda.ultimateclaims.hooks.WorldGuardHook;
+import com.songoda.ultimateclaims.database.migrations._1_InitialMigration;
+import com.songoda.ultimateclaims.database.migrations._2_NewPermissions;
+import com.songoda.ultimateclaims.database.migrations._3_MemberNames;
 import com.songoda.ultimateclaims.listeners.*;
 import com.songoda.ultimateclaims.settings.PluginSettings;
-import com.songoda.ultimateclaims.tasks.AnimateTask;
-import com.songoda.ultimateclaims.tasks.InviteTask;
-import com.songoda.ultimateclaims.tasks.PowerCellTask;
-import com.songoda.ultimateclaims.tasks.TrackerTask;
-import com.songoda.ultimateclaims.tasks.VisualizeTask;
-import com.songoda.ultimateclaims.utils.Metrics;
-import com.songoda.ultimateclaims.utils.ServerVersion;
-import com.songoda.ultimateclaims.utils.locale.Locale;
-import com.songoda.ultimateclaims.utils.settings.Setting;
-import com.songoda.ultimateclaims.utils.settings.SettingsManager;
-import com.songoda.ultimateclaims.utils.updateModules.LocaleModule;
-import com.songoda.update.Plugin;
-import com.songoda.update.SongodaUpdate;
-import com.songoda.update.utils.Methods;
-import org.apache.commons.lang.ArrayUtils;
+import com.songoda.ultimateclaims.tasks.*;
+import com.songoda.ultimateclaims.settings.Setting;
+import java.util.Collections;
+import java.util.List;
 import org.bukkit.Bukkit;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class UltimateClaims extends JavaPlugin {
+public class UltimateClaims extends SongodaPlugin {
 
     private static UltimateClaims INSTANCE;
 
-    private ConsoleCommandSender console = Bukkit.getConsoleSender();
-
-    private ServerVersion serverVersion = ServerVersion.fromPackageName(Bukkit.getServer().getClass().getPackage().getName());
-
-    private Locale locale;
-    private Economy economy;
-    private Hologram hologram;
     private PluginSettings pluginSettings;
 
     private DatabaseConnector databaseConnector;
 
-    private SettingsManager settingsManager;
+    private GuiManager guiManager = new GuiManager(this);
     private CommandManager commandManager;
     private ClaimManager claimManager;
 
@@ -65,71 +49,63 @@ public class UltimateClaims extends JavaPlugin {
         return INSTANCE;
     }
 
-	@Override
-	public void onLoad() {
-        WorldGuardHook.addHook("allow-claims", false);
-	}
-
     @Override
-    public void onDisable() {
-        console.sendMessage(Methods.formatText("&a============================="));
-        console.sendMessage(Methods.formatText("&7UltimateClaims " + this.getDescription().getVersion() + " by &5Songoda <3!"));
-        console.sendMessage(Methods.formatText("&7Action: &cDisabling&7..."));
-
-        // save all claims data
-        this.dataManager.bulkUpdateClaims(this.claimManager.getRegisteredClaims());
-        this.databaseConnector.closeConnection();
-
-        // cleanup holograms
-        if (getHologram() != null)
-            HologramsAPI.getHolograms(this).stream().forEach(x -> x.delete());
-
-        // cleanup boss bars
-        if(Setting.CLAIMS_BOSSBAR.getBoolean()) {
-            this.claimManager.getRegisteredClaims().forEach(x -> {x.getVisitorBossBar().removeAll();x.getMemberBossBar().removeAll();});
-        }
-
-        console.sendMessage(Methods.formatText("&a============================="));
+    public void onPluginLoad() {
+        INSTANCE = this;
+        WorldGuardHook.addHook("allow-claims", false);
     }
 
     @Override
-    public void onEnable() {
-        INSTANCE = this;
+    public void onPluginEnable() {
+        // Register in Songoda Core
+        SongodaCore.registerPlugin(this, 65, LegacyMaterials.CHEST);
+        
+        // Load Economy & Hologram hooks
+        EconomyManager.load();
+        HologramManager.load(this);
 
-        console.sendMessage(Methods.formatText("&a============================="));
-        console.sendMessage(Methods.formatText("&7UltimateClaims " + this.getDescription().getVersion() + " by &5Songoda <3&7!"));
-        console.sendMessage(Methods.formatText("&7Action: &aEnabling&7..."));
+        // Setup Config
+        Setting.setupConfig();
+		this.setLocale(Setting.LANGUGE_MODE.getString(), false);
 
-        // Setup Setting Manager
-        this.settingsManager = new SettingsManager(this);
-        this.settingsManager.setupConfig();
-
-        // Setup Language
-        new Locale(this, "en_US");
-        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode"));
-
-        // Running Songoda Updater
-        Plugin plugin = new Plugin(this, 65);
-        plugin.addModule(new LocaleModule());
-        SongodaUpdate.load(plugin);
+        // Set Economy & Hologram preference
+        EconomyManager.getManager().setPreferredHook(Setting.ECONOMY.getString());
+        HologramManager.getManager().setPreferredHook(Setting.HOLOGRAM.getString());
 
         PluginManager pluginManager = Bukkit.getPluginManager();
 
-        // Register Hologram Plugin
-        if (Setting.POWERCELL_HOLOGRAMS.getBoolean()
-                && pluginManager.isPluginEnabled("HolographicDisplays"))
-            hologram = new HologramHolographicDisplays(this);
-
         // Listeners
+        guiManager.init();
         pluginManager.registerEvents(new EntityListeners(this), this);
         pluginManager.registerEvents(new BlockListeners(this), this);
         pluginManager.registerEvents(new InteractListeners(this), this);
         pluginManager.registerEvents(new InventoryListeners(this), this);
         pluginManager.registerEvents(new LoginListeners(this), this);
 
-        // Managers
+        // Load Commands
         this.commandManager = new CommandManager(this);
-        this.claimManager = new ClaimManager();
+        this.commandManager.addCommand(new CommandUltimateClaims(this))
+                .addSubCommands(
+                        new CommandSettings(this),
+                        new CommandReload(this),
+                        new CommandClaim(this),
+                        new CommandUnClaim(this),
+                        new CommandShow(this),
+                        new CommandInvite(this),
+                        new CommandAccept(this),
+                        new CommandAddMember(this),
+                        new CommandKick(this),
+                        new CommandDissolve(this),
+                        new CommandLeave(this),
+                        new CommandLock(this),
+                        new CommandHome(this),
+                        new CommandSetHome(this),
+                        new CommandBan(this),
+                        new CommandUnBan(this),
+                        new CommandRecipe(this),
+                        new CommandSetSpawn(this),
+                        new CommandName(this)
+                );
 
         // Tasks
         this.inviteTask = InviteTask.startTask(this);
@@ -138,16 +114,8 @@ public class UltimateClaims extends JavaPlugin {
         TrackerTask.startTask(this);
         VisualizeTask.startTask(this);
 
-        // Setup Economy
-        if (Setting.VAULT_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("Vault"))
-            this.economy = new VaultEconomy();
-        else if (Setting.RESERVE_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("Reserve"))
-            this.economy = new ReserveEconomy();
-        else if (Setting.PLAYER_POINTS_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("PlayerPoints"))
-            this.economy = new PlayerPointsEconomy();
-
-        // Start Metrics
-        new Metrics(this);
+        // Start our databases
+        this.claimManager = new ClaimManager();
 
         // Database stuff, go!
         try {
@@ -167,56 +135,57 @@ public class UltimateClaims extends JavaPlugin {
             }
         } catch (Exception ex) {
             this.getLogger().severe("Fatal error trying to connect to database. Please make sure all your connection settings are correct and try again. Plugin has been disabled.");
-            Bukkit.getPluginManager().disablePlugin(this);
+            this.emergencyStop();
         }
 
         this.dataManager = new DataManager(this.databaseConnector, this);
-        this.dataMigrationManager = new DataMigrationManager(this.databaseConnector, this.dataManager);
+        this.dataMigrationManager = new DataMigrationManager(this.databaseConnector, this.dataManager,
+                new _1_InitialMigration(),
+                new _2_NewPermissions(),
+                new _3_MemberNames());
         this.dataMigrationManager.runMigrations();
 
         Bukkit.getScheduler().runTaskLater(this, () -> {
             this.dataManager.getPluginSettings((pluginSettings) -> this.pluginSettings = pluginSettings);
+            final boolean useHolo = Setting.POWERCELL_HOLOGRAMS.getBoolean() && HologramManager.getManager().isEnabled();
             this.dataManager.getClaims((claims) -> {
                 this.claimManager.addClaims(claims);
-                if (this.hologram != null)
-                    this.claimManager.getRegisteredClaims().forEach(x -> this.hologram.update(x.getPowerCell()));
+                if(useHolo)
+                    this.claimManager.getRegisteredClaims().stream().filter(x -> x.hasPowerCell()).forEach(x -> x.getPowerCell().updateHologram());
             });
         }, 20L);
-
-        console.sendMessage(Methods.formatText("&a============================="));
     }
 
-    public void reload() {
-        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode"));
-        this.locale.reloadMessages();
+    @Override
+    public void onPluginDisable() {
+        // save all claims data
+        this.dataManager.bulkUpdateClaims(this.claimManager.getRegisteredClaims());
+        this.databaseConnector.closeConnection();
+
+        // cleanup holograms
+        HologramManager.removeAllHolograms();
+
+        // cleanup boss bars
+        if (Setting.CLAIMS_BOSSBAR.getBoolean()) {
+            this.claimManager.getRegisteredClaims().forEach(x -> {
+                x.getVisitorBossBar().removeAll();
+                x.getMemberBossBar().removeAll();
+            });
+        }
     }
 
-    public ServerVersion getServerVersion() {
-        return serverVersion;
+    @Override
+    public List<Config> getExtraConfig() {
+        return Collections.EMPTY_LIST;
     }
 
-    public boolean isServerVersion(ServerVersion version) {
-        return serverVersion == version;
+    @Override
+    public void onConfigReload() {
+		this.setLocale(Setting.LANGUGE_MODE.getString(), true);
     }
 
-    public boolean isServerVersion(ServerVersion... versions) {
-        return ArrayUtils.contains(versions, serverVersion);
-    }
-
-    public boolean isServerVersionAtLeast(ServerVersion version) {
-        return serverVersion.ordinal() >= version.ordinal();
-    }
-
-    public SettingsManager getSettingsManager() {
-        return settingsManager;
-    }
-
-    public Economy getEconomy() {
-        return this.economy;
-    }
-
-    public Locale getLocale() {
-        return this.locale;
+    public GuiManager getGuiManager() {
+        return guiManager;
     }
 
     public CommandManager getCommandManager() {
@@ -241,10 +210,6 @@ public class UltimateClaims extends JavaPlugin {
 
     public InviteTask getInviteTask() {
         return inviteTask;
-    }
-
-    public Hologram getHologram() {
-        return hologram;
     }
 
     public PluginSettings getPluginSettings() {

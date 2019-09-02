@@ -8,7 +8,7 @@ import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.tasks.VisualizeTask;
-import com.songoda.ultimateclaims.utils.settings.Setting;
+import com.songoda.ultimateclaims.settings.Setting;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
