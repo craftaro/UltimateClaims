@@ -1,6 +1,5 @@
 package com.songoda.ultimateclaims.utils;
 
-import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.ultimateclaims.UltimateClaims;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -30,7 +29,7 @@ public class Methods {
                         player.sendBlockChange(block.getLocation(), material, (byte) 0);
                         Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () ->
                                 player.sendBlockChange(block.getLocation(), block.getType(), block.getData()), random.nextInt(30) + 1);
-                        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
+                        if (UltimateClaims.getInstance().isServerVersionAtLeast(ServerVersion.V1_9))
                             player.playSound(block.getLocation(), Sound.BLOCK_METAL_STEP, 1F, .2F);
                     }, random.nextInt(30) + 1);
                 }
@@ -38,10 +37,78 @@ public class Methods {
         }
     }
 
+    private static boolean isAnimated(Material material) {
+        switch (material) {
+            case AIR:
+            case ACACIA_FENCE:
+            case BIRCH_FENCE:
+            case DARK_OAK_FENCE:
+            case JUNGLE_FENCE:
+            case NETHER_BRICK_FENCE:
+            case OAK_FENCE:
+            case SPRUCE_FENCE:
+            case ANDESITE_WALL:
+            case BRICK_WALL:
+            case COBBLESTONE_WALL:
+            case END_STONE_BRICK_WALL:
+            case DIORITE_WALL:
+            case GRANITE_WALL:
+            case MOSSY_COBBLESTONE_WALL:
+            case MOSSY_STONE_BRICK_WALL:
+            case NETHER_BRICK_WALL:
+            case PRISMARINE_WALL:
+            case RED_NETHER_BRICK_WALL:
+            case RED_SANDSTONE_WALL:
+            case SANDSTONE_WALL:
+            case STONE_BRICK_WALL:
+            case SANDSTONE_SLAB:
+            case SMOOTH_QUARTZ_SLAB:
+            case ACACIA_SLAB:
+            case SMOOTH_RED_SANDSTONE_SLAB:
+            case SMOOTH_SANDSTONE_SLAB:
+            case SMOOTH_STONE_SLAB:
+            case SPRUCE_SLAB:
+            case STONE_BRICK_SLAB:
+            case STONE_SLAB:
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    public static ItemStack getGlass() {
+        UltimateClaims instance = UltimateClaims.getInstance();
+        return Methods.getGlass(instance.getConfig().getBoolean("Interfaces.Replace Glass Type 1 With Rainbow Glass"), instance.getConfig().getInt("Interfaces.Glass Type 1"));
+    }
+
+    public static ItemStack getBackgroundGlass(boolean type) {
+        UltimateClaims instance = UltimateClaims.getInstance();
+        if (type)
+            return getGlass(false, instance.getConfig().getInt("Interfaces.Glass Type 2"));
+        else
+            return getGlass(false, instance.getConfig().getInt("Interfaces.Glass Type 3"));
+    }
+
+    private static ItemStack getGlass(Boolean rainbow, int type) {
+        int randomNum = 1 + (int) (Math.random() * 6);
+        ItemStack glass;
+        if (rainbow) {
+            glass = new ItemStack(UltimateClaims.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ?
+                    Material.LEGACY_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) randomNum);
+        } else {
+            glass = new ItemStack(UltimateClaims.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ?
+                    Material.LEGACY_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) type);
+        }
+        ItemMeta glassmeta = glass.getItemMeta();
+        glassmeta.setDisplayName("§l");
+        glass.setItemMeta(glassmeta);
+        return glass;
+    }
+
     public static String formatTitle(String text) {
         if (text == null || text.equals(""))
             return "";
-        if (!ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
+        if (!UltimateClaims.getInstance().isServerVersionAtLeast(ServerVersion.V1_9)) {
             if (text.length() > 31)
                 text = text.substring(0, 29) + "...";
         }

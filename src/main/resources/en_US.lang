@@ -69,7 +69,7 @@ command.show.stop = "&7Claim visualizer &cdisabled."
 
 interface.powercell.economytitle = "&7Economy stored: &6%time%&7."
 interface.powercell.economylore = "&7Click to deposit funds."
-interface.powercell.valuablestitle = "&7Items stored: &6%time%&7."
+interface.powercell.valuablestitle = "&7Item's stored: &6%time%&7."
 interface.powercell.totaltitle = "&7Total Power: &6%time%&7."
 interface.powercell.addfunds = "&7Enter an amount to deposit."
 interface.powercell.infotitle = "&5&lInfo"

@@ -1,13 +1,14 @@
 package com.songoda.ultimateclaims.listeners;
 
-import com.songoda.core.compatibility.CompatibleSounds;
-import com.songoda.core.compatibility.ParticleHandler;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
-import com.songoda.ultimateclaims.settings.Setting;
+import com.songoda.ultimateclaims.utils.ServerVersion;
+import com.songoda.ultimateclaims.utils.settings.Setting;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -69,17 +70,19 @@ public class InventoryListeners implements Listener {
 
         plugin.getDataManager().updateClaim(claim);
 
-        if (Setting.POWERCELL_HOLOGRAMS.getBoolean())
-            claim.getPowerCell().updateHologram();
+        if (plugin.getHologram() != null)
+            plugin.getHologram().update(claim.getPowerCell());
 
         float xx = (float) (0 + (Math.random() * 1));
         float yy = (float) (0 + (Math.random() * 2));
         float zz = (float) (0 + (Math.random() * 1));
 
-        ParticleHandler.spawnParticles(ParticleHandler.ParticleType.LAVA, location.add(.5, .5, .5), 25, xx, yy, zz);
-        player.playSound(location, CompatibleSounds.ENTITY_BLAZE_DEATH.getSound(), 1F, .4F);
-        player.playSound(location, CompatibleSounds.ENTITY_PLAYER_LEVELUP.getSound(), 1F, .1F);
+        if (plugin.isServerVersionAtLeast(ServerVersion.V1_9)) {
+            location.getWorld().spawnParticle(Particle.LAVA, location.add(.5, .5, .5), 25, xx, yy, zz, 0);
 
+            player.playSound(location, Sound.ENTITY_BLAZE_DEATH, 1F, .4F);
+            player.playSound(location, Sound.ENTITY_PLAYER_LEVELUP, 1F, .1F);
+        }
         plugin.getLocale().getMessage("event.powercell.success").sendPrefixedMessage(player);
     }
 }
