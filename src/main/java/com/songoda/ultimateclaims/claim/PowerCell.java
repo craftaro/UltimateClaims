@@ -41,6 +41,8 @@ public class PowerCell {
         }
 
         if (this.currentPower <= 0 && location != null) {
+            if(opened != null && opened.isOpen())
+                updateItemsFromGui();
             List<String> materials = Setting.ITEM_VALUES.getStringList();
             for (String value : materials) {
                 Material material = Material.valueOf(value.split(":")[0]);
@@ -83,7 +85,13 @@ public class PowerCell {
         return amount;
     }
 
+<<<<<<< HEAD
     private void removeOneMaterial(Material material) {
+=======
+    private void removeOneMaterial(LegacyMaterials material) {
+        if(opened != null && opened.isOpen())
+            updateItemsFromGui();
+>>>>>>> dev
         for (ItemStack item : getItems()) {
             if (item.getType() != material) continue;
 
@@ -121,6 +129,7 @@ public class PowerCell {
         }
     }
 
+<<<<<<< HEAD
     public void updateInventory(Inventory opened) {
         if (opened == null) return;
         int j = 0;
@@ -137,6 +146,11 @@ public class PowerCell {
             }
             opened.setItem(i, this.items.get(j));
             j++;
+=======
+    public void updateGuiInventory() {
+        if (opened != null) {
+            opened.updateGuiInventory(items);
+>>>>>>> dev
         }
     }
 
@@ -171,6 +185,8 @@ public class PowerCell {
     }
 
     public long getItemPower() {
+        if(opened != null && opened.isOpen())
+            updateItemsFromGui();
         double total = 0;
         List<String> materials = Setting.ITEM_VALUES.getStringList();
         for (String value : materials) {
@@ -204,8 +220,6 @@ public class PowerCell {
     }
 
     public List<ItemStack> getItems() {
-        if (opened != null)
-            updateItems();
         return new ArrayList<>(this.items);
     }
 

@@ -186,10 +186,12 @@ public class UltimateClaims extends JavaPlugin {
         console.sendMessage(Methods.formatText("&a============================="));
     }
 
-    public void reload() {
-        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode"));
-        this.locale.reloadMessages();
-    }
+    @Override
+    public void onPluginDisable() {
+        // save all claims data
+        this.guiManager.closeAll();
+        this.dataManager.bulkUpdateClaims(this.claimManager.getRegisteredClaims());
+        this.databaseConnector.closeConnection();
 
     public ServerVersion getServerVersion() {
         return serverVersion;
