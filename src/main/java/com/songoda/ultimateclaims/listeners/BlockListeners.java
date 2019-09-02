@@ -1,5 +1,6 @@
 package com.songoda.ultimateclaims.listeners;
 
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
@@ -10,6 +11,7 @@ import com.songoda.ultimateclaims.member.ClaimRole;
 import java.util.List;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
@@ -17,6 +19,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPistonEvent;
@@ -87,12 +90,29 @@ public class BlockListeners implements Listener {
     public void ignite(BlockIgniteEvent event) {
         ClaimManager claimManager = plugin.getClaimManager();
 
-        if (claimManager.hasClaim(event.getBlock().getChunk())) {
-            Claim claim = claimManager.getClaim(event.getBlock().getChunk());
-            if (!claim.getClaimSettings().isFireSpread()
-                    && event.getCause() == BlockIgniteEvent.IgniteCause.SPREAD) {
-                event.setCancelled(true);
+        Claim claim = claimManager.getClaim(event.getBlock().getChunk());
+        if (claim != null && !claim.getClaimSettings().isFireSpread()) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void ignite(BlockBurnEvent event) {
+        ClaimManager claimManager = plugin.getClaimManager();
+
+        Claim claim = claimManager.getClaim(event.getBlock().getChunk());
+        if (claim != null && !claim.getClaimSettings().isFireSpread()) {
+            if(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_11)) {
+                event.getIgnitingBlock().setType(Material.AIR);
+            } else {
+                for(BlockFace bf : new BlockFace[]{BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST}) {
+                    Block b = event.getBlock().getRelative(bf);
+                    if(b != null && b.getType() == Material.FIRE) {
+                        b.setType(Material.AIR);
+                    }
+                }
             }
+            event.setCancelled(true);
         }
     }
 
@@ -100,11 +120,9 @@ public class BlockListeners implements Listener {
     public void decay(LeavesDecayEvent event) {
         ClaimManager claimManager = plugin.getClaimManager();
 
-        if (claimManager.hasClaim(event.getBlock().getChunk())) {
-            Claim claim = claimManager.getClaim(event.getBlock().getChunk());
-            if (!claim.getClaimSettings().isLeafDecay()) {
-                event.setCancelled(true);
-            }
+        Claim claim = claimManager.getClaim(event.getBlock().getChunk());
+        if (claim != null && !claim.getClaimSettings().isLeafDecay()) {
+            event.setCancelled(true);
         }
     }
 
