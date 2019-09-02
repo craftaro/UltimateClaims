@@ -3,6 +3,7 @@ package com.songoda.ultimateclaims.listeners;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
+import com.songoda.ultimateclaims.gui.GUIPowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
@@ -56,7 +57,7 @@ public class InteractListeners implements Listener {
                 && claim.getPowerCell().getLocation().equals(event.getClickedBlock().getLocation())
                 && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if ((member != null && member.getRole() == ClaimRole.OWNER) || event.getPlayer().hasPermission("ultimateclaims.bypass")) {
-                plugin.getGuiManager().showGUI(event.getPlayer(), claim.getPowerCell().getGui());
+                new GUIPowerCell(event.getPlayer(), claim);
             } else {
                 plugin.getLocale().getMessage("event.powercell.failopen").sendPrefixedMessage(event.getPlayer());
             }
