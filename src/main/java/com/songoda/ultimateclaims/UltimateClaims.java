@@ -14,12 +14,14 @@ import com.songoda.ultimateclaims.economy.ReserveEconomy;
 import com.songoda.ultimateclaims.economy.VaultEconomy;
 import com.songoda.ultimateclaims.hologram.Hologram;
 import com.songoda.ultimateclaims.hologram.HologramHolographicDisplays;
+import com.songoda.ultimateclaims.hooks.WorldGuardHook;
 import com.songoda.ultimateclaims.listeners.*;
 import com.songoda.ultimateclaims.settings.PluginSettings;
 import com.songoda.ultimateclaims.tasks.AnimateTask;
 import com.songoda.ultimateclaims.tasks.InviteTask;
 import com.songoda.ultimateclaims.tasks.PowerCellTask;
 import com.songoda.ultimateclaims.tasks.TrackerTask;
+import com.songoda.ultimateclaims.tasks.VisualizeTask;
 import com.songoda.ultimateclaims.utils.Metrics;
 import com.songoda.ultimateclaims.utils.ServerVersion;
 import com.songoda.ultimateclaims.utils.locale.Locale;
@@ -63,6 +65,11 @@ public class UltimateClaims extends JavaPlugin {
         return INSTANCE;
     }
 
+	@Override
+	public void onLoad() {
+        WorldGuardHook.addHook("allow-claims", false);
+	}
+
     @Override
     public void onDisable() {
         console.sendMessage(Methods.formatText("&a============================="));
@@ -74,8 +81,13 @@ public class UltimateClaims extends JavaPlugin {
         this.databaseConnector.closeConnection();
 
         // cleanup holograms
-        if(Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays"))
+        if (getHologram() != null)
             HologramsAPI.getHolograms(this).stream().forEach(x -> x.delete());
+
+        // cleanup boss bars
+        if(Setting.CLAIMS_BOSSBAR.getBoolean()) {
+            this.claimManager.getRegisteredClaims().forEach(x -> {x.getVisitorBossBar().removeAll();x.getMemberBossBar().removeAll();});
+        }
 
         console.sendMessage(Methods.formatText("&a============================="));
     }
@@ -124,6 +136,7 @@ public class UltimateClaims extends JavaPlugin {
         AnimateTask.startTask(this);
         PowerCellTask.startTask(this);
         TrackerTask.startTask(this);
+        VisualizeTask.startTask(this);
 
         // Setup Economy
         if (Setting.VAULT_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("Vault"))

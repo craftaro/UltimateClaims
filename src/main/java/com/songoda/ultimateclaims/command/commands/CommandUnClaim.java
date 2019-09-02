@@ -5,11 +5,17 @@ import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimedChunk;
 import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.command.AbstractCommand;
+import com.songoda.ultimateclaims.member.ClaimMember;
+import com.songoda.ultimateclaims.member.ClaimRole;
+import com.songoda.ultimateclaims.utils.settings.Setting;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.stream.Stream;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 public class CommandUnClaim extends AbstractCommand {
 
@@ -42,17 +48,45 @@ public class CommandUnClaim extends AbstractCommand {
             }
         }
 
+        // Remove chunk from claim
         ClaimedChunk removedChunk = claim.removeClaimedChunk(chunk, player);
-
         if (claim.getClaimSize() == 0) {
             instance.getLocale().getMessage("general.claim.dissolve")
                     .processPlaceholder("claim", claim.getName())
                     .sendPrefixedMessage(player);
+
+            // return cash to the player
+            double claimBank = claim.getPowerCell().getEconomyBalance();
+            if (claimBank > 0) {
+                UltimateClaims.getInstance().getEconomy().deposit(player, claimBank);
+                 instance.getLocale().getMessage("general.claim.returnfunds")
+                        .processPlaceholder("amount", claimBank)
+                        .sendPrefixedMessage(player);
+            }
+
             claim.destroy();
         } else {
             instance.getDataManager().deleteChunk(removedChunk);
 
             instance.getLocale().getMessage("command.unclaim.success").sendPrefixedMessage(sender);
+        }
+
+        // we've just unclaimed the chunk we're in, so we've "moved" out of the claim
+        // Note: Can't use streams here because `Bukkit.getOnlinePlayers()` has a different protoype in legacy
+        for(Player p : Bukkit.getOnlinePlayers()) {
+            if(p.getLocation().getChunk().equals(chunk)) {
+                ClaimMember member = claim.getMember(p);
+                if (member != null) {
+                    if (member.getRole() == ClaimRole.VISITOR)
+                        claim.removeMember(member);
+                    else
+                        member.setPresent(false);
+                }
+                if(Setting.CLAIMS_BOSSBAR.getBoolean()) {
+                    claim.getVisitorBossBar().removePlayer(p);
+                    claim.getMemberBossBar().removePlayer(p);
+                }
+            }
         }
 
         return ReturnType.SUCCESS;

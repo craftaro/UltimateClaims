@@ -7,6 +7,8 @@ import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
+import com.songoda.ultimateclaims.tasks.VisualizeTask;
+import com.songoda.ultimateclaims.utils.settings.Setting;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -25,7 +27,10 @@ import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 
 import java.util.ArrayList;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class EntityListeners implements Listener {
 
@@ -33,6 +38,21 @@ public class EntityListeners implements Listener {
 
     public EntityListeners(UltimateClaims plugin) {
         this.plugin = plugin;
+    }
+
+    @EventHandler
+    public void onPlayerLogin(PlayerLoginEvent event) {
+        // update cached username on login
+        final Player player = event.getPlayer();
+        plugin.getClaimManager().getRegisteredClaims().stream()
+                .map(claim -> claim.getMember(player))
+                .filter(member -> member != null)
+                .forEach(member -> member.setName(player.getName()));
+    }
+
+    @EventHandler
+    public void onPlayerLogout(PlayerQuitEvent event) {
+        VisualizeTask.removePlayer(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -89,7 +109,7 @@ public class EntityListeners implements Listener {
 
         if (claimManager.hasClaim(event.getBlock().getLocation().getChunk())) {
             Claim claim = claimManager.getClaim(event.getBlock().getLocation().getChunk());
-            if (!claim.getClaimSettings().isMobGriefing()) {
+            if (!claim.getClaimSettings().isMobGriefingAllowed()) {
                 event.setCancelled(true);
             }
         }
@@ -119,18 +139,35 @@ public class EntityListeners implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onBlowUp(EntityExplodeEvent event) {
         ClaimManager claimManager = plugin.getClaimManager();
-        for (Block block : new ArrayList<>(event.blockList())) {
-            if (!claimManager.hasClaim(block.getChunk())) continue;
 
-            if (event.getEntity().getType() == EntityType.CREEPER) {
-                Claim claim = claimManager.getClaim(block.getChunk());
-                PowerCell powerCell = claim.getPowerCell();
-                if (claim.getClaimSettings().isMobGriefing()
-                        || (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation()))) {
+        // Who is responsible for this?
+        Entity entity = event.getEntity();
+        if(entity instanceof Projectile && ((Projectile) entity).getShooter() instanceof Entity) {
+            entity = (Entity) ((Projectile) entity).getShooter();
+        }
+
+        // Does this concern us?
+        for (Block block : new ArrayList<>(event.blockList())) {
+            if (!claimManager.hasClaim(block.getChunk()))
+                continue; // nope - you're not important
+
+            // Pay special attention to mobs
+            switch (entity.getType()) {
+                case CREEPER:
+                case GHAST:
+                case FIREBALL:
+                case WITHER:
+                    // For explosions caused by mobs, check if allowed
+                    Claim claim = claimManager.getClaim(block.getChunk());
+                    PowerCell powerCell = claim.getPowerCell();
+                    if (!claim.getClaimSettings().isMobGriefingAllowed()
+                            || (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation()))) {
+                        event.blockList().remove(block);
+                    }
+                    break;
+                default:
+                    // Cancel block damage from all other explosions
                     event.blockList().remove(block);
-                }
-            } else {
-                event.blockList().remove(block);
             }
         }
     }
@@ -161,9 +198,14 @@ public class EntityListeners implements Listener {
                     else
                         member.setPresent(false);
                 }
-                plugin.getLocale().getMessage("event.claim.exit")
-                        .processPlaceholder("claim", claim.getName())
-                        .sendTitle(player);
+                if(Setting.CLAIMS_BOSSBAR.getBoolean()) {
+                    claim.getVisitorBossBar().removePlayer(player);
+                    claim.getMemberBossBar().removePlayer(player);
+                } else {
+                    plugin.getLocale().getMessage("event.claim.exit")
+                            .processPlaceholder("claim", claim.getName())
+                            .sendTitle(player);
+                }
             }
         }
 
@@ -192,9 +234,17 @@ public class EntityListeners implements Listener {
                     return true;
                 }
 
-                plugin.getLocale().getMessage("event.claim.enter")
-                        .processPlaceholder("claim", claim.getName())
-                        .sendTitle(player);
+                if(Setting.CLAIMS_BOSSBAR.getBoolean()) {
+                    if(member == null || member.getRole() == ClaimRole.VISITOR) {
+                        claim.getVisitorBossBar().addPlayer(player);
+                    } else {
+                        claim.getMemberBossBar().addPlayer(player);
+                    }
+                } else {
+                    plugin.getLocale().getMessage("event.claim.enter")
+                            .processPlaceholder("claim", claim.getName())
+                            .sendTitle(player);
+                }
             }
         }
         return false;

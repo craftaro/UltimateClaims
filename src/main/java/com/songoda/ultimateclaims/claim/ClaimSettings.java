@@ -26,11 +26,11 @@ public class ClaimSettings {
         return this;
     }
 
-    public boolean isMobGriefing() {
+    public boolean isMobGriefingAllowed() {
         return mobGriefing;
     }
 
-    public ClaimSettings setMobGriefing(boolean mobGriefing) {
+    public ClaimSettings setMobGriefingAllowed(boolean mobGriefing) {
         this.mobGriefing = mobGriefing;
         return this;
     }

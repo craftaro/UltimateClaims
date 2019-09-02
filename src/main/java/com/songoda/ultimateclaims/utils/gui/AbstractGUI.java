@@ -112,6 +112,8 @@ public abstract class AbstractGUI implements Listener {
     }
 
     protected void init(String title, int slots) {
+        if(title.length() > 32)
+            title = title.substring(0, 31);
         if (inventory == null
                 || inventory.getSize() != slots
                 || !ChatColor.translateAlternateColorCodes('&', title).equals(player.getOpenInventory().getTitle())) {

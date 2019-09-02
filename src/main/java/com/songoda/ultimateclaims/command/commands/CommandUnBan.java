@@ -8,8 +8,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class CommandUnBan extends AbstractCommand {
@@ -32,14 +33,12 @@ public class CommandUnBan extends AbstractCommand {
 
         Claim claim = instance.getClaimManager().getClaim(player);
 
-        OfflinePlayer toBan = Bukkit.getPlayer(args[1]);
+        OfflinePlayer toBan = Bukkit.getOfflinePlayer(args[1]);
 
-        if (toBan == null) {
+        if (toBan == null || !(toBan.hasPlayedBefore() || toBan.isOnline())) {
             instance.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
-        }
-
-        if (player.getUniqueId().equals(toBan.getUniqueId())) {
+        } else if (player.getUniqueId().equals(toBan.getUniqueId())) {
             instance.getLocale().getMessage("command.unban.notself").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
@@ -61,9 +60,15 @@ public class CommandUnBan extends AbstractCommand {
 
     @Override
     protected List<String> onTab(UltimateClaims instance, CommandSender sender, String... args) {
-        if (args.length == 2) {
-            return Bukkit.getOnlinePlayers().stream().filter(p -> p != sender)
-                    .map(Player::getName).collect(Collectors.toList());
+        if (args.length == 2 && sender instanceof Player) {
+            // grab our ban list
+            Claim claim = instance.getClaimManager().getClaim((Player) sender);
+            Set<UUID> bans;
+            if(claim != null && !(bans = claim.getBannedPlayers()).isEmpty()) {
+                return Bukkit.getOnlinePlayers().stream()
+                        .filter(p -> p != sender && bans.stream().anyMatch(id -> p.getUniqueId().equals(id)))
+                        .map(Player::getName).collect(Collectors.toList());
+            }
         }
         return null;
     }

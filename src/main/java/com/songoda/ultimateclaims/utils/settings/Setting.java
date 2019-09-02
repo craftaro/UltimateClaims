@@ -31,6 +31,10 @@ public enum Setting {
     POWERCELL_HOLOGRAMS("Main.Powercell Holograms", true,
             "Should holograms be placed above powercells?"),
 
+    CLAIMS_BOSSBAR("Main.Claims Use Boss Bar", false,
+            "Display a boss bar to players while they're in a claim?",
+            "Default behavior is to show a title on entry/exit."),
+
     CHUNKS_MUST_TOUCH("Main.Chunks Must Touch", true,
             "Should chunks have to touch to be claimed?",
             "This prevents people from claiming little pieces all over the place."),

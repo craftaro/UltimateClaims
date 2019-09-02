@@ -9,18 +9,22 @@ import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import java.util.List;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPistonEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.inventory.Inventory;
 
 public class BlockListeners implements Listener {
 
@@ -61,17 +65,14 @@ public class BlockListeners implements Listener {
         Claim claim = claimManager.getClaim(chunk);
         PowerCell powerCell = claim.getPowerCell();
 
-
         if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.BREAK)) {
             plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
             event.setCancelled(true);
             return;
         }
 
-        ClaimMember member = claim.getMember(event.getPlayer());
-
-
         if (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation())) {
+            ClaimMember member = claim.getMember(event.getPlayer());
             if ((member != null && member.getRole() == ClaimRole.OWNER) || event.getPlayer().hasPermission("ultimateclaims.bypass")) {
                 powerCell.destroy();
             } else {
@@ -103,6 +104,39 @@ public class BlockListeners implements Listener {
             if (!claim.getClaimSettings().isLeafDecay()) {
                 event.setCancelled(true);
             }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onHopper(InventoryMoveItemEvent event) {
+        final Location target = event.getDestination().getLocation();
+        final Claim claim;
+        // Powercells have a different inventory than the chest
+        // To help out players a bit, we're just going to not let hoppers do their thing
+        if (target != null && (claim = plugin.getClaimManager().getClaim(target.getChunk())) != null) {
+            // hopper in a claim, are we trying to push into a powercell?
+            PowerCell powerCell = claim.getPowerCell();
+            if (powerCell != null && powerCell.hasLocation() && powerCell.getLocation().equals(target)) {
+                // yep, let's not do that
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onBlockFromToEventMonitor(BlockFromToEvent event) {
+        // prevent water/lava/egg griefs
+        ClaimManager claimManager = plugin.getClaimManager();
+        Claim fromClaim = claimManager.getClaim(event.getBlock().getChunk());
+        Claim toClaim = claimManager.getClaim(event.getToBlock().getChunk());
+        // if we're moving across a claim boundary, cancel the event
+        if (fromClaim != null && toClaim != null) {
+            if(!fromClaim.equals(toClaim)) {
+                event.setCancelled(true);
+            }
+        } else if(toClaim != null) {
+            // moving from unclaimed to a claim
+            event.setCancelled(true);
         }
     }
 

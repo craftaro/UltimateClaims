@@ -5,6 +5,8 @@ import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimBuilder;
 import com.songoda.ultimateclaims.claim.ClaimedChunk;
 import com.songoda.ultimateclaims.command.AbstractCommand;
+import com.songoda.ultimateclaims.hooks.WorldGuardHook;
+import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.Methods;
 import com.songoda.ultimateclaims.utils.settings.Setting;
@@ -14,6 +16,8 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.bukkit.Bukkit;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 public class CommandClaim extends AbstractCommand {
 
@@ -31,9 +35,17 @@ public class CommandClaim extends AbstractCommand {
         }
 
         Chunk chunk = player.getLocation().getChunk();
+        Claim claim;
+
+        // firstly, can we even claim this chunk?
+        Boolean flag;
+        if((flag = WorldGuardHook.getBooleanFlag(chunk, "allow-claims")) != null && !flag) {
+            instance.getLocale().getMessage("command.claim.noregion").sendPrefixedMessage(player);
+            return ReturnType.FAILURE;
+        }
 
         if (instance.getClaimManager().hasClaim(player)) {
-            Claim claim = instance.getClaimManager().getClaim(player);
+            claim = instance.getClaimManager().getClaim(player);
 
             if (!claim.getPowerCell().hasLocation()) {
                 instance.getLocale().getMessage("command.claim.nocell").sendPrefixedMessage(player);
@@ -49,7 +61,19 @@ public class CommandClaim extends AbstractCommand {
                 return ReturnType.FAILURE;
             }
 
-            if (claim.getClaimSize() >= Setting.MAX_CHUNKS.getInt()) {
+            int maxClaimable = Setting.MAX_CHUNKS.getInt();
+
+            // allow permission overrides
+            for (PermissionAttachmentInfo perms : player.getEffectivePermissions()) {
+                int amount;
+                String a;
+                if (perms.getPermission().startsWith("ultimateclaims.maxclaims.") 
+                        && (a = perms.getPermission().substring("ultimateclaims.maxclaims.".length())).matches("^[0-9]+$")
+                        && (amount = Integer.parseInt(a)) > maxClaimable)
+                    maxClaimable = amount;
+            }
+
+            if (claim.getClaimSize() >= maxClaimable) {
                 instance.getLocale().getMessage("command.claim.toomany")
                         .processPlaceholder("amount", Setting.MAX_CHUNKS.getInt())
                         .sendPrefixedMessage(player);
@@ -63,17 +87,39 @@ public class CommandClaim extends AbstractCommand {
             if (instance.getHologram() != null)
                 instance.getHologram().update(claim.getPowerCell());
         } else {
-            Claim newClaim = new ClaimBuilder()
+            claim = new ClaimBuilder()
                     .setOwner(player)
                     .addClaimedChunk(chunk, player)
                     .build();
-            instance.getClaimManager().addClaim(player, newClaim);
+            instance.getClaimManager().addClaim(player, claim);
 
-            instance.getDataManager().createClaim(newClaim);
+            instance.getDataManager().createClaim(claim);
 
             instance.getLocale().getMessage("command.claim.info")
                     .processPlaceholder("time", Methods.makeReadable((long) (Setting.STARTING_POWER.getInt() * 60 * 1000)))
                     .sendPrefixedMessage(sender);
+        }
+
+        // we've just claimed the chunk we're in, so we've "moved" into the claim
+        // Note: Can't use streams here because `Bukkit.getOnlinePlayers()` has a different protoype in legacy
+        for(Player p : Bukkit.getOnlinePlayers()) {
+            if(p.getLocation().getChunk().equals(chunk)) {
+                ClaimMember member = claim.getMember(p);
+
+                if (member != null)
+                    member.setPresent(true);
+                else
+                    // todo: expunge banned players
+                    member = claim.addMember(p, ClaimRole.VISITOR);
+
+                if(Setting.CLAIMS_BOSSBAR.getBoolean()) {
+                    if(member.getRole() == ClaimRole.VISITOR) {
+                        claim.getVisitorBossBar().addPlayer(p);
+                    } else {
+                        claim.getMemberBossBar().addPlayer(p);
+                    }
+                }
+            }
         }
 
         instance.getLocale().getMessage("command.claim.success").sendPrefixedMessage(sender);

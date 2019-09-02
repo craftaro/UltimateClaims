@@ -13,6 +13,10 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import org.bukkit.Bukkit;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 
 public class Claim {
 
@@ -47,6 +51,9 @@ public class Claim {
 
     private PowerCell powerCell = new PowerCell(this);
 
+    private BossBar bossBarVisitor = null;
+    private BossBar bossBarMember = null;
+
     public void setId(int id) {
         this.id = id;
     }
@@ -65,14 +72,34 @@ public class Claim {
 
     public void setName(String name) {
         this.name = name;
+        if(bossBarMember != null)
+            bossBarMember.setTitle(name);
+        if(bossBarVisitor != null)
+            bossBarVisitor.setTitle(name);
+    }
+
+    public BossBar getVisitorBossBar() {
+        if(bossBarVisitor == null)
+            bossBarVisitor = Bukkit.getServer().createBossBar(this.name, BarColor.YELLOW, BarStyle.SOLID);
+        return bossBarVisitor;
+    }
+
+    public BossBar getMemberBossBar() {
+        if(bossBarMember == null)
+            bossBarMember = Bukkit.getServer().createBossBar(this.name, BarColor.GREEN, BarStyle.SOLID);
+        return bossBarMember;
     }
 
     public ClaimMember getOwner() {
         return owner;
     }
 
-    public void setOwner(UUID owner) {
-        this.owner = new ClaimMember(this, owner, ClaimRole.OWNER);
+    public ClaimMember setOwner(UUID owner) {
+        return this.owner = new ClaimMember(this, owner, null, ClaimRole.OWNER);
+    }
+
+    public ClaimMember setOwner(Player owner) {
+        return this.owner = new ClaimMember(this, owner.getUniqueId(), owner.getName(), ClaimRole.OWNER);
     }
 
     public Set<ClaimMember> getMembers() {
@@ -89,22 +116,40 @@ public class Claim {
         this.members.add(member);
         return member;
     }
-
-    public ClaimMember addMember(UUID uuid, ClaimRole role) {
-        ClaimMember newMember = new ClaimMember(this, uuid, role);
-        this.members.add(newMember);
-        return newMember;
-    }
+//
+//    public ClaimMember addMember(UUID uuid, ClaimRole role) {
+//        ClaimMember newMember = new ClaimMember(this, uuid, null, role);
+//        this.members.add(newMember);
+//        return newMember;
+//    }
 
     public ClaimMember addMember(OfflinePlayer player, ClaimRole role) {
-        return addMember(player.getUniqueId(), role);
+        ClaimMember newMember = new ClaimMember(this, player.getUniqueId(), player.getName(), role);
+        this.members.add(newMember);
+        return newMember;
     }
 
     public ClaimMember getMember(UUID uuid) {
         if (owner.getUniqueId().equals(uuid))
             return owner;
-        Optional<ClaimMember> optional = this.members.stream().filter(member -> member.getUniqueId().equals(uuid)).findFirst();
-        return optional.orElse(null);
+        return members.stream()
+                .filter(member -> member.getUniqueId().equals(uuid))
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Search for a member by username
+     * @param name name to search
+     * @return Member instance matching this username, if any
+     */
+    public ClaimMember getMember(String name) {
+        if(name == null) return null;
+        if(name.equals(owner.getName())) return owner;
+        return members.stream()
+                .filter(member -> name.equals(member.getName()))
+                .findFirst()
+                .orElse(null);
     }
 
     public ClaimMember getMember(OfflinePlayer player) {
@@ -139,7 +184,12 @@ public class Claim {
     }
 
     public boolean containsChunk(Chunk chunk) {
-        return this.claimedChunks.stream().anyMatch(x -> x.getX() == chunk.getX() && x.getZ() == chunk.getZ());
+        final String world = chunk.getWorld().getName();
+        return this.claimedChunks.stream().anyMatch(x -> x.getWorld().equals(world) && x.getX() == chunk.getX() && x.getZ() == chunk.getZ());
+    }
+
+    public boolean containsChunk(String world, int chunkX, int chunkZ) {
+        return this.claimedChunks.stream().anyMatch(x -> x.getWorld().equals(world) && x.getX() == chunkX && x.getZ() == chunkZ);
     }
 
     public int getClaimSize() {

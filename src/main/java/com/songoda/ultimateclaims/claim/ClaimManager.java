@@ -48,6 +48,11 @@ public class ClaimManager {
                 .filter(claim -> claim.containsChunk(chunk)).findFirst().orElse(null);
     }
 
+    public Claim getClaim(String world, int chunkX, int chunkZ) {
+        return this.registeredClaims.values().stream()
+                .filter(claim -> claim.containsChunk(world, chunkX, chunkZ)).findFirst().orElse(null);
+    }
+
     public void removeClaim(Claim claim) {
         this.registeredClaims.remove(claim.getOwner().getUniqueId());
     }

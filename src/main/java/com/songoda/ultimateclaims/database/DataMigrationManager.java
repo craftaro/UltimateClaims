@@ -2,6 +2,7 @@ package com.songoda.ultimateclaims.database;
 
 import com.songoda.ultimateclaims.database.migrations._1_InitialMigration;
 import com.songoda.ultimateclaims.database.migrations._2_NewPermissions;
+import com.songoda.ultimateclaims.database.migrations._3_MemberNames;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,7 +23,8 @@ public class DataMigrationManager {
 
         this.migrations = Arrays.asList(
                 new _1_InitialMigration(),
-                new _2_NewPermissions()
+                new _2_NewPermissions(),
+                new _3_MemberNames()
         );
     }
 

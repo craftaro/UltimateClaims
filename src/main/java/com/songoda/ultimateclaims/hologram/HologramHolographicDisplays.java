@@ -31,6 +31,8 @@ public class HologramHolographicDisplays extends Hologram {
 
     @Override
     public void update(Location location, String line) {
+        if(location == null) 
+            return;
         int x = location.getBlockX() >> 4;
         int z = location.getBlockZ() >> 4;
         if (location.getWorld() == null || !location.getWorld().isChunkLoaded(x, z))

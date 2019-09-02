@@ -5,7 +5,6 @@ import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -35,7 +34,7 @@ public class TrackerTask extends BukkitRunnable {
             if (claim == null) continue;
             ClaimMember member = claim.getMember(player);
             if (member == null) {
-                claim.addMember(player.getUniqueId(), ClaimRole.VISITOR);
+                claim.addMember(player, ClaimRole.VISITOR);
                 member = claim.getMember(player);
             }
             member.setPresent(true);

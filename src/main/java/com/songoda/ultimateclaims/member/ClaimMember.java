@@ -13,14 +13,16 @@ public class ClaimMember {
     private int id;
     private final Claim claim;
     private final UUID uuid;
+    private String lastName;
     private ClaimRole role;
     private boolean isPresent = false;
     private long playTime;
     private long memberSince = System.currentTimeMillis();
 
-    public ClaimMember(Claim claim, UUID uuid, ClaimRole role) {
+    public ClaimMember(Claim claim, UUID uuid, String name, ClaimRole role) {
         this.claim = claim;
         this.uuid = uuid;
+        this.lastName = name;
         this.role = role;
     }
 
@@ -38,6 +40,14 @@ public class ClaimMember {
 
     public UUID getUniqueId() {
         return uuid;
+    }
+
+    public String getName() {
+        return lastName;
+    }
+
+    public void setName(String name) {
+        this.lastName = name;
     }
 
     public ClaimRole getRole() {
@@ -77,10 +87,11 @@ public class ClaimMember {
     }
 
     public void eject() {
-        if (!isPresent || !getPlayer().isOnline()) return;
+        OfflinePlayer player;
+        if (!isPresent || !(player = getPlayer()).isOnline()) return;
         Location spawn = UltimateClaims.getInstance().getPluginSettings().getSpawnPoint();
         if (spawn == null) return;
-        this.getPlayer().getPlayer().teleport(UltimateClaims.getInstance().getPluginSettings().getSpawnPoint());
+        player.getPlayer().teleport(spawn);
         this.isPresent = false;
     }
 }
