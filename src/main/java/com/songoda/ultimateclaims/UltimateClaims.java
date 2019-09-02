@@ -159,6 +159,7 @@ public class UltimateClaims extends SongodaPlugin {
     @Override
     public void onPluginDisable() {
         // save all claims data
+        this.guiManager.closeAll();
         this.dataManager.bulkUpdateClaims(this.claimManager.getRegisteredClaims());
         this.databaseConnector.closeConnection();
 

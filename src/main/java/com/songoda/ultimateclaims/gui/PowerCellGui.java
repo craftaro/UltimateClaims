@@ -11,6 +11,7 @@ import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Setting;
 import com.songoda.ultimateclaims.utils.Methods;
+import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -98,9 +99,27 @@ public class PowerCellGui extends Gui {
             return;
         }
         // update display inventory with the powercell's inventory
-        powercell.updateGuiInventory();
+        updateGuiInventory(powercell.getItems());
         refreshPower();
         lastUpdate = now;
+    }
+
+    public void updateGuiInventory(List<ItemStack> items) {
+        int j = 0;
+        for (int i = 10; i < 44; i++) {
+            if (i == 17
+                    || i == 18
+                    || i == 26
+                    || i == 27
+                    || i == 35
+                    || i == 36) continue;
+            if (items.size() <= j) {
+                setItem(i, AIR);
+                continue;
+            }
+            setItem(i, items.get(j));
+            j++;
+        }
     }
 
     void refreshPower() {

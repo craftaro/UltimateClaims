@@ -43,6 +43,8 @@ public class PowerCell {
         }
 
         if (this.currentPower <= 0 && location != null) {
+            if(opened != null && opened.isOpen())
+                updateItemsFromGui();
             List<String> materials = Setting.ITEM_VALUES.getStringList();
             for (String value : materials) {
                 LegacyMaterials material = LegacyMaterials.getMaterial(value.split(":")[0]);
@@ -83,6 +85,8 @@ public class PowerCell {
     }
 
     private void removeOneMaterial(LegacyMaterials material) {
+        if(opened != null && opened.isOpen())
+            updateItemsFromGui();
         for (ItemStack item : getItems()) {
             if(material.matches(item)) {
                 item.setAmount(item.getAmount() - 1);
@@ -122,21 +126,8 @@ public class PowerCell {
     }
 
     public void updateGuiInventory() {
-        if (opened == null) return;
-        int j = 0;
-        for (int i = 10; i < 44; i++) {
-            if (i == 17
-                    || i == 18
-                    || i == 26
-                    || i == 27
-                    || i == 35
-                    || i == 36) continue;
-            if (items.size() <= j) {
-                opened.setItem(i, null);
-                continue;
-            }
-            opened.setItem(i, this.items.get(j));
-            j++;
+        if (opened != null) {
+            opened.updateGuiInventory(items);
         }
     }
 
@@ -193,6 +184,8 @@ public class PowerCell {
     }
 
     public long getItemPower() {
+        if(opened != null && opened.isOpen())
+            updateItemsFromGui();
         double total = 0;
         List<String> materials = Setting.ITEM_VALUES.getStringList();
         for (String value : materials) {
@@ -228,8 +221,6 @@ public class PowerCell {
     }
 
     public List<ItemStack> getItems() {
-        if (opened != null)
-            updateItemsFromGui();
         return new ArrayList<>(this.items);
     }
 
