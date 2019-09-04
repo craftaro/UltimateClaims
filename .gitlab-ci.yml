@@ -4,7 +4,7 @@ stages:
 variables:
   name: "UltimateClaims"
   path: "/builds/$CI_PROJECT_PATH"
-  version: "1.1.1"
+  version: "1.1.2"
 
 build:
   stage: build
