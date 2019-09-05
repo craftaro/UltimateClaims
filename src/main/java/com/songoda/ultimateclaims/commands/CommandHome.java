@@ -28,15 +28,16 @@ public class CommandHome extends AbstractCommand {
 
         String claimStr = String.join(" ", args);
 
-        Optional oClaim = plugin.getClaimManager().getRegisteredClaims().stream()
+        boolean bypass = sender.hasPermission("ultimateclaims.bypass");
+        Optional<Claim> oClaim = plugin.getClaimManager().getRegisteredClaims().stream()
                 .filter(c -> c.getName().toLowerCase().equals(claimStr.toLowerCase())
-                        && c.getMember(player) != null).findFirst();
+                        && (bypass || c.getMember(player) != null)).findFirst();
 
-        if (!oClaim.isPresent() && !sender.hasPermission("ultimateclaims.bypass")) {
+        if (!oClaim.isPresent()) {
             plugin.getLocale().getMessage("command.general.notapartclaim").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
-        Claim claim = (Claim) oClaim.get();
+        Claim claim = oClaim.get();
 
         if (claim.getHome() == null) {
             plugin.getLocale().getMessage("command.home.none").sendPrefixedMessage(sender);
