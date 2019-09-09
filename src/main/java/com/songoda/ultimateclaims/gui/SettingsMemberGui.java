@@ -1,6 +1,6 @@
 package com.songoda.ultimateclaims.gui;
 
-import com.songoda.core.compatibility.LegacyMaterials;
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
@@ -38,20 +38,20 @@ public class SettingsMemberGui extends Gui {
         GuiUtils.mirrorFill(this, 0, 1, true, true, glass2);
 
         // exit buttons
-        this.setButton(0, GuiUtils.createButtonItem(LegacyMaterials.OAK_FENCE_GATE,
+        this.setButton(0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
                 plugin.getLocale().getMessage("general.interface.back").getMessage(),
                 plugin.getLocale().getMessage("general.interface.exit").getMessage()),
                 (event) -> event.player.closeInventory());
         this.setButton(8, this.getItem(0), (event) -> event.player.closeInventory());
 
         // settings
-        this.setButton(1, 1, LegacyMaterials.IRON_PICKAXE.getItem(), (event) -> toggleBreak());
-        this.setButton(1, 2, LegacyMaterials.STONE.getItem(), (event) -> togglePlace());
-        this.setButton(1, 3, LegacyMaterials.LEVER.getItem(), (event) -> toggleInteract());
+        this.setButton(1, 1, CompatibleMaterial.IRON_PICKAXE.getItem(), (event) -> toggleBreak());
+        this.setButton(1, 2, CompatibleMaterial.STONE.getItem(), (event) -> togglePlace());
+        this.setButton(1, 3, CompatibleMaterial.LEVER.getItem(), (event) -> toggleInteract());
         this.setItem(1, 4, AIR);
-        this.setButton(1, 5, LegacyMaterials.OAK_DOOR.getItem(), (event) -> toggleDoors());
-        this.setButton(1, 6, LegacyMaterials.DIAMOND_SWORD.getItem(), (event) -> toggleKills());
-        this.setButton(1, 7, LegacyMaterials.REDSTONE.getItem(), (event) -> toggleRedstone());
+        this.setButton(1, 5, CompatibleMaterial.OAK_DOOR.getItem(), (event) -> toggleDoors());
+        this.setButton(1, 6, CompatibleMaterial.DIAMOND_SWORD.getItem(), (event) -> toggleKills());
+        this.setButton(1, 7, CompatibleMaterial.REDSTONE.getItem(), (event) -> toggleRedstone());
 
         refreshDisplay();
     }

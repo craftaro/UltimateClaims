@@ -1,6 +1,6 @@
 package com.songoda.ultimateclaims.gui;
 
-import com.songoda.core.compatibility.LegacyMaterials;
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.hooks.EconomyManager;
@@ -42,33 +42,33 @@ public class PowerCellGui extends Gui {
 
         // buttons and icons at the top of the screen
         // Add/Display economy amount
-        this.setButton(0, 2, LegacyMaterials.SUNFLOWER.getItem(),
+        this.setButton(0, 2, CompatibleMaterial.SUNFLOWER.getItem(),
                 (event) -> addEcon(event.player));
 
         // Display the total time
-        this.setItem(0, 4, LegacyMaterials.CLOCK.getItem());
+        this.setItem(0, 4, CompatibleMaterial.CLOCK.getItem());
 
         // Display the item amount
-        this.setItem(0, 6, LegacyMaterials.DIAMOND.getItem());
+        this.setItem(0, 6, CompatibleMaterial.DIAMOND.getItem());
 
         // buttons at the bottom of the screen
         // Bans
-        this.setButton(5, 2, GuiUtils.createButtonItem(LegacyMaterials.IRON_AXE,
+        this.setButton(5, 2, GuiUtils.createButtonItem(CompatibleMaterial.IRON_AXE,
                 plugin.getLocale().getMessage("interface.powercell.banstitle").getMessage(),
                 plugin.getLocale().getMessage("interface.powercell.banslore").getMessage().split("\\|")),
                 (event) -> {closed(); event.manager.showGUI(event.player, new BansGui(claim, this)); });
 
         // Settings
-        this.setButton(5, 3, GuiUtils.createButtonItem(LegacyMaterials.REDSTONE,
+        this.setButton(5, 3, GuiUtils.createButtonItem(CompatibleMaterial.REDSTONE,
                 plugin.getLocale().getMessage("interface.powercell.settingstitle").getMessage(),
                 plugin.getLocale().getMessage("interface.powercell.settingslore").getMessage().split("\\|")),
                 (event) -> {closed(); event.manager.showGUI(event.player, new SettingsGui(claim, this, event.player)); });
 
         // Claim info
-        this.setItem(5, 5, LegacyMaterials.BOOK.getItem());
+        this.setItem(5, 5, CompatibleMaterial.BOOK.getItem());
 
         // Members
-        this.setButton(5, 6, GuiUtils.createButtonItem(LegacyMaterials.PAINTING,
+        this.setButton(5, 6, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
                 plugin.getLocale().getMessage("interface.powercell.memberstitle").getMessage(),
                 plugin.getLocale().getMessage("interface.powercell.memberslore").getMessage().split("\\|")),
                 (event) -> {closed(); event.manager.showGUI(event.player, new MembersGui(claim, this)); });

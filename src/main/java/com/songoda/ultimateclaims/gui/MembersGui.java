@@ -1,6 +1,6 @@
 package com.songoda.ultimateclaims.gui;
 
-import com.songoda.core.compatibility.LegacyMaterials;
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.utils.ItemUtils;
@@ -49,33 +49,33 @@ public class MembersGui extends Gui {
         GuiUtils.mirrorFill(this, 0, 1, true, true, glass2);
 
         // exit buttons
-        this.setButton(0, GuiUtils.createButtonItem(LegacyMaterials.OAK_FENCE_GATE,
+        this.setButton(0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
                 plugin.getLocale().getMessage("general.interface.back").getMessage(),
                 plugin.getLocale().getMessage("general.interface.exit").getMessage()),
                 (event) -> event.player.closeInventory());
         this.setButton(8, this.getItem(0), (event) -> event.player.closeInventory());
 
         // Member Stats (update on refresh)
-        this.setItem(4, LegacyMaterials.PAINTING.getItem());
+        this.setItem(4, CompatibleMaterial.PAINTING.getItem());
 
         // Filters
-        this.setButton(3, LegacyMaterials.HOPPER.getItem(), (event) -> toggleFilterType());
-        this.setButton(5, LegacyMaterials.HOPPER.getItem(), (event) -> toggleSort());
+        this.setButton(3, CompatibleMaterial.HOPPER.getItem(), (event) -> toggleFilterType());
+        this.setButton(5, CompatibleMaterial.HOPPER.getItem(), (event) -> toggleSort());
 
         // Settings shortcuts
-        this.setButton(5, 3, GuiUtils.createButtonItem(LegacyMaterials.OAK_SIGN,
+        this.setButton(5, 3, GuiUtils.createButtonItem(CompatibleMaterial.OAK_SIGN,
                 plugin.getLocale().getMessage("interface.members.visitorsettingstitle").getMessage(),
                 plugin.getLocale().getMessage("interface.members.visitorsettingslore").getMessage().split("\\|")),
                 (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(claim, this, ClaimRole.VISITOR)));
 
-        this.setButton(5, 5, GuiUtils.createButtonItem(LegacyMaterials.PAINTING,
+        this.setButton(5, 5, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
                 plugin.getLocale().getMessage("interface.members.membersettingstitle").getMessage(),
                 plugin.getLocale().getMessage("interface.members.membersettingslore").getMessage().split("\\|")),
                 (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(claim, this, ClaimRole.MEMBER)));
 
         // enable page events
-        setNextPage(5, 6, GuiUtils.createButtonItem(LegacyMaterials.ARROW, plugin.getLocale().getMessage("general.interface.next").getMessage()));
-        setPrevPage(5, 2, GuiUtils.createButtonItem(LegacyMaterials.ARROW, plugin.getLocale().getMessage("general.interface.previous").getMessage()));
+        setNextPage(5, 6, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("general.interface.next").getMessage()));
+        setPrevPage(5, 2, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("general.interface.previous").getMessage()));
         setOnPage((event) -> showPage());
         showPage();
     }
