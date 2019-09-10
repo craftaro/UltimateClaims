@@ -158,7 +158,7 @@ public class EntityListeners implements Listener {
                 if (!claim.getClaimSettings().isPvp()) {
                     event.setCancelled(true);
                 }
-            } else {
+            } else if (!(event.getEntity() instanceof Player)) {
                 // general protections for stuff in a claim
                 event.setCancelled(true);
             }
