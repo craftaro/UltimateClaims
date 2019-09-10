@@ -3,7 +3,7 @@ package com.songoda.ultimateclaims;
 import com.songoda.core.SongodaCore;
 import com.songoda.core.SongodaPlugin;
 import com.songoda.core.commands.CommandManager;
-import com.songoda.core.compatibility.LegacyMaterials;
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.configuration.Config;
 import com.songoda.core.database.DataMigrationManager;
 import com.songoda.core.database.DatabaseConnector;
@@ -36,7 +36,7 @@ public class UltimateClaims extends SongodaPlugin {
 
     private DatabaseConnector databaseConnector;
 
-    private GuiManager guiManager = new GuiManager(this);
+    private final GuiManager guiManager = new GuiManager(this);
     private CommandManager commandManager;
     private ClaimManager claimManager;
 
@@ -58,7 +58,7 @@ public class UltimateClaims extends SongodaPlugin {
     @Override
     public void onPluginEnable() {
         // Register in Songoda Core
-        SongodaCore.registerPlugin(this, 65, LegacyMaterials.CHEST);
+        SongodaCore.registerPlugin(this, 65, CompatibleMaterial.CHEST);
         
         // Load Economy & Hologram hooks
         EconomyManager.load();

@@ -1,6 +1,6 @@
 package com.songoda.ultimateclaims.gui;
 
-import com.songoda.core.compatibility.LegacyMaterials;
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
@@ -36,38 +36,38 @@ public class SettingsGui extends Gui {
         GuiUtils.mirrorFill(this, 0, 1, true, true, glass2);
 
         // exit buttons
-        this.setButton(0, GuiUtils.createButtonItem(LegacyMaterials.OAK_FENCE_GATE,
+        this.setButton(0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
                 plugin.getLocale().getMessage("general.interface.back").getMessage(),
                 plugin.getLocale().getMessage("general.interface.exit").getMessage()),
                 (event) -> event.player.closeInventory());
         this.setButton(8, this.getItem(0), (event) -> event.player.closeInventory());
 
         // shortcuts for member settings
-        this.setButton(rows - 1, 3, GuiUtils.createButtonItem(LegacyMaterials.OAK_SIGN,
+        this.setButton(rows - 1, 3, GuiUtils.createButtonItem(CompatibleMaterial.OAK_SIGN,
                 plugin.getLocale().getMessage("interface.members.visitorsettingstitle").getMessage(),
                 plugin.getLocale().getMessage("interface.members.visitorsettingslore").getMessage().split("\\|")),
                 (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(claim, this, ClaimRole.VISITOR)));
 
-        this.setButton(rows - 1, 5, GuiUtils.createButtonItem(LegacyMaterials.PAINTING,
+        this.setButton(rows - 1, 5, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
                 plugin.getLocale().getMessage("interface.members.membersettingstitle").getMessage(),
                 plugin.getLocale().getMessage("interface.members.membersettingslore").getMessage().split("\\|")),
                 (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(claim, this, ClaimRole.MEMBER)));
 
         this.setItem(1, 1, AIR);
         if (hostilemobspawning = player.hasPermission("ultimateclaims.toggle.hostilemobspawning")) {
-            this.setButton(1, 2, LegacyMaterials.ZOMBIE_SPAWN_EGG.getItem(), (event) -> toggleSpawn());
+            this.setButton(1, 2, CompatibleMaterial.ZOMBIE_SPAWN_EGG.getItem(), (event) -> toggleSpawn());
         }
         if (firespread = player.hasPermission("ultimateclaims.toggle.firespread")) {
-            this.setButton(1, 3, LegacyMaterials.FLINT_AND_STEEL.getItem(), (event) -> toggleFire());
+            this.setButton(1, 3, CompatibleMaterial.FLINT_AND_STEEL.getItem(), (event) -> toggleFire());
         }
         if (pvp = player.hasPermission("ultimateclaims.toggle.pvp")) {
-            this.setButton(1, 4, LegacyMaterials.DIAMOND_SWORD.getItem(), (event) -> togglePVP());
+            this.setButton(1, 4, CompatibleMaterial.DIAMOND_SWORD.getItem(), (event) -> togglePVP());
         }
         if (mobgriefing = player.hasPermission("ultimateclaims.toggle.mobgriefing")) {
-            this.setButton(1, 5, LegacyMaterials.GUNPOWDER.getItem(), (event) -> toggleMobGrief());
+            this.setButton(1, 5, CompatibleMaterial.GUNPOWDER.getItem(), (event) -> toggleMobGrief());
         }
         if (leafdecay = player.hasPermission("ultimateclaims.toggle.leafdecay")) {
-            this.setButton(1, 6, LegacyMaterials.OAK_LEAVES.getItem(), (event) -> toggleLeafDecay());
+            this.setButton(1, 6, CompatibleMaterial.OAK_LEAVES.getItem(), (event) -> toggleLeafDecay());
         }
         this.setItem(1, 7, AIR);
         refreshDisplay();

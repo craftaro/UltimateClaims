@@ -1,6 +1,6 @@
 package com.songoda.ultimateclaims.gui;
 
-import com.songoda.core.compatibility.LegacyMaterials;
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.utils.ItemUtils;
@@ -20,8 +20,8 @@ public class RecipeDisplayGui extends Gui {
         List<String> recipe = Setting.POWERCELL_RECIPE.getStringList();
         for (String line : recipe) {
             String[] split = line.split(":");
-            LegacyMaterials mat;
-            if (split.length == 2 && split[0].matches("^[0-9]{1,2}$") && (mat = LegacyMaterials.getMaterial(split[1])) != null) {
+            CompatibleMaterial mat;
+            if (split.length == 2 && split[0].matches("^[0-9]{1,2}$") && (mat = CompatibleMaterial.getMaterial(split[1])) != null) {
                 ItemStack item = mat.getItem();
                 setItem(Integer.parseInt(split[0]), GuiUtils.updateItem(item, ItemUtils.getItemName(item)));
             }

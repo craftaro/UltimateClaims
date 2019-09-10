@@ -1,7 +1,7 @@
 package com.songoda.ultimateclaims.listeners;
 
-import com.songoda.core.compatibility.CompatibleSounds;
-import com.songoda.core.compatibility.ParticleHandler;
+import com.songoda.core.compatibility.CompatibleSound;
+import com.songoda.core.compatibility.CompatibleParticleHandler;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
@@ -76,9 +76,9 @@ public class InventoryListeners implements Listener {
         float yy = (float) (0 + (Math.random() * 2));
         float zz = (float) (0 + (Math.random() * 1));
 
-        ParticleHandler.spawnParticles(ParticleHandler.ParticleType.LAVA, location.add(.5, .5, .5), 25, xx, yy, zz);
-        player.playSound(location, CompatibleSounds.ENTITY_BLAZE_DEATH.getSound(), 1F, .4F);
-        player.playSound(location, CompatibleSounds.ENTITY_PLAYER_LEVELUP.getSound(), 1F, .1F);
+        CompatibleParticleHandler.spawnParticles(CompatibleParticleHandler.ParticleType.LAVA, location.add(.5, .5, .5), 25, xx, yy, zz);
+        player.playSound(location, CompatibleSound.ENTITY_BLAZE_DEATH.getSound(), 1F, .4F);
+        player.playSound(location, CompatibleSound.ENTITY_PLAYER_LEVELUP.getSound(), 1F, .1F);
 
         plugin.getLocale().getMessage("event.powercell.success").sendPrefixedMessage(player);
     }

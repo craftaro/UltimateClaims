@@ -1,6 +1,6 @@
 package com.songoda.ultimateclaims.claim;
 
-import com.songoda.core.compatibility.LegacyMaterials;
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.hooks.HologramManager;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.gui.PowerCellGui;
@@ -47,7 +47,7 @@ public class PowerCell {
                 updateItemsFromGui();
             List<String> materials = Setting.ITEM_VALUES.getStringList();
             for (String value : materials) {
-                LegacyMaterials material = LegacyMaterials.getMaterial(value.split(":")[0]);
+                CompatibleMaterial material = CompatibleMaterial.getMaterial(value.split(":")[0]);
                 if (getMaterialAmount(material) == 0) continue;
                 double itemValue = getItemValue(material);
                 if (itemValue < 1) { // Remove items based on number of claimed chunks
@@ -78,13 +78,13 @@ public class PowerCell {
         return this.currentPower--;
     }
 
-    private int getMaterialAmount(LegacyMaterials material) {
+    private int getMaterialAmount(CompatibleMaterial material) {
         return getItems().stream().filter(item -> material.matches(item))
                 .map((item) -> item.getAmount())
                 .mapToInt(Integer::intValue).sum();
     }
 
-    private void removeOneMaterial(LegacyMaterials material) {
+    private void removeOneMaterial(CompatibleMaterial material) {
         if(opened != null && opened.isOpen())
             updateItemsFromGui();
         for (ItemStack item : getItems()) {
@@ -190,8 +190,8 @@ public class PowerCell {
         List<String> materials = Setting.ITEM_VALUES.getStringList();
         for (String value : materials) {
             String parts[] = value.split(":");
-            LegacyMaterials material;
-            if(parts.length == 2 && (material = LegacyMaterials.getMaterial(parts[0].trim())) != null) {
+            CompatibleMaterial material;
+            if(parts.length == 2 && (material = CompatibleMaterial.getMaterial(parts[0].trim())) != null) {
                 total += getMaterialAmount(material) * (Double.parseDouble(parts[1].trim()) / claim.getClaimSize());
             }
         }
@@ -206,11 +206,11 @@ public class PowerCell {
         return economyBalance / getEconomyValue();
     }
 
-    private double getItemValue(LegacyMaterials material) {
+    private double getItemValue(CompatibleMaterial material) {
         List<String> materials = Setting.ITEM_VALUES.getStringList();
         for (String value : materials) {
             String parts[] = value.split(":");
-            if(parts.length == 2 && LegacyMaterials.getMaterial(parts[0].trim()) == material)
+            if(parts.length == 2 && CompatibleMaterial.getMaterial(parts[0].trim()) == material)
                 return Double.parseDouble(parts[1].trim()) / claim.getClaimSize();
         }
         return 0;

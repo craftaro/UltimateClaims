@@ -1,6 +1,6 @@
 package com.songoda.ultimateclaims.tasks;
 
-import com.songoda.core.compatibility.ParticleHandler;
+import com.songoda.core.compatibility.CompatibleParticleHandler;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.PowerCell;
@@ -47,7 +47,7 @@ public class AnimateTask extends BukkitRunnable {
             }
             int red = (powerCell.getCurrentPower() >= 0 ? 5 : 255);
             int green = (powerCell.getCurrentPower() >= 0 ? 255 : 5);
-            ParticleHandler.redstoneParticles(location, red, green, 5, 1.3F, 2, 1);
+            CompatibleParticleHandler.redstoneParticles(location, red, green, 5, 1.3F, 2, 1);
         }
     }
 }
