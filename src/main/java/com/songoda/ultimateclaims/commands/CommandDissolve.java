@@ -10,7 +10,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 public class CommandDissolve extends AbstractCommand {
@@ -32,27 +31,6 @@ public class CommandDissolve extends AbstractCommand {
         }
 
         Claim claim = plugin.getClaimManager().getClaim(player);
-
-        // we've just unclaimed the chunk we're in, so we've "moved" out of the claim
-        for(ClaimMember m : claim.getOwnerAndMembers()) {
-            OfflinePlayer p = m.getPlayer();
-            if(!p.isOnline()) continue;
-
-            Claim playerClaim = plugin.getClaimManager().getClaim(((Player) p).getLocation().getChunk());
-            if(playerClaim != null && playerClaim == claim) {
-                ClaimMember member = claim.getMember(p);
-                if (member != null) {
-                    if (member.getRole() == ClaimRole.VISITOR)
-                        claim.removeMember(member);
-                    else
-                        member.setPresent(false);
-                }
-                if(Setting.CLAIMS_BOSSBAR.getBoolean()) {
-                    claim.getVisitorBossBar().removePlayer((Player) p);
-                    claim.getMemberBossBar().removePlayer((Player) p);
-                }
-            }
-        }
 
         claim.destroy();
         plugin.getLocale().getMessage("general.claim.dissolve")

@@ -31,7 +31,7 @@ public class Claim {
     private Location home = null;
     private boolean locked = false;
 
-    private ClaimSettings claimSettings = new ClaimSettings();
+    private final ClaimSettings claimSettings = new ClaimSettings();
 
     private ClaimPermissions memberPermissions = new ClaimPermissions()
             .setCanBreak(true)
@@ -269,6 +269,12 @@ public class Claim {
         this.powerCell.destroy();
         UltimateClaims.getInstance().getDataManager().deleteClaim(this);
         UltimateClaims.getInstance().getClaimManager().removeClaim(this);
+
+        // we've just unclaimed the chunk we're in, so we've "moved" out of the claim
+        if (bossBarMember != null) bossBarMember.removeAll();
+        if (bossBarVisitor != null) bossBarVisitor.removeAll();
+        getOwnerAndMembers().forEach(m -> m.setPresent(false));
+        members.clear();
     }
 
     public Set<UUID> getBannedPlayers() {
@@ -304,5 +310,12 @@ public class Claim {
         if (obj == null || getClass() != obj.getClass())
             return false;
         return this.id == ((Claim) obj).id;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 31 * hash + this.id;
+        return hash;
     }
 }
