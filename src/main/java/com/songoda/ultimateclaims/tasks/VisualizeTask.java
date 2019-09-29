@@ -93,7 +93,10 @@ public class VisualizeTask extends BukkitRunnable {
                 boolean show = random.nextFloat() < .2;
                 if(!show)
                     continue;
-                
+
+                // Exclude everything over max height
+                if (startY >= c.getWorld().getMaxHeight()) continue;
+
                 // only show if there is a space to show above a solid block
                 Block b = c.getBlock(x, startY, z);
                 int maxDown = 8;
