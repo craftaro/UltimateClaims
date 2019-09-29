@@ -31,7 +31,7 @@ public class CommandHome extends AbstractCommand {
         boolean bypass = sender.hasPermission("ultimateclaims.bypass");
         Optional<Claim> oClaim = plugin.getClaimManager().getRegisteredClaims().stream()
                 .filter(c -> c.getName().toLowerCase().equals(claimStr.toLowerCase())
-                        && (bypass || c.getMember(player) != null)).findFirst();
+                        && (bypass || c.isOwnerOrMember(player))).findFirst();
 
         if (!oClaim.isPresent()) {
             plugin.getLocale().getMessage("command.general.notapartclaim").sendPrefixedMessage(sender);
