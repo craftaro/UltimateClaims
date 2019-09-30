@@ -118,20 +118,6 @@ public class EntityListeners implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onDamage(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player || event instanceof EntityDamageByEntityEvent) return;
-        
-        ClaimManager claimManager = plugin.getClaimManager();
-        Chunk chunk = event.getEntity().getLocation().getChunk();
-        Claim claim = claimManager.getClaim(chunk);
-        
-        if(claim != null) {
-            // General protections for stuff in a claim
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
     public void onDamage(EntityDamageByEntityEvent event) {
         ClaimManager claimManager = plugin.getClaimManager();
         Chunk chunk = event.getEntity().getLocation().getChunk();
@@ -158,9 +144,6 @@ public class EntityListeners implements Listener {
                 if (!claim.getClaimSettings().isPvp()) {
                     event.setCancelled(true);
                 }
-            } else if (!(event.getEntity() instanceof Player)) {
-                // general protections for stuff in a claim
-                event.setCancelled(true);
             }
         }
     }
