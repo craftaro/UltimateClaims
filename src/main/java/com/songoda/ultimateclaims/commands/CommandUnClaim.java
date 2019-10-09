@@ -8,7 +8,7 @@ import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
-import com.songoda.ultimateclaims.settings.Setting;
+import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -61,7 +61,7 @@ public class CommandUnClaim extends AbstractCommand {
                     else
                         member.setPresent(false);
                 }
-                if(Setting.CLAIMS_BOSSBAR.getBoolean()) {
+                if(Settings.CLAIMS_BOSSBAR.getBoolean()) {
                     claim.getVisitorBossBar().removePlayer(p);
                     claim.getMemberBossBar().removePlayer(p);
                 }

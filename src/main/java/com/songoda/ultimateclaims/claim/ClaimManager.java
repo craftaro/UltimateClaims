@@ -1,9 +1,11 @@
 package com.songoda.ultimateclaims.claim;
 
 import org.bukkit.Chunk;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ClaimManager {
 
@@ -51,6 +53,10 @@ public class ClaimManager {
     public Claim getClaim(String world, int chunkX, int chunkZ) {
         return this.registeredClaims.values().stream()
                 .filter(claim -> claim.containsChunk(world, chunkX, chunkZ)).findFirst().orElse(null);
+    }
+
+    public List<Claim> getClaims(OfflinePlayer player) {
+        return registeredClaims.values().stream().filter(c -> c.isOwnerOrMember(player)).collect(Collectors.toList());
     }
 
     public void removeClaim(Claim claim) {

@@ -13,6 +13,7 @@ import com.songoda.core.gui.GuiManager;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.hooks.HologramManager;
 import com.songoda.core.hooks.WorldGuardHook;
+import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.commands.*;
 import com.songoda.ultimateclaims.database.DataManager;
@@ -20,9 +21,10 @@ import com.songoda.ultimateclaims.database.migrations._1_InitialMigration;
 import com.songoda.ultimateclaims.database.migrations._2_NewPermissions;
 import com.songoda.ultimateclaims.database.migrations._3_MemberNames;
 import com.songoda.ultimateclaims.listeners.*;
+import com.songoda.ultimateclaims.placeholder.PlaceholderManager;
 import com.songoda.ultimateclaims.settings.PluginSettings;
 import com.songoda.ultimateclaims.tasks.*;
-import com.songoda.ultimateclaims.settings.Setting;
+import com.songoda.ultimateclaims.settings.Settings;
 import java.util.Collections;
 import java.util.List;
 import org.bukkit.Bukkit;
@@ -65,12 +67,12 @@ public class UltimateClaims extends SongodaPlugin {
         HologramManager.load(this);
 
         // Setup Config
-        Setting.setupConfig();
-		this.setLocale(Setting.LANGUGE_MODE.getString(), false);
+        Settings.setupConfig();
+		this.setLocale(Settings.LANGUGE_MODE.getString(), false);
 
         // Set Economy & Hologram preference
-        EconomyManager.getManager().setPreferredHook(Setting.ECONOMY.getString());
-        HologramManager.getManager().setPreferredHook(Setting.HOLOGRAM.getString());
+        EconomyManager.getManager().setPreferredHook(Settings.ECONOMY.getString());
+        HologramManager.getManager().setPreferredHook(Settings.HOLOGRAM.getString());
 
         PluginManager pluginManager = Bukkit.getPluginManager();
 
@@ -114,18 +116,22 @@ public class UltimateClaims extends SongodaPlugin {
         TrackerTask.startTask(this);
         VisualizeTask.startTask(this);
 
+        // Register Placeholders
+        if (pluginManager.isPluginEnabled("PlaceholderAPI"))
+            new PlaceholderManager(this).register();
+
         // Start our databases
         this.claimManager = new ClaimManager();
 
         // Database stuff, go!
         try {
-            if (Setting.MYSQL_ENABLED.getBoolean()) {
-                String hostname = Setting.MYSQL_HOSTNAME.getString();
-                int port = Setting.MYSQL_PORT.getInt();
-                String database = Setting.MYSQL_DATABASE.getString();
-                String username = Setting.MYSQL_USERNAME.getString();
-                String password = Setting.MYSQL_PASSWORD.getString();
-                boolean useSSL = Setting.MYSQL_USE_SSL.getBoolean();
+            if (Settings.MYSQL_ENABLED.getBoolean()) {
+                String hostname = Settings.MYSQL_HOSTNAME.getString();
+                int port = Settings.MYSQL_PORT.getInt();
+                String database = Settings.MYSQL_DATABASE.getString();
+                String username = Settings.MYSQL_USERNAME.getString();
+                String password = Settings.MYSQL_PASSWORD.getString();
+                boolean useSSL = Settings.MYSQL_USE_SSL.getBoolean();
 
                 this.databaseConnector = new MySQLConnector(this, hostname, port, database, username, password, useSSL);
                 this.getLogger().info("Data handler connected using MySQL.");
@@ -147,11 +153,11 @@ public class UltimateClaims extends SongodaPlugin {
 
         Bukkit.getScheduler().runTaskLater(this, () -> {
             this.dataManager.getPluginSettings((pluginSettings) -> this.pluginSettings = pluginSettings);
-            final boolean useHolo = Setting.POWERCELL_HOLOGRAMS.getBoolean() && HologramManager.getManager().isEnabled();
+            final boolean useHolo = Settings.POWERCELL_HOLOGRAMS.getBoolean() && HologramManager.getManager().isEnabled();
             this.dataManager.getClaims((claims) -> {
                 this.claimManager.addClaims(claims);
                 if(useHolo)
-                    this.claimManager.getRegisteredClaims().stream().filter(x -> x.hasPowerCell()).forEach(x -> x.getPowerCell().updateHologram());
+                    this.claimManager.getRegisteredClaims().stream().filter(Claim::hasPowerCell).forEach(x -> x.getPowerCell().updateHologram());
             });
         }, 20L);
     }
@@ -167,7 +173,7 @@ public class UltimateClaims extends SongodaPlugin {
         HologramManager.removeAllHolograms();
 
         // cleanup boss bars
-        if (Setting.CLAIMS_BOSSBAR.getBoolean()) {
+        if (Settings.CLAIMS_BOSSBAR.getBoolean()) {
             this.claimManager.getRegisteredClaims().forEach(x -> {
                 x.getVisitorBossBar().removeAll();
                 x.getMemberBossBar().removeAll();
@@ -182,7 +188,7 @@ public class UltimateClaims extends SongodaPlugin {
 
     @Override
     public void onConfigReload() {
-		this.setLocale(Setting.LANGUGE_MODE.getString(), true);
+		this.setLocale(Settings.LANGUGE_MODE.getString(), true);
     }
 
     public GuiManager getGuiManager() {

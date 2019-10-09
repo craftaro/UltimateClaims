@@ -9,7 +9,7 @@ import com.songoda.core.hooks.WorldGuardHook;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.Methods;
-import com.songoda.ultimateclaims.settings.Setting;
+import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -55,7 +55,7 @@ public class CommandClaim extends AbstractCommand {
                 return ReturnType.FAILURE;
             }
 
-            if (Setting.CHUNKS_MUST_TOUCH.getBoolean()
+            if (Settings.CHUNKS_MUST_TOUCH.getBoolean()
                     && !claim.containsChunk(chunk.getWorld().getChunkAt(chunk.getX() + 1, chunk.getZ()))
                     && !claim.containsChunk(chunk.getWorld().getChunkAt(chunk.getX() - 1, chunk.getZ()))
                     && !claim.containsChunk(chunk.getWorld().getChunkAt(chunk.getX(), chunk.getZ() + 1))
@@ -64,7 +64,7 @@ public class CommandClaim extends AbstractCommand {
                 return ReturnType.FAILURE;
             }
 
-            int maxClaimable = Setting.MAX_CHUNKS.getInt();
+            int maxClaimable = Settings.MAX_CHUNKS.getInt();
 
             // allow permission overrides
             for (PermissionAttachmentInfo perms : player.getEffectivePermissions()) {
@@ -78,7 +78,7 @@ public class CommandClaim extends AbstractCommand {
 
             if (claim.getClaimSize() >= maxClaimable) {
                 plugin.getLocale().getMessage("command.claim.toomany")
-                        .processPlaceholder("amount", Setting.MAX_CHUNKS.getInt())
+                        .processPlaceholder("amount", Settings.MAX_CHUNKS.getInt())
                         .sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
             }
@@ -87,7 +87,7 @@ public class CommandClaim extends AbstractCommand {
 
             plugin.getDataManager().createChunk(newChunk);
 
-            if (Setting.POWERCELL_HOLOGRAMS.getBoolean())
+            if (Settings.POWERCELL_HOLOGRAMS.getBoolean())
                 claim.getPowerCell().updateHologram();
         } else {
             claim = new ClaimBuilder()
@@ -99,7 +99,7 @@ public class CommandClaim extends AbstractCommand {
             plugin.getDataManager().createClaim(claim);
 
             plugin.getLocale().getMessage("command.claim.info")
-                    .processPlaceholder("time", Methods.makeReadable((long) (Setting.STARTING_POWER.getInt() * 60 * 1000)))
+                    .processPlaceholder("time", Methods.makeReadable((long) (Settings.STARTING_POWER.getInt() * 60 * 1000)))
                     .sendPrefixedMessage(sender);
         }
 
@@ -115,7 +115,7 @@ public class CommandClaim extends AbstractCommand {
                     // todo: expunge banned players
                     member = claim.addMember(p, ClaimRole.VISITOR);
 
-                if(Setting.CLAIMS_BOSSBAR.getBoolean()) {
+                if(Settings.CLAIMS_BOSSBAR.getBoolean()) {
                     if(member.getRole() == ClaimRole.VISITOR) {
                         claim.getVisitorBossBar().addPlayer(p);
                     } else {

@@ -9,9 +9,9 @@ import com.songoda.ultimateclaims.UltimateClaims;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class Setting {
+public class Settings {
 
-    static final Config config = UltimateClaims.getInstance().getConfig().getCoreConfig();
+    static final Config config = UltimateClaims.getInstance().getCoreConfig();
 
     public static final ConfigSetting POWERCELL_RECIPE = new ConfigSetting(config, "Main.PowerCell Recipe",
             Arrays.asList("3:IRON_INGOT", "4:DIAMOND", "5:IRON_INGOT",

@@ -5,7 +5,7 @@ import com.songoda.core.compatibility.CompatibleParticleHandler;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
-import com.songoda.ultimateclaims.settings.Setting;
+import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Chest;
@@ -48,7 +48,7 @@ public class InventoryListeners implements Listener {
         if (!claim.getOwner().getUniqueId().equals(player.getUniqueId())
                 || claim.getPowerCell().hasLocation()) return;
 
-        List<String> recipe = Setting.POWERCELL_RECIPE.getStringList();
+        List<String> recipe = Settings.POWERCELL_RECIPE.getStringList();
 
         int size = 0;
         for (int i = 0; i < 27; i++) {
@@ -69,7 +69,7 @@ public class InventoryListeners implements Listener {
 
         plugin.getDataManager().updateClaim(claim);
 
-        if (Setting.POWERCELL_HOLOGRAMS.getBoolean())
+        if (Settings.POWERCELL_HOLOGRAMS.getBoolean())
             claim.getPowerCell().updateHologram();
 
         float xx = (float) (0 + (Math.random() * 1));

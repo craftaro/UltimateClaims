@@ -9,7 +9,7 @@ import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimRole;
-import com.songoda.ultimateclaims.settings.Setting;
+import com.songoda.ultimateclaims.settings.Settings;
 import com.songoda.ultimateclaims.utils.Methods;
 import java.util.List;
 import org.bukkit.ChatColor;
@@ -29,8 +29,8 @@ public class PowerCellGui extends Gui {
         this.setRows(6);
         this.setTitle(Methods.formatTitle(claim.getName()));
 
-        ItemStack glass2 = GuiUtils.getBorderItem(Setting.GLASS_TYPE_2.getMaterial());
-        ItemStack glass3 = GuiUtils.getBorderItem(Setting.GLASS_TYPE_3.getMaterial());
+        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
+        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
 
         // edges will be type 3
         setDefaultItem(glass3);
@@ -162,7 +162,7 @@ public class PowerCellGui extends Gui {
     void closed() {
         // update cell's inventory
         this.powercell.updateItemsFromGui();
-        if (Setting.POWERCELL_HOLOGRAMS.getBoolean()) {
+        if (Settings.POWERCELL_HOLOGRAMS.getBoolean()) {
             this.powercell.updateHologram();
         }
         this.powercell.rejectUnusable();

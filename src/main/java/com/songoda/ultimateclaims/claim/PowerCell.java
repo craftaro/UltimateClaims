@@ -4,7 +4,7 @@ import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.hooks.HologramManager;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.gui.PowerCellGui;
-import com.songoda.ultimateclaims.settings.Setting;
+import com.songoda.ultimateclaims.settings.Settings;
 import com.songoda.ultimateclaims.utils.Methods;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,7 +23,7 @@ public class PowerCell {
 
     protected List<ItemStack> items = new ArrayList<>();
 
-    protected int currentPower = Setting.STARTING_POWER.getInt();
+    protected int currentPower = Settings.STARTING_POWER.getInt();
 
     protected double economyBalance = 0;
     protected PowerCellGui opened = null;
@@ -45,7 +45,7 @@ public class PowerCell {
         if (this.currentPower <= 0 && location != null) {
             if(opened != null && opened.isOpen())
                 updateItemsFromGui();
-            List<String> materials = Setting.ITEM_VALUES.getStringList();
+            List<String> materials = Settings.ITEM_VALUES.getStringList();
             for (String value : materials) {
                 CompatibleMaterial material = CompatibleMaterial.getMaterial(value.split(":")[0]);
                 if (getMaterialAmount(material) == 0) continue;
@@ -60,7 +60,7 @@ public class PowerCell {
                     this.currentPower += getItemValue(material);
                 }
 
-                if (loaded && Setting.POWERCELL_HOLOGRAMS.getBoolean())
+                if (loaded && Settings.POWERCELL_HOLOGRAMS.getBoolean())
                     updateHologram();
                 return this.currentPower;
             }
@@ -68,12 +68,12 @@ public class PowerCell {
             if (economyBalance >= economyValue) {
                 this.economyBalance -= economyValue;
                 this.currentPower += 1;
-                if (loaded && Setting.POWERCELL_HOLOGRAMS.getBoolean())
+                if (loaded && Settings.POWERCELL_HOLOGRAMS.getBoolean())
                     updateHologram();
                 return this.currentPower;
             }
         }
-        if (loaded && Setting.POWERCELL_HOLOGRAMS.getBoolean())
+        if (loaded && Settings.POWERCELL_HOLOGRAMS.getBoolean())
             updateHologram();
         return this.currentPower--;
     }
@@ -103,7 +103,7 @@ public class PowerCell {
         if (location == null)
             return;
         // list of all valid materials with positive value
-        List<Material> materials = Setting.ITEM_VALUES.getStringList().stream()
+        List<Material> materials = Settings.ITEM_VALUES.getStringList().stream()
                 .filter(value -> value.indexOf(':') != -1 && Double.parseDouble(value.split(":")[1]) > 0)
                 .map(value -> Material.valueOf(value.split(":")[0]))
                 .filter(value -> value != null)
@@ -155,7 +155,7 @@ public class PowerCell {
                         .getMessage());
             } else {
                 HologramManager.updateHologram(location, plugin.getLocale().getMessage("general.claim.powercell.low")
-                        .processPlaceholder("time", Methods.makeReadable((getTotalPower() + Setting.MINIMUM_POWER.getInt()) * 60 * 1000))
+                        .processPlaceholder("time", Methods.makeReadable((getTotalPower() + Settings.MINIMUM_POWER.getInt()) * 60 * 1000))
                         .getMessage());
             }
         }
@@ -187,7 +187,7 @@ public class PowerCell {
         if(opened != null && opened.isOpen())
             updateItemsFromGui();
         double total = 0;
-        List<String> materials = Setting.ITEM_VALUES.getStringList();
+        List<String> materials = Settings.ITEM_VALUES.getStringList();
         for (String value : materials) {
             String parts[] = value.split(":");
             CompatibleMaterial material;
@@ -207,7 +207,7 @@ public class PowerCell {
     }
 
     private double getItemValue(CompatibleMaterial material) {
-        List<String> materials = Setting.ITEM_VALUES.getStringList();
+        List<String> materials = Settings.ITEM_VALUES.getStringList();
         for (String value : materials) {
             String parts[] = value.split(":");
             if(parts.length == 2 && CompatibleMaterial.getMaterial(parts[0].trim()) == material)
@@ -217,7 +217,7 @@ public class PowerCell {
     }
 
     public double getEconomyValue() {
-        return Setting.ECONOMY_VALUE.getDouble() * claim.getClaimSize();
+        return Settings.ECONOMY_VALUE.getDouble() * claim.getClaimSize();
     }
 
     public List<ItemStack> getItems() {

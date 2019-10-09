@@ -2,7 +2,7 @@ package com.songoda.ultimateclaims.tasks;
 
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.invite.Invite;
-import com.songoda.ultimateclaims.settings.Setting;
+import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -39,7 +39,7 @@ public class InviteTask extends BukkitRunnable {
             return;
 
         final long now = System.currentTimeMillis(),
-                timeout = Setting.INVITE_TIMEOUT.getInt() * 1000;
+                timeout = Settings.INVITE_TIMEOUT.getInt() * 1000;
 
         // clean up expired invites
         for (Invite invite : new ArrayList<>(waitingInventations)) {

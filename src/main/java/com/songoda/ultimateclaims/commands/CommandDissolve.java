@@ -3,14 +3,10 @@ package com.songoda.ultimateclaims.commands;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.core.commands.AbstractCommand;
-import com.songoda.ultimateclaims.member.ClaimMember;
-import com.songoda.ultimateclaims.member.ClaimRole;
-import com.songoda.ultimateclaims.settings.Setting;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import org.bukkit.OfflinePlayer;
 
 public class CommandDissolve extends AbstractCommand {
 

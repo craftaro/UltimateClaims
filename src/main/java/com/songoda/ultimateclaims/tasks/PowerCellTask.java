@@ -5,7 +5,7 @@ import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
-import com.songoda.ultimateclaims.settings.Setting;
+import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -52,10 +52,10 @@ public class PowerCellTask extends BukkitRunnable {
             if (tick == -1) {
                 for (ClaimMember member : members)
                     this.outOfPower(member);
-            } else if (tick == (Setting.MINIMUM_POWER.getInt() + 10)) {
+            } else if (tick == (Settings.MINIMUM_POWER.getInt() + 10)) {
                 for (ClaimMember member : members)
                     this.tenLeft(member);
-            } else if (tick <= Setting.MINIMUM_POWER.getInt()) {
+            } else if (tick <= Settings.MINIMUM_POWER.getInt()) {
                 for (ClaimMember member : members)
                     this.dissolved(member);
                 claim.destroy();

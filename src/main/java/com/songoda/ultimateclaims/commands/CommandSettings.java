@@ -19,7 +19,7 @@ public class CommandSettings extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        plugin.getGuiManager().showGUI((Player) sender, new ConfigEditorGui(plugin, null, "UltimateClaims Settings Manager", plugin.getConfig().getCoreConfig()));
+        plugin.getGuiManager().showGUI((Player) sender, new ConfigEditorGui(plugin, null, "UltimateClaims Settings Manager", plugin.getCoreConfig()));
         return ReturnType.SUCCESS;
     }
 

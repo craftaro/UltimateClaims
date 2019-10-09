@@ -1,6 +1,7 @@
 #General Messages
 
 general.nametag.prefix = "&8[&6UltimateClaims&8]"
+general.word.none = "none"
 general.claim.defaultname = "%name%'s claim"
 general.claim.powercell = "&6%time% &7Remaining."
 general.claim.powercell.low = "&cLow Power!"
