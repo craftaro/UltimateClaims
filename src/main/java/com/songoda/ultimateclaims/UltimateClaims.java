@@ -13,6 +13,7 @@ import com.songoda.core.gui.GuiManager;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.hooks.HologramManager;
 import com.songoda.core.hooks.WorldGuardHook;
+import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.commands.*;
 import com.songoda.ultimateclaims.database.DataManager;
@@ -20,6 +21,7 @@ import com.songoda.ultimateclaims.database.migrations._1_InitialMigration;
 import com.songoda.ultimateclaims.database.migrations._2_NewPermissions;
 import com.songoda.ultimateclaims.database.migrations._3_MemberNames;
 import com.songoda.ultimateclaims.listeners.*;
+import com.songoda.ultimateclaims.placeholder.PlaceholderManager;
 import com.songoda.ultimateclaims.settings.PluginSettings;
 import com.songoda.ultimateclaims.tasks.*;
 import com.songoda.ultimateclaims.settings.Setting;
@@ -114,6 +116,10 @@ public class UltimateClaims extends SongodaPlugin {
         TrackerTask.startTask(this);
         VisualizeTask.startTask(this);
 
+        // Register Placeholders
+        if (pluginManager.isPluginEnabled("PlaceholderAPI"))
+            new PlaceholderManager(this).register();
+
         // Start our databases
         this.claimManager = new ClaimManager();
 
@@ -151,7 +157,7 @@ public class UltimateClaims extends SongodaPlugin {
             this.dataManager.getClaims((claims) -> {
                 this.claimManager.addClaims(claims);
                 if(useHolo)
-                    this.claimManager.getRegisteredClaims().stream().filter(x -> x.hasPowerCell()).forEach(x -> x.getPowerCell().updateHologram());
+                    this.claimManager.getRegisteredClaims().stream().filter(Claim::hasPowerCell).forEach(x -> x.getPowerCell().updateHologram());
             });
         }, 20L);
     }

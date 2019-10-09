@@ -1,22 +1,21 @@
 package com.songoda.ultimateclaims.claim;
 
 import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.ultimateclaims.member.*;
+import com.songoda.ultimateclaims.member.ClaimMember;
+import com.songoda.ultimateclaims.member.ClaimPerm;
+import com.songoda.ultimateclaims.member.ClaimPermissions;
+import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.utils.Methods;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import org.bukkit.Bukkit;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 
 public class Claim {
 
@@ -72,20 +71,20 @@ public class Claim {
 
     public void setName(String name) {
         this.name = name;
-        if(bossBarMember != null)
+        if (bossBarMember != null)
             bossBarMember.setTitle(name);
-        if(bossBarVisitor != null)
+        if (bossBarVisitor != null)
             bossBarVisitor.setTitle(name);
     }
 
     public BossBar getVisitorBossBar() {
-        if(bossBarVisitor == null)
+        if (bossBarVisitor == null)
             bossBarVisitor = Bukkit.getServer().createBossBar(this.name, BarColor.YELLOW, BarStyle.SOLID);
         return bossBarVisitor;
     }
 
     public BossBar getMemberBossBar() {
-        if(bossBarMember == null)
+        if (bossBarMember == null)
             bossBarMember = Bukkit.getServer().createBossBar(this.name, BarColor.GREEN, BarStyle.SOLID);
         return bossBarMember;
     }
@@ -140,12 +139,13 @@ public class Claim {
 
     /**
      * Search for a member by username
+     *
      * @param name name to search
      * @return Member instance matching this username, if any
      */
     public ClaimMember getMember(String name) {
-        if(name == null) return null;
-        if(name.equals(owner.getName())) return owner;
+        if (name == null) return null;
+        if (name.equals(owner.getName())) return owner;
         return members.stream()
                 .filter(member -> name.equals(member.getName()))
                 .findFirst()
@@ -303,6 +303,13 @@ public class Claim {
 
     public ClaimSettings getClaimSettings() {
         return claimSettings;
+    }
+
+    public long getTotalPower() {
+        if (hasPowerCell())
+            return powerCell.getCurrentPower();
+        else
+            return 0;
     }
 
     @Override
