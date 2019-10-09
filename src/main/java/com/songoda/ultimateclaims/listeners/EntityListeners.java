@@ -12,18 +12,12 @@ import com.songoda.ultimateclaims.tasks.VisualizeTask;
 import java.util.ArrayList;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -107,7 +101,8 @@ public class EntityListeners implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onChange(EntityChangeBlockEvent event) {
         ClaimManager claimManager = plugin.getClaimManager();
-        if (event.getEntity() instanceof Player) return;
+        if (event.getEntity() instanceof Player
+                || event.getEntity() instanceof FallingBlock) return;
 
         if (claimManager.hasClaim(event.getBlock().getLocation().getChunk())) {
             Claim claim = claimManager.getClaim(event.getBlock().getLocation().getChunk());
