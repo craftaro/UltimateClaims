@@ -5,7 +5,7 @@ import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.invite.Invite;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
-import com.songoda.ultimateclaims.settings.Setting;
+import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -32,7 +32,7 @@ public class CommandAccept extends AbstractCommand {
             plugin.getLocale().getMessage("command.accept.none").sendPrefixedMessage(player);
         } else {
             if (Math.toIntExact(invite.getClaim().getMembers().stream()
-                    .filter(member -> member.getRole() == ClaimRole.MEMBER).count()) >= Setting.MAX_MEMBERS.getInt()) {
+                    .filter(member -> member.getRole() == ClaimRole.MEMBER).count()) >= Settings.MAX_MEMBERS.getInt()) {
                 plugin.getLocale().getMessage("command.accept.maxed").sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
             }

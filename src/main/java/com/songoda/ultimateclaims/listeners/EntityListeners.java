@@ -7,7 +7,7 @@ import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
-import com.songoda.ultimateclaims.settings.Setting;
+import com.songoda.ultimateclaims.settings.Settings;
 import com.songoda.ultimateclaims.tasks.VisualizeTask;
 import java.util.ArrayList;
 import org.bukkit.Chunk;
@@ -205,7 +205,7 @@ public class EntityListeners implements Listener {
                     else
                         member.setPresent(false);
                 }
-                if(Setting.CLAIMS_BOSSBAR.getBoolean()) {
+                if(Settings.CLAIMS_BOSSBAR.getBoolean()) {
                     claim.getVisitorBossBar().removePlayer(player);
                     claim.getMemberBossBar().removePlayer(player);
                 } else {
@@ -241,7 +241,7 @@ public class EntityListeners implements Listener {
                     return true;
                 }
 
-                if(Setting.CLAIMS_BOSSBAR.getBoolean()) {
+                if(Settings.CLAIMS_BOSSBAR.getBoolean()) {
                     if(member == null || member.getRole() == ClaimRole.VISITOR) {
                         claim.getVisitorBossBar().addPlayer(player);
                     } else {

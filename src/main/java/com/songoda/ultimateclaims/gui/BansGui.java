@@ -6,7 +6,7 @@ import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.utils.ItemUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
-import com.songoda.ultimateclaims.settings.Setting;
+import com.songoda.ultimateclaims.settings.Settings;
 import com.songoda.ultimateclaims.utils.Methods;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +27,8 @@ public class BansGui extends Gui {
         this.plugin = UltimateClaims.getInstance();
         this.setTitle(Methods.formatTitle(plugin.getLocale().getMessage("interface.bans.title").getMessage()));
 
-        ItemStack glass2 = GuiUtils.getBorderItem(Setting.GLASS_TYPE_2.getMaterial());
-        ItemStack glass3 = GuiUtils.getBorderItem(Setting.GLASS_TYPE_3.getMaterial());
+        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
+        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
 
         // edges will be type 3
         setDefaultItem(glass3);

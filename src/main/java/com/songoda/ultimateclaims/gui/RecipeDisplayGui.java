@@ -5,7 +5,7 @@ import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.utils.ItemUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.ultimateclaims.settings.Setting;
+import com.songoda.ultimateclaims.settings.Settings;
 import com.songoda.ultimateclaims.utils.Methods;
 import java.util.List;
 import org.bukkit.inventory.ItemStack;
@@ -15,9 +15,9 @@ public class RecipeDisplayGui extends Gui {
     public RecipeDisplayGui() {
         this.setRows(3);
         this.setTitle(Methods.formatTitle(UltimateClaims.getInstance().getLocale().getMessage("interface.recipe.title").getMessage()));
-        this.setDefaultItem(GuiUtils.getBorderItem(Setting.GLASS_TYPE_1.getMaterial()));
+        this.setDefaultItem(GuiUtils.getBorderItem(Settings.GLASS_TYPE_1.getMaterial()));
 
-        List<String> recipe = Setting.POWERCELL_RECIPE.getStringList();
+        List<String> recipe = Settings.POWERCELL_RECIPE.getStringList();
         for (String line : recipe) {
             String[] split = line.split(":");
             CompatibleMaterial mat;

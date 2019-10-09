@@ -8,7 +8,7 @@ import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
-import com.songoda.ultimateclaims.settings.Setting;
+import com.songoda.ultimateclaims.settings.Settings;
 import com.songoda.ultimateclaims.utils.Methods;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,8 +37,8 @@ public class MembersGui extends Gui {
         this.setRows(6);
         this.setTitle(Methods.formatTitle(plugin.getLocale().getMessage("interface.members.title").getMessage()));
 
-        ItemStack glass2 = GuiUtils.getBorderItem(Setting.GLASS_TYPE_2.getMaterial());
-        ItemStack glass3 = GuiUtils.getBorderItem(Setting.GLASS_TYPE_3.getMaterial());
+        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
+        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
 
         // edges will be type 3
         setDefaultItem(glass3);
@@ -86,7 +86,7 @@ public class MembersGui extends Gui {
                 plugin.getLocale().getMessage("interface.members.statstitle").getMessage(),
                 plugin.getLocale().getMessage("interface.members.statslore")
                         .processPlaceholder("totalmembers", claim.getOwnerAndMembers().size())
-                        .processPlaceholder("maxmembers", Setting.MAX_MEMBERS.getInt())
+                        .processPlaceholder("maxmembers", Settings.MAX_MEMBERS.getInt())
                         .processPlaceholder("members", claim.getMembers().size()).getMessage().split("\\|")));
 
         // Filters

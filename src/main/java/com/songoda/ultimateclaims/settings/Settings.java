@@ -9,7 +9,7 @@ import com.songoda.ultimateclaims.UltimateClaims;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class Setting {
+public class Settings {
 
     static final Config config = UltimateClaims.getInstance().getCoreConfig();
 

@@ -7,7 +7,7 @@ import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
-import com.songoda.ultimateclaims.settings.Setting;
+import com.songoda.ultimateclaims.settings.Settings;
 import com.songoda.ultimateclaims.utils.Methods;
 import org.bukkit.inventory.ItemStack;
 
@@ -26,8 +26,8 @@ public class SettingsMemberGui extends Gui {
         this.setTitle(Methods.formatTitle(plugin.getLocale().getMessage("interface.permsettings.title")
                 .processPlaceholder("role", Methods.formatText(role.toString().toLowerCase(), true)).getMessage()));
 
-        ItemStack glass2 = GuiUtils.getBorderItem(Setting.GLASS_TYPE_2.getMaterial());
-        ItemStack glass3 = GuiUtils.getBorderItem(Setting.GLASS_TYPE_3.getMaterial());
+        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
+        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
 
         // edges will be type 3
         setDefaultItem(glass3);
