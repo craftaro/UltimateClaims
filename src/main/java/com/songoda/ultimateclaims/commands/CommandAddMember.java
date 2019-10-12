@@ -84,7 +84,7 @@ public class CommandAddMember extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/c addmember <player>";
+        return "addmember <player>";
     }
 
     @Override

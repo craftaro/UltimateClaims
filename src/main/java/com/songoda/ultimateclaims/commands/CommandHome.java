@@ -75,7 +75,7 @@ public class CommandHome extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/c home <claim>";
+        return "home <claim>";
     }
 
     @Override

@@ -56,7 +56,7 @@ public class CommandSetHome extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/c sethome";
+        return "sethome";
     }
 
     @Override

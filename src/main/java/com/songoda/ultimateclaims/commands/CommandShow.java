@@ -49,7 +49,7 @@ public class CommandShow extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/c show";
+        return "show";
     }
 
     @Override

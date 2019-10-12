@@ -151,7 +151,7 @@ public class CommandClaim extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/c claim";
+        return "claim";
     }
 
     @Override

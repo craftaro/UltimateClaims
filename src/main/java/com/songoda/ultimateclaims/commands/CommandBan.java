@@ -93,7 +93,7 @@ public class CommandBan extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/c ban <member>";
+        return "ban <member>";
     }
 
     @Override

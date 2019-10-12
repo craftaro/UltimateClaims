@@ -86,7 +86,7 @@ public class UltimateClaims extends SongodaPlugin {
 
         // Load Commands
         this.commandManager = new CommandManager(this);
-        this.commandManager.addCommand(new CommandUltimateClaims(this))
+        this.commandManager.addMainCommand("c")
                 .addSubCommands(
                         new CommandSettings(this),
                         new CommandReload(this),

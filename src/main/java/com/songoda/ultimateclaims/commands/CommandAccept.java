@@ -75,7 +75,7 @@ public class CommandAccept extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/c accept";
+        return "accept";
     }
 
     @Override

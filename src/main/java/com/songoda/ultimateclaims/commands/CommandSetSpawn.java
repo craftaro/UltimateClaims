@@ -37,7 +37,7 @@ public class CommandSetSpawn extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/c setspawn";
+        return "setspawn";
     }
 
     @Override

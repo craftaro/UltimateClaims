@@ -83,7 +83,7 @@ public class CommandUnBan extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/c unban <member>";
+        return "unban <member>";
     }
 
     @Override
