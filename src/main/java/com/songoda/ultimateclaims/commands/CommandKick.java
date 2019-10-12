@@ -93,7 +93,7 @@ public class CommandKick extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/c kick <member>";
+        return "kick <member>";
     }
 
     @Override

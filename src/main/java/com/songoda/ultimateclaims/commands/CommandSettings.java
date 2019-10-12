@@ -1,5 +1,6 @@
 package com.songoda.ultimateclaims.commands;
 
+import com.songoda.core.configuration.editor.PluginConfigGui;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.configuration.editor.ConfigEditorGui;
@@ -19,7 +20,7 @@ public class CommandSettings extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        plugin.getGuiManager().showGUI((Player) sender, new ConfigEditorGui(plugin, null, "UltimateClaims Settings Manager", plugin.getCoreConfig()));
+        plugin.getGuiManager().showGUI((Player) sender, new PluginConfigGui(plugin, null));
         return ReturnType.SUCCESS;
     }
 
@@ -35,7 +36,7 @@ public class CommandSettings extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/c settings";
+        return "settings";
     }
 
     @Override

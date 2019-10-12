@@ -7,10 +7,10 @@ author: songoda
 api-version: 1.13
 loadbefore: [WorldGuard]
 commands:
-  UltimateClaims:
+  c:
     description: Reloads the configuration file
     default: true
-    aliases: [ucl, claims, claim, c]
+    aliases: [ucl, claims, claim, UltimateClaims]
     usage: /ultimateclaims reload
 permissions:
   ultimateclaims.*:

@@ -106,7 +106,7 @@ public class CommandUnClaim extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/c unclaim";
+        return "unclaim";
     }
 
     @Override

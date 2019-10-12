@@ -20,10 +20,8 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.projectiles.ProjectileSource;
@@ -109,6 +107,43 @@ public class EntityListeners implements Listener {
             if (!claim.getClaimSettings().isMobGriefingAllowed()) {
                 event.setCancelled(true);
             }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onArmor(PlayerArmorStandManipulateEvent event) {
+        ClaimManager claimManager = UltimateClaims.getInstance().getClaimManager();
+
+        Entity entity = event.getRightClicked();
+
+        Chunk chunk = entity.getLocation().getChunk();
+
+        if (!claimManager.hasClaim(chunk)) return;
+
+        Claim claim = claimManager.getClaim(chunk);
+
+        if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.PLACE)) {
+            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onItemFrame(HangingBreakByEntityEvent event) {
+        if (!(event.getRemover() instanceof Player)) return;
+        ClaimManager claimManager = UltimateClaims.getInstance().getClaimManager();
+
+        Entity entity = event.getEntity();
+
+        Chunk chunk = entity.getLocation().getChunk();
+
+        if (!claimManager.hasClaim(chunk)) return;
+
+        Claim claim = claimManager.getClaim(chunk);
+
+        if (!claim.playerHasPerms((Player)event.getRemover(), ClaimPerm.PLACE)) {
+            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage((Player)event.getRemover());
+            event.setCancelled(true);
         }
     }
 

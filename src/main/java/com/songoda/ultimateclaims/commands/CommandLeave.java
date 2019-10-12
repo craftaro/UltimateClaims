@@ -93,7 +93,7 @@ public class CommandLeave extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/c leave <claim>";
+        return "leave <claim>";
     }
 
     @Override

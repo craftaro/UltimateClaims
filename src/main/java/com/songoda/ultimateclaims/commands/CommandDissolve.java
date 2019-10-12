@@ -48,7 +48,7 @@ public class CommandDissolve extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/c dissolve";
+        return "dissolve";
     }
 
     @Override

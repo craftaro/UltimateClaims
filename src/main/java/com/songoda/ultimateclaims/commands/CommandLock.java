@@ -61,7 +61,7 @@ public class CommandLock extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/c lock";
+        return "lock";
     }
 
     @Override

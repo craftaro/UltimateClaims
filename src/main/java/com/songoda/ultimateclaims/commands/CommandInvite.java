@@ -88,7 +88,7 @@ public class CommandInvite extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/c invite <player>";
+        return "invite <player>";
     }
 
     @Override

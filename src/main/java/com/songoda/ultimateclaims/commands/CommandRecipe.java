@@ -36,7 +36,7 @@ public class CommandRecipe extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/c recipe";
+        return "recipe";
     }
 
     @Override
