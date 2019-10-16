@@ -43,22 +43,23 @@ public class PowerCellTask extends BukkitRunnable {
                     member.setPlayTime(member.getPlayTime() + (60 * 1000)); // Should be a var.
             }
             int tick = powerCell.tick();
-            if (tick == -1 && !powerCell.hasLocation()) {
-                for (ClaimMember member : claim.getMembers())
-                    this.dissolved(member);
-                this.dissolved(claim.getOwner());
-                claim.destroy();
-            }
-            if (tick == -1) {
-                for (ClaimMember member : members)
-                    this.outOfPower(member);
-            } else if (tick == (Settings.MINIMUM_POWER.getInt() + 10)) {
-                for (ClaimMember member : members)
-                    this.tenLeft(member);
-            } else if (tick <= Settings.MINIMUM_POWER.getInt()) {
-                for (ClaimMember member : members)
-                    this.dissolved(member);
-                claim.destroy();
+            if (powerCell.getTotalPower() <= 0) {
+                if (tick == -1 && !powerCell.hasLocation()) {
+                    for (ClaimMember member : claim.getMembers())
+                        this.dissolved(member);
+                    this.dissolved(claim.getOwner());
+                    claim.destroy();
+                } else if (tick == -1) {
+                    for (ClaimMember member : members)
+                        this.outOfPower(member);
+                } else if (tick == (Settings.MINIMUM_POWER.getInt() + 10)) {
+                    for (ClaimMember member : members)
+                        this.tenLeft(member);
+                } else if (tick <= Settings.MINIMUM_POWER.getInt()) {
+                    for (ClaimMember member : members)
+                        this.dissolved(member);
+                    claim.destroy();
+                }
             }
         }
     }

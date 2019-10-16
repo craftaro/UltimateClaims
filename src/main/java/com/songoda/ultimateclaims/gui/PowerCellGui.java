@@ -14,6 +14,7 @@ import com.songoda.ultimateclaims.utils.Methods;
 import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class PowerCellGui extends Gui {
@@ -161,11 +162,15 @@ public class PowerCellGui extends Gui {
 
     void closed() {
         // update cell's inventory
-        this.powercell.updateItemsFromGui();
+        this.powercell.updateItemsFromGui(true);
         if (Settings.POWERCELL_HOLOGRAMS.getBoolean()) {
             this.powercell.updateHologram();
         }
         this.powercell.rejectUnusable();
+    }
+
+    public Inventory getInventory() {
+        return inventory;
     }
 
     void addEcon(Player player) {

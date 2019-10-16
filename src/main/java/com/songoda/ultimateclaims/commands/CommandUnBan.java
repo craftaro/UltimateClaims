@@ -48,7 +48,7 @@ public class CommandUnBan extends AbstractCommand {
 
         if (toBan.isOnline())
             plugin.getLocale().getMessage("command.unban.unbanned")
-                    .processPlaceholder("claim", toBan.getName())
+                    .processPlaceholder("claim", claim.getName())
                     .sendPrefixedMessage(toBan.getPlayer());
 
         plugin.getLocale().getMessage("command.unban.unban")
