@@ -82,7 +82,7 @@ public class PowerCell {
     }
 
     private void removeOneMaterial(CompatibleMaterial material) {
-            updateItemsFromGui();
+        updateItemsFromGui();
         for (ItemStack item : getItems()) {
             if (material.matches(item)) {
                 item.setAmount(item.getAmount() - 1);
@@ -127,9 +127,14 @@ public class PowerCell {
     }
 
     public void updateItemsFromGui() {
-        if (opened == null
+        updateItemsFromGui(false);
+    }
+
+    public void updateItemsFromGui(boolean force) {
+        if ((opened == null
                 || opened.getInventory() == null
-                || opened.getInventory().getViewers().size() == 0) return;
+                || opened.getInventory().getViewers().size() == 0)
+                && !force) return;
         items.clear();
         for (int i = 10; i < 44; i++) {
             if (i == 17
@@ -181,7 +186,7 @@ public class PowerCell {
     }
 
     public long getItemPower() {
-            updateItemsFromGui();
+        updateItemsFromGui();
         double total = 0;
         List<String> materials = Settings.ITEM_VALUES.getStringList();
         for (String value : materials) {

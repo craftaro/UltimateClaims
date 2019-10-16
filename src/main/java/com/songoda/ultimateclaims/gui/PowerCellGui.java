@@ -162,7 +162,7 @@ public class PowerCellGui extends Gui {
 
     void closed() {
         // update cell's inventory
-        this.powercell.updateItemsFromGui();
+        this.powercell.updateItemsFromGui(true);
         if (Settings.POWERCELL_HOLOGRAMS.getBoolean()) {
             this.powercell.updateHologram();
         }
