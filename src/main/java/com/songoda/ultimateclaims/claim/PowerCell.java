@@ -33,7 +33,6 @@ public class PowerCell {
     }
 
     public int tick() {
-
         boolean loaded = false;
         if (location != null && location.getWorld() != null) {
             int x = location.getBlockX() >> 4;
@@ -43,8 +42,7 @@ public class PowerCell {
         }
 
         if (this.currentPower <= 0 && location != null) {
-            if(opened != null && opened.isOpen())
-                updateItemsFromGui();
+            updateItemsFromGui();
             List<String> materials = Settings.ITEM_VALUES.getStringList();
             for (String value : materials) {
                 CompatibleMaterial material = CompatibleMaterial.getMaterial(value.split(":")[0]);
@@ -79,16 +77,14 @@ public class PowerCell {
     }
 
     private int getMaterialAmount(CompatibleMaterial material) {
-        return getItems().stream().filter(item -> material.matches(item))
-                .map((item) -> item.getAmount())
-                .mapToInt(Integer::intValue).sum();
+        return getItems().stream().filter(material::matches)
+                .map(ItemStack::getAmount).mapToInt(Integer::intValue).sum();
     }
 
     private void removeOneMaterial(CompatibleMaterial material) {
-        if(opened != null && opened.isOpen())
             updateItemsFromGui();
         for (ItemStack item : getItems()) {
-            if(material.matches(item)) {
+            if (material.matches(item)) {
                 item.setAmount(item.getAmount() - 1);
 
                 if (item.getAmount() <= 0)
@@ -117,7 +113,7 @@ public class PowerCell {
                 rejects.add(items.remove(i));
         }
 
-        if(!rejects.isEmpty()) {
+        if (!rejects.isEmpty()) {
             // YEET
             updateGuiInventory();
             rejects.stream().filter(item -> item.getType() != Material.AIR)
@@ -126,13 +122,14 @@ public class PowerCell {
     }
 
     public void updateGuiInventory() {
-        if (opened != null) {
+        if (opened != null)
             opened.updateGuiInventory(items);
-        }
     }
 
     public void updateItemsFromGui() {
-        if (opened == null) return;
+        if (opened == null
+                || opened.getInventory() == null
+                || opened.getInventory().getViewers().size() == 0) return;
         items.clear();
         for (int i = 10; i < 44; i++) {
             if (i == 17
@@ -142,7 +139,7 @@ public class PowerCell {
                     || i == 35
                     || i == 36) continue;
             ItemStack item = opened.getItem(i);
-            if(item != null && item.getType() != Material.AIR)
+            if (item != null && item.getType() != Material.AIR)
                 addItem(item);
         }
     }
@@ -184,14 +181,13 @@ public class PowerCell {
     }
 
     public long getItemPower() {
-        if(opened != null && opened.isOpen())
             updateItemsFromGui();
         double total = 0;
         List<String> materials = Settings.ITEM_VALUES.getStringList();
         for (String value : materials) {
             String parts[] = value.split(":");
             CompatibleMaterial material;
-            if(parts.length == 2 && (material = CompatibleMaterial.getMaterial(parts[0].trim())) != null) {
+            if (parts.length == 2 && (material = CompatibleMaterial.getMaterial(parts[0].trim())) != null) {
                 total += getMaterialAmount(material) * (Double.parseDouble(parts[1].trim()) / claim.getClaimSize());
             }
         }
@@ -210,7 +206,7 @@ public class PowerCell {
         List<String> materials = Settings.ITEM_VALUES.getStringList();
         for (String value : materials) {
             String parts[] = value.split(":");
-            if(parts.length == 2 && CompatibleMaterial.getMaterial(parts[0].trim()) == material)
+            if (parts.length == 2 && CompatibleMaterial.getMaterial(parts[0].trim()) == material)
                 return Double.parseDouble(parts[1].trim()) / claim.getClaimSize();
         }
         return 0;
