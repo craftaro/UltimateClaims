@@ -40,13 +40,6 @@
                                 </includes>
                             </artifactSet>
                             <filters>
-                                <!-- This filter is primarily for anvil gui right now -->
-                                <!--<filter>
-                                    <artifact>com.songoda:SongodaCore-NMS*</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>-->
                                 <filter>
                                     <artifact>*:*</artifact>
                                     <excludes>
