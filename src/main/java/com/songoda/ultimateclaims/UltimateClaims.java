@@ -54,7 +54,7 @@ public class UltimateClaims extends SongodaPlugin {
     @Override
     public void onPluginLoad() {
         INSTANCE = this;
-        WorldGuardHook.addHook("allow-claims", false);
+        WorldGuardHook.addHook("allow-claims", true);
     }
 
     @Override
