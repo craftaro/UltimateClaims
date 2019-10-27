@@ -56,13 +56,13 @@ public class PowerCellGui extends Gui {
         // Bans
         this.setButton(5, 2, GuiUtils.createButtonItem(CompatibleMaterial.IRON_AXE,
                 plugin.getLocale().getMessage("interface.powercell.banstitle").getMessage(),
-                plugin.getLocale().getMessage("interface.powercell.banslore").getMessage().split("\\|")),
+                plugin.getLocale().getMessage("interface.powercell.banslore").getMessageLines()),
                 (event) -> {closed(); event.manager.showGUI(event.player, new BansGui(claim, this)); });
 
         // Settings
         this.setButton(5, 3, GuiUtils.createButtonItem(CompatibleMaterial.REDSTONE,
                 plugin.getLocale().getMessage("interface.powercell.settingstitle").getMessage(),
-                plugin.getLocale().getMessage("interface.powercell.settingslore").getMessage().split("\\|")),
+                plugin.getLocale().getMessage("interface.powercell.settingslore").getMessageLines()),
                 (event) -> {closed(); event.manager.showGUI(event.player, new SettingsGui(claim, this, event.player)); });
 
         // Claim info
@@ -71,7 +71,7 @@ public class PowerCellGui extends Gui {
         // Members
         this.setButton(5, 6, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
                 plugin.getLocale().getMessage("interface.powercell.memberstitle").getMessage(),
-                plugin.getLocale().getMessage("interface.powercell.memberslore").getMessage().split("\\|")),
+                plugin.getLocale().getMessage("interface.powercell.memberslore").getMessageLines()),
                 (event) -> {closed(); event.manager.showGUI(event.player, new MembersGui(claim, this)); });
 
         // open inventory slots
