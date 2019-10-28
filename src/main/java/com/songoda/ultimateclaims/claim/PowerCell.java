@@ -6,6 +6,8 @@ import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.gui.PowerCellGui;
 import com.songoda.ultimateclaims.settings.Settings;
 import com.songoda.ultimateclaims.utils.Methods;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -193,7 +195,18 @@ public class PowerCell {
             String parts[] = value.split(":");
             CompatibleMaterial material;
             if (parts.length == 2 && (material = CompatibleMaterial.getMaterial(parts[0].trim())) != null) {
-                total += getMaterialAmount(material) * (Double.parseDouble(parts[1].trim()) / claim.getClaimSize());
+                double itemValue = getMaterialAmount(material) * Double.parseDouble(parts[1].trim());
+
+                switch (getCostEquation()) {
+                    case DEFAULT:
+                        total += itemValue / claim.getClaimSize();
+                        break;
+                    case LINEAR:
+                        total += itemValue / (claim.getClaimSize() * getLinearValue());
+                        break;
+                    default:
+                        total += itemValue;
+                }
             }
         }
         return (int) total;
@@ -211,14 +224,44 @@ public class PowerCell {
         List<String> materials = Settings.ITEM_VALUES.getStringList();
         for (String value : materials) {
             String parts[] = value.split(":");
-            if (parts.length == 2 && CompatibleMaterial.getMaterial(parts[0].trim()) == material)
-                return Double.parseDouble(parts[1].trim()) / claim.getClaimSize();
+            if (parts.length == 2 && CompatibleMaterial.getMaterial(parts[0].trim()) == material) {
+                double itemValue = Double.parseDouble(parts[1].trim());
+
+                switch (getCostEquation()) {
+                    case DEFAULT:
+                        return itemValue / claim.getClaimSize();
+                    case LINEAR:
+                        return itemValue / (claim.getClaimSize() * getLinearValue());
+                    default:
+                        return itemValue;
+                }
+            }
         }
         return 0;
     }
 
     public double getEconomyValue() {
-        return Settings.ECONOMY_VALUE.getDouble() * claim.getClaimSize();
+        double value = Settings.ECONOMY_VALUE.getDouble();
+
+        switch (getCostEquation()) {
+            case DEFAULT:
+                return value * claim.getClaimSize();
+            case LINEAR:
+                return value * (claim.getClaimSize() * getLinearValue());
+            default:
+                return value;
+        }
+    }
+
+    private CostEquation getCostEquation() {
+        if (Settings.COST_EQUATION.getString().startsWith("LINEAR")) return CostEquation.LINEAR;
+        else return CostEquation.valueOf(Settings.COST_EQUATION.getString());
+    }
+
+    private double getLinearValue() {
+        if (getCostEquation() != CostEquation.LINEAR) return 1.0d;
+        String[] equationSplit = Settings.COST_EQUATION.getString().split(" ");
+        return Double.parseDouble(equationSplit[1]);
     }
 
     public List<ItemStack> getItems() {
