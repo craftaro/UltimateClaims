@@ -32,6 +32,11 @@ public class CommandClaim extends AbstractCommand {
     protected ReturnType runCommand(CommandSender sender, String... args) {
         Player player = (Player) sender;
 
+        if (Settings.DISABLED_WORLDS.getStringList().contains(player.getWorld().getName())) {
+            plugin.getLocale().getMessage("command.claim.disabledworld").sendPrefixedMessage(player);
+            return ReturnType.FAILURE;
+        }
+
         if (plugin.getClaimManager().hasClaim(player.getLocation().getChunk())) {
             plugin.getLocale().getMessage("command.general.claimed").sendPrefixedMessage(player);
             return ReturnType.FAILURE;

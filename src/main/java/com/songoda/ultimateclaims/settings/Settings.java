@@ -65,6 +65,9 @@ public class Settings {
     public static final ConfigSetting MAX_MEMBERS = new ConfigSetting(config, "Main.Max Members", 10,
             "The maximum amount of members a claim can have.");
 
+    public static final ConfigSetting DISABLED_WORLDS = new ConfigSetting(config, "Main.Disabled Worlds",
+            Arrays.asList("disabled_world"), "The worlds that claims are disabled in.");
+
     public static final ConfigSetting GLASS_TYPE_1 = new ConfigSetting(config, "Interfaces.Glass Type 1", "GRAY_STAINED_GLASS_PANE");
     public static final ConfigSetting GLASS_TYPE_2 = new ConfigSetting(config, "Interfaces.Glass Type 2", "BLUE_STAINED_GLASS_PANE");
     public static final ConfigSetting GLASS_TYPE_3 = new ConfigSetting(config, "Interfaces.Glass Type 3", "LIGHT_BLUE_STAINED_GLASS_PANE");

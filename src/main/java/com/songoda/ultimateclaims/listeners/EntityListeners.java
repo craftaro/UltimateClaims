@@ -9,7 +9,6 @@ import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
 import com.songoda.ultimateclaims.tasks.VisualizeTask;
-import java.util.ArrayList;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
@@ -25,6 +24,8 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.projectiles.ProjectileSource;
+
+import java.util.ArrayList;
 
 public class EntityListeners implements Listener {
 
@@ -62,11 +63,10 @@ public class EntityListeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onMove(VehicleMoveEvent event) {
-        for (Entity entity : event.getVehicle().getPassengers()) {
-            if (!(entity instanceof Player)) continue;
-            if (playerMove(event.getFrom().getChunk(), event.getTo().getChunk(), (Player) entity)) {
-                entity.leaveVehicle();
-            }
+        Entity entity = event.getVehicle().getPassenger();
+        if (!(entity instanceof Player)) return;
+        if (playerMove(event.getFrom().getChunk(), event.getTo().getChunk(), (Player) entity)) {
+            entity.leaveVehicle();
         }
     }
 
@@ -141,8 +141,8 @@ public class EntityListeners implements Listener {
 
         Claim claim = claimManager.getClaim(chunk);
 
-        if (!claim.playerHasPerms((Player)event.getRemover(), ClaimPerm.PLACE)) {
-            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage((Player)event.getRemover());
+        if (!claim.playerHasPerms((Player) event.getRemover(), ClaimPerm.PLACE)) {
+            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage((Player) event.getRemover());
             event.setCancelled(true);
         }
     }
@@ -163,7 +163,7 @@ public class EntityListeners implements Listener {
             }
             if (source instanceof Player) {
                 if (!(event.getEntity() instanceof Player)) {
-                    if(!(event.getEntity() instanceof LivingEntity) && event.getEntity().getType() != EntityType.ARMOR_STAND) {
+                    if (!(event.getEntity() instanceof LivingEntity) && event.getEntity().getType() != EntityType.ARMOR_STAND) {
                         event.setCancelled(!claim.playerHasPerms((Player) source, ClaimPerm.BREAK));
                     } else if (!claim.playerHasPerms((Player) source, ClaimPerm.MOB_KILLING)) {
                         event.setCancelled(true);
@@ -184,7 +184,7 @@ public class EntityListeners implements Listener {
 
         // Who is responsible for this?
         Entity entity = event.getEntity();
-        if(entity instanceof Projectile && ((Projectile) entity).getShooter() instanceof Entity) {
+        if (entity instanceof Projectile && ((Projectile) entity).getShooter() instanceof Entity) {
             entity = (Entity) ((Projectile) entity).getShooter();
         }
 
@@ -240,7 +240,7 @@ public class EntityListeners implements Listener {
                     else
                         member.setPresent(false);
                 }
-                if(Settings.CLAIMS_BOSSBAR.getBoolean()) {
+                if (Settings.CLAIMS_BOSSBAR.getBoolean()) {
                     claim.getVisitorBossBar().removePlayer(player);
                     claim.getMemberBossBar().removePlayer(player);
                 } else {
@@ -276,8 +276,8 @@ public class EntityListeners implements Listener {
                     return true;
                 }
 
-                if(Settings.CLAIMS_BOSSBAR.getBoolean()) {
-                    if(member == null || member.getRole() == ClaimRole.VISITOR) {
+                if (Settings.CLAIMS_BOSSBAR.getBoolean()) {
+                    if (member == null || member.getRole() == ClaimRole.VISITOR) {
                         claim.getVisitorBossBar().addPlayer(player);
                     } else {
                         claim.getMemberBossBar().addPlayer(player);
