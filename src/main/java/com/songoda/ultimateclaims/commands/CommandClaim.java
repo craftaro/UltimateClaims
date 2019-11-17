@@ -83,7 +83,7 @@ public class CommandClaim extends AbstractCommand {
 
             if (claim.getClaimSize() >= maxClaimable) {
                 plugin.getLocale().getMessage("command.claim.toomany")
-                        .processPlaceholder("amount", Settings.MAX_CHUNKS.getInt())
+                        .processPlaceholder("amount", maxClaimable)
                         .sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
             }
