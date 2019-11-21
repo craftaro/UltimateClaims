@@ -10,10 +10,12 @@ import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
 import com.songoda.ultimateclaims.tasks.VisualizeTask;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -23,6 +25,7 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
+import org.bukkit.material.Dispenser;
 import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.ArrayList;
@@ -112,7 +115,7 @@ public class EntityListeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onArmor(PlayerArmorStandManipulateEvent event) {
-        ClaimManager claimManager = UltimateClaims.getInstance().getClaimManager();
+        ClaimManager claimManager = plugin.getClaimManager();
 
         Entity entity = event.getRightClicked();
 
@@ -131,7 +134,7 @@ public class EntityListeners implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onItemFrame(HangingBreakByEntityEvent event) {
         if (!(event.getRemover() instanceof Player)) return;
-        ClaimManager claimManager = UltimateClaims.getInstance().getClaimManager();
+        ClaimManager claimManager = plugin.getClaimManager();
 
         Entity entity = event.getEntity();
 
@@ -145,6 +148,17 @@ public class EntityListeners implements Listener {
             plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage((Player) event.getRemover());
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onDispense(BlockDispenseEvent event) {
+        if (event.getBlock().getType() != Material.DISPENSER) return;
+        Dispenser dispenser = (Dispenser) event.getBlock().getState().getData();
+        ClaimManager claimManager = plugin.getClaimManager();
+        Chunk chunk = event.getBlock().getRelative(dispenser.getFacing()).getLocation().getChunk();
+
+        if (claimManager.hasClaim(chunk))
+            event.setCancelled(true);
     }
 
     @EventHandler(ignoreCancelled = true)
