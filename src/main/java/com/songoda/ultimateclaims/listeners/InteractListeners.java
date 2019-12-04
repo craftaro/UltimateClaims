@@ -28,7 +28,7 @@ public class InteractListeners implements Listener {
 
         Chunk chunk = event.getClickedBlock().getChunk();
 
-        if (event.getAction() == Action.LEFT_CLICK_BLOCK || !claimManager.hasClaim(chunk)) return;
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || !claimManager.hasClaim(chunk)) return;
 
         Claim claim = claimManager.getClaim(chunk);
 
