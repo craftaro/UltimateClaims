@@ -2,7 +2,7 @@
     <groupId>com.songoda</groupId>
     <artifactId>UltimateClaims</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>1.1.14</version>
+    <version>1.1.15</version>
     <build>
         <defaultGoal>clean install</defaultGoal>
         <finalName>UltimateClaims-${project.version}</finalName>
@@ -96,8 +96,8 @@
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.14.4-R0.1-SNAPSHOT</version>
+            <artifactId>spigot</artifactId>
+            <version>1.15</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
