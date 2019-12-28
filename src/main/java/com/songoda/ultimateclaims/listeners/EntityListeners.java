@@ -155,10 +155,16 @@ public class EntityListeners implements Listener {
         if (event.getBlock().getType() != Material.DISPENSER) return;
         Dispenser dispenser = (Dispenser) event.getBlock().getState().getData();
         ClaimManager claimManager = plugin.getClaimManager();
-        Chunk chunk = event.getBlock().getRelative(dispenser.getFacing()).getLocation().getChunk();
 
-        if (claimManager.hasClaim(chunk))
-            event.setCancelled(true);
+        Chunk to = event.getBlock().getRelative(dispenser.getFacing()).getLocation().getChunk();
+        Chunk from = event.getBlock().getLocation().getChunk();
+
+        if (claimManager.hasClaim(to)) {
+            Claim claim = claimManager.getClaim(to);
+            if (claimManager.getClaim(from) != claim) {
+                event.setCancelled(true);
+            }
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
