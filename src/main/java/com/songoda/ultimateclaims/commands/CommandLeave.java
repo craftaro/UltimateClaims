@@ -55,9 +55,8 @@ public class CommandLeave extends AbstractCommand {
                 .processPlaceholder("claim", claim.getName())
                 .sendPrefixedMessage(player);
 
-        for (ClaimMember member : claim.getMembers())
+        for (ClaimMember member : claim.getOwnerAndMembers())
             this.notify(member);
-        this.notify(claim.getOwner());
 
         return ReturnType.SUCCESS;
     }
