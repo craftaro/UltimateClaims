@@ -11,11 +11,12 @@ import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
 import com.songoda.ultimateclaims.utils.Methods;
-import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class PowerCellGui extends Gui {
 
@@ -57,13 +58,19 @@ public class PowerCellGui extends Gui {
         this.setButton(5, 2, GuiUtils.createButtonItem(CompatibleMaterial.IRON_AXE,
                 plugin.getLocale().getMessage("interface.powercell.banstitle").getMessage(),
                 plugin.getLocale().getMessage("interface.powercell.banslore").getMessageLines()),
-                (event) -> {closed(); event.manager.showGUI(event.player, new BansGui(claim, this)); });
+                (event) -> {
+                    closed();
+                    event.manager.showGUI(event.player, new BansGui(claim, this));
+                });
 
         // Settings
         this.setButton(5, 3, GuiUtils.createButtonItem(CompatibleMaterial.REDSTONE,
                 plugin.getLocale().getMessage("interface.powercell.settingstitle").getMessage(),
                 plugin.getLocale().getMessage("interface.powercell.settingslore").getMessageLines()),
-                (event) -> {closed(); event.manager.showGUI(event.player, new SettingsGui(claim, this, event.player)); });
+                (event) -> {
+                    closed();
+                    event.manager.showGUI(event.player, new SettingsGui(claim, this, event.player));
+                });
 
         // Claim info
         this.setItem(5, 5, CompatibleMaterial.BOOK.getItem());
@@ -72,7 +79,10 @@ public class PowerCellGui extends Gui {
         this.setButton(5, 6, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
                 plugin.getLocale().getMessage("interface.powercell.memberstitle").getMessage(),
                 plugin.getLocale().getMessage("interface.powercell.memberslore").getMessageLines()),
-                (event) -> {closed(); event.manager.showGUI(event.player, new MembersGui(claim, this)); });
+                (event) -> {
+                    closed();
+                    event.manager.showGUI(event.player, new MembersGui(claim, this));
+                });
 
         // open inventory slots
         this.setAcceptsItems(true);
@@ -132,22 +142,25 @@ public class PowerCellGui extends Gui {
         lastUpdate = now;
 
         // Economy amount
-        this.setItem(0, 2, GuiUtils.updateItem(this.getItem(0, 2),
-                plugin.getLocale().getMessage("interface.powercell.economytitle")
-                        .processPlaceholder("time", Methods.makeReadable((long) powercell.getEconomyPower() * 60 * 1000)).getMessage(),
-                plugin.getLocale().getMessage("interface.powercell.economylore").getMessage().split("\\|")));
+        if (!Settings.DISABLE_FUEL.getBoolean())
+            this.setItem(0, 2, GuiUtils.updateItem(this.getItem(0, 2),
+                    plugin.getLocale().getMessage("interface.powercell.economytitle")
+                            .processPlaceholder("time", Methods.makeReadable((long) powercell.getEconomyPower() * 60 * 1000)).getMessage(),
+                    plugin.getLocale().getMessage("interface.powercell.economylore").getMessage().split("\\|")));
 
         // Display the total time
-        this.setItem(0, 4, GuiUtils.updateItem(this.getItem(0, 4),
-                plugin.getLocale().getMessage("interface.powercell.totaltitle")
-                        .processPlaceholder("time", Methods.makeReadable((long) powercell.getTotalPower() * 60 * 1000)).getMessage(),
-                ChatColor.BLACK.toString()));
+        if (!Settings.DISABLE_FUEL.getBoolean())
+            this.setItem(0, 4, GuiUtils.updateItem(this.getItem(0, 4),
+                    plugin.getLocale().getMessage("interface.powercell.totaltitle")
+                            .processPlaceholder("time", Methods.makeReadable((long) powercell.getTotalPower() * 60 * 1000)).getMessage(),
+                    ChatColor.BLACK.toString()));
 
         // Display the item amount
-        this.setItem(0, 6, GuiUtils.updateItem(this.getItem(0, 6),
-                plugin.getLocale().getMessage("interface.powercell.valuablestitle")
-                        .processPlaceholder("time", Methods.makeReadable((long) powercell.getItemPower() * 60 * 1000)).getMessage(),
-                ChatColor.BLACK.toString()));
+        if (!Settings.DISABLE_FUEL.getBoolean())
+            this.setItem(0, 6, GuiUtils.updateItem(this.getItem(0, 6),
+                    plugin.getLocale().getMessage("interface.powercell.valuablestitle")
+                            .processPlaceholder("time", Methods.makeReadable((long) powercell.getItemPower() * 60 * 1000)).getMessage(),
+                    ChatColor.BLACK.toString()));
 
         // buttons at the bottom of the screen
         // Claim info
