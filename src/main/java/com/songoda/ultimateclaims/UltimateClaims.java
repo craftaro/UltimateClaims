@@ -23,12 +23,13 @@ import com.songoda.ultimateclaims.database.migrations._3_MemberNames;
 import com.songoda.ultimateclaims.listeners.*;
 import com.songoda.ultimateclaims.placeholder.PlaceholderManager;
 import com.songoda.ultimateclaims.settings.PluginSettings;
-import com.songoda.ultimateclaims.tasks.*;
 import com.songoda.ultimateclaims.settings.Settings;
-import java.util.Collections;
-import java.util.List;
+import com.songoda.ultimateclaims.tasks.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
+
+import java.util.Collections;
+import java.util.List;
 
 public class UltimateClaims extends SongodaPlugin {
 
@@ -61,14 +62,14 @@ public class UltimateClaims extends SongodaPlugin {
     public void onPluginEnable() {
         // Register in Songoda Core
         SongodaCore.registerPlugin(this, 65, CompatibleMaterial.CHEST);
-        
+
         // Load Economy & Hologram hooks
         EconomyManager.load();
         HologramManager.load(this);
 
         // Setup Config
         Settings.setupConfig();
-		this.setLocale(Settings.LANGUGE_MODE.getString(), false);
+        this.setLocale(Settings.LANGUGE_MODE.getString(), false);
 
         // Set Economy & Hologram preference
         EconomyManager.getManager().setPreferredHook(Settings.ECONOMY.getString());
@@ -112,7 +113,8 @@ public class UltimateClaims extends SongodaPlugin {
         // Tasks
         this.inviteTask = InviteTask.startTask(this);
         AnimateTask.startTask(this);
-        PowerCellTask.startTask(this);
+        if (!Settings.DISABLE_FUEL.getBoolean())
+            PowerCellTask.startTask(this);
         TrackerTask.startTask(this);
         VisualizeTask.startTask(this);
 
@@ -156,7 +158,7 @@ public class UltimateClaims extends SongodaPlugin {
             final boolean useHolo = Settings.POWERCELL_HOLOGRAMS.getBoolean() && HologramManager.getManager().isEnabled();
             this.dataManager.getClaims((claims) -> {
                 this.claimManager.addClaims(claims);
-                if(useHolo)
+                if (useHolo)
                     this.claimManager.getRegisteredClaims().stream().filter(Claim::hasPowerCell).forEach(x -> x.getPowerCell().updateHologram());
             });
         }, 20L);
@@ -188,7 +190,7 @@ public class UltimateClaims extends SongodaPlugin {
 
     @Override
     public void onConfigReload() {
-		this.setLocale(Settings.LANGUGE_MODE.getString(), true);
+        this.setLocale(Settings.LANGUGE_MODE.getString(), true);
     }
 
     public GuiManager getGuiManager() {

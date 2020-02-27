@@ -74,6 +74,10 @@ public class Settings {
             "DEFAULT - Multiplies the cost by the claim size.",
             "LINEAR [value] - Multiplies the cost by the claim size multiplied by the value.");
 
+    public static final ConfigSetting DISABLE_FUEL = new ConfigSetting(config, "Main.Powercell Holograms", false,
+            "Should power cells not require fuel?");
+
+
     public static final ConfigSetting GLASS_TYPE_1 = new ConfigSetting(config, "Interfaces.Glass Type 1", "GRAY_STAINED_GLASS_PANE");
     public static final ConfigSetting GLASS_TYPE_2 = new ConfigSetting(config, "Interfaces.Glass Type 2", "BLUE_STAINED_GLASS_PANE");
     public static final ConfigSetting GLASS_TYPE_3 = new ConfigSetting(config, "Interfaces.Glass Type 3", "LIGHT_BLUE_STAINED_GLASS_PANE");

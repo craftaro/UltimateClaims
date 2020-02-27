@@ -1,131 +1,160 @@
-#General Messages
+# General Messages
 
-general.nametag.prefix = "&8[&6UltimateClaims&8]"
-general.word.none = "none"
-general.claim.defaultname = "%name%'s claim"
-general.claim.powercell = "&6%time% &7Remaining."
-general.claim.powercell.low = "&cLow Power!"
-general.claim.dissolve = "&7Your claim &6%claim% &7has been dissolved."
-general.claim.returnfunds = "&a%amount% has been returned to you."
-general.notanumber = "&cThe entry &4%value% &cis not a number"
-general.notenoughfunds = "&cYou do not have enough funds."
-general.powercellrecipe = "&6Powercell Recipe"
-general.interface.exit = "&cExit"
-general.interface.back = "&cBack"
-general.interface.next = "&cNext Page"
-general.interface.previous = "&cPrevious Page"
-general.interface.current = "&7Current: &6%current%&7."
+general:
+  nametag:
+    prefix: '&8[&6UltimateClaims&8]'
+  word:
+    none: none
+  claim:
+    defaultname: '%name%''s claim'
+    powercell:
+      low: '&cLow Power!'
+      message: '&6%time% &7Remaining.'
+    dissolve: '&7Your claim &6%claim% &7has been dissolved.'
+    returnfunds: '&a%amount% has been returned to you.'
+  notanumber: '&cThe entry &4%value% &cis not a number'
+  notenoughfunds: '&cYou do not have enough funds.'
+  powercellrecipe: '&6Powercell Recipe'
+  interface:
+    exit: '&cExit'
+    back: '&cBack'
+    next: '&cNext Page'
+    previous: '&cPrevious Page'
+    current: '&7Current: &6%current%&7.'
 
-#Command Messages
+# Command Messages
 
-command.general.notapartclaim = "&cYou are not apart of that claim or it does not exist."
-command.general.noclaim = "&cYou need to be in a claim to do this."
-command.general.noplayer = "&cThat player does not exist or is not online."
-command.general.notinclaim = "&cThat player is not in your claim."
-command.general.claimed = "&cThis chunk is already claimed."
-command.general.notclaimed = "&cThis chunk isn't claimed."
-command.general.notyourclaim = "&cThis chunk is claimed by someone else."
-command.invite.invited = "&7You have been invited to join &6%claim%&7. Use &6/c accept &7to accept the invitation."
-command.invite.invite = "&7You have invited &6%name% &7to join your claim&7."
-command.invite.notself = "&cYou cannot invite yourself."
-command.invite.already = "&cThis player is already a member."
-command.invite.alreadyinvited = "&cThis player already has an active invite."
-command.addmember.added = "&7You have been added to &6%claim%&7."
-command.addmember.add = "&7You have added &6%name% &7to your claim&7."
-command.kick.kicked = "&cYou have been kicked from &4%claim%&c."
-command.kick.kick = "&7You kicked &6%name% &7from &6%claim%&7."
-command.kick.notself = "&7You cannot kick yourself."
-command.uan.notself = "&7You cannot ban yourself."
-command.ban.banned = "&cYou have been banned from &4%claim%&c."
-command.ban.ban = "&7You banned &6%name% &7from &6%claim%&7."
-command.unban.notself = "&7You cannot unban yourself."
-command.unban.unbanned = "&cYou have been unbanned from &4%claim%&c."
-command.unban.unban = "&7You unbanned &6%name% &7from &6%claim%&7."
-command.unban.notself = "&7You cannot unban yourself."
-command.accept.none = "&cYou do not currently have any invites to accept."
-command.accept.success = "&7You are now a member of %claim%&7."
-command.accept.accepted = "&6%name% &7accepted your invitation."
-command.accept.maxed = "&7This claim is at their max capacity."
-command.claim.success = "&7You claimed this chunk for your claim."
-command.claim.nocell = "&cYou need to create a powercell before you can claim more land..."
-command.claim.noregion = "&cYou cannot claim a protected region!"
-command.claim.info = "&cYou have &4%time% &cto create a powercell before your claim is dissolved... To create one you need to construct the recipe which you can find at &6/c recipe&7. Form it in the center of a single chest within your claim."
-command.claim.nottouching = "&cYou can only claim chunks that are touching each other."
-command.claim.toomany = "&cYou can only claim &4%amount% &cchunks."
-command.claim.disabledworld = "&cYou cannot do that in this world."
-command.unclaim.success = "&7You unclaimed this chunk."
-command.unclaim.powercell = "&cYou cannot unclaim the chunk holding your powercell... Please move it first."
-command.leave.youleft = "&7You left &6%claim%&7."
-command.leave.left = "&6%player% &7left &6%claim%&7."
-command.leave.owner = "&cYou cannot leave your own claim."
-command.lock.locked = "&7You locked your claim."
-command.lock.unlocked = "&7You unlocked your claim."
-command.sethome.set = "&7You set the home for your claim."
-command.name.set = "&7The name for your claim changed to %name%"
-command.home.none = "&cThat claim doesn't have a home set..."
-command.home.success = "&7You teleported to your claims home."
-command.show.start = "&7Claim visualizer &2enabled."
-command.show.stop = "&7Claim visualizer &cdisabled."
+command:
+  general:
+    notapartclaim: '&cYou are not apart of that claim or it does not exist.'
+    noclaim: '&cYou need to be in a claim to do this.'
+    noplayer: '&cThat player does not exist or is not online.'
+    notinclaim: '&cThat player is not in your claim.'
+    claimed: '&cThis chunk is already claimed.'
+    notclaimed: '&cThis chunk isn''t claimed.'
+    notyourclaim: '&cThis chunk is claimed by someone else.'
+  invite:
+    invited: '&7You have been invited to join &6%claim%&7. Use &6/c accept &7to accept the invitation.'
+    invite: '&7You have invited &6%name% &7to join your claim&7.'
+    notself: '&cYou cannot invite yourself.'
+    already: '&cThis player is already a member.'
+    alreadyinvited: '&cThis player already has an active invite.'
+  addmember:
+    added: '&7You have been added to &6%claim%&7.'
+    add: '&7You have added &6%name% &7to your claim&7.'
+  kick:
+    kicked: '&cYou have been kicked from &4%claim%&c.'
+    kick: '&7You kicked &6%name% &7from &6%claim%&7.'
+    notself: '&7You cannot kick yourself.'
+  uan:
+    notself: '&7You cannot ban yourself.'
+  ban:
+    banned: '&cYou have been banned from &4%claim%&c.'
+    ban: '&7You banned &6%name% &7from &6%claim%&7.'
+  unban:
+    unbanned: '&cYou have been unbanned from &4%claim%&c.'
+    unban: '&7You unbanned &6%name% &7from &6%claim%&7.'
+    notself: '&7You cannot unban yourself.'
+  accept:
+    none: '&cYou do not currently have any invites to accept.'
+    success: '&7You are now a member of %claim%&7.'
+    accepted: '&6%name% &7accepted your invitation.'
+    maxed: '&7This claim is at their max capacity.'
+  claim:
+    success: '&7You claimed this chunk for your claim.'
+    nocell: '&cYou need to create a powercell before you can claim more land...'
+    noregion: '&cYou cannot claim a protected region!'
+    info: '&cYou have &4%time% &cto create a powercell before your claim is dissolved... To create one you need to construct the recipe which you can find at &6/c recipe&7. Form it in the center of a single chest within your claim.'
+    nottouching: '&cYou can only claim chunks that are touching each other.'
+    toomany: '&cYou can only claim &4%amount% &cchunks.'
+    disabledworld: '&cYou cannot do that in this world.'
+  unclaim:
+    success: '&7You unclaimed this chunk.'
+    powercell: '&cYou cannot unclaim the chunk holding your powercell... Please move it first.'
+  leave:
+    youleft: '&7You left &6%claim%&7.'
+    left: '&6%player% &7left &6%claim%&7.'
+    owner: '&cYou cannot leave your own claim.'
+  lock:
+    locked: '&7You locked your claim.'
+    unlocked: '&7You unlocked your claim.'
+  sethome:
+    set: '&7You set the home for your claim.'
+  name:
+    set: '&7The name for your claim changed to %name%'
+  home:
+    none: '&cThat claim doesn''t have a home set...'
+    success: '&7You teleported to your claims home.'
+  show:
+    start: '&7Claim visualizer &2enabled.'
+    stop: '&7Claim visualizer &cdisabled.'
 
-#Interface Messages
+# Interface Messages
 
-interface.powercell.economytitle = "&7Economy stored: &6%time%&7."
-interface.powercell.economylore = "&7Click to deposit funds."
-interface.powercell.valuablestitle = "&7Items stored: &6%time%&7."
-interface.powercell.totaltitle = "&7Total Power: &6%time%&7."
-interface.powercell.addfunds = "&7Enter an amount to deposit."
-interface.powercell.infotitle = "&5&lInfo"
-interface.powercell.infolore = "&7You have &6%chunks% &7claimed|&7chunks and &6%members% &7members."
-interface.powercell.banstitle = "&c&lBans"
-interface.powercell.banslore = "&7View your claims bans."
-interface.powercell.memberstitle = "&9&lMembers"
-interface.powercell.memberslore = "&7View your claims members."
-interface.powercell.settingstitle = "&6&lSettings"
-interface.powercell.settingslore = "&7Change your claims settings."
+interface:
+  powercell:
+    economytitle: '&7Economy stored: &6%time%&7.'
+    economylore: '&7Click to deposit funds.'
+    valuablestitle: '&7Items stored: &6%time%&7.'
+    totaltitle: '&7Total Power: &6%time%&7.'
+    addfunds: '&7Enter an amount to deposit.'
+    infotitle: '&5&lInfo'
+    infolore: '&7You have &6%chunks% &7claimed|&7chunks and &6%members% &7members.'
+    banstitle: '&c&lBans'
+    banslore: '&7View your claims bans.'
+    memberstitle: '&9&lMembers'
+    memberslore: '&7View your claims members.'
+    settingstitle: '&6&lSettings'
+    settingslore: '&7Change your claims settings.'
+  members:
+    title: Members
+    statslore: '&7Total Members: &6%totalmembers%&7.|&7Max Members: &6%maxmembers%&7.|&7Members: &6%members%&7.'
+    skulllore: '&7Role: &a%role%|&7Playtime: &b%playtime%|&7Member Since: &d%membersince%'
+    changetypetitle: '&7Change Type'
+    changetypelore: '&7Currently: &d%current%|&7Click to change type.'
+    statstitle: '&7Stats'
+    changesorttitle: '&7Change Sorting'
+    changesortlore: '&7Currently: &d%current%|&7Click to change sort.'
+    visitorsettingstitle: '&9&lVisitor Settings'
+    visitorsettingslore: '&7Edit settings for visitors.'
+    membersettingstitle: '&5&lMember Settings'
+    membersettingslore: '&7Edit settings for members.'
+  permsettings:
+    title: '%role% Settings'
+    breaktitle: '&7Block Break'
+    placetitle: '&7Block Place'
+    interacttitle: '&7Interact'
+    mobkilltitle: '&7Mob Killing'
+    redstonetitle: '&7Redstone'
+    doorstitle: '&7Doors'
+  bans:
+    title: Bans
+    infotitle: '&7Info'
+    skulllore: '&7Click to unban.'
+    infolore: '&7Ban count: &6%bancount%&7.'
+  settings:
+    title: Settings
+    hostilemobspawningtitle: '&6&lHostile Mob Spawning'
+    firespreadtitle: '&6&lFire Spread'
+    pvptitle: '&6&lPVP'
+    mobgriefingtitle: '&6&lMob Griefing'
+    leafdecaytitle: '&6&lLeaf Decay'
+  recipe:
+    title: Powercell Recipe
 
-interface.members.title = "Members"
-interface.members.statslore = "&7Total Members: &6%totalmembers%&7.|&7Max Members: &6%maxmembers%&7.|&7Members: &6%members%&7."
-interface.members.skulllore = "&7Role: &a%role%|&7Playtime: &b%playtime%|&7Member Since: &d%membersince%"
-interface.members.changetypetitle = "&7Change Type"
-interface.members.changetypelore = "&7Currently: &d%current%|&7Click to change type."
-interface.members.statstitle = "&7Stats"
-interface.members.changesorttitle = "&7Change Sorting"
-interface.members.changesortlore = "&7Currently: &d%current%|&7Click to change sort."
-interface.members.visitorsettingstitle = "&9&lVisitor Settings"
-interface.members.visitorsettingslore = "&7Edit settings for visitors."
-interface.members.membersettingstitle = "&5&lMember Settings"
-interface.members.membersettingslore = "&7Edit settings for members."
+# Event Messages
 
-interface.permsettings.title = "%role% Settings"
-interface.permsettings.breaktitle = "&7Block Break"
-interface.permsettings.placetitle = "&7Block Place"
-interface.permsettings.interacttitle = "&7Interact"
-interface.permsettings.mobkilltitle = "&7Mob Killing"
-interface.permsettings.redstonetitle = "&7Redstone"
-interface.permsettings.doorstitle = "&7Doors"
-
-interface.bans.title = "Bans"
-interface.bans.infotitle = "&7Info"
-interface.bans.skulllore = "&7Click to unban."
-interface.bans.infolore = "&7Ban count: &6%bancount%&7."
-
-interface.settings.title = "Settings"
-interface.settings.hostilemobspawningtitle = "&6&lHostile Mob Spawning"
-interface.settings.firespreadtitle = "&6&lFire Spread"
-interface.settings.pvptitle = "&6&lPVP"
-interface.settings.mobgriefingtitle = "&6&lMob Griefing"
-interface.settings.leafdecaytitle = "&6&lLeaf Decay"
-
-interface.recipe.title = "Powercell Recipe"
-
-#Event Messages
-
-event.general.nopermission = "&cYou do not have permission to do that."
-event.invite.expired = "&cYour invitation has expired..."
-event.claim.enter = "&7You have entered &6%claim%&7."
-event.claim.exit = "&7You have exited &6%claim%&7."
-event.claim.locked = "&cA magical force prevents you from entering..."
-event.powercell.success = "&7You created a powercell. Fill it up with fuel to keep your land claimed."
-event.powercell.failopen = "&cYou need to be the owner of this claim to open its powercell."
-event.powercell.lowpower = "&cYour claim &4%claim% &cis out of power!"
-event.powercell.superpower = "&cYour claim &4%claim% &cis still out of power and at risk of dissolution!"
+event:
+  general:
+    nopermission: '&cYou do not have permission to do that.'
+  invite:
+    expired: '&cYour invitation has expired...'
+  claim:
+    enter: '&7You have entered &6%claim%&7.'
+    exit: '&7You have exited &6%claim%&7.'
+    locked: '&cA magical force prevents you from entering...'
+  powercell:
+    success: '&7You created a powercell. Fill it up with fuel to keep your land claimed.'
+    failopen: '&cYou need to be the owner of this claim to open its powercell.'
+    lowpower: '&cYour claim &4%claim% &cis out of power!'
+    superpower: '&cYour claim &4%claim% &cis still out of power and at risk of dissolution!'
