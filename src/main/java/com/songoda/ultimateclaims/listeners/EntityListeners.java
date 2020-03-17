@@ -29,6 +29,7 @@ import org.bukkit.material.Dispenser;
 import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.ArrayList;
+import org.bukkit.GameMode;
 
 public class EntityListeners implements Listener {
 
@@ -270,6 +271,8 @@ public class EntityListeners implements Listener {
                 }
             }
         }
+
+        if (player.getGameMode() == GameMode.SPECTATOR) return false;
 
         if (claimManager.hasClaim(to)) {
             Claim claim = claimManager.getClaim(to);

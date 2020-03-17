@@ -4,6 +4,7 @@ import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.utils.PlayerUtils;
+import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -54,7 +55,8 @@ public class CommandAddMember extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        claim.addMember(toInvite, ClaimRole.MEMBER);
+        ClaimMember newMember = claim.addMember(toInvite, ClaimRole.MEMBER);
+        plugin.getDataManager().createMember(newMember);
 
         if(toInvite.isOnline())
             plugin.getLocale().getMessage("command.addmember.added")
