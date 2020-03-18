@@ -16,6 +16,7 @@ import com.songoda.core.hooks.WorldGuardHook;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.commands.*;
+import com.songoda.ultimateclaims.commands.admin.CommandRemoveClaim;
 import com.songoda.ultimateclaims.database.DataManager;
 import com.songoda.ultimateclaims.database.migrations._1_InitialMigration;
 import com.songoda.ultimateclaims.database.migrations._2_NewPermissions;
@@ -107,7 +108,9 @@ public class UltimateClaims extends SongodaPlugin {
                         new CommandUnBan(this),
                         new CommandRecipe(this),
                         new CommandSetSpawn(this),
-                        new CommandName(this)
+                        new CommandName(this),
+
+                        new CommandRemoveClaim(this)
                 );
 
         // Tasks
