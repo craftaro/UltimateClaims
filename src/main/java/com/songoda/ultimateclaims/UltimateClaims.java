@@ -93,6 +93,7 @@ public class UltimateClaims extends SongodaPlugin {
                         new CommandReload(this),
                         new CommandClaim(this),
                         new CommandUnClaim(this),
+                        new CommandRemoveClaim(this),
                         new CommandShow(this),
                         new CommandInvite(this),
                         new CommandAccept(this),

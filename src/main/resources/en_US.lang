@@ -71,6 +71,8 @@ command:
   unclaim:
     success: '&7You unclaimed this chunk.'
     powercell: '&cYou cannot unclaim the chunk holding your powercell... Please move it first.'
+  removeclaim:
+    success: '&7You removed claim %claim%.'
   leave:
     youleft: '&7You left &6%claim%&7.'
     left: '&6%player% &7left &6%claim%&7.'
