@@ -1,4 +1,4 @@
-package com.songoda.ultimateclaims.commands;
+package com.songoda.ultimateclaims.commands.admin;
 
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.ultimateclaims.UltimateClaims;
@@ -16,7 +16,7 @@ public class CommandRemoveClaim extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandRemoveClaim(UltimateClaims plugin) {
-        super(true, "removeclaim");
+        super(true, "admin removeclaim");
         this.plugin = plugin;
     }
 
@@ -69,12 +69,12 @@ public class CommandRemoveClaim extends AbstractCommand {
 
     @Override
     public String getPermissionNode() {
-        return "ultimateclaims.removeclaim";
+        return "ultimateclaims.admin.removeclaim";
     }
 
     @Override
     public String getSyntax() {
-        return "removeclaim";
+        return "admin removeclaim";
     }
 
     @Override
