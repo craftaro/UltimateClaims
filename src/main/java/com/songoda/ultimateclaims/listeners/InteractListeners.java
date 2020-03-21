@@ -8,6 +8,7 @@ import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -28,7 +29,18 @@ public class InteractListeners implements Listener {
 
         Chunk chunk = event.getClickedBlock().getChunk();
 
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || !claimManager.hasClaim(chunk)) return;
+        boolean hasClaim = claimManager.hasClaim(chunk);
+            if (event.getAction() == Action.PHYSICAL && hasClaim) {
+                Claim claim = claimManager.getClaim(chunk);
+
+                if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.PLACE)) {
+                    plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage((Player) event.getPlayer());
+                    event.setCancelled(true);
+                }
+                return;
+            }
+
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || !hasClaim) return;
 
         Claim claim = claimManager.getClaim(chunk);
 
