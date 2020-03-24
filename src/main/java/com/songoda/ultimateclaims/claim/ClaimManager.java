@@ -23,8 +23,6 @@ public class ClaimManager {
 
     public void addClaims(Map<UUID, Claim> claims) {
         this.registeredClaims.putAll(claims);
-
-        claims.values().forEach(UltimateClaims.getInstance().getDynmapManager()::refresh);
     }
 
     public boolean hasClaim(UUID owner) {
