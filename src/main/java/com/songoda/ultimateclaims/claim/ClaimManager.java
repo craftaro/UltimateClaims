@@ -1,5 +1,6 @@
 package com.songoda.ultimateclaims.claim;
 
+import com.songoda.ultimateclaims.UltimateClaims;
 import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;

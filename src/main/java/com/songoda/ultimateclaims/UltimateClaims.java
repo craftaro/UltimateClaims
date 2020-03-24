@@ -22,6 +22,7 @@ import com.songoda.ultimateclaims.database.migrations._1_InitialMigration;
 import com.songoda.ultimateclaims.database.migrations._2_NewPermissions;
 import com.songoda.ultimateclaims.database.migrations._3_MemberNames;
 import com.songoda.ultimateclaims.listeners.*;
+import com.songoda.ultimateclaims.dynmap.DynmapManager;
 import com.songoda.ultimateclaims.placeholder.PlaceholderManager;
 import com.songoda.ultimateclaims.settings.PluginSettings;
 import com.songoda.ultimateclaims.settings.Settings;
@@ -43,6 +44,7 @@ public class UltimateClaims extends SongodaPlugin {
     private final GuiManager guiManager = new GuiManager(this);
     private CommandManager commandManager;
     private ClaimManager claimManager;
+    private DynmapManager dynmapManager;
 
     private DataMigrationManager dataMigrationManager;
     private DataManager dataManager;
@@ -163,6 +165,9 @@ public class UltimateClaims extends SongodaPlugin {
                 this.claimManager.addClaims(claims);
                 if (useHolo)
                     this.claimManager.getRegisteredClaims().stream().filter(Claim::hasPowerCell).forEach(x -> x.getPowerCell().updateHologram());
+
+                if (pluginManager.isPluginEnabled("dynmap"))
+                    this.dynmapManager = new DynmapManager(this);
             });
         }, 20L);
     }
@@ -194,6 +199,7 @@ public class UltimateClaims extends SongodaPlugin {
     @Override
     public void onConfigReload() {
         this.setLocale(Settings.LANGUGE_MODE.getString(), true);
+        this.dynmapManager.reload();
     }
 
     public GuiManager getGuiManager() {
@@ -206,6 +212,10 @@ public class UltimateClaims extends SongodaPlugin {
 
     public ClaimManager getClaimManager() {
         return claimManager;
+    }
+
+    public DynmapManager getDynmapManager() {
+        return dynmapManager;
     }
 
     public DataMigrationManager getDataMigrationManager() {

@@ -1,7 +1,7 @@
 name: UltimateClaims
 description: UltimateClaims
 version: maven-version-number
-softdepend: [PlayerPoints, HolographicDisplays, Holograms, CMI, Vault]
+softdepend: [PlayerPoints, HolographicDisplays, Holograms, CMI, Vault, dynmap]
 main: com.songoda.ultimateclaims.UltimateClaims
 author: songoda
 api-version: 1.13

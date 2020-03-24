@@ -40,7 +40,7 @@ public class BlockListeners implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
-        ClaimManager claimManager = UltimateClaims.getInstance().getClaimManager();
+        ClaimManager claimManager = plugin.getClaimManager();
 
         Block block = event.getBlock();
 
@@ -58,7 +58,7 @@ public class BlockListeners implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        ClaimManager claimManager = UltimateClaims.getInstance().getClaimManager();
+        ClaimManager claimManager = plugin.getClaimManager();
 
         Block block = event.getBlock();
 
