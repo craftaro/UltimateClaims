@@ -127,9 +127,6 @@ public class UltimateClaims extends SongodaPlugin {
         if (pluginManager.isPluginEnabled("PlaceholderAPI"))
             new PlaceholderManager(this).register();
 
-        if (pluginManager.isPluginEnabled("dynmap"))
-            this.dynmapManager = new DynmapManager(this);
-
         // Start our databases
         this.claimManager = new ClaimManager();
 
@@ -168,6 +165,9 @@ public class UltimateClaims extends SongodaPlugin {
                 this.claimManager.addClaims(claims);
                 if (useHolo)
                     this.claimManager.getRegisteredClaims().stream().filter(Claim::hasPowerCell).forEach(x -> x.getPowerCell().updateHologram());
+
+                if (pluginManager.isPluginEnabled("dynmap"))
+                    this.dynmapManager = new DynmapManager(this);
             });
         }, 20L);
     }

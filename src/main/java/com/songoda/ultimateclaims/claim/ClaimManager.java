@@ -14,11 +14,7 @@ public class ClaimManager {
     private final Map<UUID, Claim> registeredClaims = new HashMap<>();
 
     public Claim addClaim(UUID owner, Claim claim) {
-        Claim result = this.registeredClaims.put(owner, claim);
-
-        UltimateClaims.getInstance().getDynmapManager().refresh(claim);
-
-        return result;
+        return this.registeredClaims.put(owner, claim);
     }
 
     public Claim addClaim(Player owner, Claim claim) {

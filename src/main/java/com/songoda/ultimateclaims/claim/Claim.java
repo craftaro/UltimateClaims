@@ -201,18 +201,12 @@ public class Claim {
     public ClaimedChunk addClaimedChunk(Chunk chunk) {
         ClaimedChunk newChunk = new ClaimedChunk(this, chunk);
         this.claimedChunks.add(newChunk);
-
-        UltimateClaims.getInstance().getDynmapManager().refresh(this);
-
         return newChunk;
     }
 
     public ClaimedChunk addClaimedChunk(String world, int x, int z) {
         ClaimedChunk newChunk = new ClaimedChunk(this, world, x, z);
         this.claimedChunks.add(newChunk);
-
-        UltimateClaims.getInstance().getDynmapManager().refresh(this);
-
         return newChunk;
     }
 
@@ -224,9 +218,6 @@ public class Claim {
     public ClaimedChunk removeClaimedChunk(Chunk chunk) {
         ClaimedChunk removedChunk = new ClaimedChunk(this, chunk);
         this.claimedChunks.remove(removedChunk);
-
-        UltimateClaims.getInstance().getDynmapManager().refresh(this);
-
         return removedChunk;
     }
 

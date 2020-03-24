@@ -70,6 +70,7 @@ public class CommandUnClaim extends AbstractCommand {
 
         // Remove chunk from claim
         ClaimedChunk removedChunk = claim.removeClaimedChunk(chunk, player);
+        plugin.getDynmapManager().refresh(claim);
         if (claim.getClaimSize() == 0) {
             plugin.getLocale().getMessage("general.claim.dissolve")
                     .processPlaceholder("claim", claim.getName())

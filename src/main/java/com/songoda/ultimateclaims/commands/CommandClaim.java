@@ -89,6 +89,7 @@ public class CommandClaim extends AbstractCommand {
             }
 
             ClaimedChunk newChunk = claim.addClaimedChunk(chunk, player);
+            plugin.getDynmapManager().refresh(claim);
 
             plugin.getDataManager().createChunk(newChunk);
 
@@ -100,6 +101,7 @@ public class CommandClaim extends AbstractCommand {
                     .addClaimedChunk(chunk, player)
                     .build();
             plugin.getClaimManager().addClaim(player, claim);
+            plugin.getDynmapManager().refresh(claim);
 
             plugin.getDataManager().createClaim(claim);
 
