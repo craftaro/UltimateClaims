@@ -86,6 +86,16 @@ public class Settings {
             "The enabled language file.",
             "More language files (if available) can be found in the plugins data folder.");
 
+    public static final ConfigSetting DYNMAP_ENABLED = new ConfigSetting(config, "Dynmap.Enabled", true, "Set to 'false' to disable highlighting claimed areas on Dynmap.");
+    public static final ConfigSetting DYNMAP_LABEL = new ConfigSetting(config, "Dynmap.Label", "Claimed Chunks",
+            "The label is shown to the user at the upper-right corner by default",
+            "User can toggle a checkbox to disable this overlay");
+    public static final ConfigSetting DYNMAP_BUBBLE = new ConfigSetting(config, "Dynmap.Bubble", "<b><u>${Claim}</u></b><br>\n<b>Owner</b>: ${Owner}<br>\n<b>Power left</b>: ${PowerLeft}",
+            "The text shown when you click on an claim on the Dynmap. May contain HTML",
+            "Supported placeholder: ${Claim}, ${Owner}, ${OwnerUUID}, ${MemberCount}, ${PowerLeft}");
+    public static final ConfigSetting DYNMAP_UPDATE_INTERVAL = new ConfigSetting(config, "Dynmap.UpdateInterval", 60,
+            "How often should existing Claims be updated on Dynmap");
+
     public static final ConfigSetting MYSQL_ENABLED = new ConfigSetting(config, "MySQL.Enabled", false, "Set to 'true' to use MySQL instead of SQLite for data storage.");
     public static final ConfigSetting MYSQL_HOSTNAME = new ConfigSetting(config, "MySQL.Hostname", "localhost");
     public static final ConfigSetting MYSQL_PORT = new ConfigSetting(config, "MySQL.Port", 3306);

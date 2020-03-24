@@ -1,5 +1,6 @@
 package com.songoda.ultimateclaims.claim;
 
+import com.songoda.ultimateclaims.UltimateClaims;
 import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -13,7 +14,11 @@ public class ClaimManager {
     private final Map<UUID, Claim> registeredClaims = new HashMap<>();
 
     public Claim addClaim(UUID owner, Claim claim) {
-        return this.registeredClaims.put(owner, claim);
+        Claim result = this.registeredClaims.put(owner, claim);
+
+        UltimateClaims.getInstance().getDynmapManager().refresh(claim);
+
+        return result;
     }
 
     public Claim addClaim(Player owner, Claim claim) {
@@ -22,6 +27,8 @@ public class ClaimManager {
 
     public void addClaims(Map<UUID, Claim> claims) {
         this.registeredClaims.putAll(claims);
+
+        claims.values().forEach(UltimateClaims.getInstance().getDynmapManager()::refresh);
     }
 
     public boolean hasClaim(UUID owner) {
