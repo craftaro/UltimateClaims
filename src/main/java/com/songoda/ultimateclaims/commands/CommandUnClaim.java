@@ -1,20 +1,20 @@
 package com.songoda.ultimateclaims.commands;
 
+import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimedChunk;
 import com.songoda.ultimateclaims.claim.PowerCell;
-import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import org.bukkit.Bukkit;
 
 public class CommandUnClaim extends AbstractCommand {
 
@@ -37,7 +37,7 @@ public class CommandUnClaim extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        if (!claim.getOwner().getUniqueId().equals(player.getUniqueId())){
+        if (!claim.getOwner().getUniqueId().equals(player.getUniqueId())) {
             plugin.getLocale().getMessage("command.general.notyourclaim").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
@@ -52,8 +52,8 @@ public class CommandUnClaim extends AbstractCommand {
 
         // we've just unclaimed the chunk we're in, so we've "moved" out of the claim
         // Note: Can't use streams here because `Bukkit.getOnlinePlayers()` has a different protoype in legacy
-        for(Player p : Bukkit.getOnlinePlayers()) {
-            if(p.getLocation().getChunk().equals(chunk)) {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (p.getLocation().getChunk().equals(chunk)) {
                 ClaimMember member = claim.getMember(p);
                 if (member != null) {
                     if (member.getRole() == ClaimRole.VISITOR)
@@ -61,7 +61,7 @@ public class CommandUnClaim extends AbstractCommand {
                     else
                         member.setPresent(false);
                 }
-                if(Settings.CLAIMS_BOSSBAR.getBoolean()) {
+                if (Settings.CLAIMS_BOSSBAR.getBoolean()) {
                     claim.getVisitorBossBar().removePlayer(p);
                     claim.getMemberBossBar().removePlayer(p);
                 }
@@ -70,7 +70,8 @@ public class CommandUnClaim extends AbstractCommand {
 
         // Remove chunk from claim
         ClaimedChunk removedChunk = claim.removeClaimedChunk(chunk, player);
-        plugin.getDynmapManager().refresh(claim);
+        if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
+            plugin.getDynmapManager().refresh(claim);
         if (claim.getClaimSize() == 0) {
             plugin.getLocale().getMessage("general.claim.dissolve")
                     .processPlaceholder("claim", claim.getName())
@@ -80,7 +81,7 @@ public class CommandUnClaim extends AbstractCommand {
             double claimBank = claim.getPowerCell().getEconomyBalance();
             if (claimBank > 0) {
                 EconomyManager.deposit(player, claimBank);
-                 plugin.getLocale().getMessage("general.claim.returnfunds")
+                plugin.getLocale().getMessage("general.claim.returnfunds")
                         .processPlaceholder("amount", claimBank)
                         .sendPrefixedMessage(player);
             }

@@ -1,23 +1,23 @@
 package com.songoda.ultimateclaims.commands;
 
+import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.hooks.WorldGuardHook;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimBuilder;
 import com.songoda.ultimateclaims.claim.ClaimedChunk;
-import com.songoda.core.commands.AbstractCommand;
-import com.songoda.core.hooks.WorldGuardHook;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
-import com.songoda.ultimateclaims.utils.Methods;
 import com.songoda.ultimateclaims.settings.Settings;
+import com.songoda.ultimateclaims.utils.Methods;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.bukkit.Bukkit;
-import org.bukkit.permissions.PermissionAttachmentInfo;
 
 public class CommandClaim extends AbstractCommand {
 
@@ -47,7 +47,7 @@ public class CommandClaim extends AbstractCommand {
 
         // firstly, can we even claim this chunk?
         Boolean flag;
-        if((flag = WorldGuardHook.getBooleanFlag(chunk, "allow-claims")) != null && !flag) {
+        if ((flag = WorldGuardHook.getBooleanFlag(chunk, "allow-claims")) != null && !flag) {
             plugin.getLocale().getMessage("command.claim.noregion").sendPrefixedMessage(player);
             return ReturnType.FAILURE;
         }
@@ -75,7 +75,7 @@ public class CommandClaim extends AbstractCommand {
             for (PermissionAttachmentInfo perms : player.getEffectivePermissions()) {
                 int amount;
                 String a;
-                if (perms.getPermission().startsWith("ultimateclaims.maxclaims.") 
+                if (perms.getPermission().startsWith("ultimateclaims.maxclaims.")
                         && (a = perms.getPermission().substring("ultimateclaims.maxclaims.".length())).matches("^[0-9]+$")
                         && (amount = Integer.parseInt(a)) > maxClaimable)
                     maxClaimable = amount;
@@ -89,7 +89,8 @@ public class CommandClaim extends AbstractCommand {
             }
 
             ClaimedChunk newChunk = claim.addClaimedChunk(chunk, player);
-            plugin.getDynmapManager().refresh(claim);
+            if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
+                plugin.getDynmapManager().refresh(claim);
 
             plugin.getDataManager().createChunk(newChunk);
 
@@ -101,7 +102,8 @@ public class CommandClaim extends AbstractCommand {
                     .addClaimedChunk(chunk, player)
                     .build();
             plugin.getClaimManager().addClaim(player, claim);
-            plugin.getDynmapManager().refresh(claim);
+            if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
+                plugin.getDynmapManager().refresh(claim);
 
             plugin.getDataManager().createClaim(claim);
 
@@ -112,8 +114,8 @@ public class CommandClaim extends AbstractCommand {
 
         // we've just claimed the chunk we're in, so we've "moved" into the claim
         // Note: Can't use streams here because `Bukkit.getOnlinePlayers()` has a different protoype in legacy
-        for(Player p : Bukkit.getOnlinePlayers()) {
-            if(p.getLocation().getChunk().equals(chunk)) {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (p.getLocation().getChunk().equals(chunk)) {
                 ClaimMember member = claim.getMember(p);
 
                 if (member != null)
@@ -122,8 +124,8 @@ public class CommandClaim extends AbstractCommand {
                     // todo: expunge banned players
                     member = claim.addMember(p, ClaimRole.VISITOR);
 
-                if(Settings.CLAIMS_BOSSBAR.getBoolean()) {
-                    if(member.getRole() == ClaimRole.VISITOR) {
+                if (Settings.CLAIMS_BOSSBAR.getBoolean()) {
+                    if (member.getRole() == ClaimRole.VISITOR) {
                         claim.getVisitorBossBar().addPlayer(p);
                     } else {
                         claim.getMemberBossBar().addPlayer(p);

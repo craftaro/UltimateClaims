@@ -292,6 +292,8 @@ public class Claim {
 
     public void destroy() {
         this.claimedChunks.clear();
+        if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
+            UltimateClaims.getInstance().getDynmapManager().refresh(this);
         this.powerCell.destroy();
         UltimateClaims.getInstance().getDataManager().deleteClaim(this);
         UltimateClaims.getInstance().getClaimManager().removeClaim(this);
@@ -301,6 +303,7 @@ public class Claim {
         if (bossBarVisitor != null) bossBarVisitor.removeAll();
         getOwnerAndMembers().forEach(m -> m.setPresent(false));
         members.clear();
+
     }
 
     public Set<UUID> getBannedPlayers() {
