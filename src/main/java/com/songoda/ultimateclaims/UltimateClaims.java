@@ -199,7 +199,7 @@ public class UltimateClaims extends SongodaPlugin {
     @Override
     public void onConfigReload() {
         this.setLocale(Settings.LANGUGE_MODE.getString(), true);
-        
+
         if (getServer().getPluginManager().isPluginEnabled("dynmap"))
             this.dynmapManager.reload();
     }

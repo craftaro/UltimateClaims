@@ -1,12 +1,12 @@
 package com.songoda.ultimateclaims.utils;
 
+import com.songoda.core.compatibility.CompatibleMaterial;
+import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.ultimateclaims.UltimateClaims;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 public class Methods {
 
     private static final Random random = new Random();
+    private static Map<String, Location> serializeCache = new HashMap<>();
 
     public static void animateChunk(Chunk chunk, Player player, Material material) {
         int bx = chunk.getX() << 4;
@@ -21,21 +22,22 @@ public class Methods {
 
         World world = player.getWorld();
 
-        for (int xx = bx; xx < bx + 16; xx++) {
-            for (int zz = bz; zz < bz + 16; zz++) {
-                for (int yy = player.getLocation().getBlockY() - 5; yy < player.getLocation().getBlockY() + 5; yy++) {
-                    Block block = world.getBlockAt(xx, yy, zz);
-                    if (!block.getType().isOccluding()) continue;
-                    Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () -> {
-                        player.sendBlockChange(block.getLocation(), material, (byte) 0);
-                        Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () ->
-                                player.sendBlockChange(block.getLocation(), block.getType(), block.getData()), random.nextInt(30) + 1);
-                        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
-                            player.playSound(block.getLocation(), Sound.BLOCK_METAL_STEP, 1F, .2F);
-                    }, random.nextInt(30) + 1);
+        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))
+            for (int xx = bx; xx < bx + 16; xx++) {
+                for (int zz = bz; zz < bz + 16; zz++) {
+                    for (int yy = player.getLocation().getBlockY() - 5; yy < player.getLocation().getBlockY() + 5; yy++) {
+                        Block block = world.getBlockAt(xx, yy, zz);
+                        CompatibleMaterial m = CompatibleMaterial.getMaterial(block);
+                        if (!m.isOccluding() || m.isInteractable()) continue;
+                        Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () -> {
+                            player.sendBlockChange(block.getLocation(), material, (byte) 0);
+                            Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () ->
+                                    player.sendBlockChange(block.getLocation(), block.getBlockData()), random.nextInt(30) + 1);
+                            player.playSound(block.getLocation(), CompatibleSound.BLOCK_METAL_STEP.getSound(), 1F, .2F);
+                        }, random.nextInt(30) + 1);
+                    }
                 }
             }
-        }
     }
 
     public static String formatTitle(String text) {
@@ -85,7 +87,6 @@ public class Methods {
 
         return sb.toString().trim();
     }
-
 
     public static long parseTime(String input) {
         long result = 0;
@@ -145,8 +146,6 @@ public class Methods {
         str = str.replace(".0", "").replace(".", "/");
         return str;
     }
-
-    private static Map<String, Location> serializeCache = new HashMap<>();
 
     /**
      * Deserializes a location from the string.
