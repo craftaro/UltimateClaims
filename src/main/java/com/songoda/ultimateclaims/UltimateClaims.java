@@ -21,8 +21,8 @@ import com.songoda.ultimateclaims.database.DataManager;
 import com.songoda.ultimateclaims.database.migrations._1_InitialMigration;
 import com.songoda.ultimateclaims.database.migrations._2_NewPermissions;
 import com.songoda.ultimateclaims.database.migrations._3_MemberNames;
-import com.songoda.ultimateclaims.listeners.*;
 import com.songoda.ultimateclaims.dynmap.DynmapManager;
+import com.songoda.ultimateclaims.listeners.*;
 import com.songoda.ultimateclaims.placeholder.PlaceholderManager;
 import com.songoda.ultimateclaims.settings.PluginSettings;
 import com.songoda.ultimateclaims.settings.Settings;
@@ -199,7 +199,9 @@ public class UltimateClaims extends SongodaPlugin {
     @Override
     public void onConfigReload() {
         this.setLocale(Settings.LANGUGE_MODE.getString(), true);
-        this.dynmapManager.reload();
+
+        if (getServer().getPluginManager().isPluginEnabled("dynmap"))
+            this.dynmapManager.reload();
     }
 
     public GuiManager getGuiManager() {
