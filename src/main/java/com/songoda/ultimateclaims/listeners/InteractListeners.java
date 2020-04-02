@@ -1,5 +1,6 @@
 package com.songoda.ultimateclaims.listeners;
 
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
@@ -30,22 +31,31 @@ public class InteractListeners implements Listener {
         Chunk chunk = event.getClickedBlock().getChunk();
 
         boolean hasClaim = claimManager.hasClaim(chunk);
-            if (event.getAction() == Action.PHYSICAL && hasClaim) {
-                Claim claim = claimManager.getClaim(chunk);
+        if (event.getAction() == Action.PHYSICAL && hasClaim) {
+            Claim claim = claimManager.getClaim(chunk);
 
-                if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.PLACE)) {
-                    plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage((Player) event.getPlayer());
-                    event.setCancelled(true);
-                }
+            boolean canRedstone = isRedstone(event.getClickedBlock()) && claim.playerHasPerms(event.getPlayer(), ClaimPerm.REDSTONE);
+            if (canRedstone) {
+                return;
+            } else if (isRedstone(event.getClickedBlock()) && !claim.playerHasPerms(event.getPlayer(), ClaimPerm.REDSTONE)) {
+                plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
+                event.setCancelled(true);
                 return;
             }
+
+            if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.PLACE)) {
+                plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage((Player) event.getPlayer());
+                event.setCancelled(true);
+            }
+            return;
+        }
 
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK || !hasClaim) return;
 
         Claim claim = claimManager.getClaim(chunk);
 
-        boolean canRedstone = isRedstone(event.getClickedBlock()) && claim.playerHasPerms(event.getPlayer(), ClaimPerm.REDSTONE);
         boolean canDoors = isDoor(event.getClickedBlock()) && claim.playerHasPerms(event.getPlayer(), ClaimPerm.DOORS);
+        boolean canRedstone = isRedstone(event.getClickedBlock()) && claim.playerHasPerms(event.getPlayer(), ClaimPerm.REDSTONE);
 
         if (canRedstone || canDoors) {
             return;
@@ -110,16 +120,24 @@ public class InteractListeners implements Listener {
 
     private boolean isRedstone(Block block) {
         if (block == null) return false;
-        switch (block.getType().name()) {
-            case "LEVER":
-            case "BIRCH_BUTTON":
-            case "ACACIA_BUTTON":
-            case "DARK_OAK_BUTTON":
-            case "JUNGLE_BUTTON":
-            case "OAK_BUTTON":
-            case "SPRUCE_BUTTON":
-            case "STONE_BUTTON":
-            case "WOOD_BUTTON":
+        switch (CompatibleMaterial.getMaterial(block)) {
+            case LEVER:
+            case BIRCH_BUTTON:
+            case ACACIA_BUTTON:
+            case DARK_OAK_BUTTON:
+            case JUNGLE_BUTTON:
+            case OAK_BUTTON:
+            case SPRUCE_BUTTON:
+            case STONE_BUTTON:
+            case ACACIA_PRESSURE_PLATE:
+            case BIRCH_PRESSURE_PLATE:
+            case DARK_OAK_PRESSURE_PLATE:
+            case HEAVY_WEIGHTED_PRESSURE_PLATE:
+            case JUNGLE_PRESSURE_PLATE:
+            case LIGHT_WEIGHTED_PRESSURE_PLATE:
+            case OAK_PRESSURE_PLATE:
+            case SPRUCE_PRESSURE_PLATE:
+            case STONE_PRESSURE_PLATE:
                 return true;
             default:
                 return false;
