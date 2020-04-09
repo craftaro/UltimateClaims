@@ -142,21 +142,21 @@ public class PowerCellGui extends Gui {
         lastUpdate = now;
 
         // Economy amount
-        if (!Settings.DISABLE_FUEL.getBoolean())
+        if (Settings.DISABLE_FUEL.getBoolean())
             this.setItem(0, 2, GuiUtils.updateItem(this.getItem(0, 2),
                     plugin.getLocale().getMessage("interface.powercell.economytitle")
                             .processPlaceholder("time", Methods.makeReadable((long) powercell.getEconomyPower() * 60 * 1000)).getMessage(),
                     plugin.getLocale().getMessage("interface.powercell.economylore").getMessage().split("\\|")));
 
         // Display the total time
-        if (!Settings.DISABLE_FUEL.getBoolean())
+        if (Settings.DISABLE_FUEL.getBoolean())
             this.setItem(0, 4, GuiUtils.updateItem(this.getItem(0, 4),
                     plugin.getLocale().getMessage("interface.powercell.totaltitle")
                             .processPlaceholder("time", Methods.makeReadable((long) powercell.getTotalPower() * 60 * 1000)).getMessage(),
                     ChatColor.BLACK.toString()));
 
         // Display the item amount
-        if (!Settings.DISABLE_FUEL.getBoolean())
+        if (Settings.DISABLE_FUEL.getBoolean())
             this.setItem(0, 6, GuiUtils.updateItem(this.getItem(0, 6),
                     plugin.getLocale().getMessage("interface.powercell.valuablestitle")
                             .processPlaceholder("time", Methods.makeReadable((long) powercell.getItemPower() * 60 * 1000)).getMessage(),

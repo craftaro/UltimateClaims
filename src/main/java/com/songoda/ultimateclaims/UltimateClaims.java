@@ -118,7 +118,7 @@ public class UltimateClaims extends SongodaPlugin {
         // Tasks
         this.inviteTask = InviteTask.startTask(this);
         AnimateTask.startTask(this);
-        if (!Settings.DISABLE_FUEL.getBoolean())
+        if (Settings.DISABLE_FUEL.getBoolean())
             PowerCellTask.startTask(this);
         TrackerTask.startTask(this);
         VisualizeTask.startTask(this);
