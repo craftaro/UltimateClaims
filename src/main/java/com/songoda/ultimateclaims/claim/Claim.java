@@ -336,7 +336,7 @@ public class Claim {
 
     public long getTotalPower() {
         if (hasPowerCell())
-            return powerCell.getCurrentPower();
+            return powerCell.getTotalPower();
         else
             return 0;
     }
