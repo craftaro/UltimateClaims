@@ -8,7 +8,6 @@ import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
-import java.util.List;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,17 +17,11 @@ import org.bukkit.block.Chest;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockPistonEvent;
-import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.block.BlockPistonRetractEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.LeavesDecayEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.InventoryHolder;
+
+import java.util.List;
 
 public class BlockListeners implements Listener {
 
@@ -49,6 +42,20 @@ public class BlockListeners implements Listener {
         if (!claimManager.hasClaim(chunk)) return;
 
         Claim claim = claimManager.getClaim(chunk);
+
+        PowerCell powerCell = claim.getPowerCell();
+        
+        if (powerCell != null) {
+            Block blockPowerCell = powerCell.getLocation().getBlock();
+
+            if (block.getType() == Material.CHEST && (block.getRelative(BlockFace.NORTH).equals(blockPowerCell)
+                    || block.getRelative(BlockFace.SOUTH).equals(blockPowerCell)
+                    || block.getRelative(BlockFace.EAST).equals(blockPowerCell)
+                    || block.getRelative(BlockFace.WEST).equals(blockPowerCell))) {
+                event.setCancelled(true);
+                return;
+            }
+        }
 
         if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.PLACE)) {
             plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
@@ -102,12 +109,12 @@ public class BlockListeners implements Listener {
 
         Claim claim = claimManager.getClaim(event.getBlock().getChunk());
         if (claim != null && !claim.getClaimSettings().isFireSpread()) {
-            if(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_11)) {
+            if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_11)) {
                 event.getIgnitingBlock().setType(Material.AIR);
             } else {
-                for(BlockFace bf : new BlockFace[]{BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST}) {
+                for (BlockFace bf : new BlockFace[]{BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST}) {
                     Block b = event.getBlock().getRelative(bf);
-                    if(b != null && b.getType() == Material.FIRE) {
+                    if (b != null && b.getType() == Material.FIRE) {
                         b.setType(Material.AIR);
                     }
                 }
@@ -130,7 +137,7 @@ public class BlockListeners implements Listener {
     public void onHopper(InventoryMoveItemEvent event) {
         // legacy doesn't have Inventory.getLocation()
         final InventoryHolder holder = event.getDestination().getHolder();
-        if (!(holder instanceof Chest)) 
+        if (!(holder instanceof Chest))
             return;
         final Location target = ((Chest) holder).getLocation();
         final Claim claim;
@@ -154,10 +161,10 @@ public class BlockListeners implements Listener {
         Claim toClaim = claimManager.getClaim(event.getToBlock().getChunk());
         // if we're moving across a claim boundary, cancel the event
         if (fromClaim != null && toClaim != null) {
-            if(!fromClaim.equals(toClaim)) {
+            if (!fromClaim.equals(toClaim)) {
                 event.setCancelled(true);
             }
-        } else if(toClaim != null) {
+        } else if (toClaim != null) {
             // moving from unclaimed to a claim
             event.setCancelled(true);
         }
@@ -187,7 +194,7 @@ public class BlockListeners implements Listener {
                 Claim toClaim = claimManager.getClaim(block.getChunk());
                 // if we're moving across a claim boundary, cancel the event
                 if (fromClaim != null && toClaim != null) {
-                    if(!fromClaim.equals(toClaim)) {
+                    if (!fromClaim.equals(toClaim)) {
                         // different claims!
                         event.setCancelled(true);
                         return;
@@ -201,7 +208,7 @@ public class BlockListeners implements Listener {
                 Claim toClaim = claimManager.getClaim(block.getRelative(dir).getChunk());
                 // if we're moving across a claim boundary, cancel the event
                 if (fromClaim != null && toClaim != null) {
-                    if(!fromClaim.equals(toClaim)) {
+                    if (!fromClaim.equals(toClaim)) {
                         // different claims!
                         event.setCancelled(true);
                         return;
