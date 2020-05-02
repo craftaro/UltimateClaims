@@ -48,11 +48,11 @@ public class SettingsMemberGui extends Gui {
         this.setButton(1, 1, CompatibleMaterial.IRON_PICKAXE.getItem(), (event) -> toggleBreak());
         this.setButton(1, 2, CompatibleMaterial.STONE.getItem(), (event) -> togglePlace());
         this.setButton(1, 3, CompatibleMaterial.LEVER.getItem(), (event) -> toggleInteract());
-        this.setItem(1, 4, AIR);
+        //this.setItem(1, 4, AIR);
         this.setButton(1, 5, CompatibleMaterial.OAK_DOOR.getItem(), (event) -> toggleDoors());
         this.setButton(1, 6, CompatibleMaterial.DIAMOND_SWORD.getItem(), (event) -> toggleKills());
         this.setButton(1, 7, CompatibleMaterial.REDSTONE.getItem(), (event) -> toggleRedstone());
-        this.setButton(1, 8, CompatibleMaterial.GOLD_INGOT.getItem(), (event) -> toggleTrading());
+        this.setButton(1, 4, CompatibleMaterial.EMERALD.getItem(), (event) -> toggleTrading());
 
         refreshDisplay();
     }
@@ -77,6 +77,14 @@ public class SettingsMemberGui extends Gui {
                                 ? claim.getMemberPermissions().hasPermission(ClaimPerm.INTERACT) : claim.getVisitorPermissions().hasPermission(ClaimPerm.INTERACT))
                         .getMessage().split("\\|"));
         //this.setItem(1, 4, AIR);
+
+        this.updateItem(1, 4,
+                plugin.getLocale().getMessage("interface.permsettings.tradingtitle").getMessage(),
+                plugin.getLocale().getMessage("general.interface.current")
+                        .processPlaceholder("current", role == ClaimRole.MEMBER
+                                ? claim.getMemberPermissions().hasPermission(ClaimPerm.TRADING) : claim.getVisitorPermissions().hasPermission(ClaimPerm.TRADING))
+                        .getMessage().split("\\|"));
+
         this.updateItem(1, 5,
                 plugin.getLocale().getMessage("interface.permsettings.doorstitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
@@ -95,12 +103,7 @@ public class SettingsMemberGui extends Gui {
                         .processPlaceholder("current", role == ClaimRole.MEMBER
                                 ? claim.getMemberPermissions().hasPermission(ClaimPerm.REDSTONE) : claim.getVisitorPermissions().hasPermission(ClaimPerm.REDSTONE))
                         .getMessage().split("\\|"));
-        this.updateItem(1, 7,
-                plugin.getLocale().getMessage("interface.permsettings.tradingtitle").getMessage(),
-                plugin.getLocale().getMessage("general.interface.current")
-                        .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().hasPermission(ClaimPerm.TRADING) : claim.getVisitorPermissions().hasPermission(ClaimPerm.TRADING))
-                        .getMessage.split("\\|"));
+
     }
 
     void toggleBreak() {
