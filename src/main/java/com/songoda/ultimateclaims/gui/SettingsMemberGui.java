@@ -52,6 +52,7 @@ public class SettingsMemberGui extends Gui {
         this.setButton(1, 5, CompatibleMaterial.OAK_DOOR.getItem(), (event) -> toggleDoors());
         this.setButton(1, 6, CompatibleMaterial.DIAMOND_SWORD.getItem(), (event) -> toggleKills());
         this.setButton(1, 7, CompatibleMaterial.REDSTONE.getItem(), (event) -> toggleRedstone());
+        this.setButton(1, 8, CompatibleMaterial.GOLD_INGOT.getItem(), (event) -> toggleTrading());
 
         refreshDisplay();
     }
@@ -94,6 +95,12 @@ public class SettingsMemberGui extends Gui {
                         .processPlaceholder("current", role == ClaimRole.MEMBER
                                 ? claim.getMemberPermissions().hasPermission(ClaimPerm.REDSTONE) : claim.getVisitorPermissions().hasPermission(ClaimPerm.REDSTONE))
                         .getMessage().split("\\|"));
+        this.updateItem(1, 7,
+                plugin.getLocale().getMessage("interface.permsettings.tradingtitle").getMessage(),
+                plugin.getLocale().getMessage("general.interface.current")
+                        .processPlaceholder("current", role == ClaimRole.MEMBER
+                                ? claim.getMemberPermissions().hasPermission(ClaimPerm.TRADING) : claim.getVisitorPermissions().hasPermission(ClaimPerm.TRADING))
+                        .getMessage.split("\\|"));
     }
 
     void toggleBreak() {
@@ -157,6 +164,17 @@ public class SettingsMemberGui extends Gui {
             plugin.getDataManager().updatePermissions(claim, claim.getMemberPermissions(), ClaimRole.MEMBER);
         } else {
             claim.getVisitorPermissions().setCanRedstone(!claim.getVisitorPermissions().hasPermission(ClaimPerm.REDSTONE));
+            plugin.getDataManager().updatePermissions(claim, claim.getVisitorPermissions(), ClaimRole.VISITOR);
+        }
+        refreshDisplay();
+    }
+
+    void toggleTrading() {
+        if(role == ClaimRole.MEMBER) {
+            claim.getMemberPermissions().setCanTrade(!claim.getMemberPermissions().hasPermission(ClaimPerm.TRADING));
+            plugin.getDataManager().updatePermissions(claim, claim.getMemberPermissions(), ClaimRole.MEMBER);
+        } else {
+            claim.getVisitorPermissions().setCanTrade(!claim.getVisitorPermissions().hasPermission(ClaimPerm.TRADING));
             plugin.getDataManager().updatePermissions(claim, claim.getVisitorPermissions(), ClaimRole.VISITOR);
         }
         refreshDisplay();

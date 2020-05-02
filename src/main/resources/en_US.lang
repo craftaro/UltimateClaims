@@ -129,6 +129,7 @@ interface:
     mobkilltitle: '&7Mob Killing'
     redstonetitle: '&7Redstone'
     doorstitle: '&7Doors'
+    tradetitle: '&7Trading'
   bans:
     title: Bans
     infotitle: '&7Info'

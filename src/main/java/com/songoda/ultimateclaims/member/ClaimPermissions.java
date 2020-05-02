@@ -8,6 +8,12 @@ public class ClaimPermissions {
     private boolean canMobKill = false;
     private boolean canRedstone = false;
     private boolean canDoors = false;
+    private boolean canTrade = false;
+
+    public ClaimPermissions setCanTrade(boolean canTrade) {
+        this.canTrade = canTrade;
+        return this;
+    }
 
     public ClaimPermissions setCanInteract(boolean canInteract) {
         this.canInteract = canInteract;
@@ -53,6 +59,8 @@ public class ClaimPermissions {
                 return canRedstone;
             case DOORS:
                 return canDoors;
+            case TRADING:
+                return canTrade;
             default:
                 return false;
         }

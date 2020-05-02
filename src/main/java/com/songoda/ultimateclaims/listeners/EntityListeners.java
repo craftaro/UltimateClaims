@@ -236,6 +236,22 @@ public class EntityListeners implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
+    public void onVillagerTrade(PlayerInteractAtEntityEvent event) {
+        ClaimManager claimManager = plugin.getClaimManager();
+        Chunk chunk = event.getRightClicked().getLocation().getChunk();
+        Claim claim = claimManager.getClaim(chunk);
+
+        if(claim != null) {
+            Entity source = event.getPlayer();
+            Entity entity = event.getRightClicked();
+            if(!entity.getType().equals(EntityType.VILLAGER) || !claim.playerHasPerms((Player)source, ClaimPerm.TRADING)) {
+                event.setCancelled(true);
+            }
+        }
+
+    }
+
+    @EventHandler(ignoreCancelled = true)
     public void onBlockExplode(BlockExplodeEvent event) {
         ClaimManager claimManager = plugin.getClaimManager();
         for (Block block : new ArrayList<>(event.blockList())) {
