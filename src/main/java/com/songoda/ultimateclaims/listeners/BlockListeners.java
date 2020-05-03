@@ -45,7 +45,7 @@ public class BlockListeners implements Listener {
 
         PowerCell powerCell = claim.getPowerCell();
         
-        if (powerCell != null) {
+        if (powerCell.getLocation() != null) {
             Block blockPowerCell = powerCell.getLocation().getBlock();
 
             if (block.getType() == Material.CHEST && (block.getRelative(BlockFace.NORTH).equals(blockPowerCell)
