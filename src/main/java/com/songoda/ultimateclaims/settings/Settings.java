@@ -69,7 +69,7 @@ public class Settings {
             Arrays.asList("disabled_world"), "The worlds that claims are disabled in.");
 
     public static final ConfigSetting COST_EQUATION = new ConfigSetting(config, "Main.Cost Equation",
-            "DEFAULT", "The equation used for calcuation the cost of a claim.",
+            "DEFAULT", "The equation used for calculation the cost of a claim.",
             "NONE - The claim size does not affect the cost.",
             "DEFAULT - Multiplies the cost by the claim size.",
             "LINEAR [value] - Multiplies the cost by the claim size multiplied by the value.");
