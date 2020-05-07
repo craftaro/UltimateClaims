@@ -29,7 +29,6 @@ import org.bukkit.material.Dispenser;
 import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.ArrayList;
-import org.bukkit.GameMode;
 
 public class EntityListeners implements Listener {
 
@@ -236,6 +235,23 @@ public class EntityListeners implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
+    public void onVillagerTrade(PlayerInteractEntityEvent event) {
+        ClaimManager claimManager = plugin.getClaimManager();
+        Chunk chunk = event.getRightClicked().getLocation().getChunk();
+        Claim claim = claimManager.getClaim(chunk);
+
+        if (claim != null) {
+            Entity source = event.getPlayer();
+            Entity entity = event.getRightClicked();
+            if (entity.getType().equals(EntityType.VILLAGER) && !claim.playerHasPerms((Player) source, ClaimPerm.TRADING)) {
+                plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage((Player) source);
+                event.setCancelled(true);
+            }
+        }
+
+    }
+
+    @EventHandler(ignoreCancelled = true)
     public void onBlockExplode(BlockExplodeEvent event) {
         ClaimManager claimManager = plugin.getClaimManager();
         for (Block block : new ArrayList<>(event.blockList())) {
@@ -271,8 +287,6 @@ public class EntityListeners implements Listener {
                 }
             }
         }
-
-        if (player.getGameMode() == GameMode.SPECTATOR) return false;
 
         if (claimManager.hasClaim(to)) {
             Claim claim = claimManager.getClaim(to);
