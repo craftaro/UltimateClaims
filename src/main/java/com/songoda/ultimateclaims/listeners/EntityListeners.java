@@ -9,7 +9,6 @@ import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
 import com.songoda.ultimateclaims.tasks.VisualizeTask;
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -30,7 +29,6 @@ import org.bukkit.material.Dispenser;
 import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.ArrayList;
-import org.bukkit.GameMode;
 
 public class EntityListeners implements Listener {
 
@@ -242,10 +240,10 @@ public class EntityListeners implements Listener {
         Chunk chunk = event.getRightClicked().getLocation().getChunk();
         Claim claim = claimManager.getClaim(chunk);
 
-        if(claim != null) {
+        if (claim != null) {
             Entity source = event.getPlayer();
             Entity entity = event.getRightClicked();
-            if(entity.getType().equals(EntityType.VILLAGER) && !claim.playerHasPerms((Player)source, ClaimPerm.TRADING)) {
+            if (entity.getType().equals(EntityType.VILLAGER) && !claim.playerHasPerms((Player) source, ClaimPerm.TRADING)) {
                 plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage((Player) source);
                 event.setCancelled(true);
             }
@@ -289,8 +287,6 @@ public class EntityListeners implements Listener {
                 }
             }
         }
-
-        if (player.getGameMode() == GameMode.SPECTATOR) return false;
 
         if (claimManager.hasClaim(to)) {
             Claim claim = claimManager.getClaim(to);
