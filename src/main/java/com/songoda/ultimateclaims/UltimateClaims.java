@@ -21,6 +21,7 @@ import com.songoda.ultimateclaims.database.DataManager;
 import com.songoda.ultimateclaims.database.migrations._1_InitialMigration;
 import com.songoda.ultimateclaims.database.migrations._2_NewPermissions;
 import com.songoda.ultimateclaims.database.migrations._3_MemberNames;
+import com.songoda.ultimateclaims.database.migrations._4_TradingPermission;
 import com.songoda.ultimateclaims.dynmap.DynmapManager;
 import com.songoda.ultimateclaims.listeners.*;
 import com.songoda.ultimateclaims.placeholder.PlaceholderManager;
@@ -155,7 +156,8 @@ public class UltimateClaims extends SongodaPlugin {
         this.dataMigrationManager = new DataMigrationManager(this.databaseConnector, this.dataManager,
                 new _1_InitialMigration(),
                 new _2_NewPermissions(),
-                new _3_MemberNames());
+                new _3_MemberNames(),
+                new _4_TradingPermission());
         this.dataMigrationManager.runMigrations();
 
         Bukkit.getScheduler().runTaskLater(this, () -> {

@@ -124,7 +124,7 @@ public class DataManager extends DataManagerAbstract {
                 statement.executeUpdate();
             }
 
-            String createMemberPermissions = "INSERT INTO " + this.getTablePrefix() + "permissions (claim_id, type, interact, break, place, mob_kill, redstone, doors) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String createMemberPermissions = "INSERT INTO " + this.getTablePrefix() + "permissions (claim_id, type, interact, break, place, mob_kill, redstone, doors, trading) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(createMemberPermissions)) {
                 statement.setInt(1, claimId);
                 statement.setString(2, "member");
@@ -134,10 +134,11 @@ public class DataManager extends DataManagerAbstract {
                 statement.setInt(6, claim.getMemberPermissions().hasPermission(ClaimPerm.MOB_KILLING) ? 1 : 0);
                 statement.setInt(7, claim.getMemberPermissions().hasPermission(ClaimPerm.REDSTONE) ? 1 : 0);
                 statement.setInt(8, claim.getMemberPermissions().hasPermission(ClaimPerm.DOORS) ? 1 : 0);
+                statement.setInt(9, claim.getMemberPermissions().hasPermission(ClaimPerm.TRADING) ? 1 : 0);
                 statement.executeUpdate();
             }
 
-            String createVisitorPermissions = "INSERT INTO " + this.getTablePrefix() + "permissions (claim_id, type, interact, break, place, mob_kill, redstone, doors) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String createVisitorPermissions = "INSERT INTO " + this.getTablePrefix() + "permissions (claim_id, type, interact, break, place, mob_kill, redstone, doors, trading) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(createVisitorPermissions)) {
                 statement.setInt(1, claimId);
                 statement.setString(2, "visitor");
@@ -147,6 +148,7 @@ public class DataManager extends DataManagerAbstract {
                 statement.setInt(6, claim.getVisitorPermissions().hasPermission(ClaimPerm.MOB_KILLING) ? 1 : 0);
                 statement.setInt(7, claim.getVisitorPermissions().hasPermission(ClaimPerm.REDSTONE) ? 1 : 0);
                 statement.setInt(8, claim.getVisitorPermissions().hasPermission(ClaimPerm.DOORS) ? 1 : 0);
+                statement.setInt(9, claim.getMemberPermissions().hasPermission(ClaimPerm.TRADING) ? 1 : 0);
                 statement.executeUpdate();
             }
         }));
@@ -403,7 +405,7 @@ public class DataManager extends DataManagerAbstract {
 
     public void updatePermissions(Claim claim, ClaimPermissions permissions, ClaimRole role) {
         this.async(() -> this.databaseConnector.connect(connection -> {
-            String updateClaim = "UPDATE " + this.getTablePrefix() + "permissions SET interact = ?, break = ?, place = ?, mob_kill = ?, redstone = ?, doors = ? WHERE claim_id = ? AND type = ?";
+            String updateClaim = "UPDATE " + this.getTablePrefix() + "permissions SET interact = ?, break = ?, place = ?, mob_kill = ?, redstone = ?, doors = ?, trading = ? WHERE claim_id = ? AND type = ?";
             try (PreparedStatement statement = connection.prepareStatement(updateClaim)) {
                 statement.setInt(1, permissions.hasPermission(ClaimPerm.INTERACT) ? 1 : 0);
                 statement.setInt(2, permissions.hasPermission(ClaimPerm.BREAK) ? 1 : 0);
@@ -411,8 +413,9 @@ public class DataManager extends DataManagerAbstract {
                 statement.setInt(4, permissions.hasPermission(ClaimPerm.MOB_KILLING) ? 1 : 0);
                 statement.setInt(5, permissions.hasPermission(ClaimPerm.REDSTONE) ? 1 : 0);
                 statement.setInt(6, permissions.hasPermission(ClaimPerm.DOORS) ? 1 : 0);
-                statement.setInt(7, claim.getId());
-                statement.setString(8, role.name().toLowerCase());
+                statement.setInt(7, permissions.hasPermission(ClaimPerm.TRADING) ? 1 : 0);
+                statement.setInt(8, claim.getId());
+                statement.setString(9, role.name().toLowerCase());
                 statement.executeUpdate();
             }
         }));
@@ -457,6 +460,7 @@ public class DataManager extends DataManagerAbstract {
 
             try (Statement statement = connection.createStatement()) {
                 ResultSet result = statement.executeQuery(selectClaims);
+
                 while (result.next()) {
                     Claim claim = new Claim();
 
@@ -539,6 +543,10 @@ public class DataManager extends DataManagerAbstract {
                         continue;
 
                     String world = result.getString("world");
+                    if (world == null) {
+                        claims.remove(claim);
+                        continue;
+                    }
                     int x = result.getInt("x");
                     int z = result.getInt("z");
 
@@ -577,7 +585,8 @@ public class DataManager extends DataManagerAbstract {
                             .setCanPlace(result.getInt("place") == 1)
                             .setCanMobKill(result.getInt("mob_kill") == 1)
                             .setCanRedstone(result.getInt("redstone") == 1)
-                            .setCanDoors(result.getInt("doors") == 1);
+                            .setCanDoors(result.getInt("doors") == 1)
+                            .setCanTrade(result.getInt("trading") == 1);
 
                     String type = result.getString("type");
                     switch (type) {
