@@ -86,7 +86,7 @@
     <repositories>
         <repository>
             <id>private</id>
-            <url>https://repo.songoda.com/artifactory/private/</url>
+            <url>http://repo.songoda.com/artifactory/private/</url>
         </repository>
         <repository>
             <id>public</id>
@@ -105,7 +105,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <version>1.15</version>
+            <version>1.16.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -121,31 +121,10 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-nop</artifactId>
-            <version>1.7.25</version>
-        </dependency>
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>3.2.0</version>
-        </dependency>
-        <dependency>
             <groupId>us.dynmap</groupId>
-            <artifactId>dynmap</artifactId>
+            <artifactId>dynmap-api</artifactId>
             <version>3.0-SNAPSHOT</version>
             <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>us.dynmap</groupId>
-                    <artifactId>DynmapCoreAPI</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 </project>
