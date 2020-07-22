@@ -74,7 +74,7 @@ public class Settings {
             "DEFAULT - Multiplies the cost by the claim size.",
             "LINEAR [value] - Multiplies the cost by the claim size multiplied by the value.");
 
-    public static final ConfigSetting DISABLE_FUEL = new ConfigSetting(config, "Main.Powercell Require Fuel", false,
+    public static final ConfigSetting ENABLE_FUEL = new ConfigSetting(config, "Main.Powercells Require Fuel", true,
             "Should power cells not require fuel?");
 
 
