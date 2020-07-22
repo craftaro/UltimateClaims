@@ -12,6 +12,7 @@ import com.songoda.ultimateclaims.member.ClaimPermissions;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.PluginSettings;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -466,7 +467,8 @@ public class DataManager extends DataManagerAbstract {
 
                     int claimId = result.getInt("id");
                     claim.setId(claimId);
-                    claim.setName(result.getString("name"));
+                    claim.setName(result.getString("name")
+                            .replace(ChatColor.COLOR_CHAR + "r", ""));
 
                     String homeWorld = result.getString("home_world");
                     if (homeWorld != null) {
