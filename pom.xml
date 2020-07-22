@@ -2,7 +2,7 @@
     <groupId>com.songoda</groupId>
     <artifactId>UltimateClaims</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>1.2.8</version>
+    <version>1.2.9</version>
     <build>
         <defaultGoal>clean install</defaultGoal>
         <finalName>UltimateClaims-${project.version}</finalName>
@@ -52,13 +52,9 @@
                         <configuration>
                             <shadedArtifactAttached>false</shadedArtifactAttached>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <minimizeJar>true</minimizeJar>
                             <artifactSet>
                                 <includes>
                                     <include>com.songoda:SongodaCore</include>
-                                    <include>com.zaxxer:HikariCP</include>
-                                    <include>org.slf4j:slf4j-api</include>
-                                    <include>org.slf4j:slf4j-nop</include>
                                 </includes>
                             </artifactSet>
                             <filters>
@@ -86,15 +82,15 @@
     <repositories>
         <repository>
             <id>private</id>
-            <url>http://repo.songoda.com/artifactory/private/</url>
+            <url>https://repo.songoda.com/artifactory/private/</url>
         </repository>
         <repository>
             <id>public</id>
             <url>https://repo.songoda.com/artifactory/public/</url>
         </repository>
         <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
         <repository>
             <id>dynmap-repo</id>

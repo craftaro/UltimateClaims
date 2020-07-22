@@ -42,16 +42,18 @@ public class PowerCellGui extends Gui {
         GuiUtils.mirrorFill(this, 1, 0, true, true, glass2);
         GuiUtils.mirrorFill(this, 0, 1, true, true, glass2);
 
-        // buttons and icons at the top of the screen
-        // Add/Display economy amount
-        this.setButton(0, 2, CompatibleMaterial.SUNFLOWER.getItem(),
-                (event) -> addEcon(event.player));
+        if (Settings.ENABLE_FUEL.getBoolean()) {
+            // buttons and icons at the top of the screen
+            // Add/Display economy amount
+            this.setButton(0, 2, CompatibleMaterial.SUNFLOWER.getItem(),
+                    (event) -> addEcon(event.player));
 
-        // Display the total time
-        this.setItem(0, 4, CompatibleMaterial.CLOCK.getItem());
+            // Display the total time
+            this.setItem(0, 4, CompatibleMaterial.CLOCK.getItem());
 
-        // Display the item amount
-        this.setItem(0, 6, CompatibleMaterial.DIAMOND.getItem());
+            // Display the item amount
+            this.setItem(0, 6, CompatibleMaterial.DIAMOND.getItem());
+        }
 
         // buttons at the bottom of the screen
         // Bans
@@ -142,21 +144,21 @@ public class PowerCellGui extends Gui {
         lastUpdate = now;
 
         // Economy amount
-        if (!Settings.DISABLE_FUEL.getBoolean())
+        if (Settings.ENABLE_FUEL.getBoolean())
             this.setItem(0, 2, GuiUtils.updateItem(this.getItem(0, 2),
                     plugin.getLocale().getMessage("interface.powercell.economytitle")
                             .processPlaceholder("time", Methods.makeReadable((long) powercell.getEconomyPower() * 60 * 1000)).getMessage(),
                     plugin.getLocale().getMessage("interface.powercell.economylore").getMessage().split("\\|")));
 
         // Display the total time
-        if (!Settings.DISABLE_FUEL.getBoolean())
+        if (Settings.ENABLE_FUEL.getBoolean())
             this.setItem(0, 4, GuiUtils.updateItem(this.getItem(0, 4),
                     plugin.getLocale().getMessage("interface.powercell.totaltitle")
                             .processPlaceholder("time", Methods.makeReadable((long) powercell.getTotalPower() * 60 * 1000)).getMessage(),
                     ChatColor.BLACK.toString()));
 
         // Display the item amount
-        if (!Settings.DISABLE_FUEL.getBoolean())
+        if (Settings.ENABLE_FUEL.getBoolean())
             this.setItem(0, 6, GuiUtils.updateItem(this.getItem(0, 6),
                     plugin.getLocale().getMessage("interface.powercell.valuablestitle")
                             .processPlaceholder("time", Methods.makeReadable((long) powercell.getItemPower() * 60 * 1000)).getMessage(),
