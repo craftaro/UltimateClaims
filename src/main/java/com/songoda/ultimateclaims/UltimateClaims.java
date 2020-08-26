@@ -192,6 +192,10 @@ public class UltimateClaims extends SongodaPlugin {
             });
         }
     }
+    
+    @Override
+    public void onDataLoad() {
+    }
 
     @Override
     public List<Config> getExtraConfig() {
