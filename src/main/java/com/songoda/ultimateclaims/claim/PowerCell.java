@@ -6,8 +6,6 @@ import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.gui.PowerCellGui;
 import com.songoda.ultimateclaims.settings.Settings;
 import com.songoda.ultimateclaims.utils.Methods;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -133,9 +131,7 @@ public class PowerCell {
     }
 
     public void updateItemsFromGui(boolean force) {
-        if ((opened == null
-                || opened.getInventory() == null
-                || opened.getInventory().getViewers().size() == 0)
+        if (!isInventoryOpen()
                 && !force) return;
         items.clear();
         for (int i = 10; i < 44; i++) {
@@ -149,6 +145,12 @@ public class PowerCell {
             if (item != null && item.getType() != Material.AIR)
                 addItem(item);
         }
+    }
+
+    public boolean isInventoryOpen() {
+        return opened != null
+                && opened.getInventory() != null
+                && !opened.getInventory().getViewers().isEmpty();
     }
 
     public void updateHologram() {

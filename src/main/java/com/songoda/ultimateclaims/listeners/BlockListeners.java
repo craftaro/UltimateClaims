@@ -8,6 +8,7 @@ import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
+import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,6 +21,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
@@ -135,22 +137,38 @@ public class BlockListeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onHopper(InventoryMoveItemEvent event) {
-        // legacy doesn't have Inventory.getLocation()
-        final InventoryHolder holder = event.getDestination().getHolder();
-        if (!(holder instanceof Chest))
+        if (!Settings.ENABLE_HOPPERS.getBoolean()) return;
+
+        ClaimManager claimManager = plugin.getClaimManager();
+        ItemStack item = event.getItem();
+
+        if (!(event.getDestination().getHolder() instanceof Chest)) return;
+
+        Chest chest = (Chest)event.getDestination().getHolder();
+        if (chest.getLocation() == null) return;
+
+        Chunk chunk = chest.getLocation().getChunk();
+
+        if (!claimManager.hasClaim(chunk)) return;
+
+        Claim claim = claimManager.getClaim(chunk);
+        PowerCell powerCell = claim.getPowerCell();
+
+        if (powerCell == null || !powerCell.hasLocation() || !powerCell.getLocation().equals(chest.getLocation())) {
             return;
-        final Location target = ((Chest) holder).getLocation();
-        final Claim claim;
-        // Powercells have a different inventory than the chest
-        // To help out players a bit, we're just going to not let hoppers do their thing
-        if ((claim = plugin.getClaimManager().getClaim(target.getChunk())) != null) {
-            // hopper in a claim, are we trying to push into a powercell?
-            PowerCell powerCell = claim.getPowerCell();
-            if (powerCell != null && powerCell.hasLocation() && powerCell.getLocation().equals(target)) {
-                // yep, let's not do that
-                event.setCancelled(true);
-            }
         }
+
+        // To prevent issues with items getting lost, let's prevent
+        // items from getting moved if someone is opening the inventory.
+        if (powerCell.isInventoryOpen()) {
+            event.setCancelled(true);
+            return;
+        }
+
+        powerCell.addItem(item);
+        powerCell.rejectUnusable();
+
+        event.getDestination().remove(item);
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
