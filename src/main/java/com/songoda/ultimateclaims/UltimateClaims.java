@@ -130,7 +130,29 @@ public class UltimateClaims extends SongodaPlugin {
 
         // Start our databases
         this.claimManager = new ClaimManager();
+    }
 
+    @Override
+    public void onPluginDisable() {
+        // save all claims data
+        this.guiManager.closeAll();
+        this.dataManager.bulkUpdateClaims(this.claimManager.getRegisteredClaims());
+        this.databaseConnector.closeConnection();
+
+        // cleanup holograms
+        HologramManager.removeAllHolograms();
+
+        // cleanup boss bars
+        if (Settings.CLAIMS_BOSSBAR.getBoolean()) {
+            this.claimManager.getRegisteredClaims().forEach(x -> {
+                x.getVisitorBossBar().removeAll();
+                x.getMemberBossBar().removeAll();
+            });
+        }
+    }
+    
+    @Override
+    public void onDataLoad() {
         // Database stuff, go!
         try {
             if (Settings.MYSQL_ENABLED.getBoolean()) {
@@ -160,41 +182,16 @@ public class UltimateClaims extends SongodaPlugin {
                 new _4_TradingPermission());
         this.dataMigrationManager.runMigrations();
 
-        Bukkit.getScheduler().runTaskLater(this, () -> {
-            this.dataManager.getPluginSettings((pluginSettings) -> this.pluginSettings = pluginSettings);
-            final boolean useHolo = Settings.POWERCELL_HOLOGRAMS.getBoolean() && HologramManager.getManager().isEnabled();
-            this.dataManager.getClaims((claims) -> {
-                this.claimManager.addClaims(claims);
-                if (useHolo)
-                    this.claimManager.getRegisteredClaims().stream().filter(Claim::hasPowerCell).forEach(x -> x.getPowerCell().updateHologram());
+        this.dataManager.getPluginSettings((pluginSettings) -> this.pluginSettings = pluginSettings);
+        final boolean useHolo = Settings.POWERCELL_HOLOGRAMS.getBoolean() && HologramManager.getManager().isEnabled();
+        this.dataManager.getClaims((claims) -> {
+            this.claimManager.addClaims(claims);
+            if (useHolo)
+                this.claimManager.getRegisteredClaims().stream().filter(Claim::hasPowerCell).forEach(x -> x.getPowerCell().updateHologram());
 
-                if (pluginManager.isPluginEnabled("dynmap"))
-                    this.dynmapManager = new DynmapManager(this);
-            });
-        }, 20L);
-    }
-
-    @Override
-    public void onPluginDisable() {
-        // save all claims data
-        this.guiManager.closeAll();
-        this.dataManager.bulkUpdateClaims(this.claimManager.getRegisteredClaims());
-        this.databaseConnector.closeConnection();
-
-        // cleanup holograms
-        HologramManager.removeAllHolograms();
-
-        // cleanup boss bars
-        if (Settings.CLAIMS_BOSSBAR.getBoolean()) {
-            this.claimManager.getRegisteredClaims().forEach(x -> {
-                x.getVisitorBossBar().removeAll();
-                x.getMemberBossBar().removeAll();
-            });
-        }
-    }
-    
-    @Override
-    public void onDataLoad() {
+            if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
+                this.dynmapManager = new DynmapManager(this);
+        });
     }
 
     @Override

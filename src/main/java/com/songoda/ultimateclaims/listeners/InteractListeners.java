@@ -18,7 +18,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class InteractListeners implements Listener {
 
-    private UltimateClaims plugin;
+    private final UltimateClaims plugin;
 
     public InteractListeners(UltimateClaims plugin) {
         this.plugin = plugin;
@@ -27,6 +27,9 @@ public class InteractListeners implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent event) {
         ClaimManager claimManager = UltimateClaims.getInstance().getClaimManager();
+
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getPlayer().isSneaking())
+            return;
 
         Chunk chunk = event.getClickedBlock().getChunk();
 
@@ -77,6 +80,8 @@ public class InteractListeners implements Listener {
         if (claim.getPowerCell().hasLocation()
                 && claim.getPowerCell().getLocation().equals(event.getClickedBlock().getLocation())
                 && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            // Make sure all items in the powercell are stacked.
+            claim.getPowerCell().stackItems();
             if ((member != null && member.getRole() == ClaimRole.OWNER) || event.getPlayer().hasPermission("ultimateclaims.bypass")) {
                 plugin.getGuiManager().showGUI(event.getPlayer(), claim.getPowerCell().getGui());
             } else {

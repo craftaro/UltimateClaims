@@ -6,8 +6,6 @@ import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.gui.PowerCellGui;
 import com.songoda.ultimateclaims.settings.Settings;
 import com.songoda.ultimateclaims.utils.Methods;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -75,6 +73,7 @@ public class PowerCell {
         }
         if (loaded && Settings.POWERCELL_HOLOGRAMS.getBoolean())
             updateHologram();
+        stackItems();
         return this.currentPower--;
     }
 
@@ -85,7 +84,9 @@ public class PowerCell {
 
     private void removeOneMaterial(CompatibleMaterial material) {
         updateItemsFromGui();
-        for (ItemStack item : getItems()) {
+        List<ItemStack> items = getItems();
+        for (int i = 0; i < items.size(); i ++) {
+            ItemStack item = items.get(i);
             if (material.matches(item)) {
                 item.setAmount(item.getAmount() - 1);
 
@@ -94,6 +95,7 @@ public class PowerCell {
                 updateGuiInventory();
                 return;
             }
+            if (i >= 28) break;
         }
     }
 
@@ -133,9 +135,7 @@ public class PowerCell {
     }
 
     public void updateItemsFromGui(boolean force) {
-        if ((opened == null
-                || opened.getInventory() == null
-                || opened.getInventory().getViewers().size() == 0)
+        if (!isInventoryOpen()
                 && !force) return;
         items.clear();
         for (int i = 10; i < 44; i++) {
@@ -149,6 +149,12 @@ public class PowerCell {
             if (item != null && item.getType() != Material.AIR)
                 addItem(item);
         }
+    }
+
+    public boolean isInventoryOpen() {
+        return opened != null
+                && opened.getInventory() != null
+                && !opened.getInventory().getViewers().isEmpty();
     }
 
     public void updateHologram() {
@@ -212,6 +218,47 @@ public class PowerCell {
         return (int) total;
     }
 
+    // Must not be ran if this inventory is open.
+    public void stackItems() {
+        List<Integer> removed = new ArrayList<>();
+        List<ItemStack> newItems = new ArrayList<>();
+        for (int i = 0; i < items.size(); i ++) {
+            ItemStack item = items.get(i);
+            CompatibleMaterial material = CompatibleMaterial.getMaterial(item);
+
+            if (removed.contains(i))
+                continue;
+
+            ItemStack newItem = item.clone();
+            newItems.add(newItem);
+            removed.add(i);
+
+            if (item.getAmount() >= item.getMaxStackSize())
+                continue;
+
+            for (int j = 0; j < items.size(); j ++) {
+                ItemStack second = items.get(j);
+                
+                if (newItem.getAmount() > newItem.getMaxStackSize())
+                    break;
+
+                if (item.getAmount() >= second.getMaxStackSize()
+                        || removed.contains(j)
+                        || CompatibleMaterial.getMaterial(second) != material)
+                    continue;
+
+                if (item.getAmount() + second.getAmount() > item.getMaxStackSize()) {
+                    second.setAmount(newItem.getAmount() + second.getAmount() - newItem.getMaxStackSize());
+                    newItem.setAmount(newItem.getMaxStackSize());
+                } else {
+                    removed.add(j);
+                    newItem.setAmount(newItem.getAmount() + second.getAmount());
+                }
+            }
+        }
+        items = newItems;
+    }
+
     public double getEconomyBalance() {
         return this.economyBalance;
     }
@@ -272,8 +319,10 @@ public class PowerCell {
         this.items = items;
     }
 
-    public void addItem(ItemStack item) {
+    public boolean addItem(ItemStack item) {
+        if (items.size() >= 28) return false;
         this.items.add(item);
+        return true;
     }
 
     public void addEconomy(double amount) {

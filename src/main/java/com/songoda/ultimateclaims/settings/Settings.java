@@ -77,6 +77,10 @@ public class Settings {
     public static final ConfigSetting ENABLE_FUEL = new ConfigSetting(config, "Main.Powercells Require Fuel", true,
             "Should power cells not require fuel?");
 
+    public static final ConfigSetting ENABLE_HOPPERS = new ConfigSetting(config, "Main.Enable Hoppers", true,
+            "Should hoppers be able to put fuel into a power cell?",
+            "Please note that this feature is experimental.");
+
 
     public static final ConfigSetting GLASS_TYPE_1 = new ConfigSetting(config, "Interfaces.Glass Type 1", "GRAY_STAINED_GLASS_PANE");
     public static final ConfigSetting GLASS_TYPE_2 = new ConfigSetting(config, "Interfaces.Glass Type 2", "BLUE_STAINED_GLASS_PANE");
