@@ -28,6 +28,9 @@ public class InteractListeners implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         ClaimManager claimManager = UltimateClaims.getInstance().getClaimManager();
 
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getPlayer().isSneaking())
+            return;
+
         Chunk chunk = event.getClickedBlock().getChunk();
 
         boolean hasClaim = claimManager.hasClaim(chunk);

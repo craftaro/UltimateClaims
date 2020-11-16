@@ -10,6 +10,7 @@ import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -135,21 +136,18 @@ public class BlockListeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onHopper(InventoryMoveItemEvent event) {
-        if (!Settings.ENABLE_HOPPERS.getBoolean()) return;
-
         ClaimManager claimManager = plugin.getClaimManager();
         ItemStack item = event.getItem();
 
         if (!(event.getDestination().getHolder() instanceof Chest)) return;
 
         Chest chest = (Chest)event.getDestination().getHolder();
-        if (chest.getLocation() == null) return;
-
         Chunk chunk = chest.getLocation().getChunk();
 
         if (!claimManager.hasClaim(chunk)) return;
 
         Claim claim = claimManager.getClaim(chunk);
+        // hopper in a claim, are we trying to push into a powercell?
         PowerCell powerCell = claim.getPowerCell();
 
         if (powerCell == null || !powerCell.hasLocation() || !powerCell.getLocation().equals(chest.getLocation())) {
@@ -163,7 +161,22 @@ public class BlockListeners implements Listener {
             return;
         }
 
-        powerCell.addItem(item);
+        if (!Settings.ENABLE_HOPPERS.getBoolean()) {
+            final Location target = chest.getLocation();
+            // Powercells have a different inventory than the chest
+            // To help out players a bit, we're just going to not let hoppers do their thing
+            if (powerCell.hasLocation() && powerCell.getLocation().equals(target)) {
+                // yep, let's not do that
+                event.setCancelled(true);
+            }
+            return;
+        }
+
+        boolean isFull = !powerCell.addItem(item);
+        if (isFull) {
+            event.setCancelled(true);
+            return;
+        }
         powerCell.rejectUnusable();
 
         event.getDestination().remove(item);

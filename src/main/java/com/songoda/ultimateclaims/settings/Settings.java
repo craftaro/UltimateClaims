@@ -77,7 +77,7 @@ public class Settings {
     public static final ConfigSetting ENABLE_FUEL = new ConfigSetting(config, "Main.Powercells Require Fuel", true,
             "Should power cells not require fuel?");
 
-    public static final ConfigSetting ENABLE_HOPPERS = new ConfigSetting(config, "Main.Enable Hoppers", false,
+    public static final ConfigSetting ENABLE_HOPPERS = new ConfigSetting(config, "Main.Enable Hoppers", true,
             "Should hoppers be able to put fuel into a power cell?",
             "Please note that this feature is experimental.");
 
