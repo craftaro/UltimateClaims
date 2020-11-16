@@ -19,7 +19,7 @@ import java.util.List;
 
 public class InventoryListeners implements Listener {
 
-    private UltimateClaims plugin;
+    private final UltimateClaims plugin;
 
     public InventoryListeners(UltimateClaims plugin) {
         this.plugin = plugin;

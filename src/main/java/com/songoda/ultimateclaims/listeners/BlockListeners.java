@@ -25,7 +25,7 @@ import java.util.List;
 
 public class BlockListeners implements Listener {
 
-    private UltimateClaims plugin;
+    private final UltimateClaims plugin;
 
     public BlockListeners(UltimateClaims plugin) {
         this.plugin = plugin;

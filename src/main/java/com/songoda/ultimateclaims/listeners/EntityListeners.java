@@ -32,7 +32,7 @@ import java.util.ArrayList;
 
 public class EntityListeners implements Listener {
 
-    UltimateClaims plugin;
+    private final UltimateClaims plugin;
 
     public EntityListeners(UltimateClaims plugin) {
         this.plugin = plugin;

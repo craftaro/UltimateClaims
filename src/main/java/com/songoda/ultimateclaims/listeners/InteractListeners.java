@@ -18,7 +18,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class InteractListeners implements Listener {
 
-    private UltimateClaims plugin;
+    private final UltimateClaims plugin;
 
     public InteractListeners(UltimateClaims plugin) {
         this.plugin = plugin;

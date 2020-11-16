@@ -19,7 +19,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class LoginListeners implements Listener {
 
-    private UltimateClaims plugin;
+    private final UltimateClaims plugin;
 
     public LoginListeners(UltimateClaims plugin) {
         this.plugin = plugin;
