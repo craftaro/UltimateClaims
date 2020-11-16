@@ -83,7 +83,9 @@ public class PowerCell {
 
     private void removeOneMaterial(CompatibleMaterial material) {
         updateItemsFromGui();
-        for (ItemStack item : getItems()) {
+        List<ItemStack> items = getItems();
+        for (int i = 0; i < items.size(); i ++) {
+            ItemStack item = items.get(i);
             if (material.matches(item)) {
                 item.setAmount(item.getAmount() - 1);
 
@@ -92,6 +94,7 @@ public class PowerCell {
                 updateGuiInventory();
                 return;
             }
+            if (i >= 28) break;
         }
     }
 
@@ -274,8 +277,10 @@ public class PowerCell {
         this.items = items;
     }
 
-    public void addItem(ItemStack item) {
+    public boolean addItem(ItemStack item) {
+        if (items.size() >= 28) return false;
         this.items.add(item);
+        return true;
     }
 
     public void addEconomy(double amount) {
