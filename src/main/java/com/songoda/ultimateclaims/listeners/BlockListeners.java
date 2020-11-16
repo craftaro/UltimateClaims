@@ -178,6 +178,7 @@ public class BlockListeners implements Listener {
             return;
         }
         powerCell.rejectUnusable();
+        powerCell.stackItems();
 
         event.getDestination().remove(item);
     }

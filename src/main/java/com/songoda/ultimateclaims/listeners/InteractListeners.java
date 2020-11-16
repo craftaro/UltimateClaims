@@ -80,6 +80,8 @@ public class InteractListeners implements Listener {
         if (claim.getPowerCell().hasLocation()
                 && claim.getPowerCell().getLocation().equals(event.getClickedBlock().getLocation())
                 && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            // Make sure all items in the powercell are stacked.
+            claim.getPowerCell().stackItems();
             if ((member != null && member.getRole() == ClaimRole.OWNER) || event.getPlayer().hasPermission("ultimateclaims.bypass")) {
                 plugin.getGuiManager().showGUI(event.getPlayer(), claim.getPowerCell().getGui());
             } else {

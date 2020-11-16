@@ -73,6 +73,7 @@ public class PowerCell {
         }
         if (loaded && Settings.POWERCELL_HOLOGRAMS.getBoolean())
             updateHologram();
+        stackItems();
         return this.currentPower--;
     }
 
@@ -215,6 +216,47 @@ public class PowerCell {
             }
         }
         return (int) total;
+    }
+
+    // Must not be ran if this inventory is open.
+    public void stackItems() {
+        List<Integer> removed = new ArrayList<>();
+        List<ItemStack> newItems = new ArrayList<>();
+        for (int i = 0; i < items.size(); i ++) {
+            ItemStack item = items.get(i);
+            CompatibleMaterial material = CompatibleMaterial.getMaterial(item);
+
+            if (removed.contains(i))
+                continue;
+
+            ItemStack newItem = item.clone();
+            newItems.add(newItem);
+            removed.add(i);
+
+            if (item.getAmount() >= item.getMaxStackSize())
+                continue;
+
+            for (int j = 0; j < items.size(); j ++) {
+                ItemStack second = items.get(j);
+                
+                if (newItem.getAmount() > newItem.getMaxStackSize())
+                    break;
+
+                if (item.getAmount() >= second.getMaxStackSize()
+                        || removed.contains(j)
+                        || CompatibleMaterial.getMaterial(second) != material)
+                    continue;
+
+                if (item.getAmount() + second.getAmount() > item.getMaxStackSize()) {
+                    second.setAmount(newItem.getAmount() + second.getAmount() - newItem.getMaxStackSize());
+                    newItem.setAmount(newItem.getMaxStackSize());
+                } else {
+                    removed.add(j);
+                    newItem.setAmount(newItem.getAmount() + second.getAmount());
+                }
+            }
+        }
+        items = newItems;
     }
 
     public double getEconomyBalance() {
