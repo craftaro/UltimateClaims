@@ -38,9 +38,9 @@ public class PowerCellGui extends Gui {
         setDefaultItem(glass3);
 
         // decorate corners
-        GuiUtils.mirrorFill(this, 0, 0, true, true, glass2);
-        GuiUtils.mirrorFill(this, 1, 0, true, true, glass2);
-        GuiUtils.mirrorFill(this, 0, 1, true, true, glass2);
+        mirrorFill(0, 0, true, true, glass2);
+        mirrorFill(1, 0, true, true, glass2);
+        mirrorFill(0, 1, true, true, glass2);
 
         if (Settings.ENABLE_FUEL.getBoolean()) {
             // buttons and icons at the top of the screen

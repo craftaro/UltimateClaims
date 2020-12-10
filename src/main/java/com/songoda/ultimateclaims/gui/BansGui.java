@@ -34,9 +34,9 @@ public class BansGui extends Gui {
         setDefaultItem(glass3);
 
         // decorate corners
-        GuiUtils.mirrorFill(this, 0, 0, true, true, glass2);
-        GuiUtils.mirrorFill(this, 1, 0, true, true, glass2);
-        GuiUtils.mirrorFill(this, 0, 1, true, true, glass2);
+        mirrorFill(0, 0, true, true, glass2);
+        mirrorFill(1, 0, true, true, glass2);
+        mirrorFill(0, 1, true, true, glass2);
 
         // exit buttons
         this.setButton(0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
