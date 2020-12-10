@@ -28,9 +28,6 @@ public class InteractListeners implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         ClaimManager claimManager = UltimateClaims.getInstance().getClaimManager();
 
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getPlayer().isSneaking())
-            return;
-
         Chunk chunk = event.getClickedBlock().getChunk();
 
         boolean hasClaim = claimManager.hasClaim(chunk);
@@ -79,7 +76,9 @@ public class InteractListeners implements Listener {
 
         if (claim.getPowerCell().hasLocation()
                 && claim.getPowerCell().getLocation().equals(event.getClickedBlock().getLocation())
-                && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                && event.getAction() == Action.RIGHT_CLICK_BLOCK
+                && !event.getPlayer().isSneaking()) {
+
             // Make sure all items in the powercell are stacked.
             claim.getPowerCell().stackItems();
             if ((member != null && member.getRole() == ClaimRole.OWNER) || event.getPlayer().hasPermission("ultimateclaims.bypass")) {
