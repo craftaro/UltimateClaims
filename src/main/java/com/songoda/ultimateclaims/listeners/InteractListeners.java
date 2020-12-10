@@ -10,10 +10,13 @@ import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class InteractListeners implements Listener {
@@ -27,9 +30,6 @@ public class InteractListeners implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent event) {
         ClaimManager claimManager = UltimateClaims.getInstance().getClaimManager();
-
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getPlayer().isSneaking())
-            return;
 
         Chunk chunk = event.getClickedBlock().getChunk();
 
@@ -79,7 +79,9 @@ public class InteractListeners implements Listener {
 
         if (claim.getPowerCell().hasLocation()
                 && claim.getPowerCell().getLocation().equals(event.getClickedBlock().getLocation())
-                && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                && event.getAction() == Action.RIGHT_CLICK_BLOCK
+                && !event.getPlayer().isSneaking()) {
+
             // Make sure all items in the powercell are stacked.
             claim.getPowerCell().stackItems();
             if ((member != null && member.getRole() == ClaimRole.OWNER) || event.getPlayer().hasPermission("ultimateclaims.bypass")) {
@@ -87,6 +89,29 @@ public class InteractListeners implements Listener {
             } else {
                 plugin.getLocale().getMessage("event.powercell.failopen").sendPrefixedMessage(event.getPlayer());
             }
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onBucketEmpty(PlayerBucketEmptyEvent event) {
+        onBucket(event.getBlock().getChunk(), event.getPlayer(), event);
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onBucketEmpty(PlayerBucketFillEvent event) {
+        onBucket(event.getBlock().getChunk(), event.getPlayer(), event);
+    }
+
+    private void onBucket(Chunk chunk, Player player, Cancellable event) {
+        ClaimManager claimManager = plugin.getClaimManager();
+
+        if (!claimManager.hasClaim(chunk)) return;
+
+        Claim claim = claimManager.getClaim(chunk);
+
+        if (!claim.playerHasPerms(player, ClaimPerm.PLACE)) {
+            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(player);
             event.setCancelled(true);
         }
     }

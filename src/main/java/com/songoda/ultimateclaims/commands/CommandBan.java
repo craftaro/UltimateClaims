@@ -68,7 +68,7 @@ public class CommandBan extends AbstractCommand {
 
         if (target != null) {
             claim.removeMember(toBan);
-            target.eject();
+            target.eject(null);
             if (target.getRole() == ClaimRole.MEMBER)
                 plugin.getDataManager().deleteMember(target);
         }

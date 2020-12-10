@@ -5,13 +5,20 @@ import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class TrackerTask extends BukkitRunnable {
 
     private static TrackerTask instance;
     private static UltimateClaims plugin;
+
+    private final Map<UUID, Location> lastBeforeClaim = new HashMap<>();
 
     public TrackerTask(UltimateClaims plug) {
         plugin = plug;
@@ -21,7 +28,7 @@ public class TrackerTask extends BukkitRunnable {
         plugin = plug;
         if (instance == null) {
             instance = new TrackerTask(plugin);
-            instance.runTaskTimer(plugin, 30, 20);
+            instance.runTaskTimerAsynchronously(plugin, 10, 20);
         }
 
         return instance;
@@ -39,7 +46,7 @@ public class TrackerTask extends BukkitRunnable {
             }
             member.setPresent(true);
             if (claim.isBanned(player.getUniqueId()) || claim.isLocked() && claim.getMember(player).getRole() == ClaimRole.VISITOR)
-                member.eject();
+                member.eject(lastBeforeClaim.get(player.getUniqueId()));
         }
         for (Claim claim : plugin.getClaimManager().getRegisteredClaims()) {
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -50,5 +57,9 @@ public class TrackerTask extends BukkitRunnable {
                     member.setPresent(false);
             }
         }
+    }
+
+    public void addLastBefore(Player player, Location location) {
+        this.lastBeforeClaim.put(player.getUniqueId(), location);
     }
 }

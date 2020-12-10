@@ -51,6 +51,7 @@ public class UltimateClaims extends SongodaPlugin {
     private DataManager dataManager;
 
     private InviteTask inviteTask;
+    private TrackerTask trackerTask;
 
     public static UltimateClaims getInstance() {
         return INSTANCE;
@@ -121,7 +122,7 @@ public class UltimateClaims extends SongodaPlugin {
         AnimateTask.startTask(this);
         if (Settings.ENABLE_FUEL.getBoolean())
             PowerCellTask.startTask(this);
-        TrackerTask.startTask(this);
+        this.trackerTask = TrackerTask.startTask(this);
         VisualizeTask.startTask(this);
 
         // Register Placeholders
@@ -237,6 +238,10 @@ public class UltimateClaims extends SongodaPlugin {
 
     public InviteTask getInviteTask() {
         return inviteTask;
+    }
+
+    public TrackerTask getTrackerTask() {
+        return trackerTask;
     }
 
     public PluginSettings getPluginSettings() {

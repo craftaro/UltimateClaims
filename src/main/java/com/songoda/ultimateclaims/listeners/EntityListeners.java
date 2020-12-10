@@ -10,9 +10,16 @@ import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
 import com.songoda.ultimateclaims.tasks.VisualizeTask;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseEvent;
@@ -22,13 +29,22 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.material.Dispenser;
 import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 public class EntityListeners implements Listener {
 
@@ -44,7 +60,7 @@ public class EntityListeners implements Listener {
         final Player player = event.getPlayer();
         plugin.getClaimManager().getRegisteredClaims().stream()
                 .map(claim -> claim.getMember(player))
-                .filter(member -> member != null)
+                .filter(Objects::nonNull)
                 .forEach(member -> member.setName(player.getName()));
     }
 
@@ -56,7 +72,7 @@ public class EntityListeners implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onMove(PlayerMoveEvent event) {
         if (event.getTo() == null) return;
-        if (playerMove(event.getFrom().getChunk(), event.getTo().getChunk(), event.getPlayer())) {
+        if (playerMove(event.getFrom(), event.getTo(), event.getPlayer())) {
             if (event.getPlayer().isInsideVehicle())
                 event.getPlayer().leaveVehicle();
             event.setCancelled(true);
@@ -68,22 +84,22 @@ public class EntityListeners implements Listener {
     public void onMove(VehicleMoveEvent event) {
         Entity entity = event.getVehicle().getPassenger();
         if (!(entity instanceof Player)) return;
-        if (playerMove(event.getFrom().getChunk(), event.getTo().getChunk(), (Player) entity)) {
+        if (playerMove(event.getFrom(), event.getTo(), (Player) entity)) {
             entity.leaveVehicle();
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent event) {
-        if (playerMove(event.getFrom().getChunk(), event.getTo().getChunk(), event.getPlayer()))
+        if (playerMove(event.getFrom(), event.getTo(), event.getPlayer()))
             event.setCancelled(true);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void ongetIn(VehicleEnterEvent event) {
         if (!(event.getEntered() instanceof Player)) return;
-        if (playerMove(event.getEntered().getLocation().getChunk(),
-                event.getVehicle().getLocation().getChunk(), (Player) event.getEntered()))
+        if (playerMove(event.getEntered().getLocation(),
+                event.getVehicle().getLocation(), (Player) event.getEntered()))
             event.setCancelled(true);
     }
 
@@ -254,16 +270,15 @@ public class EntityListeners implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onBlockExplode(BlockExplodeEvent event) {
         ClaimManager claimManager = plugin.getClaimManager();
-        for (Block block : new ArrayList<>(event.blockList())) {
-            if (claimManager.hasClaim(block.getChunk())) {
-                // todo? setting to allow/disallow these in a claim?
-                event.blockList().remove(block);
-            }
-        }
+        // todo? setting to allow/disallow these in a claim?
+        event.blockList().removeIf(block -> claimManager.hasClaim(block.getChunk()));
     }
 
-    private boolean playerMove(Chunk from, Chunk to, Player player) {
+    private boolean playerMove(Location fromLocation, Location toLocation, Player player) {
+        Chunk from = fromLocation.getChunk();
+        Chunk to = toLocation.getChunk();
         if (from == to) return false;
+        plugin.getTrackerTask().addLastBefore(player, fromLocation);
 
         ClaimManager claimManager = plugin.getClaimManager();
 
