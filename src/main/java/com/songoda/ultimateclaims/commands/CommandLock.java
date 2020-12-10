@@ -36,7 +36,7 @@ public class CommandLock extends AbstractCommand {
                     .sendPrefixedMessage(player);
             for (ClaimMember member : claim.getMembers().stream().filter(m -> m.getRole() == ClaimRole.VISITOR)
                     .collect(Collectors.toList())) {
-                member.eject();
+                member.eject(null);
             }
         } else
             plugin.getLocale().getMessage("command.lock.unlocked")

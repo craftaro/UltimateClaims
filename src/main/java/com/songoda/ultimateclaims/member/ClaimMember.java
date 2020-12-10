@@ -86,12 +86,12 @@ public class ClaimMember {
         return Bukkit.getOfflinePlayer(uuid);
     }
 
-    public void eject() {
+    public void eject(Location location) {
         OfflinePlayer player;
         if (!isPresent || !(player = getPlayer()).isOnline()) return;
         Location spawn = UltimateClaims.getInstance().getPluginSettings().getSpawnPoint();
-        if (spawn == null) return;
-        player.getPlayer().teleport(spawn);
+        if (spawn == null && location == null) return;
+        player.getPlayer().teleport(location == null ? spawn : location);
         this.isPresent = false;
     }
 }
