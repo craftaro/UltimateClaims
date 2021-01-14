@@ -45,6 +45,10 @@ public class TrackerTask extends BukkitRunnable {
                 member = claim.getMember(player);
             }
             member.setPresent(true);
+
+            if (player.hasPermission("ultimateclaims.bypass"))
+                continue;
+
             if (claim.isBanned(player.getUniqueId()) || claim.isLocked() && claim.getMember(player).getRole() == ClaimRole.VISITOR)
                 member.eject(lastBeforeClaim.get(player.getUniqueId()));
         }
