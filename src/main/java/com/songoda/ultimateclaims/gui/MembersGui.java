@@ -1,6 +1,7 @@
 package com.songoda.ultimateclaims.gui;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
+import com.songoda.core.gui.CustomizableGui;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.utils.ItemUtils;
@@ -23,17 +24,17 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
-public class MembersGui extends Gui {
+public class MembersGui extends CustomizableGui {
 
-    private UltimateClaims plugin;
-    private Claim claim;
+    private final UltimateClaims plugin;
+    private final Claim claim;
     private ClaimRole displayedRole = ClaimRole.OWNER;
     private SortType sortType = SortType.DEFAULT;
 
-    public MembersGui(Claim claim, Gui returnGui) {
-        super(returnGui);
+    public MembersGui(UltimateClaims plugin, Claim claim, Gui returnGui) {
+        super(plugin, "members");
         this.claim = claim;
-        this.plugin = UltimateClaims.getInstance();
+        this.plugin = plugin;
         this.setRows(6);
         this.setTitle(Methods.formatTitle(plugin.getLocale().getMessage("interface.members.title").getMessage()));
 
@@ -44,34 +45,34 @@ public class MembersGui extends Gui {
         setDefaultItem(glass3);
 
         // decorate corners
-        mirrorFill(0, 0, true, true, glass2);
-        mirrorFill(1, 0, true, true, glass2);
-        mirrorFill(0, 1, true, true, glass2);
+        mirrorFill("mirrorfill_1", 0, 0, true, true, glass2);
+        mirrorFill("mirrorfill_2", 1, 0, true, true, glass2);
+        mirrorFill("mirrorfill_3", 0, 1, true, true, glass2);
 
         // exit buttons
-        this.setButton(0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
+        this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
                 plugin.getLocale().getMessage("general.interface.back").getMessage(),
                 plugin.getLocale().getMessage("general.interface.exit").getMessage()),
-                (event) -> event.player.closeInventory());
-        this.setButton(8, this.getItem(0), (event) -> event.player.closeInventory());
+                (event) -> guiManager.showGUI(event.player, returnGui));
+        this.setButton("back",8, this.getItem(0), (event) -> guiManager.showGUI(event.player, returnGui));
 
         // Member Stats (update on refresh)
-        this.setItem(4, CompatibleMaterial.PAINTING.getItem());
+        this.setItem("stats", 4, CompatibleMaterial.PAINTING.getItem());
 
         // Filters
-        this.setButton(3, CompatibleMaterial.HOPPER.getItem(), (event) -> toggleFilterType());
-        this.setButton(5, CompatibleMaterial.HOPPER.getItem(), (event) -> toggleSort());
+        this.setButton("type", 3, CompatibleMaterial.HOPPER.getItem(), (event) -> toggleFilterType());
+        this.setButton("sort", 5, CompatibleMaterial.HOPPER.getItem(), (event) -> toggleSort());
 
         // Settings shortcuts
-        this.setButton(5, 3, GuiUtils.createButtonItem(CompatibleMaterial.OAK_SIGN,
+        this.setButton("visitor_settings", 5, 3, GuiUtils.createButtonItem(CompatibleMaterial.OAK_SIGN,
                 plugin.getLocale().getMessage("interface.members.visitorsettingstitle").getMessage(),
                 plugin.getLocale().getMessage("interface.members.visitorsettingslore").getMessage().split("\\|")),
-                (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(claim, this, ClaimRole.VISITOR)));
+                (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.VISITOR)));
 
-        this.setButton(5, 5, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
+        this.setButton("member_settings", 5, 5, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
                 plugin.getLocale().getMessage("interface.members.membersettingstitle").getMessage(),
                 plugin.getLocale().getMessage("interface.members.membersettingslore").getMessage().split("\\|")),
-                (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(claim, this, ClaimRole.MEMBER)));
+                (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.MEMBER)));
 
         // enable page events
         setNextPage(5, 6, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("general.interface.next").getMessage()));
@@ -80,9 +81,9 @@ public class MembersGui extends Gui {
         showPage();
     }
 
-    void showPage() {
+    private void showPage() {
         // refresh stats
-        this.setItem(4, GuiUtils.updateItem(this.getItem(4),
+        this.setItem("stats", 4, GuiUtils.updateItem(this.getItem(4),
                 plugin.getLocale().getMessage("interface.members.statstitle").getMessage(),
                 plugin.getLocale().getMessage("interface.members.statslore")
                         .processPlaceholder("totalmembers", claim.getOwnerAndMembers().size())
@@ -90,13 +91,13 @@ public class MembersGui extends Gui {
                         .processPlaceholder("members", claim.getMembers().size()).getMessage().split("\\|")));
 
         // Filters
-        this.setItem(3, GuiUtils.updateItem(this.getItem(3),
+        this.setItem("type", 3, GuiUtils.updateItem(this.getItem(3),
                 plugin.getLocale().getMessage("interface.members.changetypetitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current",
                                 Methods.formatText(displayedRole == ClaimRole.OWNER ? "ALL" : displayedRole.toString(), true))
                         .getMessage().split("\\|")));
-        this.setItem(5, GuiUtils.updateItem(this.getItem(5),
+        this.setItem("sort", 5, GuiUtils.updateItem(this.getItem(5),
                 plugin.getLocale().getMessage("interface.members.changesorttitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current",
