@@ -1,6 +1,7 @@
 package com.songoda.ultimateclaims.gui;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
+import com.songoda.core.gui.CustomizableGui;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.utils.ItemUtils;
@@ -16,15 +17,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
-public class BansGui extends Gui {
+public class BansGui extends CustomizableGui {
 
-    private UltimateClaims plugin;
-    private Claim claim;
+    private final UltimateClaims plugin;
+    private final Claim claim;
 
-    public BansGui(Claim claim, Gui returnGui) {
-        super(6, returnGui);
+    public BansGui(UltimateClaims plugin, Claim claim, Gui returnGui) {
+        super(plugin, "bans");
         this.claim = claim;
-        this.plugin = UltimateClaims.getInstance();
+        this.plugin = plugin;
+        setRows(6);
         this.setTitle(Methods.formatTitle(plugin.getLocale().getMessage("interface.bans.title").getMessage()));
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
@@ -34,19 +36,19 @@ public class BansGui extends Gui {
         setDefaultItem(glass3);
 
         // decorate corners
-        mirrorFill(0, 0, true, true, glass2);
-        mirrorFill(1, 0, true, true, glass2);
-        mirrorFill(0, 1, true, true, glass2);
+        mirrorFill("mirrorfill_1", 0, 0, true, true, glass2);
+        mirrorFill("mirrorfill_2", 1, 0, true, true, glass2);
+        mirrorFill("mirrorfill_2", 0, 1, true, true, glass2);
 
         // exit buttons
-        this.setButton(0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
+        this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
                 plugin.getLocale().getMessage("general.interface.back").getMessage(),
                 plugin.getLocale().getMessage("general.interface.exit").getMessage()),
-                (event) -> event.player.closeInventory());
-        this.setButton(8, this.getItem(0), (event) -> event.player.closeInventory());
+                (event) -> guiManager.showGUI(event.player, returnGui));
+        this.setButton("back",8, this.getItem(0), (event) -> guiManager.showGUI(event.player, returnGui));
 
         // Ban information
-        this.setItem(4, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
+        this.setItem("information", 4, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
                 plugin.getLocale().getMessage("interface.bans.infotitle").getMessage(),
                 plugin.getLocale().getMessage("interface.bans.infolore")
                         .processPlaceholder("bancount", claim.getBannedPlayers().size()).getMessage().split("\\|")));
@@ -58,7 +60,7 @@ public class BansGui extends Gui {
         showPage();
     }
 
-    void showPage() {
+    private void showPage() {
         List<UUID> toDisplay = new ArrayList<>(claim.getBannedPlayers());
         this.pages = (int) Math.max(1, Math.ceil(toDisplay.size() / (7 * 4)));
         this.page = Math.max(page, pages);

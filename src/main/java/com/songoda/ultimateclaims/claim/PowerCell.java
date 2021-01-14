@@ -346,7 +346,7 @@ public class PowerCell {
     }
 
     public PowerCellGui getGui() {
-        return opened != null ? opened : (opened = new PowerCellGui(this.claim));
+        return opened != null ? opened : (opened = new PowerCellGui(UltimateClaims.getInstance(), this.claim));
     }
 
     public void destroy() {
