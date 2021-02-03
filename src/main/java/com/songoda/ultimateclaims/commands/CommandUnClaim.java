@@ -3,7 +3,9 @@ package com.songoda.ultimateclaims.commands;
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.ultimateclaims.UltimateClaims;
+import com.songoda.ultimateclaims.api.events.ClaimChunkUnclaimEvent;
 import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.ultimateclaims.claim.ClaimDeleteReason;
 import com.songoda.ultimateclaims.claim.ClaimedChunk;
 import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
@@ -50,6 +52,12 @@ public class CommandUnClaim extends AbstractCommand {
             }
         }
 
+        ClaimChunkUnclaimEvent event = new ClaimChunkUnclaimEvent(claim, chunk);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return ReturnType.FAILURE;
+        }
+
         // we've just unclaimed the chunk we're in, so we've "moved" out of the claim
         // Note: Can't use streams here because `Bukkit.getOnlinePlayers()` has a different protoype in legacy
         for (Player p : Bukkit.getOnlinePlayers()) {
@@ -86,7 +94,7 @@ public class CommandUnClaim extends AbstractCommand {
                         .sendPrefixedMessage(player);
             }
 
-            claim.destroy();
+            claim.destroy(ClaimDeleteReason.PLAYER);
         } else {
             plugin.getDataManager().deleteChunk(removedChunk);
 

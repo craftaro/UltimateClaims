@@ -1,6 +1,7 @@
 package com.songoda.ultimateclaims.claim;
 
 import com.songoda.ultimateclaims.UltimateClaims;
+import com.songoda.ultimateclaims.api.events.ClaimDeleteEvent;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
@@ -292,7 +293,13 @@ public class Claim {
         return this.bannedPlayers.contains(uuid);
     }
 
-    public void destroy() {
+    public void destroy(ClaimDeleteReason reason) {
+        ClaimDeleteEvent event = new ClaimDeleteEvent(this, reason);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
+
         this.claimedChunks.clear();
         if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
             UltimateClaims.getInstance().getDynmapManager().refresh(this);

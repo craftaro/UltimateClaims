@@ -2,6 +2,7 @@ package com.songoda.ultimateclaims.tasks;
 
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.ultimateclaims.claim.ClaimDeleteReason;
 import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
@@ -48,7 +49,7 @@ public class PowerCellTask extends BukkitRunnable {
                     for (ClaimMember member : claim.getMembers())
                         this.dissolved(member);
                     this.dissolved(claim.getOwner());
-                    claim.destroy();
+                    claim.destroy(ClaimDeleteReason.POWERCELL_TIMEOUT);
                 } else if (tick == -1) {
                     for (ClaimMember member : members)
                         this.outOfPower(member);
@@ -58,7 +59,7 @@ public class PowerCellTask extends BukkitRunnable {
                 } else if (tick <= Settings.MINIMUM_POWER.getInt()) {
                     for (ClaimMember member : members)
                         this.dissolved(member);
-                    claim.destroy();
+                    claim.destroy(ClaimDeleteReason.POWERCELL_TIMEOUT);
                 }
             }
         }

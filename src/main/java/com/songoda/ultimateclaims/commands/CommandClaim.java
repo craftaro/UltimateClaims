@@ -3,6 +3,8 @@ package com.songoda.ultimateclaims.commands;
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.hooks.WorldGuardHook;
 import com.songoda.ultimateclaims.UltimateClaims;
+import com.songoda.ultimateclaims.api.events.ClaimChunkClaimEvent;
+import com.songoda.ultimateclaims.api.events.ClaimCreateEvent;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimBuilder;
 import com.songoda.ultimateclaims.claim.ClaimedChunk;
@@ -88,6 +90,12 @@ public class CommandClaim extends AbstractCommand {
                 return ReturnType.FAILURE;
             }
 
+            ClaimChunkClaimEvent event = new ClaimChunkClaimEvent(claim, chunk);
+            Bukkit.getPluginManager().callEvent(event);
+            if (event.isCancelled()) {
+                return ReturnType.FAILURE;
+            }
+
             ClaimedChunk newChunk = claim.addClaimedChunk(chunk, player);
             if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
                 plugin.getDynmapManager().refresh(claim);
@@ -101,6 +109,13 @@ public class CommandClaim extends AbstractCommand {
                     .setOwner(player)
                     .addClaimedChunk(chunk, player)
                     .build();
+
+            ClaimCreateEvent event = new ClaimCreateEvent(claim);
+            Bukkit.getPluginManager().callEvent(event);
+            if (event.isCancelled()) {
+                return ReturnType.FAILURE;
+            }
+
             plugin.getClaimManager().addClaim(player, claim);
             if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
                 plugin.getDynmapManager().refresh(claim);

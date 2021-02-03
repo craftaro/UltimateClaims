@@ -1,6 +1,7 @@
 package com.songoda.ultimateclaims.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
+import com.songoda.ultimateclaims.api.events.ClaimPlayerUnbanEvent;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.core.commands.AbstractCommand;
 import org.bukkit.Bukkit;
@@ -43,6 +44,12 @@ public class CommandUnBan extends AbstractCommand {
             return ReturnType.FAILURE;
         } else if (player.getUniqueId().equals(toBan.getUniqueId())) {
             plugin.getLocale().getMessage("command.unban.notself").sendPrefixedMessage(sender);
+            return ReturnType.FAILURE;
+        }
+
+        ClaimPlayerUnbanEvent event = new ClaimPlayerUnbanEvent(claim, player, toBan);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
             return ReturnType.FAILURE;
         }
 
