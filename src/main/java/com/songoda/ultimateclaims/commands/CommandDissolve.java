@@ -3,6 +3,7 @@ package com.songoda.ultimateclaims.commands;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.core.commands.AbstractCommand;
+import com.songoda.ultimateclaims.claim.ClaimDeleteReason;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -28,7 +29,7 @@ public class CommandDissolve extends AbstractCommand {
 
         Claim claim = plugin.getClaimManager().getClaim(player);
 
-        claim.destroy();
+        claim.destroy(ClaimDeleteReason.PLAYER);
         plugin.getLocale().getMessage("general.claim.dissolve")
                 .processPlaceholder("claim", claim.getName())
                 .sendPrefixedMessage(player);

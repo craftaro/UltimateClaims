@@ -1,6 +1,7 @@
 package com.songoda.ultimateclaims.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
+import com.songoda.ultimateclaims.api.events.ClaimPlayerBanEvent;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.utils.PlayerUtils;
@@ -54,6 +55,12 @@ public class CommandBan extends AbstractCommand {
 
             // all good!
             target = claim.getMember(toBan.getUniqueId());
+        }
+
+        ClaimPlayerBanEvent event = new ClaimPlayerBanEvent(claim, player, toBan);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return ReturnType.FAILURE;
         }
 
         if (toBan.isOnline())

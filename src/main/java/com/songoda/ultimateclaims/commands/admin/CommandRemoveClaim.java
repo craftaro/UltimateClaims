@@ -4,6 +4,7 @@ import com.songoda.core.hooks.EconomyManager;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.core.commands.AbstractCommand;
+import com.songoda.ultimateclaims.claim.ClaimDeleteReason;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -52,7 +53,7 @@ public class CommandRemoveClaim extends AbstractCommand {
         }
 
         // Remove the whole claim
-        claim.destroy();
+        claim.destroy(ClaimDeleteReason.ADMIN);
 
         // Send a message to player
         plugin.getLocale().getMessage("command.removeclaim.success")

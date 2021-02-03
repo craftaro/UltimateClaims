@@ -48,12 +48,10 @@ public class SettingsMemberGui extends CustomizableGui {
         this.setButton("break", 1, 1, CompatibleMaterial.IRON_PICKAXE.getItem(), (event) -> toggleBreak());
         this.setButton("place", 1, 2, CompatibleMaterial.STONE.getItem(), (event) -> togglePlace());
         this.setButton("interact", 1, 3, CompatibleMaterial.LEVER.getItem(), (event) -> toggleInteract());
-        this.setButton("trading", 1, 3, CompatibleMaterial.GOLD_NUGGET.getItem(), (event) -> toggleTrading());
+        this.setButton("trading", 1, 4, CompatibleMaterial.EMERALD.getItem(), (event) -> toggleTrading());
         this.setButton("doors", 1, 5, CompatibleMaterial.OAK_DOOR.getItem(), (event) -> toggleDoors());
         this.setButton("kills", 1, 6, CompatibleMaterial.DIAMOND_SWORD.getItem(), (event) -> toggleKills());
         this.setButton("redstone", 1, 7, CompatibleMaterial.REDSTONE.getItem(), (event) -> toggleRedstone());
-        this.setButton("trading", 1, 4, CompatibleMaterial.EMERALD.getItem(), (event) -> toggleTrading());
-
         refreshDisplay();
     }
 
