@@ -2,6 +2,7 @@ package com.songoda.ultimateclaims.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.core.commands.AbstractCommand;
+import com.songoda.ultimateclaims.api.events.ClaimPlayerJoinEvent;
 import com.songoda.ultimateclaims.invite.Invite;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
@@ -34,6 +35,12 @@ public class CommandAccept extends AbstractCommand {
             if (Math.toIntExact(invite.getClaim().getMembers().stream()
                     .filter(member -> member.getRole() == ClaimRole.MEMBER).count()) >= Settings.MAX_MEMBERS.getInt()) {
                 plugin.getLocale().getMessage("command.accept.maxed").sendPrefixedMessage(player);
+                return ReturnType.FAILURE;
+            }
+
+            ClaimPlayerJoinEvent event = new ClaimPlayerJoinEvent(invite.getClaim(), player);
+            Bukkit.getPluginManager().callEvent(event);
+            if (event.isCancelled()) {
                 return ReturnType.FAILURE;
             }
 

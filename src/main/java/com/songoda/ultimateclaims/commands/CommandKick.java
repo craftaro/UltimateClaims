@@ -1,6 +1,7 @@
 package com.songoda.ultimateclaims.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
+import com.songoda.ultimateclaims.api.events.ClaimPlayerKickEvent;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.utils.PlayerUtils;
@@ -58,6 +59,12 @@ public class CommandKick extends AbstractCommand {
 
         if (target == null || target.getRole() != ClaimRole.MEMBER) {
             plugin.getLocale().getMessage("command.general.notinclaim").sendPrefixedMessage(sender);
+            return ReturnType.FAILURE;
+        }
+
+        ClaimPlayerKickEvent event = new ClaimPlayerKickEvent(claim, toKick);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
             return ReturnType.FAILURE;
         }
 
