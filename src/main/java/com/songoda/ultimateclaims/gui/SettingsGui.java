@@ -16,7 +16,7 @@ public class SettingsGui extends CustomizableGui {
 
     private final UltimateClaims plugin;
     private final Claim claim;
-    private final boolean hostilemobspawning, firespread, pvp, mobgriefing, leafdecay;
+    private final boolean hostilemobspawning, firespread, pvp, mobgriefing, leafdecay, tnt;
     
     public SettingsGui(UltimateClaims plugin, Claim claim, Gui returnGui, Player player) {
         super(plugin, "settings");
@@ -54,15 +54,15 @@ public class SettingsGui extends CustomizableGui {
                 plugin.getLocale().getMessage("interface.members.membersettingslore").getMessage().split("\\|")),
                 (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.MEMBER)));
 
-        this.setItem(1, 1, AIR);
+        this.setItem(1, 4, AIR);
         if (hostilemobspawning = player.hasPermission("ultimateclaims.toggle.hostilemobspawning")) {
-            this.setButton("hostilemobspawning", 1, 2, CompatibleMaterial.ZOMBIE_SPAWN_EGG.getItem(), (event) -> toggleSpawn());
+            this.setButton("hostilemobspawning", 1, 1, CompatibleMaterial.ZOMBIE_SPAWN_EGG.getItem(), (event) -> toggleSpawn());
         }
         if (firespread = player.hasPermission("ultimateclaims.toggle.firespread")) {
-            this.setButton("flintandsteal", 1, 3, CompatibleMaterial.FLINT_AND_STEEL.getItem(), (event) -> toggleFire());
+            this.setButton("flintandsteal", 1, 2, CompatibleMaterial.FLINT_AND_STEEL.getItem(), (event) -> toggleFire());
         }
         if (pvp = player.hasPermission("ultimateclaims.toggle.pvp")) {
-            this.setButton("pvp", 1, 4, CompatibleMaterial.DIAMOND_SWORD.getItem(), (event) -> togglePVP());
+            this.setButton("pvp", 1, 3, CompatibleMaterial.DIAMOND_SWORD.getItem(), (event) -> togglePVP());
         }
         if (mobgriefing = player.hasPermission("ultimateclaims.toggle.mobgriefing")) {
             this.setButton("mobgriefing", 1, 5, CompatibleMaterial.GUNPOWDER.getItem(), (event) -> toggleMobGrief());
@@ -70,27 +70,30 @@ public class SettingsGui extends CustomizableGui {
         if (leafdecay = player.hasPermission("ultimateclaims.toggle.leafdecay")) {
             this.setButton("leafdecay", 1, 6, CompatibleMaterial.OAK_LEAVES.getItem(), (event) -> toggleLeafDecay());
         }
-        this.setItem(1, 7, AIR);
+        if (tnt = player.hasPermission("ultimateclaims.toggle.tnt")) {
+            this.setButton("tnt", 1, 7, CompatibleMaterial.TNT.getItem(), (event) -> toggleTnt());
+        }
+
         refreshDisplay();
     }
 
     private void refreshDisplay() {
         if (hostilemobspawning) {
-            this.updateItem("hostilemobspawning", 1, 2,
+            this.updateItem("hostilemobspawning", 1, 1,
                     plugin.getLocale().getMessage("interface.settings.hostilemobspawningtitle").getMessage(),
                     plugin.getLocale().getMessage("general.interface.current")
                             .processPlaceholder("current", claim.getClaimSettings().isHostileMobSpawning())
                             .getMessage().split("\\|"));
         }
         if (firespread) {
-            this.updateItem("flintandsteal", 1, 3,
+            this.updateItem("flintandsteal", 1, 2,
                     plugin.getLocale().getMessage("interface.settings.firespreadtitle").getMessage(),
                     plugin.getLocale().getMessage("general.interface.current")
                             .processPlaceholder("current", claim.getClaimSettings().isFireSpread())
                             .getMessage().split("\\|"));
         }
         if (pvp) {
-            this.updateItem("pvp", 1, 4,
+            this.updateItem("pvp", 1, 3,
                     plugin.getLocale().getMessage("interface.settings.pvptitle").getMessage(),
                     plugin.getLocale().getMessage("general.interface.current")
                             .processPlaceholder("current", claim.getClaimSettings().isPvp())
@@ -108,6 +111,13 @@ public class SettingsGui extends CustomizableGui {
                     plugin.getLocale().getMessage("interface.settings.leafdecaytitle").getMessage(),
                     plugin.getLocale().getMessage("general.interface.current")
                             .processPlaceholder("current", claim.getClaimSettings().isLeafDecay())
+                            .getMessage().split("\\|"));
+        }
+        if (tnt) {
+            this.updateItem("tnt", 1, 7,
+                    plugin.getLocale().getMessage("interface.settings.tnttitle").getMessage(),
+                    plugin.getLocale().getMessage("general.interface.current")
+                            .processPlaceholder("current", claim.getClaimSettings().isTnt())
                             .getMessage().split("\\|"));
         }
     }
@@ -138,6 +148,12 @@ public class SettingsGui extends CustomizableGui {
 
     private void toggleLeafDecay() {
         claim.getClaimSettings().setLeafDecay(!claim.getClaimSettings().isLeafDecay());
+        plugin.getDataManager().updateSettings(claim, claim.getClaimSettings());
+        refreshDisplay();
+    }
+
+    private void toggleTnt() {
+        claim.getClaimSettings().setTnt(!claim.getClaimSettings().isTnt());
         plugin.getDataManager().updateSettings(claim, claim.getClaimSettings());
         refreshDisplay();
     }

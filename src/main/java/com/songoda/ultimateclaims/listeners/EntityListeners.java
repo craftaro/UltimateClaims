@@ -229,6 +229,9 @@ public class EntityListeners implements Listener {
             if (!claimManager.hasClaim(block.getChunk()))
                 continue; // nope - you're not important
 
+            Claim claim = claimManager.getClaim(block.getChunk());
+            PowerCell powerCell = claim.getPowerCell();
+
             // Pay special attention to mobs
             switch (entity.getType()) {
                 case CREEPER:
@@ -236,9 +239,13 @@ public class EntityListeners implements Listener {
                 case FIREBALL:
                 case WITHER:
                     // For explosions caused by mobs, check if allowed
-                    Claim claim = claimManager.getClaim(block.getChunk());
-                    PowerCell powerCell = claim.getPowerCell();
                     if (!claim.getClaimSettings().isMobGriefingAllowed()
+                            || (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation()))) {
+                        event.blockList().remove(block);
+                    }
+                    break;
+                case PRIMED_TNT:
+                    if (!claim.getClaimSettings().isTnt()
                             || (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation()))) {
                         event.blockList().remove(block);
                     }

@@ -1,7 +1,7 @@
 package com.songoda.ultimateclaims.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.ultimateclaims.api.events.ClaimPlayerLeaveEvent;
+import com.songoda.ultimateclaims.api.events.ClaimMemberLeaveEvent;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.member.ClaimMember;
@@ -47,7 +47,7 @@ public class CommandLeave extends AbstractCommand {
 
         Claim claim = oClaim.get();
 
-        ClaimPlayerLeaveEvent event = new ClaimPlayerLeaveEvent(claim, player);
+        ClaimMemberLeaveEvent event = new ClaimMemberLeaveEvent(claim, player);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return ReturnType.FAILURE;
