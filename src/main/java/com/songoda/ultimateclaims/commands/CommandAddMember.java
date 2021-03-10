@@ -1,7 +1,7 @@
 package com.songoda.ultimateclaims.commands;
 
 import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.ultimateclaims.api.events.ClaimPlayerJoinEvent;
+import com.songoda.ultimateclaims.api.events.ClaimMemberAddEvent;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.utils.PlayerUtils;
@@ -56,7 +56,7 @@ public class CommandAddMember extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        ClaimPlayerJoinEvent event = new ClaimPlayerJoinEvent(claim, toInvite);
+        ClaimMemberAddEvent event = new ClaimMemberAddEvent(claim, toInvite);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return ReturnType.FAILURE;

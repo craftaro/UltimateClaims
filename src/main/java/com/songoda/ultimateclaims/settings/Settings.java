@@ -81,6 +81,79 @@ public class Settings {
             "Should hoppers be able to put fuel into a power cell?",
             "Please note that this feature is experimental.");
 
+    public static final ConfigSetting DEFAULT_CLAIM_HOSTILE_MOB_SPAWN = new ConfigSetting(config, "Default Settings.Claim.Hostile Mob Spawn", true,
+            "Should hostile mob spawning be enabled by default in new claims?");
+
+    public static final ConfigSetting DEFAULT_CLAIM_FIRE_SPREAD = new ConfigSetting(config, "Default Settings.Claim.Fire Spread", true,
+            "Should fire spread be enabled by default in new claims?");
+
+    public static final ConfigSetting DEFAULT_CLAIM_MOB_GRIEFING = new ConfigSetting(config, "Default Settings.Claim.Mob Griefing", true,
+            "Should mob griefing be enabled by default in new claims?");
+
+    public static final ConfigSetting DEFAULT_CLAIM_LEAF_DECAY = new ConfigSetting(config, "Default Settings.Claim.Leaf Decay", true,
+            "Should leaf decay be enabled by default in new claims?");
+
+    public static final ConfigSetting DEFAULT_CLAIM_PVP = new ConfigSetting(config, "Default Settings.Claim.Pvp", true,
+            "Should PvP be enabled by default in new claims?");
+
+    public static final ConfigSetting DEFAULT_CLAIM_TNT = new ConfigSetting(config, "Default Settings.Claim.Tnt", false,
+            "Should TNT explosions be enabled by default in new claims?");
+
+    public static final ConfigSetting DEFAULT_MEMBER_BREAK = new ConfigSetting(config, "Default Settings.Member.Break", true,
+            "Should members be allowed to break blocks",
+            "by default in new claims?");
+
+    public static final ConfigSetting DEFAULT_MEMBER_INTERACT = new ConfigSetting(config, "Default Settings.Member.Interact", true,
+            "Should members be allowed to interact with",
+            "items by default in new claims?");
+
+    public static final ConfigSetting DEFAULT_MEMBER_PLACE = new ConfigSetting(config, "Default Settings.Member.Place", true,
+            "Should members be allowed to place blocks",
+            "by default in new claims?");
+
+    public static final ConfigSetting DEFAULT_MEMBER_MOB_KILL = new ConfigSetting(config, "Default Settings.Member.Mob Kill", true,
+            "Should members be allowed to kill mobs",
+            "by default in new claims?");
+
+    public static final ConfigSetting DEFAULT_MEMBER_REDSTONE = new ConfigSetting(config, "Default Settings.Member.Redstone", true,
+            "Should members be allowed to use redstone",
+            "by default in new claims?");
+
+    public static final ConfigSetting DEFAULT_MEMBER_DOORS = new ConfigSetting(config, "Default Settings.Member.Doors", true,
+            "Should members be allowed to use doors",
+            "by default in new claims?");
+
+    public static final ConfigSetting DEFAULT_MEMBER_TRADE = new ConfigSetting(config, "Default Settings.Member.Trade", true,
+            "Should members be allowed to trade",
+            "by default in new claims?");
+
+    public static final ConfigSetting DEFAULT_VISITOR_BREAK = new ConfigSetting(config, "Default Settings.Visitor.Break", false,
+            "Should visitors be allowed to break blocks",
+            "by default in new claims?");
+
+    public static final ConfigSetting DEFAULT_VISITOR_INTERACT = new ConfigSetting(config, "Default Settings.Visitor.Interact", false,
+            "Should visitors be allowed to interact with",
+            "items by default in new claims?");
+
+    public static final ConfigSetting DEFAULT_VISITOR_PLACE = new ConfigSetting(config, "Default Settings.Visitor.Place", false,
+            "Should visitors be allowed to place blocks",
+            "by default in new claims?");
+
+    public static final ConfigSetting DEFAULT_VISITOR_MOB_KILL = new ConfigSetting(config, "Default Settings.Visitor.Mob Kill", false,
+            "Should visitors be allowed to kill mobs",
+            "by default in new claims?");
+
+    public static final ConfigSetting DEFAULT_VISITOR_REDSTONE = new ConfigSetting(config, "Default Settings.Visitor.Redstone", false,
+            "Should visitors be allowed to use redstone",
+            "by default in new claims?");
+
+    public static final ConfigSetting DEFAULT_VISITOR_DOORS = new ConfigSetting(config, "Default Settings.Visitor.Doors", false,
+            "Should visitors be allowed to use doors",
+            "by default in new claims?");
+
+    public static final ConfigSetting DEFAULT_VISITOR_TRADE = new ConfigSetting(config, "Default Settings.Visitor.Trade", false,
+            "Should visitors be allowed to trade",
+            "by default in new claims?");
 
     public static final ConfigSetting GLASS_TYPE_1 = new ConfigSetting(config, "Interfaces.Glass Type 1", "GRAY_STAINED_GLASS_PANE");
     public static final ConfigSetting GLASS_TYPE_2 = new ConfigSetting(config, "Interfaces.Glass Type 2", "BLUE_STAINED_GLASS_PANE");

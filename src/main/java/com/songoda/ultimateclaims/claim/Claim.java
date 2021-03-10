@@ -6,6 +6,7 @@ import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
 import com.songoda.ultimateclaims.member.ClaimRole;
+import com.songoda.ultimateclaims.settings.Settings;
 import com.songoda.ultimateclaims.utils.Methods;
 import org.bukkit.*;
 import org.bukkit.boss.BarColor;
@@ -36,22 +37,22 @@ public class Claim {
     private final ClaimSettings claimSettings = new ClaimSettings();
 
     private ClaimPermissions memberPermissions = new ClaimPermissions()
-            .setCanBreak(true)
-            .setCanInteract(true)
-            .setCanPlace(true)
-            .setCanMobKill(true)
-            .setCanRedstone(true)
-            .setCanDoors(true)
-            .setCanTrade(true);
+            .setCanBreak(Settings.DEFAULT_MEMBER_BREAK.getBoolean())
+            .setCanInteract(Settings.DEFAULT_MEMBER_INTERACT.getBoolean())
+            .setCanPlace(Settings.DEFAULT_MEMBER_PLACE.getBoolean())
+            .setCanMobKill(Settings.DEFAULT_MEMBER_MOB_KILL.getBoolean())
+            .setCanRedstone(Settings.DEFAULT_MEMBER_REDSTONE.getBoolean())
+            .setCanDoors(Settings.DEFAULT_MEMBER_DOORS.getBoolean())
+            .setCanTrade(Settings.DEFAULT_MEMBER_TRADE.getBoolean());
 
     private ClaimPermissions visitorPermissions = new ClaimPermissions()
-            .setCanBreak(false)
-            .setCanInteract(false)
-            .setCanPlace(false)
-            .setCanMobKill(false)
-            .setCanRedstone(false)
-            .setCanDoors(false)
-            .setCanTrade(false);
+            .setCanBreak(Settings.DEFAULT_VISITOR_BREAK.getBoolean())
+            .setCanInteract(Settings.DEFAULT_VISITOR_INTERACT.getBoolean())
+            .setCanPlace(Settings.DEFAULT_VISITOR_PLACE.getBoolean())
+            .setCanMobKill(Settings.DEFAULT_VISITOR_MOB_KILL.getBoolean())
+            .setCanRedstone(Settings.DEFAULT_VISITOR_REDSTONE.getBoolean())
+            .setCanDoors(Settings.DEFAULT_VISITOR_DOORS.getBoolean())
+            .setCanTrade(Settings.DEFAULT_VISITOR_TRADE.getBoolean());
 
     private PowerCell powerCell = new PowerCell(this);
 

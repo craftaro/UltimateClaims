@@ -18,10 +18,7 @@ import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.commands.*;
 import com.songoda.ultimateclaims.commands.admin.CommandRemoveClaim;
 import com.songoda.ultimateclaims.database.DataManager;
-import com.songoda.ultimateclaims.database.migrations._1_InitialMigration;
-import com.songoda.ultimateclaims.database.migrations._2_NewPermissions;
-import com.songoda.ultimateclaims.database.migrations._3_MemberNames;
-import com.songoda.ultimateclaims.database.migrations._4_TradingPermission;
+import com.songoda.ultimateclaims.database.migrations.*;
 import com.songoda.ultimateclaims.dynmap.DynmapManager;
 import com.songoda.ultimateclaims.listeners.*;
 import com.songoda.ultimateclaims.placeholder.PlaceholderManager;
@@ -178,9 +175,10 @@ public class UltimateClaims extends SongodaPlugin {
         this.dataManager = new DataManager(this.databaseConnector, this);
         this.dataMigrationManager = new DataMigrationManager(this.databaseConnector, this.dataManager,
                 new _1_InitialMigration(),
-                new _2_NewPermissions(),
+                new _2_NewPermissions(),    
                 new _3_MemberNames(),
-                new _4_TradingPermission());
+                new _4_TradingPermission(),
+                new _5_TntSetting());
         this.dataMigrationManager.runMigrations();
 
         this.dataManager.getPluginSettings((pluginSettings) -> this.pluginSettings = pluginSettings);

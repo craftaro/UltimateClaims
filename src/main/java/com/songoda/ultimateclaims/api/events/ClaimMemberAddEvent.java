@@ -5,12 +5,15 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
-public class ClaimPlayerJoinEvent extends ClaimEvent implements Cancellable {
+/**
+ * Called when a member gets added to a claim.
+ */
+public class ClaimMemberAddEvent extends ClaimEvent implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private boolean cancel = false;
     private final OfflinePlayer player;
 
-    public ClaimPlayerJoinEvent(Claim claim, OfflinePlayer player) {
+    public ClaimMemberAddEvent(Claim claim, OfflinePlayer player) {
         super(claim);
         this.player = player;
     }

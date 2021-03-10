@@ -142,6 +142,7 @@ interface:
     pvptitle: '&6&lPVP'
     mobgriefingtitle: '&6&lMob Griefing'
     leafdecaytitle: '&6&lLeaf Decay'
+    tnttitle: '&6&lTNT Griefing'
   recipe:
     title: Powercell Recipe
 

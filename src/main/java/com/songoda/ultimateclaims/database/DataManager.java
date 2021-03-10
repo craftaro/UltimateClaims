@@ -114,7 +114,7 @@ public class DataManager extends DataManagerAbstract {
                 statement.executeUpdate();
             }
 
-            String createSettings = "INSERT INTO " + this.getTablePrefix() + "settings (claim_id, hostile_mob_spawning, fire_spread, mob_griefing, leaf_decay, pvp) VALUES (?, ?, ?, ?, ?, ?)";
+            String createSettings = "INSERT INTO " + this.getTablePrefix() + "settings (claim_id, hostile_mob_spawning, fire_spread, mob_griefing, leaf_decay, pvp, tnt) VALUES (?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(createSettings)) {
                 statement.setInt(1, claimId);
                 statement.setInt(2, claim.getClaimSettings().isHostileMobSpawning() ? 1 : 0);
@@ -122,6 +122,7 @@ public class DataManager extends DataManagerAbstract {
                 statement.setInt(4, claim.getClaimSettings().isMobGriefingAllowed() ? 1 : 0);
                 statement.setInt(5, claim.getClaimSettings().isLeafDecay() ? 1 : 0);
                 statement.setInt(6, claim.getClaimSettings().isPvp() ? 1 : 0);
+                statement.setInt(7, claim.getClaimSettings().isTnt() ? 1 : 0);
                 statement.executeUpdate();
             }
 
@@ -391,14 +392,15 @@ public class DataManager extends DataManagerAbstract {
 
     public void updateSettings(Claim claim, ClaimSettings settings) {
         this.async(() -> this.databaseConnector.connect(connection -> {
-            String updateClaim = "UPDATE " + this.getTablePrefix() + "settings SET hostile_mob_spawning = ?, fire_spread = ?, mob_griefing = ?, leaf_decay = ?, pvp = ? WHERE claim_id = ?";
+            String updateClaim = "UPDATE " + this.getTablePrefix() + "settings SET hostile_mob_spawning = ?, fire_spread = ?, mob_griefing = ?, leaf_decay = ?, pvp = ?, tnt = ? WHERE claim_id = ?";
             try (PreparedStatement statement = connection.prepareStatement(updateClaim)) {
                 statement.setInt(1, settings.isHostileMobSpawning() ? 1 : 0);
                 statement.setInt(2, settings.isFireSpread() ? 1 : 0);
                 statement.setInt(3, settings.isMobGriefingAllowed() ? 1 : 0);
                 statement.setInt(4, settings.isLeafDecay() ? 1 : 0);
                 statement.setInt(5, settings.isPvp() ? 1 : 0);
-                statement.setInt(6, claim.getId());
+                statement.setInt(6, claim.getClaimSettings().isTnt() ? 1 : 0);
+                statement.setInt(7, claim.getId());
                 statement.executeUpdate();
             }
         }));
@@ -569,7 +571,8 @@ public class DataManager extends DataManagerAbstract {
                             .setFireSpread(result.getInt("fire_spread") == 1)
                             .setMobGriefingAllowed(result.getInt("mob_griefing") == 1)
                             .setLeafDecay(result.getInt("leaf_decay") == 1)
-                            .setPvp(result.getInt("pvp") == 1);
+                            .setPvp(result.getInt("pvp") == 1)
+                            .setTnt(result.getInt("tnt") == 1);
                 }
             }
 
