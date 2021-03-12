@@ -4,12 +4,12 @@ import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.gui.CustomizableGui;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
+import com.songoda.core.utils.TextUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
-import com.songoda.ultimateclaims.utils.Methods;
 import org.bukkit.inventory.ItemStack;
 
 public class SettingsMemberGui extends CustomizableGui {
@@ -24,8 +24,8 @@ public class SettingsMemberGui extends CustomizableGui {
         this.role = type;
         this.plugin = plugin;
         this.setRows(3);
-        this.setTitle(Methods.formatTitle(plugin.getLocale().getMessage("interface.permsettings.title")
-                .processPlaceholder("role", Methods.formatText(role.toString().toLowerCase(), true)).getMessage()));
+        this.setTitle(plugin.getLocale().getMessage("interface.permsettings.title")
+                .processPlaceholder("role", TextUtils.formatText(role.toString().toLowerCase(), true)).getMessage());
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());

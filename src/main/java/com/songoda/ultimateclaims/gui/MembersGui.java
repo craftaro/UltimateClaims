@@ -5,12 +5,13 @@ import com.songoda.core.gui.CustomizableGui;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.utils.ItemUtils;
+import com.songoda.core.utils.TextUtils;
+import com.songoda.core.utils.TimeUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
-import com.songoda.ultimateclaims.utils.Methods;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +37,7 @@ public class MembersGui extends CustomizableGui {
         this.claim = claim;
         this.plugin = plugin;
         this.setRows(6);
-        this.setTitle(Methods.formatTitle(plugin.getLocale().getMessage("interface.members.title").getMessage()));
+        this.setTitle(plugin.getLocale().getMessage("interface.members.title").getMessage());
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
@@ -95,13 +96,13 @@ public class MembersGui extends CustomizableGui {
                 plugin.getLocale().getMessage("interface.members.changetypetitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current",
-                                Methods.formatText(displayedRole == ClaimRole.OWNER ? "ALL" : displayedRole.toString(), true))
+                                TextUtils.formatText(displayedRole == ClaimRole.OWNER ? "ALL" : displayedRole.toString(), true))
                         .getMessage().split("\\|")));
         this.setItem("sort", 5, GuiUtils.updateItem(this.getItem(5),
                 plugin.getLocale().getMessage("interface.members.changesorttitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current",
-                                Methods.formatText(sortType.toString().replace('_', ' '), true))
+                                TextUtils.formatText(sortType.toString().replace('_', ' '), true))
                         .getMessage().split("\\|")));
 
         // show members
@@ -141,8 +142,8 @@ public class MembersGui extends CustomizableGui {
                         ChatColor.AQUA + skullPlayer.getName(),
                         plugin.getLocale().getMessage("interface.members.skulllore")
                                 .processPlaceholder("role",
-                                        Methods.formatText(toDisplay.get(currentMember).getRole().toString().toLowerCase(), true))
-                                .processPlaceholder("playtime", Methods.makeReadable(claimMember.getPlayTime()))
+                                        TextUtils.formatText(toDisplay.get(currentMember).getRole().toString().toLowerCase(), true))
+                                .processPlaceholder("playtime", TimeUtils.makeReadable(claimMember.getPlayTime()))
                                 .processPlaceholder("membersince",
                                         new SimpleDateFormat("dd/MM/yyyy").format(new Date(claimMember.getMemberSince())))
                                 .getMessage().split("\\|")));

@@ -2,10 +2,10 @@ package com.songoda.ultimateclaims.claim;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.hooks.HologramManager;
+import com.songoda.core.utils.TimeUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.gui.PowerCellGui;
 import com.songoda.ultimateclaims.settings.Settings;
-import com.songoda.ultimateclaims.utils.Methods;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -159,15 +159,19 @@ public class PowerCell {
 
     public void updateHologram() {
         if (location != null) {
-            if (getTotalPower() > 1) {
-                HologramManager.updateHologram(location, plugin.getLocale().getMessage("general.claim.powercell")
-                        .processPlaceholder("time", Methods.makeReadable(getTotalPower() * 60 * 1000))
-                        .getMessage());
-            } else {
-                HologramManager.updateHologram(location, plugin.getLocale().getMessage("general.claim.powercell.low")
-                        .processPlaceholder("time", Methods.makeReadable((getTotalPower() + Settings.MINIMUM_POWER.getInt()) * 60 * 1000))
-                        .getMessage());
-            }
+                HologramManager.updateHologram(location, getTimeRemaining());
+        }
+    }
+
+    public String getTimeRemaining() {
+        if (getTotalPower() > 1) {
+            return plugin.getLocale().getMessage("general.claim.powercell")
+                    .processPlaceholder("time", TimeUtils.makeReadable(getTotalPower() * 60 * 1000))
+                    .getMessage();
+        } else {
+            return plugin.getLocale().getMessage("general.claim.powercell.low")
+                    .processPlaceholder("time", TimeUtils.makeReadable((getTotalPower() + Settings.MINIMUM_POWER.getInt()) * 60 * 1000))
+                    .getMessage();
         }
     }
 

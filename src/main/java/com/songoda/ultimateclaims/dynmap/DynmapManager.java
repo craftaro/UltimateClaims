@@ -1,10 +1,10 @@
 package com.songoda.ultimateclaims.dynmap;
 
+import com.songoda.core.utils.TimeUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimCorners;
 import com.songoda.ultimateclaims.settings.Settings;
-import com.songoda.ultimateclaims.utils.Methods;
 import org.bukkit.Bukkit;
 import org.dynmap.DynmapAPI;
 import org.dynmap.markers.AreaMarker;
@@ -72,7 +72,7 @@ public class DynmapManager {
                 .replace("${OwnerUUID}", claim.getOwner().getUniqueId().toString())
                 .replace("${MemberCount}", claim.getMembers().size() + "")
                 .replace("${PowerLeft}",
-                        Methods.makeReadable(claim.getPowerCell().getTotalPower() * 60 * 1000));
+                        TimeUtils.makeReadable(claim.getPowerCell().getTotalPower() * 60 * 1000));
 
         for (AreaMarker aMarker : markerSet.getAreaMarkers()) {
             if (!aMarker.getMarkerID().startsWith(claim.getId() + ":")) continue;

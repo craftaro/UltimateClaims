@@ -8,7 +8,6 @@ import com.songoda.core.utils.ItemUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.settings.Settings;
-import com.songoda.ultimateclaims.utils.Methods;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +26,7 @@ public class BansGui extends CustomizableGui {
         this.claim = claim;
         this.plugin = plugin;
         setRows(6);
-        this.setTitle(Methods.formatTitle(plugin.getLocale().getMessage("interface.bans.title").getMessage()));
+        this.setTitle(plugin.getLocale().getMessage("interface.bans.title").getMessage());
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());

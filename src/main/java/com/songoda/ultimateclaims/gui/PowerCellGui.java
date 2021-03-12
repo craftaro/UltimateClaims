@@ -2,16 +2,17 @@ package com.songoda.ultimateclaims.gui;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.gui.CustomizableGui;
-import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.input.ChatPrompt;
+import com.songoda.core.utils.NumberUtils;
+import com.songoda.core.utils.TextUtils;
+import com.songoda.core.utils.TimeUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
-import com.songoda.ultimateclaims.utils.Methods;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -31,7 +32,7 @@ public class PowerCellGui extends CustomizableGui {
         this.powercell = claim.getPowerCell();
         this.claim = claim;
         this.setRows(6);
-        this.setTitle(Methods.formatTitle(claim.getName()));
+        this.setTitle(TextUtils.formatText(claim.getName(), true));
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
@@ -149,21 +150,21 @@ public class PowerCellGui extends CustomizableGui {
         if (Settings.ENABLE_FUEL.getBoolean())
             this.updateItem("economy", 0, 2,
                     plugin.getLocale().getMessage("interface.powercell.economytitle")
-                            .processPlaceholder("time", Methods.makeReadable((long) powercell.getEconomyPower() * 60 * 1000)).getMessage(),
+                            .processPlaceholder("time", TimeUtils.makeReadable((long) powercell.getEconomyPower() * 60 * 1000)).getMessage(),
                     plugin.getLocale().getMessage("interface.powercell.economylore").getMessage().split("\\|"));
 
         // Display the total time
         if (Settings.ENABLE_FUEL.getBoolean())
             this.updateItem("time", 0, 4,
                     plugin.getLocale().getMessage("interface.powercell.totaltitle")
-                            .processPlaceholder("time", Methods.makeReadable((long) powercell.getTotalPower() * 60 * 1000)).getMessage(),
+                            .processPlaceholder("time", TimeUtils.makeReadable((long) powercell.getTotalPower() * 60 * 1000)).getMessage(),
                     ChatColor.BLACK.toString());
 
         // Display the item amount
         if (Settings.ENABLE_FUEL.getBoolean())
             this.updateItem("item", 0, 6,
                     plugin.getLocale().getMessage("interface.powercell.valuablestitle")
-                            .processPlaceholder("time", Methods.makeReadable((long) powercell.getItemPower() * 60 * 1000)).getMessage(),
+                            .processPlaceholder("time", TimeUtils.makeReadable((long) powercell.getItemPower() * 60 * 1000)).getMessage(),
                     ChatColor.BLACK.toString());
 
         // buttons at the bottom of the screen
@@ -196,7 +197,7 @@ public class PowerCellGui extends CustomizableGui {
         ChatPrompt.showPrompt(plugin, player,
                 plugin.getLocale().getMessage("interface.powercell.addfunds").getPrefixedMessage(),
                 response -> {
-                    if (!Methods.isNumeric(response.getMessage())) {
+                    if (!NumberUtils.isNumeric(response.getMessage())) {
                         plugin.getLocale().getMessage("general.notanumber")
                                 .processPlaceholder("value", response.getMessage())
                                 .sendPrefixedMessage(player);

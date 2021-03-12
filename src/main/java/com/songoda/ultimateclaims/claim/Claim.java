@@ -1,5 +1,9 @@
 package com.songoda.ultimateclaims.claim;
 
+import com.songoda.core.compatibility.CompatibleMaterial;
+import com.songoda.core.compatibility.CompatibleSound;
+import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.api.events.ClaimDeleteEvent;
 import com.songoda.ultimateclaims.member.ClaimMember;
@@ -7,8 +11,8 @@ import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
-import com.songoda.ultimateclaims.utils.Methods;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -18,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
@@ -202,6 +207,10 @@ public class Claim {
         return this.claimedChunks.size();
     }
 
+    public int getMaxClaimSize(Player player) {
+        return PlayerUtils.getNumberFromPermission(player, "ultimateclaims.maxclaims", Settings.MAX_CHUNKS.getInt());
+    }
+
     public ClaimedChunk addClaimedChunk(Chunk chunk) {
         ClaimedChunk newChunk = new ClaimedChunk(this, chunk);
         this.claimedChunks.add(newChunk);
@@ -215,7 +224,7 @@ public class Claim {
     }
 
     public ClaimedChunk addClaimedChunk(Chunk chunk, Player player) {
-        Methods.animateChunk(chunk, player, Material.EMERALD_BLOCK);
+        animateChunk(chunk, player, Material.EMERALD_BLOCK);
         return addClaimedChunk(chunk);
     }
 
@@ -226,8 +235,34 @@ public class Claim {
     }
 
     public ClaimedChunk removeClaimedChunk(Chunk chunk, Player player) {
-        Methods.animateChunk(chunk, player, Material.REDSTONE_BLOCK);
+        animateChunk(chunk, player, Material.REDSTONE_BLOCK);
         return this.removeClaimedChunk(chunk);
+    }
+
+    public void animateChunk(Chunk chunk, Player player, Material material) {
+        int bx = chunk.getX() << 4;
+        int bz = chunk.getZ() << 4;
+
+        World world = player.getWorld();
+
+        Random random = new Random();
+
+        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))
+            for (int xx = bx; xx < bx + 16; xx++) {
+                for (int zz = bz; zz < bz + 16; zz++) {
+                    for (int yy = player.getLocation().getBlockY() - 5; yy < player.getLocation().getBlockY() + 5; yy++) {
+                        Block block = world.getBlockAt(xx, yy, zz);
+                        CompatibleMaterial m = CompatibleMaterial.getMaterial(block);
+                        if (!m.isOccluding() || m.isInteractable()) continue;
+                        Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () -> {
+                            player.sendBlockChange(block.getLocation(), material, (byte) 0);
+                            Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () ->
+                                    player.sendBlockChange(block.getLocation(), block.getBlockData()), random.nextInt(30) + 1);
+                            player.playSound(block.getLocation(), CompatibleSound.BLOCK_METAL_STEP.getSound(), 1F, .2F);
+                        }, random.nextInt(30) + 1);
+                    }
+                }
+            }
     }
 
     public List<ClaimCorners> getCorners() {
@@ -344,11 +379,11 @@ public class Claim {
         return claimSettings;
     }
 
-    public long getTotalPower() {
+    public String getPowercellTimeRemaining() {
         if (hasPowerCell())
-            return powerCell.getTotalPower();
+            return powerCell.getTimeRemaining();
         else
-            return 0;
+            return null;
     }
 
     @Override

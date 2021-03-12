@@ -2,6 +2,7 @@ package com.songoda.ultimateclaims.commands;
 
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.hooks.WorldGuardHook;
+import com.songoda.core.utils.TimeUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.api.events.ClaimChunkClaimEvent;
 import com.songoda.ultimateclaims.api.events.ClaimCreateEvent;
@@ -11,12 +12,10 @@ import com.songoda.ultimateclaims.claim.ClaimedChunk;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
-import com.songoda.ultimateclaims.utils.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,17 +70,7 @@ public class CommandClaim extends AbstractCommand {
                 return ReturnType.FAILURE;
             }
 
-            int maxClaimable = Settings.MAX_CHUNKS.getInt();
-
-            // allow permission overrides
-            for (PermissionAttachmentInfo perms : player.getEffectivePermissions()) {
-                int amount;
-                String a;
-                if (perms.getPermission().startsWith("ultimateclaims.maxclaims.")
-                        && (a = perms.getPermission().substring("ultimateclaims.maxclaims.".length())).matches("^[0-9]+$")
-                        && (amount = Integer.parseInt(a)) > maxClaimable)
-                    maxClaimable = amount;
-            }
+            int maxClaimable = claim.getMaxClaimSize(player);
 
             if (claim.getClaimSize() >= maxClaimable) {
                 plugin.getLocale().getMessage("command.claim.toomany")
@@ -123,7 +112,7 @@ public class CommandClaim extends AbstractCommand {
             plugin.getDataManager().createClaim(claim);
 
             plugin.getLocale().getMessage("command.claim.info")
-                    .processPlaceholder("time", Methods.makeReadable((long) (Settings.STARTING_POWER.getInt() * 60 * 1000)))
+                    .processPlaceholder("time", TimeUtils.makeReadable((long) (Settings.STARTING_POWER.getInt() * 60 * 1000)))
                     .sendPrefixedMessage(sender);
         }
 
