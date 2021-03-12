@@ -1,6 +1,6 @@
 <p align="center">
 <img alt="UltimateClaims"
-    src="https://proxy.songoda.com/200/https://cdn2.songoda.com/products/ultimateclaims/UXnEJ6HRSbBwnO61UC1AW931qF3Pa706yVSLkhZQ.png">
+    src="https://proxy.songoda.com/200/https://cdn2.songoda.com/products/ultimateclaims/rmpxtAfVcKtBbeGhUq3l8On31zMJpn9Uua3qmmhO.png">
 </p>
 
 <h1 align="center">UltimateClaims</h1>
