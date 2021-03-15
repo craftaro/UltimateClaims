@@ -39,7 +39,7 @@ public class PlaceholderManager extends PlaceholderExpansion {
             case "members": {
                 List<ClaimMember> members = new ArrayList<>();
                 for (Claim claim : claims)
-                    members.addAll(claim.getMembers());
+                    members.addAll(claim.getOwnerAndMembers());
                 return claims.size() == 0 ? plugin.getLocale().getMessage("general.word.none").getMessage() : members.stream().map(ClaimMember::getName).collect(Collectors.joining(", "));
             }
             case "bans": {
