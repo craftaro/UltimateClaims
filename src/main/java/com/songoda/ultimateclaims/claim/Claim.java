@@ -39,25 +39,32 @@ public class Claim {
     private Location home = null;
     private boolean locked = false;
 
-    private final ClaimSettings claimSettings = new ClaimSettings();
+    private final ClaimSettings claimSettings = new ClaimSettings()
+            .setEnabled(ClaimSetting.HOSTILE_MOB_SPAWNING, Settings.DEFAULT_CLAIM_HOSTILE_MOB_SPAWN.getBoolean())
+            .setEnabled(ClaimSetting.FIRE_SPREAD, Settings.DEFAULT_CLAIM_FIRE_SPREAD.getBoolean())
+            .setEnabled(ClaimSetting.MOB_GRIEFING, Settings.DEFAULT_CLAIM_MOB_GRIEFING.getBoolean())
+            .setEnabled(ClaimSetting.LEAF_DECAY, Settings.DEFAULT_CLAIM_LEAF_DECAY.getBoolean())
+            .setEnabled(ClaimSetting.PVP, Settings.DEFAULT_CLAIM_PVP.getBoolean())
+            .setEnabled(ClaimSetting.TNT, Settings.DEFAULT_CLAIM_TNT.getBoolean())
+            .setEnabled(ClaimSetting.FLY, Settings.DEFAULT_CLAIM_FLY.getBoolean());
 
     private ClaimPermissions memberPermissions = new ClaimPermissions()
-            .setCanBreak(Settings.DEFAULT_MEMBER_BREAK.getBoolean())
-            .setCanInteract(Settings.DEFAULT_MEMBER_INTERACT.getBoolean())
-            .setCanPlace(Settings.DEFAULT_MEMBER_PLACE.getBoolean())
-            .setCanMobKill(Settings.DEFAULT_MEMBER_MOB_KILL.getBoolean())
-            .setCanRedstone(Settings.DEFAULT_MEMBER_REDSTONE.getBoolean())
-            .setCanDoors(Settings.DEFAULT_MEMBER_DOORS.getBoolean())
-            .setCanTrade(Settings.DEFAULT_MEMBER_TRADE.getBoolean());
+            .setAllowed(ClaimPerm.BREAK, Settings.DEFAULT_MEMBER_BREAK.getBoolean())
+            .setAllowed(ClaimPerm.INTERACT, Settings.DEFAULT_MEMBER_INTERACT.getBoolean())
+            .setAllowed(ClaimPerm.PLACE, Settings.DEFAULT_MEMBER_PLACE.getBoolean())
+            .setAllowed(ClaimPerm.MOB_KILLING, Settings.DEFAULT_MEMBER_MOB_KILL.getBoolean())
+            .setAllowed(ClaimPerm.REDSTONE, Settings.DEFAULT_MEMBER_REDSTONE.getBoolean())
+            .setAllowed(ClaimPerm.DOORS, Settings.DEFAULT_MEMBER_DOORS.getBoolean())
+            .setAllowed(ClaimPerm.TRADING, Settings.DEFAULT_MEMBER_TRADE.getBoolean());
 
     private ClaimPermissions visitorPermissions = new ClaimPermissions()
-            .setCanBreak(Settings.DEFAULT_VISITOR_BREAK.getBoolean())
-            .setCanInteract(Settings.DEFAULT_VISITOR_INTERACT.getBoolean())
-            .setCanPlace(Settings.DEFAULT_VISITOR_PLACE.getBoolean())
-            .setCanMobKill(Settings.DEFAULT_VISITOR_MOB_KILL.getBoolean())
-            .setCanRedstone(Settings.DEFAULT_VISITOR_REDSTONE.getBoolean())
-            .setCanDoors(Settings.DEFAULT_VISITOR_DOORS.getBoolean())
-            .setCanTrade(Settings.DEFAULT_VISITOR_TRADE.getBoolean());
+            .setAllowed(ClaimPerm.BREAK, Settings.DEFAULT_VISITOR_BREAK.getBoolean())
+            .setAllowed(ClaimPerm.INTERACT, Settings.DEFAULT_VISITOR_INTERACT.getBoolean())
+            .setAllowed(ClaimPerm.PLACE, Settings.DEFAULT_VISITOR_PLACE.getBoolean())
+            .setAllowed(ClaimPerm.MOB_KILLING, Settings.DEFAULT_VISITOR_MOB_KILL.getBoolean())
+            .setAllowed(ClaimPerm.REDSTONE, Settings.DEFAULT_VISITOR_REDSTONE.getBoolean())
+            .setAllowed(ClaimPerm.DOORS, Settings.DEFAULT_VISITOR_DOORS.getBoolean())
+            .setAllowed(ClaimPerm.TRADING, Settings.DEFAULT_VISITOR_TRADE.getBoolean());
 
     private PowerCell powerCell = new PowerCell(this);
 
@@ -126,12 +133,6 @@ public class Claim {
         this.members.add(member);
         return member;
     }
-//
-//    public ClaimMember addMember(UUID uuid, ClaimRole role) {
-//        ClaimMember newMember = new ClaimMember(this, uuid, null, role);
-//        this.members.add(newMember);
-//        return newMember;
-//    }
 
     public ClaimMember addMember(OfflinePlayer player, ClaimRole role) {
         ClaimMember newMember = new ClaimMember(this, player.getUniqueId(), player.getName(), role);

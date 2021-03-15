@@ -68,6 +68,7 @@ public class CommandUnClaim extends AbstractCommand {
                         claim.removeMember(member);
                     else
                         member.setPresent(false);
+                    plugin.getTrackerTask().toggleFlyOff(p);
                 }
                 if (Settings.CLAIMS_BOSSBAR.getBoolean()) {
                     claim.getVisitorBossBar().removePlayer(p);

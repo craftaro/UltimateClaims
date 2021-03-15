@@ -45,13 +45,13 @@ public class SettingsMemberGui extends CustomizableGui {
         this.setButton("back",8, this.getItem(0), (event) -> guiManager.showGUI(event.player, returnGui));
 
         // settings
-        this.setButton("break", 1, 1, CompatibleMaterial.IRON_PICKAXE.getItem(), (event) -> toggleBreak());
-        this.setButton("place", 1, 2, CompatibleMaterial.STONE.getItem(), (event) -> togglePlace());
-        this.setButton("interact", 1, 3, CompatibleMaterial.LEVER.getItem(), (event) -> toggleInteract());
-        this.setButton("trading", 1, 4, CompatibleMaterial.EMERALD.getItem(), (event) -> toggleTrading());
-        this.setButton("doors", 1, 5, CompatibleMaterial.OAK_DOOR.getItem(), (event) -> toggleDoors());
-        this.setButton("kills", 1, 6, CompatibleMaterial.DIAMOND_SWORD.getItem(), (event) -> toggleKills());
-        this.setButton("redstone", 1, 7, CompatibleMaterial.REDSTONE.getItem(), (event) -> toggleRedstone());
+        this.setButton("break", 1, 1, CompatibleMaterial.IRON_PICKAXE.getItem(), (event) -> toggle(ClaimPerm.BREAK));
+        this.setButton("place", 1, 2, CompatibleMaterial.STONE.getItem(), (event) -> toggle(ClaimPerm.PLACE));
+        this.setButton("interact", 1, 3, CompatibleMaterial.LEVER.getItem(), (event) -> toggle(ClaimPerm.INTERACT));
+        this.setButton("trading", 1, 4, CompatibleMaterial.EMERALD.getItem(), (event) -> toggle(ClaimPerm.TRADING));
+        this.setButton("doors", 1, 5, CompatibleMaterial.OAK_DOOR.getItem(), (event) -> toggle(ClaimPerm.DOORS));
+        this.setButton("kills", 1, 6, CompatibleMaterial.DIAMOND_SWORD.getItem(), (event) -> toggle(ClaimPerm.MOB_KILLING));
+        this.setButton("redstone", 1, 7, CompatibleMaterial.REDSTONE.getItem(), (event) -> toggle(ClaimPerm.REDSTONE));
         refreshDisplay();
     }
 
@@ -103,78 +103,12 @@ public class SettingsMemberGui extends CustomizableGui {
 
     }
 
-    private void toggleBreak() {
+    private void toggle(ClaimPerm perm) {
         if (role == ClaimRole.MEMBER) {
-            claim.getMemberPermissions().setCanBreak(!claim.getMemberPermissions().hasPermission(ClaimPerm.BREAK));
+            claim.getMemberPermissions().setAllowed(perm, !claim.getMemberPermissions().hasPermission(perm));
             plugin.getDataManager().updatePermissions(claim, claim.getMemberPermissions(), ClaimRole.MEMBER);
         } else {
-            claim.getVisitorPermissions().setCanBreak(!claim.getVisitorPermissions().hasPermission(ClaimPerm.BREAK));
-            plugin.getDataManager().updatePermissions(claim, claim.getVisitorPermissions(), ClaimRole.VISITOR);
-        }
-        refreshDisplay();
-    }
-
-    private void togglePlace() {
-        if (role == ClaimRole.MEMBER) {
-            claim.getMemberPermissions().setCanPlace(!claim.getMemberPermissions().hasPermission(ClaimPerm.PLACE));
-            plugin.getDataManager().updatePermissions(claim, claim.getMemberPermissions(), ClaimRole.MEMBER);
-        } else {
-            claim.getVisitorPermissions().setCanPlace(!claim.getVisitorPermissions().hasPermission(ClaimPerm.PLACE));
-            plugin.getDataManager().updatePermissions(claim, claim.getVisitorPermissions(), ClaimRole.VISITOR);
-        }
-        refreshDisplay();
-    }
-
-    private void toggleInteract() {
-        if (role == ClaimRole.MEMBER) {
-            claim.getMemberPermissions().setCanInteract(!claim.getMemberPermissions().hasPermission(ClaimPerm.INTERACT));
-            plugin.getDataManager().updatePermissions(claim, claim.getMemberPermissions(), ClaimRole.MEMBER);
-        } else {
-            claim.getVisitorPermissions().setCanInteract(!claim.getVisitorPermissions().hasPermission(ClaimPerm.INTERACT));
-            plugin.getDataManager().updatePermissions(claim, claim.getVisitorPermissions(), ClaimRole.VISITOR);
-        }
-        refreshDisplay();
-    }
-
-    private void toggleDoors() {
-        if (role == ClaimRole.MEMBER) {
-            claim.getMemberPermissions().setCanDoors(!claim.getMemberPermissions().hasPermission(ClaimPerm.DOORS));
-            plugin.getDataManager().updatePermissions(claim, claim.getMemberPermissions(), ClaimRole.MEMBER);
-        } else {
-            claim.getVisitorPermissions().setCanDoors(!claim.getVisitorPermissions().hasPermission(ClaimPerm.DOORS));
-            plugin.getDataManager().updatePermissions(claim, claim.getVisitorPermissions(), ClaimRole.VISITOR);
-        }
-        refreshDisplay();
-    }
-
-    private void toggleKills() {
-        if (role == ClaimRole.MEMBER) {
-            claim.getMemberPermissions().setCanMobKill(!claim.getMemberPermissions().hasPermission(ClaimPerm.MOB_KILLING));
-            plugin.getDataManager().updatePermissions(claim, claim.getMemberPermissions(), ClaimRole.MEMBER);
-        } else {
-            claim.getVisitorPermissions().setCanMobKill(!claim.getVisitorPermissions().hasPermission(ClaimPerm.MOB_KILLING));
-            plugin.getDataManager().updatePermissions(claim, claim.getVisitorPermissions(), ClaimRole.VISITOR);
-        }
-        refreshDisplay();
-    }
-
-    private void toggleRedstone() {
-        if (role == ClaimRole.MEMBER) {
-            claim.getMemberPermissions().setCanRedstone(!claim.getMemberPermissions().hasPermission(ClaimPerm.REDSTONE));
-            plugin.getDataManager().updatePermissions(claim, claim.getMemberPermissions(), ClaimRole.MEMBER);
-        } else {
-            claim.getVisitorPermissions().setCanRedstone(!claim.getVisitorPermissions().hasPermission(ClaimPerm.REDSTONE));
-            plugin.getDataManager().updatePermissions(claim, claim.getVisitorPermissions(), ClaimRole.VISITOR);
-        }
-        refreshDisplay();
-    }
-
-    private void toggleTrading() {
-        if(role == ClaimRole.MEMBER) {
-            claim.getMemberPermissions().setCanTrade(!claim.getMemberPermissions().hasPermission(ClaimPerm.TRADING));
-            plugin.getDataManager().updatePermissions(claim, claim.getMemberPermissions(), ClaimRole.MEMBER);
-        } else {
-            claim.getVisitorPermissions().setCanTrade(!claim.getVisitorPermissions().hasPermission(ClaimPerm.TRADING));
+            claim.getVisitorPermissions().setAllowed(perm, !claim.getVisitorPermissions().hasPermission(perm));
             plugin.getDataManager().updatePermissions(claim, claim.getVisitorPermissions(), ClaimRole.VISITOR);
         }
         refreshDisplay();

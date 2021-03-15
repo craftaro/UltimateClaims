@@ -4,6 +4,7 @@ import com.songoda.core.database.DataManagerAbstract;
 import com.songoda.core.database.DatabaseConnector;
 import com.songoda.core.utils.ItemSerializer;
 import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.ultimateclaims.claim.ClaimSetting;
 import com.songoda.ultimateclaims.claim.ClaimSettings;
 import com.songoda.ultimateclaims.claim.ClaimedChunk;
 import com.songoda.ultimateclaims.member.ClaimMember;
@@ -114,15 +115,16 @@ public class DataManager extends DataManagerAbstract {
                 statement.executeUpdate();
             }
 
-            String createSettings = "INSERT INTO " + this.getTablePrefix() + "settings (claim_id, hostile_mob_spawning, fire_spread, mob_griefing, leaf_decay, pvp, tnt) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String createSettings = "INSERT INTO " + this.getTablePrefix() + "settings (claim_id, hostile_mob_spawning, fire_spread, mob_griefing, leaf_decay, pvp, tnt, fly) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(createSettings)) {
                 statement.setInt(1, claimId);
-                statement.setInt(2, claim.getClaimSettings().isHostileMobSpawning() ? 1 : 0);
-                statement.setInt(3, claim.getClaimSettings().isFireSpread() ? 1 : 0);
-                statement.setInt(4, claim.getClaimSettings().isMobGriefingAllowed() ? 1 : 0);
-                statement.setInt(5, claim.getClaimSettings().isLeafDecay() ? 1 : 0);
-                statement.setInt(6, claim.getClaimSettings().isPvp() ? 1 : 0);
-                statement.setInt(7, claim.getClaimSettings().isTnt() ? 1 : 0);
+                statement.setInt(2, claim.getClaimSettings().isEnabled(ClaimSetting.HOSTILE_MOB_SPAWNING) ? 1 : 0);
+                statement.setInt(3, claim.getClaimSettings().isEnabled(ClaimSetting.FIRE_SPREAD) ? 1 : 0);
+                statement.setInt(4, claim.getClaimSettings().isEnabled(ClaimSetting.MOB_GRIEFING) ? 1 : 0);
+                statement.setInt(5, claim.getClaimSettings().isEnabled(ClaimSetting.LEAF_DECAY) ? 1 : 0);
+                statement.setInt(6, claim.getClaimSettings().isEnabled(ClaimSetting.PVP) ? 1 : 0);
+                statement.setInt(7, claim.getClaimSettings().isEnabled(ClaimSetting.TNT) ? 1 : 0);
+                statement.setInt(8, claim.getClaimSettings().isEnabled(ClaimSetting.FLY) ? 1 : 0);
                 statement.executeUpdate();
             }
 
@@ -392,15 +394,16 @@ public class DataManager extends DataManagerAbstract {
 
     public void updateSettings(Claim claim, ClaimSettings settings) {
         this.async(() -> this.databaseConnector.connect(connection -> {
-            String updateClaim = "UPDATE " + this.getTablePrefix() + "settings SET hostile_mob_spawning = ?, fire_spread = ?, mob_griefing = ?, leaf_decay = ?, pvp = ?, tnt = ? WHERE claim_id = ?";
+            String updateClaim = "UPDATE " + this.getTablePrefix() + "settings SET hostile_mob_spawning = ?, fire_spread = ?, mob_griefing = ?, leaf_decay = ?, pvp = ?, tnt = ?, fly = ? WHERE claim_id = ?";
             try (PreparedStatement statement = connection.prepareStatement(updateClaim)) {
-                statement.setInt(1, settings.isHostileMobSpawning() ? 1 : 0);
-                statement.setInt(2, settings.isFireSpread() ? 1 : 0);
-                statement.setInt(3, settings.isMobGriefingAllowed() ? 1 : 0);
-                statement.setInt(4, settings.isLeafDecay() ? 1 : 0);
-                statement.setInt(5, settings.isPvp() ? 1 : 0);
-                statement.setInt(6, claim.getClaimSettings().isTnt() ? 1 : 0);
-                statement.setInt(7, claim.getId());
+                statement.setInt(1, settings.isEnabled(ClaimSetting.HOSTILE_MOB_SPAWNING) ? 1 : 0);
+                statement.setInt(2, settings.isEnabled(ClaimSetting.FIRE_SPREAD) ? 1 : 0);
+                statement.setInt(3, settings.isEnabled(ClaimSetting.MOB_GRIEFING) ? 1 : 0);
+                statement.setInt(4, settings.isEnabled(ClaimSetting.LEAF_DECAY) ? 1 : 0);
+                statement.setInt(5, settings.isEnabled(ClaimSetting.PVP) ? 1 : 0);
+                statement.setInt(6, settings.isEnabled(ClaimSetting.TNT) ? 1 : 0);
+                statement.setInt(7, settings.isEnabled(ClaimSetting.FLY) ? 1 : 0);
+                statement.setInt(8, claim.getId());
                 statement.executeUpdate();
             }
         }));
@@ -567,12 +570,13 @@ public class DataManager extends DataManagerAbstract {
                         continue;
 
                     claim.getClaimSettings()
-                            .setHostileMobSpawning(result.getInt("hostile_mob_spawning") == 1)
-                            .setFireSpread(result.getInt("fire_spread") == 1)
-                            .setMobGriefingAllowed(result.getInt("mob_griefing") == 1)
-                            .setLeafDecay(result.getInt("leaf_decay") == 1)
-                            .setPvp(result.getInt("pvp") == 1)
-                            .setTnt(result.getInt("tnt") == 1);
+                            .setEnabled(ClaimSetting.HOSTILE_MOB_SPAWNING, result.getInt("hostile_mob_spawning") == 1)
+                            .setEnabled(ClaimSetting.FIRE_SPREAD, result.getInt("fire_spread") == 1)
+                            .setEnabled(ClaimSetting.MOB_GRIEFING, result.getInt("mob_griefing") == 1)
+                            .setEnabled(ClaimSetting.LEAF_DECAY, result.getInt("leaf_decay") == 1)
+                            .setEnabled(ClaimSetting.PVP, result.getInt("pvp") == 1)
+                            .setEnabled(ClaimSetting.TNT, result.getInt("tnt") == 1)
+                            .setEnabled(ClaimSetting.FLY, result.getInt("fly") == 1);
                 }
             }
 
@@ -585,13 +589,13 @@ public class DataManager extends DataManagerAbstract {
                         continue;
 
                     ClaimPermissions permissions = new ClaimPermissions()
-                            .setCanInteract(result.getInt("interact") == 1)
-                            .setCanBreak(result.getInt("break") == 1)
-                            .setCanPlace(result.getInt("place") == 1)
-                            .setCanMobKill(result.getInt("mob_kill") == 1)
-                            .setCanRedstone(result.getInt("redstone") == 1)
-                            .setCanDoors(result.getInt("doors") == 1)
-                            .setCanTrade(result.getInt("trading") == 1);
+                            .setAllowed(ClaimPerm.INTERACT, result.getInt("interact") == 1)
+                            .setAllowed(ClaimPerm.BREAK, result.getInt("break") == 1)
+                            .setAllowed(ClaimPerm.PLACE, result.getInt("place") == 1)
+                            .setAllowed(ClaimPerm.MOB_KILLING, result.getInt("mob_kill") == 1)
+                            .setAllowed(ClaimPerm.REDSTONE, result.getInt("redstone") == 1)
+                            .setAllowed(ClaimPerm.DOORS, result.getInt("doors") == 1)
+                            .setAllowed(ClaimPerm.TRADING, result.getInt("trading") == 1);
 
                     String type = result.getString("type");
                     switch (type) {

@@ -3,6 +3,7 @@ package com.songoda.ultimateclaims.listeners;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
+import com.songoda.ultimateclaims.claim.ClaimSetting;
 import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
@@ -109,7 +110,7 @@ public class EntityListeners implements Listener {
 
         if (claimManager.hasClaim(event.getLocation().getChunk())) {
             Claim claim = claimManager.getClaim(event.getLocation().getChunk());
-            if (!claim.getClaimSettings().isHostileMobSpawning() && event.getEntity() instanceof Monster) {
+            if (!claim.getClaimSettings().isEnabled(ClaimSetting.HOSTILE_MOB_SPAWNING) && event.getEntity() instanceof Monster) {
                 event.setCancelled(true);
             }
         }
@@ -123,7 +124,7 @@ public class EntityListeners implements Listener {
 
         if (claimManager.hasClaim(event.getBlock().getLocation().getChunk())) {
             Claim claim = claimManager.getClaim(event.getBlock().getLocation().getChunk());
-            if (!claim.getClaimSettings().isMobGriefingAllowed()) {
+            if (!claim.getClaimSettings().isEnabled(ClaimSetting.MOB_GRIEFING)) {
                 event.setCancelled(true);
             }
         }
@@ -207,7 +208,7 @@ public class EntityListeners implements Listener {
                     return;
                 }
 
-                if (!claim.getClaimSettings().isPvp()) {
+                if (!claim.getClaimSettings().isEnabled(ClaimSetting.PVP)) {
                     event.setCancelled(true);
                 }
             }
@@ -239,13 +240,13 @@ public class EntityListeners implements Listener {
                 case FIREBALL:
                 case WITHER:
                     // For explosions caused by mobs, check if allowed
-                    if (!claim.getClaimSettings().isMobGriefingAllowed()
+                    if (!claim.getClaimSettings().isEnabled(ClaimSetting.MOB_GRIEFING)
                             || (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation()))) {
                         event.blockList().remove(block);
                     }
                     break;
                 case PRIMED_TNT:
-                    if (!claim.getClaimSettings().isTnt()
+                    if (!claim.getClaimSettings().isEnabled(ClaimSetting.TNT)
                             || (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation()))) {
                         event.blockList().remove(block);
                     }
@@ -298,6 +299,7 @@ public class EntityListeners implements Listener {
                         claim.removeMember(member);
                     else
                         member.setPresent(false);
+                    plugin.getTrackerTask().toggleFlyOff(player);
                 }
                 if (Settings.CLAIMS_BOSSBAR.getBoolean()) {
                     claim.getVisitorBossBar().removePlayer(player);

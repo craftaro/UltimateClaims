@@ -143,6 +143,7 @@ interface:
     mobgriefingtitle: '&6&lMob Griefing'
     leafdecaytitle: '&6&lLeaf Decay'
     tnttitle: '&6&lTNT Griefing'
+    flytitle: '&6&lFly'
   recipe:
     title: Powercell Recipe
 

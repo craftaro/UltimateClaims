@@ -99,6 +99,9 @@ public class Settings {
     public static final ConfigSetting DEFAULT_CLAIM_TNT = new ConfigSetting(config, "Default Settings.Claim.Tnt", false,
             "Should TNT explosions be enabled by default in new claims?");
 
+    public static final ConfigSetting DEFAULT_CLAIM_FLY = new ConfigSetting(config, "Default Settings.Claim.Fly", false,
+            "Should fly be enabled by default in new claims?");
+
     public static final ConfigSetting DEFAULT_MEMBER_BREAK = new ConfigSetting(config, "Default Settings.Member.Break", true,
             "Should members be allowed to break blocks",
             "by default in new claims?");

@@ -2,9 +2,12 @@ package com.songoda.ultimateclaims.tasks;
 
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.ultimateclaims.claim.ClaimSetting;
 import com.songoda.ultimateclaims.member.ClaimMember;
+import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -18,7 +21,7 @@ public class TrackerTask extends BukkitRunnable {
     private static TrackerTask instance;
     private static UltimateClaims plugin;
 
-    private final Map<UUID, Location> lastBeforeClaim = new HashMap<>();
+    private final Map<UUID, TrackedPlayer> trackedPlayers = new HashMap<>();
 
     public TrackerTask(UltimateClaims plug) {
         plugin = plug;
@@ -37,6 +40,7 @@ public class TrackerTask extends BukkitRunnable {
     @Override
     public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
+            TrackedPlayer trackedPlayer = trackedPlayers.computeIfAbsent(player.getUniqueId(), t -> new TrackedPlayer(player.getUniqueId()));
             Claim claim = plugin.getClaimManager().getClaim(player.getLocation().getChunk());
             if (claim == null) continue;
             ClaimMember member = claim.getMember(player);
@@ -46,24 +50,76 @@ public class TrackerTask extends BukkitRunnable {
             }
             member.setPresent(true);
 
+            if (claim.getClaimSettings().isEnabled(ClaimSetting.FLY)
+                    && !player.getAllowFlight()
+                    && player.getGameMode() != GameMode.CREATIVE) {
+                trackedPlayer.setWasFlyActivated(true);
+                player.setAllowFlight(true);
+            }
+
             if (player.hasPermission("ultimateclaims.bypass"))
                 continue;
 
             if (claim.isBanned(player.getUniqueId()) || claim.isLocked() && claim.getMember(player).getRole() == ClaimRole.VISITOR)
-                member.eject(lastBeforeClaim.get(player.getUniqueId()));
+                member.eject(trackedPlayer.getLastBeforeClaim());
         }
         for (Claim claim : plugin.getClaimManager().getRegisteredClaims()) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 ClaimMember member = claim.getMember(player);
+
                 if (member == null || !member.isPresent()) continue;
+
                 Claim in = plugin.getClaimManager().getClaim(player.getLocation().getChunk());
-                if (in != claim)
-                    member.setPresent(false);
+
+                if (in == claim) continue;
+                member.setPresent(false);
+                toggleFlyOff(player);
             }
         }
     }
 
     public void addLastBefore(Player player, Location location) {
-        this.lastBeforeClaim.put(player.getUniqueId(), location);
+        trackedPlayers.get(player.getUniqueId()).setLastBeforeClaim(location);
+    }
+
+    public void toggleFlyOff(Player player) {
+        TrackedPlayer trackedPlayer = trackedPlayers.get(player.getUniqueId());
+        if (!trackedPlayer.wasFlyActivated()) return;
+
+        trackedPlayer.setWasFlyActivated(false);
+        player.setAllowFlight(false);
+        player.setFlying(false);
+        player.setFallDistance(0F);
+    }
+
+    private static class TrackedPlayer {
+
+        private final UUID uuid;
+        private Location lastBeforeClaim;
+        private boolean wasFlyActivated;
+
+        public TrackedPlayer(UUID uuid) {
+            this.uuid = uuid;
+        }
+
+        public UUID getUniqueId() {
+            return uuid;
+        }
+
+        public Location getLastBeforeClaim() {
+            return lastBeforeClaim;
+        }
+
+        public void setLastBeforeClaim(Location lastBeforeClaim) {
+            this.lastBeforeClaim = lastBeforeClaim;
+        }
+
+        public boolean wasFlyActivated() {
+            return wasFlyActivated;
+        }
+
+        public void setWasFlyActivated(boolean wasFlyActivated) {
+            this.wasFlyActivated = wasFlyActivated;
+        }
     }
 }
