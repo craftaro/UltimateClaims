@@ -46,9 +46,8 @@ command:
     kicked: '&cYou have been kicked from &4%claim%&c.'
     kick: '&7You kicked &6%name% &7from &6%claim%&7.'
     notself: '&7You cannot kick yourself.'
-  uan:
-    notself: '&7You cannot ban yourself.'
   ban:
+    notself: '&7You cannot ban yourself.'
     banned: '&cYou have been banned from &4%claim%&c.'
     ban: '&7You banned &6%name% &7from &6%claim%&7.'
   unban:
