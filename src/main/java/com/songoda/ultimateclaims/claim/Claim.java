@@ -119,6 +119,15 @@ public class Claim {
         return this.owner = new ClaimMember(this, owner.getUniqueId(), owner.getName(), ClaimRole.OWNER);
     }
 
+    public void transferOwnership(OfflinePlayer newOwner) {
+        if (newOwner.getUniqueId() == owner.getUniqueId())
+            return;
+
+        removeMember(newOwner.getUniqueId());
+        addMember(owner);
+        setOwner(newOwner.getUniqueId());
+    }
+
     public Set<ClaimMember> getMembers() {
         return members;
     }

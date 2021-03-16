@@ -17,6 +17,7 @@ import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.commands.*;
 import com.songoda.ultimateclaims.commands.admin.CommandRemoveClaim;
+import com.songoda.ultimateclaims.commands.admin.CommandTransferOwnership;
 import com.songoda.ultimateclaims.database.DataManager;
 import com.songoda.ultimateclaims.database.migrations.*;
 import com.songoda.ultimateclaims.dynmap.DynmapManager;
@@ -111,7 +112,8 @@ public class UltimateClaims extends SongodaPlugin {
                         new CommandSetSpawn(this),
                         new CommandName(this),
 
-                        new CommandRemoveClaim(this)
+                        new CommandRemoveClaim(this),
+                        new CommandTransferOwnership(this)
                 );
 
         // Tasks

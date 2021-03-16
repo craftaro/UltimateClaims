@@ -72,6 +72,8 @@ command:
     powercell: '&cYou cannot unclaim the chunk holding your powercell... Please move it first.'
   removeclaim:
     success: '&7You removed claim %claim%.'
+  transferownership:
+    success: '&7You transferred the ownership successfully.'
   leave:
     youleft: '&7You left &6%claim%&7.'
     left: '&6%player% &7left &6%claim%&7.'
