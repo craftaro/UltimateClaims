@@ -1,8 +1,8 @@
-package com.songoda.ultimateclaims.commands;
+package com.songoda.ultimateclaims.commands.admin;
 
+import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
-import com.songoda.core.commands.AbstractCommand;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -14,13 +14,12 @@ public class CommandName extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandName(UltimateClaims plugin) {
-        super(true, "name");
+        super(true, "admin name");
         this.plugin = plugin;
     }
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-
         if (args.length < 1)
             return ReturnType.SYNTAX_ERROR;
 
@@ -31,11 +30,6 @@ public class CommandName extends AbstractCommand {
 
         if (claim == null) {
             plugin.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
-            return ReturnType.FAILURE;
-        }
-
-        if (!claim.getOwner().getUniqueId().equals(player.getUniqueId())) {
-            plugin.getLocale().getMessage("command.general.notyourclaim").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
@@ -59,16 +53,16 @@ public class CommandName extends AbstractCommand {
 
     @Override
     public String getPermissionNode() {
-        return "ultimateclaims.name";
+        return "ultimateclaims.admin.name";
     }
 
     @Override
     public String getSyntax() {
-        return "name <name>";
+        return "admin name <name>";
     }
 
     @Override
     public String getDescription() {
-        return "Set the display name for your claim.";
+        return "Set the display name for the claim you are standing in.";
     }
 }

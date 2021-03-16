@@ -113,7 +113,8 @@ public class UltimateClaims extends SongodaPlugin {
                         new CommandName(this),
 
                         new CommandRemoveClaim(this),
-                        new CommandTransferOwnership(this)
+                        new CommandTransferOwnership(this),
+                        new com.songoda.ultimateclaims.commands.admin.CommandName(this)
                 );
 
         // Tasks
