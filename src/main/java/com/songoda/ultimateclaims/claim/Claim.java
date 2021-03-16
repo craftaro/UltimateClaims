@@ -192,7 +192,7 @@ public class Claim {
 
     public boolean playerHasPerms(Player player, ClaimPerm claimPerm) {
         ClaimMember member = getMember(player);
-        if (player.hasPermission("ultimateclaims.bypass")
+        if (player.hasPermission("ultimateclaims.bypass.perms")
                 || player.getUniqueId().equals(owner.getUniqueId())) return true;
         if (member == null) return false;
         return member.getRole() == ClaimRole.VISITOR && getVisitorPermissions().hasPermission(claimPerm)

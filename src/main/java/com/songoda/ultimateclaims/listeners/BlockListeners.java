@@ -86,7 +86,7 @@ public class BlockListeners implements Listener {
 
         if (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation())) {
             ClaimMember member = claim.getMember(event.getPlayer());
-            if ((member != null && member.getRole() == ClaimRole.OWNER) || event.getPlayer().hasPermission("ultimateclaims.bypass")) {
+            if ((member != null && member.getRole() == ClaimRole.OWNER) || event.getPlayer().hasPermission("ultimateclaims.admin.removeclaim")) {
                 powerCell.destroy();
             } else {
                 plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
