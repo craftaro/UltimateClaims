@@ -43,12 +43,23 @@ public class TrackerTask extends BukkitRunnable {
             TrackedPlayer trackedPlayer = trackedPlayers.computeIfAbsent(player.getUniqueId(), t -> new TrackedPlayer(player.getUniqueId()));
             Claim claim = plugin.getClaimManager().getClaim(player.getLocation().getChunk());
             if (claim == null) continue;
-            ClaimMember member = claim.getMember(player);
-            if (member == null) {
-                claim.addMember(player, ClaimRole.VISITOR);
-                member = claim.getMember(player);
+
+            if (!player.hasPermission("ultimateclaims.admin.invisible")) {
+                ClaimMember member = claim.getMember(player);
+                if (member == null) {
+                    claim.addMember(player, ClaimRole.VISITOR);
+                    member = claim.getMember(player);
+                }
+                member.setPresent(true);
+
+                if (claim.isBanned(player.getUniqueId())
+                        && !player.hasPermission("ultimateclaims.bypass.ban")
+
+                        || claim.isLocked()
+                        && claim.getMember(player).getRole() == ClaimRole.VISITOR
+                        && !player.hasPermission("ultimateclaims.bypass.lock"))
+                    member.eject(trackedPlayer.getLastBeforeClaim());
             }
-            member.setPresent(true);
 
             if ((claim.getClaimSettings().isEnabled(ClaimSetting.FLY)
                     && player.hasPermission("ultimateclaims.fly")
@@ -58,14 +69,6 @@ public class TrackerTask extends BukkitRunnable {
                 trackedPlayer.setWasFlyActivated(true);
                 player.setAllowFlight(true);
             }
-
-            if (claim.isBanned(player.getUniqueId())
-                    && !player.hasPermission("ultimateclaims.bypass.ban")
-
-                    || claim.isLocked()
-                    && claim.getMember(player).getRole() == ClaimRole.VISITOR
-                    && !player.hasPermission("ultimateclaims.bypass.lock"))
-                member.eject(trackedPlayer.getLastBeforeClaim());
         }
         for (Claim claim : plugin.getClaimManager().getRegisteredClaims()) {
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -83,7 +86,12 @@ public class TrackerTask extends BukkitRunnable {
     }
 
     public void addLastBefore(Player player, Location location) {
-        trackedPlayers.get(player.getUniqueId()).setLastBeforeClaim(location);
+        TrackedPlayer trackedPlayer = trackedPlayers.get(player.getUniqueId());
+
+        if (trackedPlayer == null)
+            return;
+
+        trackedPlayer.setLastBeforeClaim(location);
     }
 
     public void toggleFlyOff(Player player) {
