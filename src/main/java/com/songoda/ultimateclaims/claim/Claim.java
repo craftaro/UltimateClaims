@@ -95,6 +95,13 @@ public class Claim {
             bossBarVisitor.setTitle(name);
     }
 
+    public String getDefaultName() {
+        return UltimateClaims.getInstance().getLocale()
+                .getMessage("general.claim.defaultname")
+                .processPlaceholder("name", owner.getName())
+                .getMessage();
+    }
+
     public BossBar getVisitorBossBar() {
         if (bossBarVisitor == null)
             bossBarVisitor = Bukkit.getServer().createBossBar(this.name, BarColor.YELLOW, BarStyle.SOLID);
@@ -115,17 +122,23 @@ public class Claim {
         return this.owner = new ClaimMember(this, owner, null, ClaimRole.OWNER);
     }
 
-    public ClaimMember setOwner(Player owner) {
+    public ClaimMember setOwner(OfflinePlayer owner) {
         return this.owner = new ClaimMember(this, owner.getUniqueId(), owner.getName(), ClaimRole.OWNER);
     }
 
-    public void transferOwnership(OfflinePlayer newOwner) {
+    public boolean transferOwnership(OfflinePlayer newOwner) {
         if (newOwner.getUniqueId() == owner.getUniqueId())
-            return;
+            return false;
+
+        boolean wasNameChanged = name.equals(getDefaultName());
 
         removeMember(newOwner.getUniqueId());
+        owner.setRole(ClaimRole.MEMBER);
         addMember(owner);
-        setOwner(newOwner.getUniqueId());
+        setOwner(newOwner);
+        if (!wasNameChanged)
+            setName(getDefaultName());
+        return true;
     }
 
     public Set<ClaimMember> getMembers() {

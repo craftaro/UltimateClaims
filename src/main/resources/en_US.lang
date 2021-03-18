@@ -73,7 +73,8 @@ command:
   removeclaim:
     success: '&7You removed claim %claim%.'
   transferownership:
-    success: '&7You transferred the ownership successfully.'
+    success: '&7You transferred ownership of %claim% successfully.'
+    failed: '&7You failed to transferred ownership of %claim%.'
   leave:
     youleft: '&7You left &6%claim%&7.'
     left: '&6%player% &7left &6%claim%&7.'

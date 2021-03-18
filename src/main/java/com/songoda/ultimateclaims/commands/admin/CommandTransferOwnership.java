@@ -1,10 +1,8 @@
 package com.songoda.ultimateclaims.commands.admin;
 
 import com.songoda.core.commands.AbstractCommand;
-import com.songoda.core.hooks.EconomyManager;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
-import com.songoda.ultimateclaims.claim.ClaimDeleteReason;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
@@ -44,12 +42,14 @@ public class CommandTransferOwnership extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        claim.transferOwnership(newOwner);
-
-        // Send a message to player
-        plugin.getLocale().getMessage("command.transferownership.success")
-                .processPlaceholder("claim", claim.getName())
-                .sendPrefixedMessage(player);
+        if (claim.transferOwnership(newOwner))
+            plugin.getLocale().getMessage("command.transferownership.success")
+                    .processPlaceholder("claim", claim.getName())
+                    .sendPrefixedMessage(player);
+        else
+            plugin.getLocale().getMessage("command.transferownership.failed")
+                    .processPlaceholder("claim", claim.getName())
+                    .sendPrefixedMessage(player);
 
         return ReturnType.SUCCESS;
     }
