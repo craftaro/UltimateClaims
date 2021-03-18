@@ -8,6 +8,7 @@ import com.songoda.ultimateclaims.gui.PowerCellGui;
 import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -349,8 +350,10 @@ public class PowerCell {
         this.location = location;
     }
 
-    public PowerCellGui getGui() {
-        return opened != null ? opened : (opened = new PowerCellGui(UltimateClaims.getInstance(), this.claim));
+    public PowerCellGui getGui(Player player) {
+        if (opened.isOpen())
+            opened.close();
+        return opened = new PowerCellGui(UltimateClaims.getInstance(), this.claim, player);
     }
 
     public void destroy() {

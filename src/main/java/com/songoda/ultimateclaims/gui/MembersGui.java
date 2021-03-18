@@ -32,7 +32,7 @@ public class MembersGui extends CustomizableGui {
     private ClaimRole displayedRole = ClaimRole.OWNER;
     private SortType sortType = SortType.DEFAULT;
 
-    public MembersGui(UltimateClaims plugin, Claim claim, Gui returnGui) {
+    public MembersGui(UltimateClaims plugin, Claim claim) {
         super(plugin, "members");
         this.claim = claim;
         this.plugin = plugin;
@@ -54,8 +54,9 @@ public class MembersGui extends CustomizableGui {
         this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
                 plugin.getLocale().getMessage("general.interface.back").getMessage(),
                 plugin.getLocale().getMessage("general.interface.exit").getMessage()),
-                (event) -> guiManager.showGUI(event.player, returnGui));
-        this.setButton("back",8, this.getItem(0), (event) -> guiManager.showGUI(event.player, returnGui));
+                (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
+        this.setButton("back",8, this.getItem(0),
+                (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
 
         // Member Stats (update on refresh)
         this.setItem("stats", 4, CompatibleMaterial.PAINTING.getItem());

@@ -18,7 +18,7 @@ public class SettingsGui extends CustomizableGui {
     private final Claim claim;
     private final boolean hostilemobspawning, firespread, pvp, mobgriefing, leafdecay, tnt, fly;
     
-    public SettingsGui(UltimateClaims plugin, Claim claim, Gui returnGui, Player player) {
+    public SettingsGui(UltimateClaims plugin, Claim claim, Player player) {
         super(plugin, "settings");
         this.claim = claim;
         this.plugin = plugin;
@@ -41,7 +41,8 @@ public class SettingsGui extends CustomizableGui {
                 plugin.getLocale().getMessage("general.interface.back").getMessage(),
                 plugin.getLocale().getMessage("general.interface.exit").getMessage()),
                 (event) -> event.player.closeInventory());
-        this.setButton("back",8, this.getItem(0), (event) -> guiManager.showGUI(event.player, returnGui));
+        this.setButton("back",8, this.getItem(0),
+                (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
 
         // shortcuts for member settings
         this.setButton("visitors", rows - 1, 3, GuiUtils.createButtonItem(CompatibleMaterial.OAK_SIGN,

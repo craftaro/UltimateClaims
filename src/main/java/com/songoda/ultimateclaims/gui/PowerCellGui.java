@@ -26,13 +26,14 @@ public class PowerCellGui extends CustomizableGui {
     private final PowerCell powercell;
     private final Claim claim;
 
-    public PowerCellGui(UltimateClaims plugin, Claim claim) {
+    public PowerCellGui(UltimateClaims plugin, Claim claim, Player player) {
         super(plugin, "powercell");
         this.plugin = plugin;
         this.powercell = claim.getPowerCell();
         this.claim = claim;
         this.setRows(6);
         this.setTitle(TextUtils.formatText(claim.getName(), true));
+        boolean fullPerms = claim.getOwner().getUniqueId() == player.getUniqueId();
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
@@ -60,33 +61,36 @@ public class PowerCellGui extends CustomizableGui {
 
         // buttons at the bottom of the screen
         // Bans
+        if (fullPerms)
         this.setButton("bans", 5, 2, GuiUtils.createButtonItem(CompatibleMaterial.IRON_AXE,
                 plugin.getLocale().getMessage("interface.powercell.banstitle").getMessage(),
                 plugin.getLocale().getMessage("interface.powercell.banslore").getMessageLines()),
                 (event) -> {
                     closed();
-                    event.manager.showGUI(event.player, new BansGui(plugin, claim, this));
+                    event.manager.showGUI(event.player, new BansGui(plugin, claim));
                 });
 
         // Settings
+        if (fullPerms)
         this.setButton("settings", 5, 3, GuiUtils.createButtonItem(CompatibleMaterial.REDSTONE,
                 plugin.getLocale().getMessage("interface.powercell.settingstitle").getMessage(),
                 plugin.getLocale().getMessage("interface.powercell.settingslore").getMessageLines()),
                 (event) -> {
                     closed();
-                    event.manager.showGUI(event.player, new SettingsGui(plugin, claim, this, event.player));
+                    event.manager.showGUI(event.player, new SettingsGui(plugin, claim, event.player));
                 });
 
         // Claim info
         this.setItem("information", 5, 5, CompatibleMaterial.BOOK.getItem());
 
         // Members
+        if (fullPerms)
         this.setButton("members", 5, 6, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
                 plugin.getLocale().getMessage("interface.powercell.memberstitle").getMessage(),
                 plugin.getLocale().getMessage("interface.powercell.memberslore").getMessageLines()),
                 (event) -> {
                     closed();
-                    event.manager.showGUI(event.player, new MembersGui(plugin, claim, this));
+                    event.manager.showGUI(event.player, new MembersGui(plugin, claim));
                 });
 
         // open inventory slots

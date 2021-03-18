@@ -21,7 +21,7 @@ public class BansGui extends CustomizableGui {
     private final UltimateClaims plugin;
     private final Claim claim;
 
-    public BansGui(UltimateClaims plugin, Claim claim, Gui returnGui) {
+    public BansGui(UltimateClaims plugin, Claim claim) {
         super(plugin, "bans");
         this.claim = claim;
         this.plugin = plugin;
@@ -43,8 +43,9 @@ public class BansGui extends CustomizableGui {
         this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
                 plugin.getLocale().getMessage("general.interface.back").getMessage(),
                 plugin.getLocale().getMessage("general.interface.exit").getMessage()),
-                (event) -> guiManager.showGUI(event.player, returnGui));
-        this.setButton("back",8, this.getItem(0), (event) -> guiManager.showGUI(event.player, returnGui));
+                (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
+        this.setButton("back",8, this.getItem(0),
+                (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
 
         // Ban information
         this.setItem("information", 4, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
