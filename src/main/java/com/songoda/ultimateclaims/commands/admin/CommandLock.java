@@ -34,14 +34,14 @@ public class CommandLock extends AbstractCommand {
         }
 
         if (!claim.isLocked()) {
-            plugin.getLocale().getMessage("command.lock.locked")
+            plugin.getLocale().getMessage("command.lock.lockedother")
                     .sendPrefixedMessage(player);
             for (ClaimMember member : claim.getMembers().stream().filter(m -> m.getRole() == ClaimRole.VISITOR)
                     .collect(Collectors.toList())) {
                 member.eject(null);
             }
         } else
-            plugin.getLocale().getMessage("command.lock.unlocked")
+            plugin.getLocale().getMessage("command.lock.unlockedother")
                     .sendPrefixedMessage(player);
 
         claim.setLocked(!claim.isLocked());

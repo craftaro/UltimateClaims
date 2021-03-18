@@ -82,6 +82,8 @@ command:
   lock:
     locked: '&7You locked your claim.'
     unlocked: '&7You unlocked your claim.'
+    lockedother: '&7You locked the claim.'
+    unlockedother: '&7You unlocked the claim.'
   sethome:
     set: '&7You set the home for your claim.'
   name:
