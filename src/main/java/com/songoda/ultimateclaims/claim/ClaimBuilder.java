@@ -23,9 +23,9 @@ public class ClaimBuilder {
     }
 
     public ClaimBuilder setOwner(Player player) {
+        claim.setOwner(player.getUniqueId()).setName(player.getName());
         if (claim.getName() == null)
             claim.setName(claim.getDefaultName());
-        claim.setOwner(player.getUniqueId()).setName(player.getName());
         return this;
     }
 
