@@ -86,6 +86,7 @@ command:
     set: '&7You set the home for your claim.'
   name:
     set: '&7The name for your claim changed to %name%'
+    toolong: '&cThat name is too long. The maximum character count is &9%max%&c.'
   home:
     none: '&cThat claim doesn''t have a home set...'
     success: '&7You teleported to your claims home.'

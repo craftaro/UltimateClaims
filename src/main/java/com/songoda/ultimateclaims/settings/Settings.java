@@ -59,6 +59,9 @@ public class Settings {
             "The starting amount of power in minutes a claim gets.",
             "This time should be used to create a powercell.");
 
+    public static final ConfigSetting NAME_CHAR_LIMIT = new ConfigSetting(config, "Main.Name Character Limit", 25,
+            "The maximum amount of characters allows in a claims name.");
+
     public static final ConfigSetting MAX_CHUNKS = new ConfigSetting(config, "Main.Max Chunks", 10,
             "The maximum amount of chunks a claim can have.");
 

@@ -3,6 +3,7 @@ package com.songoda.ultimateclaims.commands;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.core.commands.AbstractCommand;
+import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,7 +21,6 @@ public class CommandName extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-
         if (args.length < 1)
             return ReturnType.SYNTAX_ERROR;
 
@@ -40,6 +40,14 @@ public class CommandName extends AbstractCommand {
         }
 
         final String name = String.join(" ", args);
+
+        if (name.length() > Settings.NAME_CHAR_LIMIT.getInt()) {
+            plugin.getLocale().getMessage("command.name.toolong")
+                    .processPlaceholder("max", Settings.NAME_CHAR_LIMIT.getInt())
+                    .sendPrefixedMessage(sender);
+            return ReturnType.FAILURE;
+        }
+
 
         claim.setName(name);
 
