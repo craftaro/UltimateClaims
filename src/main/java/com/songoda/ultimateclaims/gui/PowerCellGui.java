@@ -2,39 +2,52 @@ package com.songoda.ultimateclaims.gui;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.gui.CustomizableGui;
-import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.input.ChatPrompt;
+import com.songoda.core.utils.NumberUtils;
+import com.songoda.core.utils.TextUtils;
+import com.songoda.core.utils.TimeUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
+import com.songoda.ultimateclaims.claim.Audit;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.PowerCell;
+import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
-import com.songoda.ultimateclaims.utils.Methods;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PowerCellGui extends CustomizableGui {
 
     private final UltimateClaims plugin;
     private final PowerCell powercell;
     private final Claim claim;
+    private boolean fullPerms;
 
-    public PowerCellGui(UltimateClaims plugin, Claim claim) {
+    public PowerCellGui(UltimateClaims plugin, Claim claim, Player player) {
         super(plugin, "powercell");
         this.plugin = plugin;
         this.powercell = claim.getPowerCell();
         this.claim = claim;
         this.setRows(6);
-        this.setTitle(Methods.formatTitle(claim.getName()));
+        this.setTitle(TextUtils.formatText(claim.getName(), true));
+        fullPerms = claim.getOwner().getUniqueId() == player.getUniqueId();
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
+
+        // Add access to audit log.
+        if (!player.hasPermission("ultimateclaims.admin.nolog"))
+            powercell.addToAuditLog(player.getUniqueId(), System.currentTimeMillis());
 
         // edges will be type 3
         setDefaultItem(glass3);
@@ -59,41 +72,49 @@ public class PowerCellGui extends CustomizableGui {
 
         // buttons at the bottom of the screen
         // Bans
-        this.setButton("bans", 5, 2, GuiUtils.createButtonItem(CompatibleMaterial.IRON_AXE,
-                plugin.getLocale().getMessage("interface.powercell.banstitle").getMessage(),
-                plugin.getLocale().getMessage("interface.powercell.banslore").getMessageLines()),
-                (event) -> {
-                    closed();
-                    event.manager.showGUI(event.player, new BansGui(plugin, claim, this));
-                });
+        if (fullPerms)
+            this.setButton("bans", 5, 2, GuiUtils.createButtonItem(CompatibleMaterial.IRON_AXE,
+                    plugin.getLocale().getMessage("interface.powercell.banstitle").getMessage(),
+                    plugin.getLocale().getMessage("interface.powercell.banslore").getMessageLines()),
+                    (event) -> {
+                        closed();
+                        event.manager.showGUI(event.player, new BansGui(plugin, claim));
+                    });
 
         // Settings
-        this.setButton("settings", 5, 3, GuiUtils.createButtonItem(CompatibleMaterial.REDSTONE,
-                plugin.getLocale().getMessage("interface.powercell.settingstitle").getMessage(),
-                plugin.getLocale().getMessage("interface.powercell.settingslore").getMessageLines()),
-                (event) -> {
-                    closed();
-                    event.manager.showGUI(event.player, new SettingsGui(plugin, claim, this, event.player));
-                });
+        if (fullPerms)
+            this.setButton("settings", 5, 3, GuiUtils.createButtonItem(CompatibleMaterial.REDSTONE,
+                    plugin.getLocale().getMessage("interface.powercell.settingstitle").getMessage(),
+                    plugin.getLocale().getMessage("interface.powercell.settingslore").getMessageLines()),
+                    (event) -> {
+                        closed();
+                        event.manager.showGUI(event.player, new SettingsGui(plugin, claim, event.player));
+                    });
 
         // Claim info
-        this.setItem("information", 5, 5, CompatibleMaterial.BOOK.getItem());
+        this.setItem("information", 5, fullPerms ? 5 : 4, CompatibleMaterial.BOOK.getItem());
 
         // Members
-        this.setButton("members", 5, 6, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
-                plugin.getLocale().getMessage("interface.powercell.memberstitle").getMessage(),
-                plugin.getLocale().getMessage("interface.powercell.memberslore").getMessageLines()),
-                (event) -> {
-                    closed();
-                    event.manager.showGUI(event.player, new MembersGui(plugin, claim, this));
-                });
+        if (fullPerms)
+            this.setButton("members", 5, 6, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
+                    plugin.getLocale().getMessage("interface.powercell.memberstitle").getMessage(),
+                    plugin.getLocale().getMessage("interface.powercell.memberslore").getMessageLines()),
+                    (event) -> {
+                        closed();
+                        event.manager.showGUI(event.player, new MembersGui(plugin, claim));
+                    });
 
-        // open inventory slots
-        this.setAcceptsItems(true);
-        for (int row = 1; row < rows - 1; ++row) {
-            for (int col = 1; col < 8; ++col) {
-                this.setItem(row, col, AIR);
-                this.setUnlocked(row, col);
+        ClaimMember member = claim.getMember(player);
+
+        if (member != null && member.getRole() != ClaimRole.VISITOR
+                || player.hasPermission("ultimateclaims.powercell.edit")) {
+            // open inventory slots
+            this.setAcceptsItems(true);
+            for (int row = 1; row < rows - 1; ++row) {
+                for (int col = 1; col < 8; ++col) {
+                    this.setItem(row, col, AIR);
+                    this.setUnlocked(row, col);
+                }
             }
         }
 
@@ -149,32 +170,42 @@ public class PowerCellGui extends CustomizableGui {
         if (Settings.ENABLE_FUEL.getBoolean())
             this.updateItem("economy", 0, 2,
                     plugin.getLocale().getMessage("interface.powercell.economytitle")
-                            .processPlaceholder("time", Methods.makeReadable((long) powercell.getEconomyPower() * 60 * 1000)).getMessage(),
+                            .processPlaceholder("time", TimeUtils.makeReadable((long) powercell.getEconomyPower() * 60 * 1000)).getMessage(),
                     plugin.getLocale().getMessage("interface.powercell.economylore").getMessage().split("\\|"));
 
         // Display the total time
         if (Settings.ENABLE_FUEL.getBoolean())
             this.updateItem("time", 0, 4,
                     plugin.getLocale().getMessage("interface.powercell.totaltitle")
-                            .processPlaceholder("time", Methods.makeReadable((long) powercell.getTotalPower() * 60 * 1000)).getMessage(),
+                            .processPlaceholder("time", TimeUtils.makeReadable((long) powercell.getTotalPower() * 60 * 1000)).getMessage(),
                     ChatColor.BLACK.toString());
 
         // Display the item amount
         if (Settings.ENABLE_FUEL.getBoolean())
             this.updateItem("item", 0, 6,
                     plugin.getLocale().getMessage("interface.powercell.valuablestitle")
-                            .processPlaceholder("time", Methods.makeReadable((long) powercell.getItemPower() * 60 * 1000)).getMessage(),
+                            .processPlaceholder("time", TimeUtils.makeReadable((long) powercell.getItemPower() * 60 * 1000)).getMessage(),
                     ChatColor.BLACK.toString());
+
+        List<String> lore = new ArrayList<>(Arrays.asList(plugin.getLocale().getMessage("interface.powercell.infolore")
+                .processPlaceholder("chunks", claim.getClaimSize())
+                .processPlaceholder("members",
+                        claim.getOwnerAndMembers().stream().filter(m -> m.getRole() == ClaimRole.MEMBER || m.getRole() == ClaimRole.OWNER).count())
+                .getMessage().split("\\|")));
+        lore.add("");
+        lore.add(plugin.getLocale().getMessage("interface.powercell.auditlog").getMessage());
+
+        for (Audit audit : powercell.getAuditLog().stream().limit(5).collect(Collectors.toList()))
+            lore.add(plugin.getLocale().getMessage("interface.powercell.audit")
+                    .processPlaceholder("name", Bukkit.getOfflinePlayer(audit.getWho()).getName())
+                    .processPlaceholder("time", TimeUtils.makeReadable(System.currentTimeMillis() - audit.getWhen()) + "&7.")
+                    .getMessage());
 
         // buttons at the bottom of the screen
         // Claim info
-        this.updateItem("information", 5, 5,
+        this.updateItem("information", 5, fullPerms ? 5 : 4,
                 plugin.getLocale().getMessage("interface.powercell.infotitle").getMessage(),
-                plugin.getLocale().getMessage("interface.powercell.infolore")
-                        .processPlaceholder("chunks", claim.getClaimSize())
-                        .processPlaceholder("members",
-                                claim.getOwnerAndMembers().stream().filter(m -> m.getRole() == ClaimRole.MEMBER || m.getRole() == ClaimRole.OWNER).count())
-                        .getMessage().split("\\|"));
+                lore);
     }
 
     private void closed() {
@@ -196,7 +227,7 @@ public class PowerCellGui extends CustomizableGui {
         ChatPrompt.showPrompt(plugin, player,
                 plugin.getLocale().getMessage("interface.powercell.addfunds").getPrefixedMessage(),
                 response -> {
-                    if (!Methods.isNumeric(response.getMessage())) {
+                    if (!NumberUtils.isNumeric(response.getMessage())) {
                         plugin.getLocale().getMessage("general.notanumber")
                                 .processPlaceholder("value", response.getMessage())
                                 .sendPrefixedMessage(player);

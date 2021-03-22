@@ -17,6 +17,7 @@ import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.commands.*;
 import com.songoda.ultimateclaims.commands.admin.CommandRemoveClaim;
+import com.songoda.ultimateclaims.commands.admin.CommandTransferOwnership;
 import com.songoda.ultimateclaims.database.DataManager;
 import com.songoda.ultimateclaims.database.migrations.*;
 import com.songoda.ultimateclaims.dynmap.DynmapManager;
@@ -111,7 +112,10 @@ public class UltimateClaims extends SongodaPlugin {
                         new CommandSetSpawn(this),
                         new CommandName(this),
 
-                        new CommandRemoveClaim(this)
+                        new CommandRemoveClaim(this),
+                        new CommandTransferOwnership(this),
+                        new com.songoda.ultimateclaims.commands.admin.CommandName(this),
+                        new com.songoda.ultimateclaims.commands.admin.CommandLock(this)
                 );
 
         // Tasks
@@ -178,7 +182,9 @@ public class UltimateClaims extends SongodaPlugin {
                 new _2_NewPermissions(),    
                 new _3_MemberNames(),
                 new _4_TradingPermission(),
-                new _5_TntSetting());
+                new _5_TntSetting(),
+                new _6_FlySetting(),
+                new _7_AuditLog());
         this.dataMigrationManager.runMigrations();
 
         this.dataManager.getPluginSettings((pluginSettings) -> this.pluginSettings = pluginSettings);

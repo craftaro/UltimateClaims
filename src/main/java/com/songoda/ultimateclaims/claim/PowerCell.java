@@ -2,16 +2,22 @@ package com.songoda.ultimateclaims.claim;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.hooks.HologramManager;
+import com.songoda.core.utils.TimeUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.gui.PowerCellGui;
 import com.songoda.ultimateclaims.settings.Settings;
-import com.songoda.ultimateclaims.utils.Methods;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class PowerCell {
@@ -22,6 +28,7 @@ public class PowerCell {
     protected Location location = null;
 
     protected List<ItemStack> items = new ArrayList<>();
+    private Deque<Audit> auditLog = new ArrayDeque<>();
 
     protected int currentPower = Settings.STARTING_POWER.getInt();
 
@@ -85,7 +92,7 @@ public class PowerCell {
     private void removeOneMaterial(CompatibleMaterial material) {
         updateItemsFromGui();
         List<ItemStack> items = getItems();
-        for (int i = 0; i < items.size(); i ++) {
+        for (int i = 0; i < items.size(); i++) {
             ItemStack item = items.get(i);
             if (material.matches(item)) {
                 item.setAmount(item.getAmount() - 1);
@@ -159,15 +166,19 @@ public class PowerCell {
 
     public void updateHologram() {
         if (location != null) {
-            if (getTotalPower() > 1) {
-                HologramManager.updateHologram(location, plugin.getLocale().getMessage("general.claim.powercell")
-                        .processPlaceholder("time", Methods.makeReadable(getTotalPower() * 60 * 1000))
-                        .getMessage());
-            } else {
-                HologramManager.updateHologram(location, plugin.getLocale().getMessage("general.claim.powercell.low")
-                        .processPlaceholder("time", Methods.makeReadable((getTotalPower() + Settings.MINIMUM_POWER.getInt()) * 60 * 1000))
-                        .getMessage());
-            }
+            HologramManager.updateHologram(location, getTimeRemaining());
+        }
+    }
+
+    public String getTimeRemaining() {
+        if (getTotalPower() > 1) {
+            return plugin.getLocale().getMessage("general.claim.powercell")
+                    .processPlaceholder("time", TimeUtils.makeReadable(getTotalPower() * 60 * 1000))
+                    .getMessage();
+        } else {
+            return plugin.getLocale().getMessage("general.claim.powercell.low")
+                    .processPlaceholder("time", TimeUtils.makeReadable((getTotalPower() + Settings.MINIMUM_POWER.getInt()) * 60 * 1000))
+                    .getMessage();
         }
     }
 
@@ -222,7 +233,7 @@ public class PowerCell {
     public void stackItems() {
         List<Integer> removed = new ArrayList<>();
         List<ItemStack> newItems = new ArrayList<>();
-        for (int i = 0; i < items.size(); i ++) {
+        for (int i = 0; i < items.size(); i++) {
             ItemStack item = items.get(i);
             CompatibleMaterial material = CompatibleMaterial.getMaterial(item);
 
@@ -236,9 +247,9 @@ public class PowerCell {
             if (item.getAmount() >= item.getMaxStackSize())
                 continue;
 
-            for (int j = 0; j < items.size(); j ++) {
+            for (int j = 0; j < items.size(); j++) {
                 ItemStack second = items.get(j);
-                
+
                 if (newItem.getAmount() > newItem.getMaxStackSize())
                     break;
 
@@ -345,8 +356,24 @@ public class PowerCell {
         this.location = location;
     }
 
-    public PowerCellGui getGui() {
-        return opened != null ? opened : (opened = new PowerCellGui(UltimateClaims.getInstance(), this.claim));
+    public List<Audit> getAuditLog() {
+        return Collections.unmodifiableList(new LinkedList<>(auditLog));
+    }
+
+    public void addToAuditLog(UUID uuid, long time) {
+        if (auditLog.isEmpty()
+                || auditLog.getFirst().getWho() != uuid
+                || System.currentTimeMillis() - auditLog.getFirst().getWhen() > 5 * 1000 * 60) {
+            Audit audit = new Audit(uuid, time);
+            auditLog.addFirst(audit);
+            plugin.getDataManager().addAudit(claim, audit);
+        }
+    }
+
+    public PowerCellGui getGui(Player player) {
+        if (opened != null && opened.isOpen())
+            opened.close();
+        return opened = new PowerCellGui(UltimateClaims.getInstance(), this.claim, player);
     }
 
     public void destroy() {

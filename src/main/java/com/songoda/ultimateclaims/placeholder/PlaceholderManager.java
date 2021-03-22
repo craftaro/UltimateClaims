@@ -3,12 +3,13 @@ package com.songoda.ultimateclaims.placeholder;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.member.ClaimMember;
-import com.songoda.ultimateclaims.utils.Methods;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class PlaceholderManager extends PlaceholderExpansion {
@@ -26,10 +27,31 @@ public class PlaceholderManager extends PlaceholderExpansion {
         switch (identifier) {
             case "claims":
                 return claims.size() == 0 ? plugin.getLocale().getMessage("general.word.none").getMessage() : claims.stream().map(Claim::getName).collect(Collectors.joining(", "));
-            case "totalpower":
-                return claims.size() == 0 ? "0" : claims.stream().map(c -> Methods.makeReadable(c.getTotalPower() * 60 * 1000)).collect(Collectors.joining(", "));
-            case "totalchunks":
-                return claims.size() == 0 ? "0" : Integer.toString(claims.stream().mapToInt(Claim::getClaimSize).sum());
+            case "remainingpower":
+            case "totalpower": // Legacy
+                return claims.size() == 0 ? "0" : claims.stream().map(Claim::getPowercellTimeRemaining).collect(Collectors.joining(", "));
+            case "totalchunks": {
+                if (!player.isOnline()) return "0/0";
+                return claims.size() == 0 ? "0/0" : claims.stream().mapToInt(Claim::getClaimSize).sum() + "/" + claims.stream().mapToInt(c -> c.getMaxClaimSize(player.getPlayer())).sum();
+            }
+            case "owner":
+                return claims.size() == 0 ? plugin.getLocale().getMessage("general.word.none").getMessage() : claims.stream().map(c -> c.getOwner().getName()).collect(Collectors.joining(", "));
+            case "members": {
+                List<ClaimMember> members = new ArrayList<>();
+                for (Claim claim : claims)
+                    members.addAll(claim.getOwnerAndMembers());
+                return claims.size() == 0 ? plugin.getLocale().getMessage("general.word.none").getMessage() : members.stream().map(ClaimMember::getName).collect(Collectors.joining(", "));
+            }
+            case "bans": {
+                List<String> bans = new ArrayList<>();
+                for (Claim claim : claims)
+                    for (UUID uuid : claim.getBannedPlayers()) {
+                        String banned = Bukkit.getOfflinePlayer(uuid).getName();
+                        if (banned != null)
+                            bans.add(banned);
+                    }
+                return claims.size() == 0 ? plugin.getLocale().getMessage("general.word.none").getMessage() : String.join(", ", bans);
+            }
             default:
                 return null;
         }

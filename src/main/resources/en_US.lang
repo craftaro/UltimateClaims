@@ -46,9 +46,8 @@ command:
     kicked: '&cYou have been kicked from &4%claim%&c.'
     kick: '&7You kicked &6%name% &7from &6%claim%&7.'
     notself: '&7You cannot kick yourself.'
-  uan:
-    notself: '&7You cannot ban yourself.'
   ban:
+    notself: '&7You cannot ban yourself.'
     banned: '&cYou have been banned from &4%claim%&c.'
     ban: '&7You banned &6%name% &7from &6%claim%&7.'
   unban:
@@ -73,6 +72,9 @@ command:
     powercell: '&cYou cannot unclaim the chunk holding your powercell... Please move it first.'
   removeclaim:
     success: '&7You removed claim %claim%.'
+  transferownership:
+    success: '&7You transferred ownership of %claim% successfully.'
+    failed: '&7You failed to transferred ownership of %claim%.'
   leave:
     youleft: '&7You left &6%claim%&7.'
     left: '&6%player% &7left &6%claim%&7.'
@@ -80,10 +82,13 @@ command:
   lock:
     locked: '&7You locked your claim.'
     unlocked: '&7You unlocked your claim.'
+    lockedother: '&7You locked the claim.'
+    unlockedother: '&7You unlocked the claim.'
   sethome:
     set: '&7You set the home for your claim.'
   name:
     set: '&7The name for your claim changed to %name%'
+    toolong: '&cThat name is too long. The maximum character count is &9%max%&c.'
   home:
     none: '&cThat claim doesn''t have a home set...'
     success: '&7You teleported to your claims home.'
@@ -102,6 +107,8 @@ interface:
     addfunds: '&7Enter an amount to deposit.'
     infotitle: '&5&lInfo'
     infolore: '&7You have &6%chunks% &7claimed|&7chunks and &6%members% &7members.'
+    auditlog: '&5Audit Log'
+    audit: '&7%name% &6%time%&7.'
     banstitle: '&c&lBans'
     banslore: '&7View your claims bans.'
     memberstitle: '&9&lMembers'
@@ -143,6 +150,7 @@ interface:
     mobgriefingtitle: '&6&lMob Griefing'
     leafdecaytitle: '&6&lLeaf Decay'
     tnttitle: '&6&lTNT Griefing'
+    flytitle: '&6&lFly'
   recipe:
     title: Powercell Recipe
 

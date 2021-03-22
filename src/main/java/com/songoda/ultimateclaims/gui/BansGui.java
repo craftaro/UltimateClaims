@@ -8,7 +8,6 @@ import com.songoda.core.utils.ItemUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.settings.Settings;
-import com.songoda.ultimateclaims.utils.Methods;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -22,12 +21,12 @@ public class BansGui extends CustomizableGui {
     private final UltimateClaims plugin;
     private final Claim claim;
 
-    public BansGui(UltimateClaims plugin, Claim claim, Gui returnGui) {
+    public BansGui(UltimateClaims plugin, Claim claim) {
         super(plugin, "bans");
         this.claim = claim;
         this.plugin = plugin;
         setRows(6);
-        this.setTitle(Methods.formatTitle(plugin.getLocale().getMessage("interface.bans.title").getMessage()));
+        this.setTitle(plugin.getLocale().getMessage("interface.bans.title").getMessage());
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
@@ -44,8 +43,9 @@ public class BansGui extends CustomizableGui {
         this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
                 plugin.getLocale().getMessage("general.interface.back").getMessage(),
                 plugin.getLocale().getMessage("general.interface.exit").getMessage()),
-                (event) -> guiManager.showGUI(event.player, returnGui));
-        this.setButton("back",8, this.getItem(0), (event) -> guiManager.showGUI(event.player, returnGui));
+                (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
+        this.setButton("back",8, this.getItem(0),
+                (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
 
         // Ban information
         this.setItem("information", 4, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,

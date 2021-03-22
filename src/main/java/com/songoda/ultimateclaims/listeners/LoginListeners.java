@@ -8,6 +8,7 @@ import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -26,7 +27,7 @@ public class LoginListeners implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onMove(PlayerLoginEvent event) {
+    public void onLoginb(PlayerLoginEvent event) {
         ClaimManager claimManager = plugin.getClaimManager();
 
         Chunk chunk = event.getPlayer().getLocation().getChunk();
@@ -45,7 +46,8 @@ public class LoginListeners implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onMove(PlayerQuitEvent event) {
+    public void onQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
         ClaimManager claimManager = plugin.getClaimManager();
 
         Chunk chunk = event.getPlayer().getLocation().getChunk();
@@ -54,12 +56,13 @@ public class LoginListeners implements Listener {
 
         Claim claim = claimManager.getClaim(chunk);
 
-        ClaimMember member = claim.getMember(event.getPlayer());
+        ClaimMember member = claim.getMember(player);
         if (member != null) {
             if (member.getRole() == ClaimRole.VISITOR)
                 claim.removeMember(member);
             else
                 member.setPresent(false);
+            plugin.getTrackerTask().toggleFlyOff(player);
         }
     }
 }

@@ -1,5 +1,9 @@
 package com.songoda.ultimateclaims.claim;
 
+import com.songoda.core.compatibility.CompatibleMaterial;
+import com.songoda.core.compatibility.CompatibleSound;
+import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.api.events.ClaimDeleteEvent;
 import com.songoda.ultimateclaims.member.ClaimMember;
@@ -7,8 +11,8 @@ import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
-import com.songoda.ultimateclaims.utils.Methods;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -18,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,25 +39,32 @@ public class Claim {
     private Location home = null;
     private boolean locked = false;
 
-    private final ClaimSettings claimSettings = new ClaimSettings();
+    private final ClaimSettings claimSettings = new ClaimSettings()
+            .setEnabled(ClaimSetting.HOSTILE_MOB_SPAWNING, Settings.DEFAULT_CLAIM_HOSTILE_MOB_SPAWN.getBoolean())
+            .setEnabled(ClaimSetting.FIRE_SPREAD, Settings.DEFAULT_CLAIM_FIRE_SPREAD.getBoolean())
+            .setEnabled(ClaimSetting.MOB_GRIEFING, Settings.DEFAULT_CLAIM_MOB_GRIEFING.getBoolean())
+            .setEnabled(ClaimSetting.LEAF_DECAY, Settings.DEFAULT_CLAIM_LEAF_DECAY.getBoolean())
+            .setEnabled(ClaimSetting.PVP, Settings.DEFAULT_CLAIM_PVP.getBoolean())
+            .setEnabled(ClaimSetting.TNT, Settings.DEFAULT_CLAIM_TNT.getBoolean())
+            .setEnabled(ClaimSetting.FLY, Settings.DEFAULT_CLAIM_FLY.getBoolean());
 
     private ClaimPermissions memberPermissions = new ClaimPermissions()
-            .setCanBreak(Settings.DEFAULT_MEMBER_BREAK.getBoolean())
-            .setCanInteract(Settings.DEFAULT_MEMBER_INTERACT.getBoolean())
-            .setCanPlace(Settings.DEFAULT_MEMBER_PLACE.getBoolean())
-            .setCanMobKill(Settings.DEFAULT_MEMBER_MOB_KILL.getBoolean())
-            .setCanRedstone(Settings.DEFAULT_MEMBER_REDSTONE.getBoolean())
-            .setCanDoors(Settings.DEFAULT_MEMBER_DOORS.getBoolean())
-            .setCanTrade(Settings.DEFAULT_MEMBER_TRADE.getBoolean());
+            .setAllowed(ClaimPerm.BREAK, Settings.DEFAULT_MEMBER_BREAK.getBoolean())
+            .setAllowed(ClaimPerm.INTERACT, Settings.DEFAULT_MEMBER_INTERACT.getBoolean())
+            .setAllowed(ClaimPerm.PLACE, Settings.DEFAULT_MEMBER_PLACE.getBoolean())
+            .setAllowed(ClaimPerm.MOB_KILLING, Settings.DEFAULT_MEMBER_MOB_KILL.getBoolean())
+            .setAllowed(ClaimPerm.REDSTONE, Settings.DEFAULT_MEMBER_REDSTONE.getBoolean())
+            .setAllowed(ClaimPerm.DOORS, Settings.DEFAULT_MEMBER_DOORS.getBoolean())
+            .setAllowed(ClaimPerm.TRADING, Settings.DEFAULT_MEMBER_TRADE.getBoolean());
 
     private ClaimPermissions visitorPermissions = new ClaimPermissions()
-            .setCanBreak(Settings.DEFAULT_VISITOR_BREAK.getBoolean())
-            .setCanInteract(Settings.DEFAULT_VISITOR_INTERACT.getBoolean())
-            .setCanPlace(Settings.DEFAULT_VISITOR_PLACE.getBoolean())
-            .setCanMobKill(Settings.DEFAULT_VISITOR_MOB_KILL.getBoolean())
-            .setCanRedstone(Settings.DEFAULT_VISITOR_REDSTONE.getBoolean())
-            .setCanDoors(Settings.DEFAULT_VISITOR_DOORS.getBoolean())
-            .setCanTrade(Settings.DEFAULT_VISITOR_TRADE.getBoolean());
+            .setAllowed(ClaimPerm.BREAK, Settings.DEFAULT_VISITOR_BREAK.getBoolean())
+            .setAllowed(ClaimPerm.INTERACT, Settings.DEFAULT_VISITOR_INTERACT.getBoolean())
+            .setAllowed(ClaimPerm.PLACE, Settings.DEFAULT_VISITOR_PLACE.getBoolean())
+            .setAllowed(ClaimPerm.MOB_KILLING, Settings.DEFAULT_VISITOR_MOB_KILL.getBoolean())
+            .setAllowed(ClaimPerm.REDSTONE, Settings.DEFAULT_VISITOR_REDSTONE.getBoolean())
+            .setAllowed(ClaimPerm.DOORS, Settings.DEFAULT_VISITOR_DOORS.getBoolean())
+            .setAllowed(ClaimPerm.TRADING, Settings.DEFAULT_VISITOR_TRADE.getBoolean());
 
     private PowerCell powerCell = new PowerCell(this);
 
@@ -83,6 +95,13 @@ public class Claim {
             bossBarVisitor.setTitle(name);
     }
 
+    public String getDefaultName() {
+        return UltimateClaims.getInstance().getLocale()
+                .getMessage("general.claim.defaultname")
+                .processPlaceholder("name", owner.getName())
+                .getMessage();
+    }
+
     public BossBar getVisitorBossBar() {
         if (bossBarVisitor == null)
             bossBarVisitor = Bukkit.getServer().createBossBar(this.name, BarColor.YELLOW, BarStyle.SOLID);
@@ -103,8 +122,23 @@ public class Claim {
         return this.owner = new ClaimMember(this, owner, null, ClaimRole.OWNER);
     }
 
-    public ClaimMember setOwner(Player owner) {
+    public ClaimMember setOwner(OfflinePlayer owner) {
         return this.owner = new ClaimMember(this, owner.getUniqueId(), owner.getName(), ClaimRole.OWNER);
+    }
+
+    public boolean transferOwnership(OfflinePlayer newOwner) {
+        if (newOwner.getUniqueId() == owner.getUniqueId())
+            return false;
+
+        boolean wasNameChanged = name.equals(getDefaultName());
+
+        removeMember(newOwner.getUniqueId());
+        owner.setRole(ClaimRole.MEMBER);
+        addMember(owner);
+        setOwner(newOwner);
+        if (!wasNameChanged)
+            setName(getDefaultName());
+        return true;
     }
 
     public Set<ClaimMember> getMembers() {
@@ -121,12 +155,6 @@ public class Claim {
         this.members.add(member);
         return member;
     }
-//
-//    public ClaimMember addMember(UUID uuid, ClaimRole role) {
-//        ClaimMember newMember = new ClaimMember(this, uuid, null, role);
-//        this.members.add(newMember);
-//        return newMember;
-//    }
 
     public ClaimMember addMember(OfflinePlayer player, ClaimRole role) {
         ClaimMember newMember = new ClaimMember(this, player.getUniqueId(), player.getName(), role);
@@ -177,7 +205,7 @@ public class Claim {
 
     public boolean playerHasPerms(Player player, ClaimPerm claimPerm) {
         ClaimMember member = getMember(player);
-        if (player.hasPermission("ultimateclaims.bypass")
+        if (player.hasPermission("ultimateclaims.bypass.perms")
                 || player.getUniqueId().equals(owner.getUniqueId())) return true;
         if (member == null) return false;
         return member.getRole() == ClaimRole.VISITOR && getVisitorPermissions().hasPermission(claimPerm)
@@ -202,6 +230,10 @@ public class Claim {
         return this.claimedChunks.size();
     }
 
+    public int getMaxClaimSize(Player player) {
+        return PlayerUtils.getNumberFromPermission(player, "ultimateclaims.maxclaims", Settings.MAX_CHUNKS.getInt());
+    }
+
     public ClaimedChunk addClaimedChunk(Chunk chunk) {
         ClaimedChunk newChunk = new ClaimedChunk(this, chunk);
         this.claimedChunks.add(newChunk);
@@ -215,7 +247,7 @@ public class Claim {
     }
 
     public ClaimedChunk addClaimedChunk(Chunk chunk, Player player) {
-        Methods.animateChunk(chunk, player, Material.EMERALD_BLOCK);
+        animateChunk(chunk, player, Material.EMERALD_BLOCK);
         return addClaimedChunk(chunk);
     }
 
@@ -226,8 +258,34 @@ public class Claim {
     }
 
     public ClaimedChunk removeClaimedChunk(Chunk chunk, Player player) {
-        Methods.animateChunk(chunk, player, Material.REDSTONE_BLOCK);
+        animateChunk(chunk, player, Material.REDSTONE_BLOCK);
         return this.removeClaimedChunk(chunk);
+    }
+
+    public void animateChunk(Chunk chunk, Player player, Material material) {
+        int bx = chunk.getX() << 4;
+        int bz = chunk.getZ() << 4;
+
+        World world = player.getWorld();
+
+        Random random = new Random();
+
+        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))
+            for (int xx = bx; xx < bx + 16; xx++) {
+                for (int zz = bz; zz < bz + 16; zz++) {
+                    for (int yy = player.getLocation().getBlockY() - 5; yy < player.getLocation().getBlockY() + 5; yy++) {
+                        Block block = world.getBlockAt(xx, yy, zz);
+                        CompatibleMaterial m = CompatibleMaterial.getMaterial(block);
+                        if (!m.isOccluding() || m.isInteractable()) continue;
+                        Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () -> {
+                            player.sendBlockChange(block.getLocation(), material, (byte) 0);
+                            Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () ->
+                                    player.sendBlockChange(block.getLocation(), block.getBlockData()), random.nextInt(30) + 1);
+                            player.playSound(block.getLocation(), CompatibleSound.BLOCK_METAL_STEP.getSound(), 1F, .2F);
+                        }, random.nextInt(30) + 1);
+                    }
+                }
+            }
     }
 
     public List<ClaimCorners> getCorners() {
@@ -344,11 +402,11 @@ public class Claim {
         return claimSettings;
     }
 
-    public long getTotalPower() {
+    public String getPowercellTimeRemaining() {
         if (hasPowerCell())
-            return powerCell.getTotalPower();
+            return powerCell.getTimeRemaining();
         else
-            return 0;
+            return null;
     }
 
     @Override

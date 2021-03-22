@@ -59,6 +59,9 @@ public class Settings {
             "The starting amount of power in minutes a claim gets.",
             "This time should be used to create a powercell.");
 
+    public static final ConfigSetting NAME_CHAR_LIMIT = new ConfigSetting(config, "Main.Name Character Limit", 25,
+            "The maximum amount of characters allows in a claims name.");
+
     public static final ConfigSetting MAX_CHUNKS = new ConfigSetting(config, "Main.Max Chunks", 10,
             "The maximum amount of chunks a claim can have.");
 
@@ -98,6 +101,9 @@ public class Settings {
 
     public static final ConfigSetting DEFAULT_CLAIM_TNT = new ConfigSetting(config, "Default Settings.Claim.Tnt", false,
             "Should TNT explosions be enabled by default in new claims?");
+
+    public static final ConfigSetting DEFAULT_CLAIM_FLY = new ConfigSetting(config, "Default Settings.Claim.Fly", false,
+            "Should fly be enabled by default in new claims?");
 
     public static final ConfigSetting DEFAULT_MEMBER_BREAK = new ConfigSetting(config, "Default Settings.Member.Break", true,
             "Should members be allowed to break blocks",

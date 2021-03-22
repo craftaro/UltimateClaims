@@ -4,6 +4,7 @@ import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
+import com.songoda.ultimateclaims.claim.ClaimSetting;
 import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
@@ -85,7 +86,7 @@ public class BlockListeners implements Listener {
 
         if (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation())) {
             ClaimMember member = claim.getMember(event.getPlayer());
-            if ((member != null && member.getRole() == ClaimRole.OWNER) || event.getPlayer().hasPermission("ultimateclaims.bypass")) {
+            if ((member != null && member.getRole() == ClaimRole.OWNER) || event.getPlayer().hasPermission("ultimateclaims.admin.removeclaim")) {
                 powerCell.destroy();
             } else {
                 plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
@@ -99,7 +100,7 @@ public class BlockListeners implements Listener {
         ClaimManager claimManager = plugin.getClaimManager();
 
         Claim claim = claimManager.getClaim(event.getBlock().getChunk());
-        if (claim != null && !claim.getClaimSettings().isFireSpread()) {
+        if (claim != null && !claim.getClaimSettings().isEnabled(ClaimSetting.FIRE_SPREAD)) {
             event.setCancelled(true);
         }
     }
@@ -109,7 +110,7 @@ public class BlockListeners implements Listener {
         ClaimManager claimManager = plugin.getClaimManager();
 
         Claim claim = claimManager.getClaim(event.getBlock().getChunk());
-        if (claim != null && !claim.getClaimSettings().isFireSpread()) {
+        if (claim != null && !claim.getClaimSettings().isEnabled(ClaimSetting.FIRE_SPREAD)) {
             if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_11)) {
                 event.getIgnitingBlock().setType(Material.AIR);
             } else {
@@ -129,7 +130,7 @@ public class BlockListeners implements Listener {
         ClaimManager claimManager = plugin.getClaimManager();
 
         Claim claim = claimManager.getClaim(event.getBlock().getChunk());
-        if (claim != null && !claim.getClaimSettings().isLeafDecay()) {
+        if (claim != null && !claim.getClaimSettings().isEnabled(ClaimSetting.LEAF_DECAY)) {
             event.setCancelled(true);
         }
     }
