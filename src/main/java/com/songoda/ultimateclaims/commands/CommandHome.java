@@ -26,7 +26,12 @@ public class CommandHome extends AbstractCommand {
         if (args.length < 1)
             return ReturnType.SYNTAX_ERROR;
 
-        String claimStr = String.join(" ", args);
+        StringBuilder claimBuilder = new StringBuilder();
+        for (int i = 0; i < args.length; i++) {
+            String line = args[i];
+            claimBuilder.append(line).append(" ");
+        }
+        String claimStr = claimBuilder.toString().trim();
 
         boolean bypass = sender.hasPermission("ultimateclaims.bypass.home");
         Optional<Claim> oClaim = plugin.getClaimManager().getRegisteredClaims().stream()
