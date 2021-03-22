@@ -69,12 +69,6 @@ public class InteractListeners implements Listener {
             return;
         }
 
-        if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.INTERACT)) {
-            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
-            event.setCancelled(true);
-            return;
-        }
-
         ClaimMember member = claim.getMember(event.getPlayer());
 
         if (claim.getPowerCell().hasLocation()
@@ -84,12 +78,17 @@ public class InteractListeners implements Listener {
 
             // Make sure all items in the powercell are stacked.
             claim.getPowerCell().stackItems();
-            if ((member != null && (member.getRole() == ClaimRole.OWNER || member.getRole() == ClaimRole.MEMBER))
-                    || event.getPlayer().hasPermission("ultimateclaims.powercell.view")) {
+            if (member != null && member.getRole() != ClaimRole.VISITOR || event.getPlayer().hasPermission("ultimateclaims.powercell.view")) {
                 plugin.getGuiManager().showGUI(event.getPlayer(), claim.getPowerCell().getGui(event.getPlayer()));
             } else {
                 plugin.getLocale().getMessage("event.powercell.failopen").sendPrefixedMessage(event.getPlayer());
             }
+            event.setCancelled(true);
+            return;
+        }
+
+        if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.INTERACT)) {
+            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
             event.setCancelled(true);
         }
     }

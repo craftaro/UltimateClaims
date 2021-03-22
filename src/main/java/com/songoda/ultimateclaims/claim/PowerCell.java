@@ -11,8 +11,13 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class PowerCell {
@@ -23,6 +28,7 @@ public class PowerCell {
     protected Location location = null;
 
     protected List<ItemStack> items = new ArrayList<>();
+    private Deque<Audit> auditLog = new ArrayDeque<>();
 
     protected int currentPower = Settings.STARTING_POWER.getInt();
 
@@ -86,7 +92,7 @@ public class PowerCell {
     private void removeOneMaterial(CompatibleMaterial material) {
         updateItemsFromGui();
         List<ItemStack> items = getItems();
-        for (int i = 0; i < items.size(); i ++) {
+        for (int i = 0; i < items.size(); i++) {
             ItemStack item = items.get(i);
             if (material.matches(item)) {
                 item.setAmount(item.getAmount() - 1);
@@ -160,7 +166,7 @@ public class PowerCell {
 
     public void updateHologram() {
         if (location != null) {
-                HologramManager.updateHologram(location, getTimeRemaining());
+            HologramManager.updateHologram(location, getTimeRemaining());
         }
     }
 
@@ -227,7 +233,7 @@ public class PowerCell {
     public void stackItems() {
         List<Integer> removed = new ArrayList<>();
         List<ItemStack> newItems = new ArrayList<>();
-        for (int i = 0; i < items.size(); i ++) {
+        for (int i = 0; i < items.size(); i++) {
             ItemStack item = items.get(i);
             CompatibleMaterial material = CompatibleMaterial.getMaterial(item);
 
@@ -241,9 +247,9 @@ public class PowerCell {
             if (item.getAmount() >= item.getMaxStackSize())
                 continue;
 
-            for (int j = 0; j < items.size(); j ++) {
+            for (int j = 0; j < items.size(); j++) {
                 ItemStack second = items.get(j);
-                
+
                 if (newItem.getAmount() > newItem.getMaxStackSize())
                     break;
 
@@ -350,8 +356,22 @@ public class PowerCell {
         this.location = location;
     }
 
+    public List<Audit> getAuditLog() {
+        return Collections.unmodifiableList(new LinkedList<>(auditLog));
+    }
+
+    public void addToAuditLog(UUID uuid, long time) {
+        if (auditLog.isEmpty()
+                || auditLog.getFirst().getWho() != uuid
+                || System.currentTimeMillis() - auditLog.getFirst().getWhen() > 5 * 1000 * 60) {
+            Audit audit = new Audit(uuid, time);
+            auditLog.addFirst(audit);
+            plugin.getDataManager().addAudit(claim, audit);
+        }
+    }
+
     public PowerCellGui getGui(Player player) {
-        if (opened.isOpen())
+        if (opened != null && opened.isOpen())
             opened.close();
         return opened = new PowerCellGui(UltimateClaims.getInstance(), this.claim, player);
     }

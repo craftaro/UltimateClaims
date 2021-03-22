@@ -107,6 +107,8 @@ interface:
     addfunds: '&7Enter an amount to deposit.'
     infotitle: '&5&lInfo'
     infolore: '&7You have &6%chunks% &7claimed|&7chunks and &6%members% &7members.'
+    auditlog: '&5Audit Log'
+    audit: '&7%name% &6%time%&7.'
     banstitle: '&c&lBans'
     banslore: '&7View your claims bans.'
     memberstitle: '&9&lMembers'

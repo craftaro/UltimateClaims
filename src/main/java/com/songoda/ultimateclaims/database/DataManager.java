@@ -3,6 +3,7 @@ package com.songoda.ultimateclaims.database;
 import com.songoda.core.database.DataManagerAbstract;
 import com.songoda.core.database.DatabaseConnector;
 import com.songoda.core.utils.ItemSerializer;
+import com.songoda.ultimateclaims.claim.Audit;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimSetting;
 import com.songoda.ultimateclaims.claim.ClaimSettings;
@@ -282,6 +283,7 @@ public class DataManager extends DataManagerAbstract {
             String deleteChunks = "DELETE FROM " + this.getTablePrefix() + "chunk WHERE claim_id = ?";
             String deleteSettings = "DELETE FROM " + this.getTablePrefix() + "settings WHERE claim_id = ?";
             String deletePermissions = "DELETE FROM " + this.getTablePrefix() + "permissions WHERE claim_id = ?";
+            String deleteAudits = "DELETE FROM " + this.getTablePrefix() + "audit_log WHERE claim_id = ?";
 
             try (PreparedStatement statement = connection.prepareStatement(deleteClaim)) {
                 statement.setInt(1, claim.getId());
@@ -309,6 +311,11 @@ public class DataManager extends DataManagerAbstract {
             }
 
             try (PreparedStatement statement = connection.prepareStatement(deletePermissions)) {
+                statement.setInt(1, claim.getId());
+                statement.executeUpdate();
+            }
+
+            try (PreparedStatement statement = connection.prepareStatement(deleteAudits)) {
                 statement.setInt(1, claim.getId());
                 statement.executeUpdate();
             }
@@ -361,6 +368,18 @@ public class DataManager extends DataManagerAbstract {
             try (PreparedStatement statement = connection.prepareStatement(deleteBan)) {
                 statement.setInt(1, claim.getId());
                 statement.setString(2, playerUUID.toString());
+                statement.executeUpdate();
+            }
+        }));
+    }
+
+    public void addAudit(Claim claim, Audit audit) {
+        this.async(() -> this.databaseConnector.connect(connection -> {
+            String createChunk = "INSERT INTO " + this.getTablePrefix() + "audit_log (claim_id, who, time) VALUES (?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(createChunk)) {
+                statement.setInt(1, claim.getId());
+                statement.setString(2, audit.getWho().toString());
+                statement.setLong(3, audit.getWhen());
                 statement.executeUpdate();
             }
         }));
@@ -461,6 +480,7 @@ public class DataManager extends DataManagerAbstract {
             String selectChunks = "SELECT * FROM " + this.getTablePrefix() + "chunk";
             String selectSettings = "SELECT * FROM " + this.getTablePrefix() + "settings";
             String selectPermissions = "SELECT * FROM " + this.getTablePrefix() + "permissions";
+            String selectAudit = "SELECT * FROM " + this.getTablePrefix() + "audit_log";
 
             Map<Integer, Claim> claims = new HashMap<>();
 
@@ -525,6 +545,23 @@ public class DataManager extends DataManagerAbstract {
 
                     if (claimMember.getRole() == ClaimRole.OWNER)
                         claim.setOwner(claimMember);
+                }
+            }
+
+            try (Statement statement = connection.createStatement()) {
+                ResultSet result = statement.executeQuery(selectAudit);
+                while (result.next()) {
+                    int claimId = result.getInt("claim_id");
+                    Claim claim = claims.get(claimId);
+                    if (claim == null)
+                        continue;
+
+                    UUID who = UUID.fromString(result.getString("who"));
+                    long when = result.getLong("time");
+
+                    if (claim.getPowerCell().hasLocation())
+                        claim.getPowerCell().addToAuditLog(who, when);
+
                 }
             }
 
