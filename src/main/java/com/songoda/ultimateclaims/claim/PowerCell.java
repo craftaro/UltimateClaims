@@ -1,6 +1,7 @@
 package com.songoda.ultimateclaims.claim;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
+import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.hooks.HologramManager;
 import com.songoda.core.utils.TimeUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
@@ -340,6 +341,10 @@ public class PowerCell {
         this.economyBalance += amount;
     }
 
+    public void removeEconomy(double amount) {
+        this.economyBalance -= amount;
+    }
+
     public void clearItems() {
         this.items.clear();
     }
@@ -381,6 +386,7 @@ public class PowerCell {
             getItems().stream().filter(item -> item != null)
                     .forEach(item -> location.getWorld().dropItemNaturally(location, item));
             removeHologram();
+            EconomyManager.deposit(claim.getOwner().getPlayer(), economyBalance);
         }
         this.items.clear();
         if (opened != null)
