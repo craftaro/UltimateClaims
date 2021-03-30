@@ -6,6 +6,7 @@ import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.api.events.ClaimDeleteEvent;
+import com.songoda.ultimateclaims.api.events.ClaimTransferOwnershipEvent;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
@@ -129,6 +130,12 @@ public class Claim {
     public boolean transferOwnership(OfflinePlayer newOwner) {
         if (newOwner.getUniqueId() == owner.getUniqueId())
             return false;
+
+        ClaimTransferOwnershipEvent event = new ClaimTransferOwnershipEvent(this, owner.getPlayer(), newOwner);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return false;
+        }
 
         boolean wasNameChanged = name.equals(getDefaultName());
 
