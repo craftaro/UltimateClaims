@@ -86,49 +86,49 @@ public class SettingsGui extends CustomizableGui {
             this.updateItem("hostilemobspawning", 1, 1,
                     plugin.getLocale().getMessage("interface.settings.hostilemobspawningtitle").getMessage(),
                     plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.HOSTILE_MOB_SPAWNING))
+                            .processPlaceholder("current", claim.getClaimSettings().isEnabled(ClaimSetting.HOSTILE_MOB_SPAWNING))
                             .getMessage().split("\\|"));
         }
         if (firespread) {
             this.updateItem("flintandsteal", 1, 2,
                     plugin.getLocale().getMessage("interface.settings.firespreadtitle").getMessage(),
                     plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.FIRE_SPREAD))
+                            .processPlaceholder("current", claim.getClaimSettings().isEnabled(ClaimSetting.FIRE_SPREAD))
                             .getMessage().split("\\|"));
         }
         if (pvp) {
             this.updateItem("pvp", 1, 3,
                     plugin.getLocale().getMessage("interface.settings.pvptitle").getMessage(),
                     plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.PVP))
+                            .processPlaceholder("current", claim.getClaimSettings().isEnabled(ClaimSetting.PVP))
                             .getMessage().split("\\|"));
         }
         if (mobgriefing) {
             this.updateItem("mobgriefing", 1, 4,
                     plugin.getLocale().getMessage("interface.settings.mobgriefingtitle").getMessage(),
                     plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.MOB_GRIEFING))
+                            .processPlaceholder("current", claim.getClaimSettings().isEnabled(ClaimSetting.MOB_GRIEFING))
                             .getMessage().split("\\|"));
         }
         if (leafdecay) {
             this.updateItem("leafdecay", 1, 5,
                     plugin.getLocale().getMessage("interface.settings.leafdecaytitle").getMessage(),
                     plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.LEAF_DECAY))
+                            .processPlaceholder("current", claim.getClaimSettings().isEnabled(ClaimSetting.LEAF_DECAY))
                             .getMessage().split("\\|"));
         }
         if (tnt) {
             this.updateItem("tnt", 1, 6,
                     plugin.getLocale().getMessage("interface.settings.tnttitle").getMessage(),
                     plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.TNT))
+                            .processPlaceholder("current", claim.getClaimSettings().isEnabled(ClaimSetting.TNT))
                             .getMessage().split("\\|"));
         }
         if (fly) {
             this.updateItem("tnt", 1, 7,
                     plugin.getLocale().getMessage("interface.settings.flytitle").getMessage(),
                     plugin.getLocale().getMessage("general.interface.current")
-                            .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.FLY))
+                            .processPlaceholder("current", claim.getClaimSettings().isEnabled(ClaimSetting.FLY))
                             .getMessage().split("\\|"));
         }
     }

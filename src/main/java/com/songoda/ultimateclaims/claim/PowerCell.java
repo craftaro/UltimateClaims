@@ -340,10 +340,6 @@ public class PowerCell {
         this.economyBalance += amount;
     }
 
-    public void removeEconomy(double amount) {
-        this.economyBalance -= amount;
-    }
-
     public void clearItems() {
         this.items.clear();
     }

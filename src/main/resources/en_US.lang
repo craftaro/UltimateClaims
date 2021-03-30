@@ -5,9 +5,6 @@ general:
     prefix: '&8[&6UltimateClaims&8]'
   word:
     none: none
-  status:
-    true: true
-    false: false
   claim:
     defaultname: '%name%''s claim'
     powercell:
@@ -17,7 +14,6 @@ general:
     returnfunds: '&a%amount% has been returned to you.'
   notanumber: '&cThe entry &4%value% &cis not a number'
   notenoughfunds: '&cYou do not have enough funds.'
-  notenoughfundspowercell: '&cThis power cell does not have enough funds. %balance% is available to be withdrawn.'
   powercellrecipe: '&6Powercell Recipe'
   interface:
     exit: '&cExit'
@@ -105,11 +101,10 @@ command:
 interface:
   powercell:
     economytitle: '&7Economy stored: &6%time%&7.'
-    economylore: '&7Left Click to deposit funds.|&7Right Click to withdraw funds.|&7Stored Funds: &6%balance%'
+    economylore: '&7Click to deposit funds.'
     valuablestitle: '&7Items stored: &6%time%&7.'
     totaltitle: '&7Total Power: &6%time%&7.'
     addfunds: '&7Enter an amount to deposit.'
-    takefunds: '&7Enter an amount to withdraw.'
     infotitle: '&5&lInfo'
     infolore: '&7You have &6%chunks% &7claimed|&7chunks and &6%members% &7members.'
     auditlog: '&5Audit Log'
@@ -158,15 +153,6 @@ interface:
     flytitle: '&6&lFly'
   recipe:
     title: Powercell Recipe
-  role:
-    all: All
-    owner: Owner
-    member: Member
-    visitor: Visitor
-  sortingmode:
-    default: DEFAULT
-    playtime: PLAYTIME
-    membersince: MEMBER SINCE
 
 # Event Messages
 

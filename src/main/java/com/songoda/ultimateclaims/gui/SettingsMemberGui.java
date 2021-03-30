@@ -60,45 +60,45 @@ public class SettingsMemberGui extends CustomizableGui {
                 plugin.getLocale().getMessage("interface.permsettings.breaktitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.BREAK) : claim.getVisitorPermissions().getStatus(ClaimPerm.BREAK))
+                                ? claim.getMemberPermissions().hasPermission(ClaimPerm.BREAK) : claim.getVisitorPermissions().hasPermission(ClaimPerm.BREAK))
                         .getMessage().split("\\|"));
         this.updateItem("place", 1, 2,
                 plugin.getLocale().getMessage("interface.permsettings.placetitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.PLACE) : claim.getVisitorPermissions().getStatus(ClaimPerm.PLACE))
+                                ? claim.getMemberPermissions().hasPermission(ClaimPerm.PLACE) : claim.getVisitorPermissions().hasPermission(ClaimPerm.PLACE))
                         .getMessage().split("\\|"));
         this.updateItem("interact", 1, 3,
                 plugin.getLocale().getMessage("interface.permsettings.interacttitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.INTERACT) : claim.getVisitorPermissions().getStatus(ClaimPerm.INTERACT))
+                                ? claim.getMemberPermissions().hasPermission(ClaimPerm.INTERACT) : claim.getVisitorPermissions().hasPermission(ClaimPerm.INTERACT))
                         .getMessage().split("\\|"));
 
         this.updateItem("trading", 1, 4,
                 plugin.getLocale().getMessage("interface.permsettings.tradingtitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.TRADING) : claim.getVisitorPermissions().getStatus(ClaimPerm.TRADING))
+                                ? claim.getMemberPermissions().hasPermission(ClaimPerm.TRADING) : claim.getVisitorPermissions().hasPermission(ClaimPerm.TRADING))
                         .getMessage().split("\\|"));
 
         this.updateItem("doors", 1, 5,
                 plugin.getLocale().getMessage("interface.permsettings.doorstitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.DOORS) : claim.getVisitorPermissions().getStatus(ClaimPerm.DOORS))
+                                ? claim.getMemberPermissions().hasPermission(ClaimPerm.DOORS) : claim.getVisitorPermissions().hasPermission(ClaimPerm.DOORS))
                         .getMessage().split("\\|"));
         this.updateItem("kills", 1, 6,
                 plugin.getLocale().getMessage("interface.permsettings.mobkilltitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.MOB_KILLING) : claim.getVisitorPermissions().getStatus(ClaimPerm.MOB_KILLING))
+                                ? claim.getMemberPermissions().hasPermission(ClaimPerm.MOB_KILLING) : claim.getVisitorPermissions().hasPermission(ClaimPerm.MOB_KILLING))
                         .getMessage().split("\\|"));
         this.updateItem("redstone", 1, 7,
                 plugin.getLocale().getMessage("interface.permsettings.redstonetitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.REDSTONE) : claim.getVisitorPermissions().getStatus(ClaimPerm.REDSTONE))
+                                ? claim.getMemberPermissions().hasPermission(ClaimPerm.REDSTONE) : claim.getVisitorPermissions().hasPermission(ClaimPerm.REDSTONE))
                         .getMessage().split("\\|"));
 
     }
