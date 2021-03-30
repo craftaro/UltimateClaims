@@ -2,16 +2,24 @@ package com.songoda.ultimateclaims.member;
 
 public enum ClaimRole {
 
-    VISITOR(1), MEMBER(2), OWNER(3);
+    VISITOR(1, "interface.role.visitor"),
+    MEMBER(2, "interface.role.member"),
+    OWNER(3, "interface.role.owner");
 
     private int index;
+    private String localePath;
 
-    ClaimRole(int index) {
+    ClaimRole(int index, String localePath) {
         this.index = index;
+        this.localePath = localePath;
     }
 
     public int getIndex() {
         return this.index;
+    }
+
+    public String getLocalePath() {
+        return localePath;
     }
 
     public static ClaimRole fromIndex(int index) {

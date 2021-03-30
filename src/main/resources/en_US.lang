@@ -5,6 +5,9 @@ general:
     prefix: '&8[&6UltimateClaims&8]'
   word:
     none: none
+  status:
+    true: true
+    false: false
   claim:
     defaultname: '%name%''s claim'
     powercell:
@@ -153,6 +156,15 @@ interface:
     flytitle: '&6&lFly'
   recipe:
     title: Powercell Recipe
+  role:
+    all: All
+    owner: Owner
+    member: Member
+    visitor: Visitor
+  sortingmode:
+    default: DEFAULT
+    playtime: PLAYTIME
+    membersince: MEMBER SINCE
 
 # Event Messages
 

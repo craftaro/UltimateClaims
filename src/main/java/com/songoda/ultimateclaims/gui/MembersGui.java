@@ -97,13 +97,13 @@ public class MembersGui extends CustomizableGui {
                 plugin.getLocale().getMessage("interface.members.changetypetitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current",
-                                TextUtils.formatText(displayedRole == ClaimRole.OWNER ? "ALL" : displayedRole.toString(), true))
+                                displayedRole == ClaimRole.OWNER ? plugin.getLocale().getMessage("interface.role.all").getMessage() : plugin.getLocale().getMessage(displayedRole.getLocalePath()).getMessage())
                         .getMessage().split("\\|")));
         this.setItem("sort", 5, GuiUtils.updateItem(this.getItem(5),
                 plugin.getLocale().getMessage("interface.members.changesorttitle").getMessage(),
                 plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current",
-                                TextUtils.formatText(sortType.toString().replace('_', ' '), true))
+                                plugin.getLocale().getMessage(sortType.getLocalePath()).getMessage())
                         .getMessage().split("\\|")));
 
         // show members
@@ -143,7 +143,7 @@ public class MembersGui extends CustomizableGui {
                         ChatColor.AQUA + skullPlayer.getName(),
                         plugin.getLocale().getMessage("interface.members.skulllore")
                                 .processPlaceholder("role",
-                                        TextUtils.formatText(toDisplay.get(currentMember).getRole().toString().toLowerCase(), true))
+                                        plugin.getLocale().getMessage(toDisplay.get(currentMember).getRole().getLocalePath()).getMessage())
                                 .processPlaceholder("playtime", TimeUtils.makeReadable(claimMember.getPlayTime()))
                                 .processPlaceholder("membersince",
                                         new SimpleDateFormat("dd/MM/yyyy").format(new Date(claimMember.getMemberSince())))
@@ -185,9 +185,19 @@ public class MembersGui extends CustomizableGui {
     }
 
     public static enum SortType {
-        DEFAULT,
-        PLAYTIME,
-        MEMBER_SINCE
+        DEFAULT("interface.sortingmode.default"),
+        PLAYTIME("interface.sortingmode.playtime"),
+        MEMBER_SINCE("interface.sortingmode.membersince");
+
+        private String localePath;
+
+        SortType(String localePath) {
+            this.localePath = localePath;
+        }
+
+        public String getLocalePath() {
+            return localePath;
+        }
     }
 
 }
