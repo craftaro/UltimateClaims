@@ -41,7 +41,7 @@ public class PowerCellGui extends CustomizableGui {
         this.claim = claim;
         this.setRows(6);
         this.setTitle(TextUtils.formatText(claim.getName(), true));
-        fullPerms = claim.getOwner().getUniqueId() == player.getUniqueId();
+        fullPerms = claim.getOwner().getUniqueId().equals(player.getUniqueId());
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
