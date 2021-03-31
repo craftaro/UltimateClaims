@@ -184,3 +184,4 @@ event:
     failopen: '&cYou need to be the owner of this claim to open its powercell.'
     lowpower: '&cYour claim &4%claim% &cis out of power!'
     superpower: '&cYour claim &4%claim% &cis still out of power and at risk of dissolution!'
+    destroyed: '&cPower cell destroyed. You have gained %balance% from its money storage.'
