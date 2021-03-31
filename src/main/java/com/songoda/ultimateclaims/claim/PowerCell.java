@@ -9,6 +9,7 @@ import com.songoda.ultimateclaims.gui.PowerCellGui;
 import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -386,7 +387,12 @@ public class PowerCell {
             getItems().stream().filter(item -> item != null)
                     .forEach(item -> location.getWorld().dropItemNaturally(location, item));
             removeHologram();
-            EconomyManager.deposit(claim.getOwner().getPlayer(), economyBalance);
+
+            OfflinePlayer owner = claim.getOwner().getPlayer();
+            EconomyManager.deposit(owner, economyBalance);
+            if (owner.isOnline())
+                owner.getPlayer().sendMessage(plugin.getLocale().getMessage("event.powercell.destroyed")
+                        .processPlaceholder("balance", economyBalance).getPrefixedMessage());
         }
         this.items.clear();
         if (opened != null)
