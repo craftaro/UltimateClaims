@@ -150,7 +150,12 @@ public class InteractListeners implements Listener {
 
     private boolean isRedstone(Block block) {
         if (block == null) return false;
-        switch (CompatibleMaterial.getMaterial(block)) {
+
+        CompatibleMaterial material = CompatibleMaterial.getMaterial(block);
+        if (material == null)
+            return false;
+
+        switch (material) {
             case LEVER:
             case BIRCH_BUTTON:
             case ACACIA_BUTTON:
