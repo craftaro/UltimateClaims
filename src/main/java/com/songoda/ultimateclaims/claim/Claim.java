@@ -7,6 +7,8 @@ import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.api.events.ClaimDeleteEvent;
 import com.songoda.ultimateclaims.api.events.ClaimTransferOwnershipEvent;
+import com.songoda.ultimateclaims.claim.region.ClaimedChunk;
+import com.songoda.ultimateclaims.claim.region.ClaimedRegion;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
@@ -20,12 +22,14 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class Claim {
 
@@ -34,7 +38,7 @@ public class Claim {
     private ClaimMember owner;
     private final Set<ClaimMember> members = new HashSet<>();
 
-    private final Set<ClaimedChunk> claimedChunks = new HashSet<>();
+    private final Set<ClaimedRegion> claimedRegions = new HashSet<>();
     private final Set<UUID> bannedPlayers = new HashSet<>();
 
     private Location home = null;
@@ -81,7 +85,7 @@ public class Claim {
     }
 
     public ClaimedChunk getFirstClaimedChunk() {
-        return this.claimedChunks.iterator().next();
+        return this.claimedRegions.iterator().next().getFirstClaimedChunk();
     }
 
     public String getName() {
@@ -226,47 +230,107 @@ public class Claim {
 
     public boolean containsChunk(Chunk chunk) {
         final String world = chunk.getWorld().getName();
-        return this.claimedChunks.stream().anyMatch(x -> x.getWorld().equals(world) && x.getX() == chunk.getX() && x.getZ() == chunk.getZ());
+        return claimedRegions.stream().anyMatch(r -> r.containsChunk(world, chunk.getX(), chunk.getZ()));
     }
 
     public boolean containsChunk(String world, int chunkX, int chunkZ) {
-        return this.claimedChunks.stream().anyMatch(x -> x.getWorld().equals(world) && x.getX() == chunkX && x.getZ() == chunkZ);
+        return claimedRegions.stream().anyMatch(r -> r.containsChunk(world, chunkX, chunkZ));
     }
 
-    public int getClaimSize() {
-        return this.claimedChunks.size();
+
+
+
+
+
+
+
+    public ClaimedRegion getPotentialRegion(Chunk chunk) {
+        ClaimedChunk newChunk = new ClaimedChunk(chunk);
+        return newChunk.getAttachedRegion(this);
     }
 
-    public int getMaxClaimSize(Player player) {
-        return PlayerUtils.getNumberFromPermission(player, "ultimateclaims.maxclaims", Settings.MAX_CHUNKS.getInt());
-    }
-
-    public ClaimedChunk addClaimedChunk(Chunk chunk) {
-        ClaimedChunk newChunk = new ClaimedChunk(this, chunk);
-        this.claimedChunks.add(newChunk);
-        return newChunk;
-    }
-
-    public ClaimedChunk addClaimedChunk(String world, int x, int z) {
-        ClaimedChunk newChunk = new ClaimedChunk(this, world, x, z);
-        this.claimedChunks.add(newChunk);
-        return newChunk;
-    }
-
-    public ClaimedChunk addClaimedChunk(Chunk chunk, Player player) {
+    public boolean addClaimedChunk(Chunk chunk, Player player) {
         animateChunk(chunk, player, Material.EMERALD_BLOCK);
-        return addClaimedChunk(chunk);
+        return addClaimedChunk(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
     }
 
-    public ClaimedChunk removeClaimedChunk(Chunk chunk) {
-        ClaimedChunk removedChunk = new ClaimedChunk(this, chunk);
-        this.claimedChunks.remove(removedChunk);
-        return removedChunk;
+    public boolean addClaimedChunk(String world, int x, int z) {
+        ClaimedChunk newChunk = new ClaimedChunk(world, x, z);
+        ClaimedRegion region = newChunk.getAttachedRegion(this);
+        if (region == null) {
+            claimedRegions.add(new ClaimedRegion(newChunk, this));
+            return true;
+
+        } else {
+            region.addChunk(newChunk);
+            newChunk.mergeRegions(this);
+        }
+        return false;
+    }
+
+    public void addClaimedRegion(ClaimedRegion region) {
+        claimedRegions.add(region);
+    }
+
+    public void removeClaimedRegion(ClaimedRegion region) {
+        claimedRegions.remove(region);
     }
 
     public ClaimedChunk removeClaimedChunk(Chunk chunk, Player player) {
         animateChunk(chunk, player, Material.REDSTONE_BLOCK);
-        return this.removeClaimedChunk(chunk);
+        ClaimedChunk newChunk = getClaimedChunk(chunk);
+        for (ClaimedRegion region : new ArrayList<>(claimedRegions)) {
+            List<ClaimedRegion> claimedRegions = region.removeChunk(newChunk);
+            if (!claimedRegions.isEmpty()) {
+                this.claimedRegions.remove(region);
+                this.claimedRegions.addAll(claimedRegions);
+            }
+            if (region.getChunks().isEmpty()) {
+                this.claimedRegions.remove(region);
+                UltimateClaims.getInstance().getDataManager().deleteClaimedRegion(region);
+            }
+        }
+        return newChunk;
+    }
+
+    public Set<ClaimedRegion> getClaimedRegions() {
+        return Collections.unmodifiableSet(claimedRegions);
+    }
+
+    public ClaimedRegion getClaimedRegion(Chunk chunk) {
+        for (ClaimedChunk claimedChunk : getClaimedChunks())
+            if (claimedChunk.equals(chunk))
+                return claimedChunk.getRegion();
+        return null;
+    }
+
+    public List<ClaimedChunk> getClaimedChunks() {
+        List<ClaimedChunk> chunks = new ArrayList<>();
+        for (ClaimedRegion claimedRegion : claimedRegions)
+            chunks.addAll(claimedRegion.getChunks());
+        return chunks;
+    }
+
+
+    public ClaimedChunk getClaimedChunk(Chunk chunk) {
+        for (ClaimedChunk claimedChunk : getClaimedChunks())
+            if (claimedChunk.equals(chunk))
+                return claimedChunk;
+        return null;
+    }
+
+
+
+
+
+
+
+    public int getClaimSize() {
+        return claimedRegions.stream().map(r -> r.getChunks().size()).mapToInt(Integer::intValue).sum();
+    }
+
+    public int getMaxClaimSize(Player player) {
+        return PlayerUtils.getNumberFromPermission(player, "ultimateclaims.maxclaims", Settings.MAX_CHUNKS.getInt());
     }
 
     public void animateChunk(Chunk chunk, Player player, Material material) {
@@ -295,7 +359,8 @@ public class Claim {
             }
     }
 
-    public List<ClaimCorners> getCorners() {
+    public List<ClaimCorners> getCorners() { 
+        - //This wont work or even make sense anymore...
         if (this.claimedChunks.size() <= 0) return null;
 
         List<ClaimCorners> result = new ArrayList<>();
@@ -366,7 +431,7 @@ public class Claim {
             return;
         }
 
-        this.claimedChunks.clear();
+        this.claimedRegions.clear();
         if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
             UltimateClaims.getInstance().getDynmapManager().refresh(this);
         this.powerCell.destroy();

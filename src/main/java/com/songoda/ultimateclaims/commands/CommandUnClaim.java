@@ -6,7 +6,6 @@ import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.api.events.ClaimChunkUnclaimEvent;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimDeleteReason;
-import com.songoda.ultimateclaims.claim.ClaimedChunk;
 import com.songoda.ultimateclaims.claim.PowerCell;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;

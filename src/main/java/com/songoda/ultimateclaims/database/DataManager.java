@@ -7,7 +7,8 @@ import com.songoda.ultimateclaims.claim.Audit;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimSetting;
 import com.songoda.ultimateclaims.claim.ClaimSettings;
-import com.songoda.ultimateclaims.claim.ClaimedChunk;
+import com.songoda.ultimateclaims.claim.region.ClaimedChunk;
+import com.songoda.ultimateclaims.claim.region.ClaimedRegion;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
@@ -23,10 +24,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -260,7 +263,7 @@ public class DataManager extends DataManagerAbstract {
                 for (Claim claim : claims) {
                     for (ClaimMember member : claim.getOwnerAndMembers()) {
                         statement.setLong(1, member.getPlayTime());
-                        if(member.getName() == null)
+                        if (member.getName() == null)
                             statement.setNull(2, Types.VARCHAR);
                         else
                             statement.setString(2, member.getName());
@@ -328,7 +331,7 @@ public class DataManager extends DataManagerAbstract {
             try (PreparedStatement statement = connection.prepareStatement(createMember)) {
                 statement.setInt(1, member.getClaim().getId());
                 statement.setString(2, member.getUniqueId().toString());
-                if(member.getName() == null)
+                if (member.getName() == null)
                     statement.setNull(3, Types.VARCHAR);
                 else
                     statement.setString(3, member.getName());
@@ -385,28 +388,64 @@ public class DataManager extends DataManagerAbstract {
         }));
     }
 
-    public void createChunk(ClaimedChunk chunk) {
+    public void createClaimedRegion(ClaimedRegion region) {
         this.async(() -> this.databaseConnector.connect(connection -> {
-            String createChunk = "INSERT INTO " + this.getTablePrefix() + "chunk (claim_id, world, x, z) VALUES (?, ?, ?, ?)";
-            try (PreparedStatement statement = connection.prepareStatement(createChunk)) {
-                statement.setInt(1, chunk.getClaim().getId());
-                statement.setString(2, chunk.getWorld());
-                statement.setInt(3, chunk.getX());
-                statement.setInt(4, chunk.getZ());
+            String createPermission = "INSERT INTO " + this.getTablePrefix() + "claimed_regions (claim_id, id) VALUES (?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(createPermission)) {
+                statement.setInt(1, region.getClaim().getId());
+                statement.setString(2, region.getUniqueId().toString());
                 statement.executeUpdate();
             }
         }));
     }
 
-    public void deleteChunk(ClaimedChunk chunk) {
+    public void deleteClaimedRegion(ClaimedRegion region) {
         this.async(() -> this.databaseConnector.connect(connection -> {
-            String deleteChunk = "DELETE FROM " + this.getTablePrefix() + "chunk WHERE claim_id = ? AND world = ? AND x = ? and z = ?";
-            try (PreparedStatement statement = connection.prepareStatement(deleteChunk)) {
-                statement.setInt(1, chunk.getClaim().getId());
-                statement.setString(2, chunk.getWorld());
-                statement.setInt(3, chunk.getX());
-                statement.setInt(4, chunk.getZ());
+            String deleteRegion = "DELETE FROM " + this.getTablePrefix() + "claimed_regions WHERE id = ?";
+            try (PreparedStatement statement = connection.prepareStatement(deleteRegion)) {
+                statement.setString(1, region.getUniqueId().toString());
                 statement.executeUpdate();
+            }
+        }));
+    }
+
+    public void createClaimedChunk(ClaimedChunk claimedChunk) {
+        this.async(() -> this.databaseConnector.connect(connection -> {
+            String createPermission = "INSERT INTO " + this.getTablePrefix() + "chunk (region_id, world, x, z) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(createPermission)) {
+                statement.setString(1, claimedChunk.getRegion().getUniqueId().toString());
+                statement.setString(2, claimedChunk.getWorld());
+                statement.setInt(3, claimedChunk.getX());
+                statement.setInt(4, claimedChunk.getZ());
+                statement.executeUpdate();
+            }
+        }));
+    }
+
+    public void deleteClaimedChunk(ClaimedChunk claimedChunk) {
+        this.async(() -> this.databaseConnector.connect(connection -> {
+            String deletePermission = "DELETE FROM " + this.getTablePrefix() + "chunk WHERE world = ? AND x = ? AND z = ?";
+            try (PreparedStatement statement = connection.prepareStatement(deletePermission)) {
+                statement.setString(1, claimedChunk.getWorld());
+                statement.setInt(2, claimedChunk.getX());
+                statement.setInt(3, claimedChunk.getZ());
+                statement.executeUpdate();
+            }
+        }));
+    }
+
+    public void updateClaimedChunks(Set<ClaimedChunk> chunks) {
+        this.async(() -> this.databaseConnector.connect(connection -> {
+            String createMember = "UPDATE " + this.getTablePrefix() + "chunk SET region_id = ? WHERE world = ? AND x = ? AND z = ?";
+            try (PreparedStatement statement = connection.prepareStatement(createMember)) {
+                for (ClaimedChunk claimedChunk : chunks) {
+                    statement.setString(1, claimedChunk.getRegion().getUniqueId().toString());
+                    statement.setString(2, claimedChunk.getWorld());
+                    statement.setInt(3, claimedChunk.getX());
+                    statement.setInt(4, claimedChunk.getZ());
+                    statement.addBatch();
+                }
+                statement.executeBatch();
             }
         }));
     }
