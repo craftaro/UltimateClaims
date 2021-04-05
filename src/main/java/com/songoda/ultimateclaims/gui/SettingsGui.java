@@ -2,7 +2,6 @@ package com.songoda.ultimateclaims.gui;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.gui.CustomizableGui;
-import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
