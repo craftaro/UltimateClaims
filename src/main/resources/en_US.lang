@@ -14,7 +14,6 @@ general:
       low: '&cLow Power!'
       message: '&6%time% &7Remaining.'
     dissolve: '&7Your claim &6%claim% &7has been dissolved.'
-    returnfunds: '&a%amount% has been returned to you.'
   notanumber: '&cThe entry &4%value% &cis not a number'
   notenoughfunds: '&cYou do not have enough funds.'
   notenoughfundspowercell: '&cThis power cell does not have enough funds. %balance% is available to be withdrawn.'
