@@ -1,9 +1,8 @@
 package com.songoda.ultimateclaims.commands;
 
+import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.configuration.editor.PluginConfigGui;
 import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.core.commands.AbstractCommand;
-import com.songoda.core.configuration.editor.ConfigEditorGui;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

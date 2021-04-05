@@ -1,6 +1,5 @@
 package com.songoda.ultimateclaims.claim;
 
-import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Chunk;
