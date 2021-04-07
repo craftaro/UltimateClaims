@@ -3,7 +3,8 @@ package com.songoda.ultimateclaims.dynmap;
 import com.songoda.core.utils.TimeUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
-import com.songoda.ultimateclaims.claim.ClaimCorners;
+import com.songoda.ultimateclaims.claim.region.ClaimCorners;
+import com.songoda.ultimateclaims.claim.region.RegionCorners;
 import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Bukkit;
 import org.dynmap.DynmapAPI;
@@ -11,6 +12,7 @@ import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.MarkerSet;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,7 +38,7 @@ public class DynmapManager {
     public void refresh(Claim claim) {
         if (markerSet == null) return;
 
-        List<ClaimCorners> corners = claim.getCorners();
+        List<RegionCorners> corners = claim.getCorners();
 
         if (corners == null) return;
 
@@ -44,19 +46,23 @@ public class DynmapManager {
         for (AreaMarker aMarker : markerSet.getAreaMarkers()) {
             if (!aMarker.getMarkerID().startsWith(claim.getId() + ":")) continue;
 
-            for (ClaimCorners c : new ArrayList<>(corners)) {
-                if (!aMarker.getMarkerID().equals(claim.getId() + ":" + c.chunkID)) continue;
-                aMarker.deleteMarker();
-                break;
+            for (RegionCorners r : new HashSet<>(corners)) {
+                for (ClaimCorners c : r.getClaimCorners()) {
+                    if (!aMarker.getMarkerID().equals(claim.getId() + ":" + c.chunkID)) continue;
+                    aMarker.deleteMarker();
+                    break;
+                }
             }
         }
 
-        for (ClaimCorners c : corners) {
-            if (markerSet.findAreaMarker(claim.getId() + ":" + c.chunkID) == null) {
-                markerSet.createAreaMarker(claim.getId() + ":" + c.chunkID, "Claim #" + claim.getId(),
-                        false, claim.getFirstClaimedChunk().getWorld(), c.x, c.z, false);
+        for (RegionCorners r : new HashSet<>(corners)) {
+            for (ClaimCorners c : r.getClaimCorners()) {
+                if (markerSet.findAreaMarker(claim.getId() + ":" + c.chunkID) == null) {
+                    markerSet.createAreaMarker(claim.getId() + ":" + c.chunkID, "Claim #" + claim.getId(),
+                            false, claim.getFirstClaimedChunk().getWorld(), c.x, c.z, false);
+                }
+                refreshDescription(claim);
             }
-            refreshDescription(claim);
         }
     }
 

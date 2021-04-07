@@ -7,8 +7,10 @@ import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.api.events.ClaimDeleteEvent;
 import com.songoda.ultimateclaims.api.events.ClaimTransferOwnershipEvent;
+import com.songoda.ultimateclaims.claim.region.ClaimCorners;
 import com.songoda.ultimateclaims.claim.region.ClaimedChunk;
 import com.songoda.ultimateclaims.claim.region.ClaimedRegion;
+import com.songoda.ultimateclaims.claim.region.RegionCorners;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
@@ -29,7 +31,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class Claim {
 
@@ -359,26 +360,29 @@ public class Claim {
             }
     }
 
-    public List<ClaimCorners> getCorners() { 
-        - //This wont work or even make sense anymore...
-        if (this.claimedChunks.size() <= 0) return null;
+    public List<RegionCorners> getCorners() {
+        if (this.claimedRegions.size() <= 0) return null;
 
-        List<ClaimCorners> result = new ArrayList<>();
+        List<RegionCorners> result = new ArrayList<>();
 
-        for (ClaimedChunk cChunk : this.claimedChunks) {
-            double[] xArr = new double[2],
-                    zArr = new double[2];
+        for (ClaimedRegion region : claimedRegions) {
+            RegionCorners regionCorners = new RegionCorners();
+            for (ClaimedChunk cChunk : region.getChunks()) {
+                double[] xArr = new double[2],
+                        zArr = new double[2];
 
-            int cX = cChunk.getX() * 16,
-                    cZ = cChunk.getZ() * 16;
+                int cX = cChunk.getX() * 16,
+                        cZ = cChunk.getZ() * 16;
 
-            xArr[0] = cX;
-            zArr[0] = cZ;
+                xArr[0] = cX;
+                zArr[0] = cZ;
 
-            xArr[1] = cX + 16;
-            zArr[1] = cZ + 16;
+                xArr[1] = cX + 16;
+                zArr[1] = cZ + 16;
 
-            result.add(new ClaimCorners(cChunk.getChunk(), xArr, zArr));
+                regionCorners.addCorners(new ClaimCorners(cChunk.getChunk(), xArr, zArr));
+            }
+            result.add(regionCorners);
         }
 
         return result;
