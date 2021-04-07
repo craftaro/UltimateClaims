@@ -58,7 +58,7 @@ public class ClaimedRegion {
         if (claimedChunks.remove(chunk)) {
             List<ClaimedRegion> newRegions = new LinkedList<>();
             List<ClaimedChunk> toSearch = chunk.getAttachedChunks();
-            List<ClaimedChunk> scanned = new LinkedList<>();
+            Set<ClaimedChunk> scanned = new HashSet<>();
             for (ClaimedChunk claimedChunk : new LinkedList<>(toSearch)) {
                 if (scanned.contains(claimedChunk)) continue;
                 ClaimedChunk masterChunk = toSearch.get(0);

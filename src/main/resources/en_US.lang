@@ -64,7 +64,8 @@ command:
     maxed: '&7This claim is at their max capacity.'
   claim:
     success: '&7You claimed this chunk for your claim.'
-    newregion: '&cYou created a new region. Make sure to place a powercell within &4%time% &cminutes in order to keep it.'
+    newregion: '&aYou created a new region successfully.'
+    maxregions: '&cYou cannot create anymore regions...'
     nocell: '&cYou need to create a powercell before you can claim more land...'
     noregion: '&cYou cannot claim a protected region!'
     info: '&cYou have &4%time% &cto create a powercell before your claim is dissolved... To create one you need to construct the recipe which you can find at &6/c recipe&7. Form it in the center of a single chest within your claim.'

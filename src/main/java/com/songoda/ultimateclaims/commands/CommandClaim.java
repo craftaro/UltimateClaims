@@ -92,13 +92,13 @@ public class CommandClaim extends AbstractCommand {
 
             plugin.getDataManager().createClaimedChunk(claimedChunk);
             if (newRegion) {
-                -// This is not implemented yet. You will need to make it so that the
-                // regions actually unclaim after this certain amount of time.
-
-                plugin.getLocale().getMessage("command.claim.newregion")
-                        .processPlaceholder("time", TimeUtils.makeReadable((long) (Settings.STARTING_POWER.getInt() * 60 * 1000)))
-                        .sendPrefixedMessage(sender);
-                plugin.getDataManager().createClaimedRegion(claimedChunk.getRegion());
+                if (claim.getClaimedRegions().size() >= Settings.MAX_REGIONS.getInt())  {
+                    plugin.getLocale().getMessage("command.claim.maxregions").sendPrefixedMessage(sender);
+                    return ReturnType.FAILURE;
+                } else {
+                    plugin.getLocale().getMessage("command.claim.newregion").sendPrefixedMessage(sender);
+                    plugin.getDataManager().createClaimedRegion(claimedChunk.getRegion());
+                }
             }
 
             if (Settings.POWERCELL_HOLOGRAMS.getBoolean())

@@ -34,12 +34,6 @@ public class ClaimBuilder {
         return this;
     }
 
-    public ClaimBuilder addClaimedChunks(Chunk... chunks) {
-        for (Chunk chunk : chunks)
-            this.claim.addClaimedChunk(chunk);
-        return this;
-    }
-
     public ClaimBuilder addClaimedChunk(Chunk chunk, Player player) {
         this.claim.addClaimedChunk(chunk, player);
         return this;
