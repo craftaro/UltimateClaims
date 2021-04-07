@@ -18,17 +18,14 @@ public class _8_ClaimedRegions extends DataMigration {
         // Create claimed_regions table
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE " + tablePrefix + "claimed_regions (" +
-                    "claim_id VARCHAR(36) NOT NULL, " +
+                    "claim_id INTEGER NOT NOT NULL, " +
                     "id VARCHAR(36) NOT NULL " +
                     ")");
         }
 
-        - //WE MUST MIGRATE THE CHUNKS AND CREATE REGIONS FOR THEM.
-
         // Create claimed_chunk table
         try (Statement statement = connection.createStatement()) {
-            statement.execute("ALTER TABLE " + tablePrefix + "chunk DROP COLUMN claim_id");
-            statement.execute("ALTER TABLE " + tablePrefix + "chunk ADD COLUMN region_id TINYINT FIRST NOT NULL");
+            statement.execute("ALTER TABLE " + tablePrefix + "chunk ADD COLUMN region_id VARCHAR (36)");
         }
 
     }

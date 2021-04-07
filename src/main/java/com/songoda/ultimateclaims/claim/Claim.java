@@ -16,7 +16,12 @@ import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -238,20 +243,13 @@ public class Claim {
         return claimedRegions.stream().anyMatch(r -> r.containsChunk(world, chunkX, chunkZ));
     }
 
-
-
-
-
-
-
-
     public ClaimedRegion getPotentialRegion(Chunk chunk) {
         ClaimedChunk newChunk = new ClaimedChunk(chunk);
         return newChunk.getAttachedRegion(this);
     }
 
     public boolean addClaimedChunk(Chunk chunk, Player player) {
-        animateChunk(chunk, player, Material.EMERALD_BLOCK);
+            animateChunk(chunk, player, Material.EMERALD_BLOCK);
         return addClaimedChunk(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
     }
 
@@ -319,11 +317,6 @@ public class Claim {
                 return claimedChunk;
         return null;
     }
-
-
-
-
-
 
 
     public int getClaimSize() {
