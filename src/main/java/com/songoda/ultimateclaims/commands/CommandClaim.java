@@ -84,22 +84,23 @@ public class CommandClaim extends AbstractCommand {
                 return ReturnType.FAILURE;
             }
 
-            boolean newRegion = claim.addClaimedChunk(chunk, player);
+            boolean newRegion = claim.isNewRegion(chunk);
+
+            if (newRegion && claim.getClaimedRegions().size() >= Settings.MAX_REGIONS.getInt()) {
+                plugin.getLocale().getMessage("command.claim.maxregions").sendPrefixedMessage(sender);
+                return ReturnType.FAILURE;
+            }
+
+            claim.addClaimedChunk(chunk, player);
             ClaimedChunk claimedChunk = claim.getClaimedChunk(chunk);
+            plugin.getDataManager().createClaimedChunk(claimedChunk);
+
+            if (newRegion) {
+                plugin.getDataManager().createClaimedRegion(claimedChunk.getRegion());
+            }
 
             if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
                 plugin.getDynmapManager().refresh(claim);
-
-            plugin.getDataManager().createClaimedChunk(claimedChunk);
-            if (newRegion) {
-                if (claim.getClaimedRegions().size() >= Settings.MAX_REGIONS.getInt())  {
-                    plugin.getLocale().getMessage("command.claim.maxregions").sendPrefixedMessage(sender);
-                    return ReturnType.FAILURE;
-                } else {
-                    plugin.getLocale().getMessage("command.claim.newregion").sendPrefixedMessage(sender);
-                    plugin.getDataManager().createClaimedRegion(claimedChunk.getRegion());
-                }
-            }
 
             if (Settings.POWERCELL_HOLOGRAMS.getBoolean())
                 claim.getPowerCell().updateHologram();

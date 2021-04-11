@@ -18,7 +18,7 @@ public class _8_ClaimedRegions extends DataMigration {
         // Create claimed_regions table
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE " + tablePrefix + "claimed_regions (" +
-                    "claim_id INTEGER NOT NOT NULL, " +
+                    "claim_id INTEGER NOT NULL, " +
                     "id VARCHAR(36) NOT NULL " +
                     ")");
         }

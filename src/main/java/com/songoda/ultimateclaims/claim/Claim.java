@@ -253,13 +253,21 @@ public class Claim {
         return addClaimedChunk(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
     }
 
+    public boolean isNewRegion(Chunk chunk) {
+        return isNewRegion(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
+    }
+
+    public boolean isNewRegion(String world, int x, int z) {
+        ClaimedChunk newChunk = new ClaimedChunk(world, x, z);
+        return newChunk.getAttachedRegion(this) == null;
+    }
+
     public boolean addClaimedChunk(String world, int x, int z) {
         ClaimedChunk newChunk = new ClaimedChunk(world, x, z);
         ClaimedRegion region = newChunk.getAttachedRegion(this);
         if (region == null) {
             claimedRegions.add(new ClaimedRegion(newChunk, this));
             return true;
-
         } else {
             region.addChunk(newChunk);
             newChunk.mergeRegions(this);

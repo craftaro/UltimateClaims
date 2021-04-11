@@ -243,7 +243,7 @@ public class PowerCellGui extends CustomizableGui {
                         return;
                     }
                     double amount = Double.parseDouble(response.getMessage().trim());
-                    if (amount > 0) {
+                    if (amount > 0 && powercell.hasLocation()) {
                         if (EconomyManager.hasBalance(player, amount)) {
                             EconomyManager.withdrawBalance(player, amount);
                             powercell.addEconomy(amount);
@@ -252,8 +252,11 @@ public class PowerCellGui extends CustomizableGui {
                             plugin.getLocale().getMessage("general.notenoughfunds").sendPrefixedMessage(player);
                         }
                     }
-                }).setOnClose(() -> plugin.getGuiManager().showGUI(player, this))
-                .setOnCancel(() -> player.sendMessage(ChatColor.RED + "Edit canceled"));
+                }).setOnClose(() -> {
+            if (powercell.hasLocation()) {
+                plugin.getGuiManager().showGUI(player, this);
+            }
+        }).setOnCancel(() -> player.sendMessage(ChatColor.RED + "Edit canceled"));
     }
 
     private void takeEcon(Player player) {
@@ -269,7 +272,7 @@ public class PowerCellGui extends CustomizableGui {
                         return;
                     }
                     double amount = Double.parseDouble(response.getMessage().trim());
-                    if (amount > 0) {
+                    if (amount > 0 && powercell.hasLocation()) {
                         if (powercell.getEconomyBalance() >= amount) {
                             EconomyManager.deposit(player, amount);
                             powercell.removeEconomy(amount);
@@ -279,7 +282,10 @@ public class PowerCellGui extends CustomizableGui {
                                     .processPlaceholder("balance", powercell.getEconomyBalance()).sendPrefixedMessage(player);
                         }
                     }
-                }).setOnClose(() -> plugin.getGuiManager().showGUI(player, this))
-                .setOnCancel(() -> player.sendMessage(ChatColor.RED + "Edit canceled"));
+                }).setOnClose(() -> {
+            if (powercell.hasLocation()) {
+                plugin.getGuiManager().showGUI(player, this);
+            }
+        }).setOnCancel(() -> player.sendMessage(ChatColor.RED + "Edit canceled"));
     }
 }

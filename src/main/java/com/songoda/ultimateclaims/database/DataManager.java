@@ -284,7 +284,7 @@ public class DataManager extends DataManagerAbstract {
             String deleteClaim = "DELETE FROM " + this.getTablePrefix() + "claim WHERE id = ?";
             String deleteMembers = "DELETE FROM " + this.getTablePrefix() + "member WHERE claim_id = ?";
             String deleteBans = "DELETE FROM " + this.getTablePrefix() + "ban WHERE claim_id = ?";
-            String deleteRegions = "DELETE FROM " + this.getTablePrefix() + "region WHERE claim_id = ?";
+            String deleteRegions = "DELETE FROM " + this.getTablePrefix() + "claimed_regions WHERE claim_id = ?";
             String deleteChunks = "DELETE FROM " + this.getTablePrefix() + "chunk WHERE claim_id = ?";
             String deleteSettings = "DELETE FROM " + this.getTablePrefix() + "settings WHERE claim_id = ?";
             String deletePermissions = "DELETE FROM " + this.getTablePrefix() + "permissions WHERE claim_id = ?";
@@ -525,7 +525,7 @@ public class DataManager extends DataManagerAbstract {
             String selectMembers = "SELECT * FROM " + this.getTablePrefix() + "member";
             String selectBans = "SELECT * FROM " + this.getTablePrefix() + "ban";
             String selectChunks = "SELECT * FROM " + this.getTablePrefix() + "chunk";
-            String selectRegions = "SELECT * FROM " + this.getTablePrefix() + "claimed_region";
+            String selectRegions = "SELECT * FROM " + this.getTablePrefix() + "claimed_regions";
             String selectSettings = "SELECT * FROM " + this.getTablePrefix() + "settings";
             String selectPermissions = "SELECT * FROM " + this.getTablePrefix() + "permissions";
             String selectAudit = "SELECT * FROM " + this.getTablePrefix() + "audit_log";
