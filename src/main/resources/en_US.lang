@@ -14,7 +14,6 @@ general:
       low: '&cLow Power!'
       message: '&6%time% &7Remaining.'
     dissolve: '&7Your claim &6%claim% &7has been dissolved.'
-    returnfunds: '&a%amount% has been returned to you.'
   notanumber: '&cThe entry &4%value% &cis not a number'
   notenoughfunds: '&cYou do not have enough funds.'
   notenoughfundspowercell: '&cThis power cell does not have enough funds. %balance% is available to be withdrawn.'
@@ -65,6 +64,8 @@ command:
     maxed: '&7This claim is at their max capacity.'
   claim:
     success: '&7You claimed this chunk for your claim.'
+    newregion: '&aYou created a new region successfully.'
+    maxregions: '&cYou cannot create anymore regions...'
     nocell: '&cYou need to create a powercell before you can claim more land...'
     noregion: '&cYou cannot claim a protected region!'
     info: '&cYou have &4%time% &cto create a powercell before your claim is dissolved... To create one you need to construct the recipe which you can find at &6/c recipe&7. Form it in the center of a single chest within your claim.'

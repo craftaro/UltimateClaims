@@ -8,7 +8,8 @@ import com.songoda.ultimateclaims.api.events.ClaimChunkClaimEvent;
 import com.songoda.ultimateclaims.api.events.ClaimCreateEvent;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimBuilder;
-import com.songoda.ultimateclaims.claim.ClaimedChunk;
+import com.songoda.ultimateclaims.claim.region.ClaimedChunk;
+import com.songoda.ultimateclaims.claim.region.ClaimedRegion;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
@@ -61,11 +62,9 @@ public class CommandClaim extends AbstractCommand {
                 return ReturnType.FAILURE;
             }
 
-            if (Settings.CHUNKS_MUST_TOUCH.getBoolean()
-                    && !claim.containsChunk(chunk.getWorld().getChunkAt(chunk.getX() + 1, chunk.getZ()))
-                    && !claim.containsChunk(chunk.getWorld().getChunkAt(chunk.getX() - 1, chunk.getZ()))
-                    && !claim.containsChunk(chunk.getWorld().getChunkAt(chunk.getX(), chunk.getZ() + 1))
-                    && !claim.containsChunk(chunk.getWorld().getChunkAt(chunk.getX(), chunk.getZ() - 1))) {
+            ClaimedRegion region = claim.getPotentialRegion(chunk);
+
+            if (Settings.CHUNKS_MUST_TOUCH.getBoolean() && region == null) {
                 plugin.getLocale().getMessage("command.claim.nottouching").sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
             }
@@ -85,11 +84,23 @@ public class CommandClaim extends AbstractCommand {
                 return ReturnType.FAILURE;
             }
 
-            ClaimedChunk newChunk = claim.addClaimedChunk(chunk, player);
+            boolean newRegion = claim.isNewRegion(chunk);
+
+            if (newRegion && claim.getClaimedRegions().size() >= Settings.MAX_REGIONS.getInt()) {
+                plugin.getLocale().getMessage("command.claim.maxregions").sendPrefixedMessage(sender);
+                return ReturnType.FAILURE;
+            }
+
+            claim.addClaimedChunk(chunk, player);
+            ClaimedChunk claimedChunk = claim.getClaimedChunk(chunk);
+            plugin.getDataManager().createClaimedChunk(claimedChunk);
+
+            if (newRegion) {
+                plugin.getDataManager().createClaimedRegion(claimedChunk.getRegion());
+            }
+
             if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
                 plugin.getDynmapManager().refresh(claim);
-
-            plugin.getDataManager().createChunk(newChunk);
 
             if (Settings.POWERCELL_HOLOGRAMS.getBoolean())
                 claim.getPowerCell().updateHologram();

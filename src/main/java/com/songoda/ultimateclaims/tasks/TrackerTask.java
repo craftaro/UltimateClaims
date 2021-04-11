@@ -4,7 +4,6 @@ import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimSetting;
 import com.songoda.ultimateclaims.member.ClaimMember;
-import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;

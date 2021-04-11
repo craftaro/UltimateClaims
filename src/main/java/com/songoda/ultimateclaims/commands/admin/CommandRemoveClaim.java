@@ -1,14 +1,13 @@
 package com.songoda.ultimateclaims.commands.admin;
 
-import com.songoda.core.hooks.EconomyManager;
+import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
-import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.claim.ClaimDeleteReason;
 import org.bukkit.Chunk;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.OfflinePlayer;
 
 import java.util.List;
 
@@ -35,21 +34,13 @@ public class CommandRemoveClaim extends AbstractCommand {
 
         OfflinePlayer offlineOwner = claim.getOwner().getPlayer();
 
-        // If the owner is online, send him a dissolve message and return PowerCell funds
+        // If the owner is online, send him a dissolve message
         if (offlineOwner.isOnline()) {
             Player owner = offlineOwner.getPlayer();
 
             plugin.getLocale().getMessage("general.claim.dissolve")
                     .processPlaceholder("claim", claim.getName())
                     .sendPrefixedMessage(owner);
-
-            // Return cash to the owner of the claim, if online
-            double claimBank = claim.getPowerCell().getEconomyBalance();
-
-            if (claimBank > 0 && EconomyManager.deposit(owner, claimBank))
-                plugin.getLocale().getMessage("general.claim.returnfunds")
-                        .processPlaceholder("amount", claimBank)
-                        .sendPrefixedMessage(owner);
         }
 
         // Remove the whole claim

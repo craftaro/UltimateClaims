@@ -4,10 +4,7 @@ import com.songoda.core.compatibility.CompatibleParticleHandler;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.PowerCell;
-import com.songoda.core.compatibility.ServerVersion;
-import org.bukkit.Color;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;

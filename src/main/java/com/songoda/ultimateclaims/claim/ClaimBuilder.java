@@ -1,6 +1,5 @@
 package com.songoda.ultimateclaims.claim;
 
-import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Chunk;
@@ -32,12 +31,6 @@ public class ClaimBuilder {
     public ClaimBuilder addMembers(Player... players) {
         for (Player player : players)
             this.claim.addMember(player, ClaimRole.MEMBER);
-        return this;
-    }
-
-    public ClaimBuilder addClaimedChunks(Chunk... chunks) {
-        for (Chunk chunk : chunks)
-            this.claim.addClaimedChunk(chunk);
         return this;
     }
 

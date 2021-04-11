@@ -65,6 +65,9 @@ public class Settings {
     public static final ConfigSetting MAX_CHUNKS = new ConfigSetting(config, "Main.Max Chunks", 10,
             "The maximum amount of chunks a claim can have.");
 
+    public static final ConfigSetting MAX_REGIONS = new ConfigSetting(config, "Main.Max Regions", 2,
+            "The maximum amount of regions a claim can have.");
+
     public static final ConfigSetting MAX_MEMBERS = new ConfigSetting(config, "Main.Max Members", 10,
             "The maximum amount of members a claim can have.");
 

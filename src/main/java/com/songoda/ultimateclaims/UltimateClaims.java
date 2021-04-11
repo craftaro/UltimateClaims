@@ -184,7 +184,8 @@ public class UltimateClaims extends SongodaPlugin {
                 new _4_TradingPermission(),
                 new _5_TntSetting(),
                 new _6_FlySetting(),
-                new _7_AuditLog());
+                new _7_AuditLog(),
+                new _8_ClaimedRegions());
         this.dataMigrationManager.runMigrations();
 
         this.dataManager.getPluginSettings((pluginSettings) -> this.pluginSettings = pluginSettings);

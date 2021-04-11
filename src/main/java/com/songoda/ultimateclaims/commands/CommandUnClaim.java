@@ -1,13 +1,12 @@
 package com.songoda.ultimateclaims.commands;
 
 import com.songoda.core.commands.AbstractCommand;
-import com.songoda.core.hooks.EconomyManager;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.api.events.ClaimChunkUnclaimEvent;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimDeleteReason;
-import com.songoda.ultimateclaims.claim.ClaimedChunk;
 import com.songoda.ultimateclaims.claim.PowerCell;
+import com.songoda.ultimateclaims.claim.region.ClaimedChunk;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
@@ -86,18 +85,9 @@ public class CommandUnClaim extends AbstractCommand {
                     .processPlaceholder("claim", claim.getName())
                     .sendPrefixedMessage(player);
 
-            // return cash to the player
-            double claimBank = claim.getPowerCell().getEconomyBalance();
-            if (claimBank > 0) {
-                EconomyManager.deposit(player, claimBank);
-                plugin.getLocale().getMessage("general.claim.returnfunds")
-                        .processPlaceholder("amount", claimBank)
-                        .sendPrefixedMessage(player);
-            }
-
             claim.destroy(ClaimDeleteReason.PLAYER);
         } else {
-            plugin.getDataManager().deleteChunk(removedChunk);
+            plugin.getDataManager().deleteClaimedChunk(removedChunk);
 
             plugin.getLocale().getMessage("command.unclaim.success").sendPrefixedMessage(sender);
         }

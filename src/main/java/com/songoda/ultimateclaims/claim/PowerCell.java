@@ -394,6 +394,7 @@ public class PowerCell {
                 owner.getPlayer().sendMessage(plugin.getLocale().getMessage("event.powercell.destroyed")
                         .processPlaceholder("balance", economyBalance).getPrefixedMessage());
         }
+        this.economyBalance = 0;
         this.items.clear();
         if (opened != null)
             opened.exit();
