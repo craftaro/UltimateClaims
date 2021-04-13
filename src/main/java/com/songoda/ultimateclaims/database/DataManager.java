@@ -642,7 +642,8 @@ public class DataManager extends DataManagerAbstract {
             try (Statement statement = connection.createStatement()) {
                 ResultSet result = statement.executeQuery(selectChunks);
                 while (result.next()) {
-                    ClaimedRegion region = claimedRegions.get(UUID.fromString(result.getString("region_id")));
+                    String regionId = result.getString("region_id");
+                    ClaimedRegion region = regionId == null ? null : claimedRegions.get(UUID.fromString(regionId));
 
                     String world = result.getString("world");
                     if (world == null) {
