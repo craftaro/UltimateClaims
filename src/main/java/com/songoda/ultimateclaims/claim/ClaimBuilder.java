@@ -71,7 +71,6 @@ public class ClaimBuilder {
     }
 
 
-
     public Claim build() {
         return this.claim;
     }

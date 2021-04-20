@@ -1,16 +1,15 @@
 package com.songoda.ultimateclaims.commands;
 
 import com.songoda.core.commands.AbstractCommand;
-        import com.songoda.ultimateclaims.UltimateClaims;
-        import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.ultimateclaims.UltimateClaims;
+import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
-        import org.bukkit.Chunk;
-        import org.bukkit.OfflinePlayer;
-        import org.bukkit.command.CommandSender;
-        import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
-        import java.util.List;
+import java.util.List;
 
 public class CommandSetOwner extends AbstractCommand {
 

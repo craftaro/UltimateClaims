@@ -3,14 +3,7 @@ package com.songoda.ultimateclaims.claim.region;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class ClaimedRegion {
 
@@ -105,6 +98,7 @@ public class ClaimedRegion {
     public ClaimedChunk getFirstClaimedChunk() {
         return this.claimedChunks.iterator().next();
     }
+
     public boolean containsChunk(String world, int chunkX, int chunkZ) {
         return this.claimedChunks.stream().anyMatch(x -> x.getWorld().equals(world) && x.getX() == chunkX && x.getZ() == chunkZ);
     }

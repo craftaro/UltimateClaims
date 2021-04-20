@@ -1,8 +1,8 @@
 package com.songoda.ultimateclaims.commands;
 
+import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
-import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;

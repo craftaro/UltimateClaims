@@ -6,6 +6,7 @@ import com.songoda.core.configuration.ConfigSetting;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.hooks.HologramManager;
 import com.songoda.ultimateclaims.UltimateClaims;
+
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -24,12 +25,12 @@ public class Settings {
             Arrays.asList("DIAMOND:120", "IRON_INGOT:30"),
             "The value in minutes of each item put into the powercell.");
 
-    public static final ConfigSetting ECONOMY = new ConfigSetting(config, "Main.Economy", 
+    public static final ConfigSetting ECONOMY = new ConfigSetting(config, "Main.Economy",
             EconomyManager.getEconomy() == null ? "Vault" : EconomyManager.getEconomy().getName(),
             "Which economy plugin should be used?",
             "You can choose from \"" + EconomyManager.getManager().getRegisteredPlugins().stream().collect(Collectors.joining("\", \"")) + "\".");
 
-    public static final ConfigSetting HOLOGRAM = new ConfigSetting(config, "Main.Hologram", 
+    public static final ConfigSetting HOLOGRAM = new ConfigSetting(config, "Main.Hologram",
             HologramManager.getHolograms() == null ? "HolographicDisplays" : HologramManager.getHolograms().getName(),
             "Which hologram plugin should be used?",
             "You can choose from \"" + HologramManager.getManager().getRegisteredPlugins().stream().collect(Collectors.joining(", ")) + "\".");

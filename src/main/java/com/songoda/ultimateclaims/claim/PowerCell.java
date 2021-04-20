@@ -13,13 +13,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PowerCell {
@@ -30,7 +24,7 @@ public class PowerCell {
     protected Location location = null;
 
     protected List<ItemStack> items = new ArrayList<>();
-    private Deque<Audit> auditLog = new ArrayDeque<>();
+    private final Deque<Audit> auditLog = new ArrayDeque<>();
 
     protected int currentPower = Settings.STARTING_POWER.getInt();
 
@@ -211,7 +205,7 @@ public class PowerCell {
         double total = 0;
         List<String> materials = Settings.ITEM_VALUES.getStringList();
         for (String value : materials) {
-            String parts[] = value.split(":");
+            String[] parts = value.split(":");
             CompatibleMaterial material;
             if (parts.length == 2 && (material = CompatibleMaterial.getMaterial(parts[0].trim())) != null) {
                 double itemValue = getMaterialAmount(material) * Double.parseDouble(parts[1].trim());
@@ -283,7 +277,7 @@ public class PowerCell {
     private double getItemValue(CompatibleMaterial material) {
         List<String> materials = Settings.ITEM_VALUES.getStringList();
         for (String value : materials) {
-            String parts[] = value.split(":");
+            String[] parts = value.split(":");
             if (parts.length == 2 && CompatibleMaterial.getMaterial(parts[0].trim()) == material) {
                 double itemValue = Double.parseDouble(parts[1].trim());
 

@@ -1,7 +1,7 @@
 package com.songoda.ultimateclaims.commands;
 
-import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.core.commands.AbstractCommand;
+import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.api.events.ClaimMemberAddEvent;
 import com.songoda.ultimateclaims.invite.Invite;
 import com.songoda.ultimateclaims.member.ClaimMember;

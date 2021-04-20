@@ -182,12 +182,12 @@ public class MembersGui extends CustomizableGui {
         showPage();
     }
 
-    public static enum SortType {
+    public enum SortType {
         DEFAULT("interface.sortingmode.default"),
         PLAYTIME("interface.sortingmode.playtime"),
         MEMBER_SINCE("interface.sortingmode.membersince");
 
-        private String localePath;
+        private final String localePath;
 
         SortType(String localePath) {
             this.localePath = localePath;

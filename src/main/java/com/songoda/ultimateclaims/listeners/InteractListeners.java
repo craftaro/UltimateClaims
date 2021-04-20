@@ -47,7 +47,7 @@ public class InteractListeners implements Listener {
             }
 
             if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.PLACE)) {
-                plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage((Player) event.getPlayer());
+                plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
                 event.setCancelled(true);
             }
             return;

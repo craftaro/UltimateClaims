@@ -35,7 +35,7 @@ public class InviteTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        if(waitingInventations.isEmpty())
+        if (waitingInventations.isEmpty())
             return;
 
         final long now = System.currentTimeMillis(),

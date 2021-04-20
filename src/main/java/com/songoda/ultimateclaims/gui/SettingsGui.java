@@ -16,7 +16,7 @@ public class SettingsGui extends CustomizableGui {
     private final UltimateClaims plugin;
     private final Claim claim;
     private final boolean hostilemobspawning, firespread, pvp, mobgriefing, leafdecay, tnt, fly;
-    
+
     public SettingsGui(UltimateClaims plugin, Claim claim, Player player) {
         super(plugin, "settings");
         this.claim = claim;

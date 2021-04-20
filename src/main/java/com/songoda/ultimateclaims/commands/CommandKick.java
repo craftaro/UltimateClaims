@@ -1,10 +1,10 @@
 package com.songoda.ultimateclaims.commands;
 
+import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.api.events.ClaimPlayerKickEvent;
 import com.songoda.ultimateclaims.claim.Claim;
-import com.songoda.core.commands.AbstractCommand;
-import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
@@ -39,7 +39,7 @@ public class CommandKick extends AbstractCommand {
         ClaimMember target = claim.getMember(args[0]);
         OfflinePlayer toKick;
 
-        if(target != null) {
+        if (target != null) {
             toKick = target.getPlayer();
         } else {
             // unknown player: double-check

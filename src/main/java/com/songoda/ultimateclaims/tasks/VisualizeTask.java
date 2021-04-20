@@ -1,25 +1,19 @@
 package com.songoda.ultimateclaims.tasks;
 
+import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.utils.ReflectionUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
-import com.songoda.core.compatibility.ServerVersion;
-import com.songoda.core.utils.ReflectionUtils;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Color;
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Particle;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class VisualizeTask extends BukkitRunnable {
 
@@ -129,17 +123,17 @@ public class VisualizeTask extends BukkitRunnable {
                             else
                                 data = new Object[]{loc, Effect.valueOf("COLOURED_DUST"), 30, 2, 1.0F, 0.1F, 0.1F, 0F, 1, 16};
                             ReflectionUtils.invokePrivateMethod(player.spigot().getClass(), "playEffect", player.spigot(),
-                                                                new Class[]{Location.class,
-                                                                    Effect.class,
-                                                                    int.class, //id
-                                                                    int.class, //data
-                                                                    float.class, //offset x
-                                                                    float.class, //offset y
-                                                                    float.class, //offset z
-                                                                    float.class, //speed
-                                                                    int.class, //count
-                                                                    int.class}, //radius, how far the player can be away from loc to see the particles
-                                                                data);
+                                    new Class[]{Location.class,
+                                            Effect.class,
+                                            int.class, //id
+                                            int.class, //data
+                                            float.class, //offset x
+                                            float.class, //offset y
+                                            float.class, //offset z
+                                            float.class, //speed
+                                            int.class, //count
+                                            int.class}, //radius, how far the player can be away from loc to see the particles
+                                    data);
                         } catch (Exception ignore) {
                             ignore.printStackTrace();
                         }
