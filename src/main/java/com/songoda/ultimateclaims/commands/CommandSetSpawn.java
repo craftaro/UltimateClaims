@@ -42,6 +42,6 @@ public class CommandSetSpawn extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Set the spawn point for varies use such as ejecting and banning.";
+        return "Установить центр поселения.";
     }
 }

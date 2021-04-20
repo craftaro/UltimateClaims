@@ -54,6 +54,6 @@ public class CommandDissolve extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Dissolve your claim.";
+        return "Распустить поселение.";
     }
 }

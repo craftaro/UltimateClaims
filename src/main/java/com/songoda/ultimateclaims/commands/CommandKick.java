@@ -100,11 +100,11 @@ public class CommandKick extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "kick <member>";
+        return "kick <поселенец>";
     }
 
     @Override
     public String getDescription() {
-        return "Kick a member from your claim.";
+        return "Прогнать поселенца.";
     }
 }

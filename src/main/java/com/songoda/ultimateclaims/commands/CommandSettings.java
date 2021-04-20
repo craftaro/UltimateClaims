@@ -40,6 +40,6 @@ public class CommandSettings extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Edit the UltimateClaims Settings.";
+        return "Редактировать настройки плагина.";
     }
 }

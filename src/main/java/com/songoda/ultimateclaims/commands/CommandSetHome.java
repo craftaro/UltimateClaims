@@ -61,6 +61,6 @@ public class CommandSetHome extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Set the home for your claim.";
+        return "Установить центр поселения.";
     }
 }

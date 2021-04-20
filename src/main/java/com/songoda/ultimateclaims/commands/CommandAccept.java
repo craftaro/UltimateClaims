@@ -89,6 +89,6 @@ public class CommandAccept extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Accept the latest claim invitation.";
+        return "Принять приглашение на вступление в поселение.";
     }
 }

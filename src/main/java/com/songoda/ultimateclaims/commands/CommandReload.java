@@ -39,6 +39,6 @@ public class CommandReload extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Reload the Configuration and Language files.";
+        return "Перезагрузить плагин.";
     }
 }

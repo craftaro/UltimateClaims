@@ -72,11 +72,11 @@ public class CommandName extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "name <name>";
+        return "name <название>";
     }
 
     @Override
     public String getDescription() {
-        return "Set the display name for your claim.";
+        return "Переименовать поселение.";
     }
 }

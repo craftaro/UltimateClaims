@@ -93,11 +93,11 @@ public class CommandAddMember extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "addmember <player>";
+        return "addmember <игрок>";
     }
 
     @Override
     public String getDescription() {
-        return "Add a player to access your claim.";
+        return "Добавить поселенца.";
     }
 }

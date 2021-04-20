@@ -54,6 +54,6 @@ public class CommandShow extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Visualize claims around you";
+        return "Визуализировать территорию поселения.";
     }
 }

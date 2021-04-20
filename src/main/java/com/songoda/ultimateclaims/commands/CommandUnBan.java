@@ -90,11 +90,11 @@ public class CommandUnBan extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "unban <member>";
+        return "unban <игрок>";
     }
 
     @Override
     public String getDescription() {
-        return "Unban a member from your claim.";
+        return "Снова разрешить игроку входить на ваши земли.";
     }
 }

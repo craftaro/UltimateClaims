@@ -100,11 +100,11 @@ public class CommandLeave extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "leave <claim>";
+        return "leave <поселение>";
     }
 
     @Override
     public String getDescription() {
-        return "Leave a claim that you are a member of.";
+        return "Покинуть поселение.";
     }
 }

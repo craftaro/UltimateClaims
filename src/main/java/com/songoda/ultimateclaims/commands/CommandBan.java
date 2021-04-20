@@ -100,11 +100,11 @@ public class CommandBan extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "ban <member>";
+        return "ban <игрок>";
     }
 
     @Override
     public String getDescription() {
-        return "Ban a member from your claim.";
+        return "Запретить игроку входить на ваши земли.";
     }
 }

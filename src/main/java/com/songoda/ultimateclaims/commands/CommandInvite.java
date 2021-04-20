@@ -88,11 +88,11 @@ public class CommandInvite extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "invite <player>";
+        return "invite <игрок>";
     }
 
     @Override
     public String getDescription() {
-        return "Invite a player to join your claim.";
+        return "Пригласить в поселение.";
     }
 }

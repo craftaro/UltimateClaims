@@ -80,11 +80,11 @@ public class CommandHome extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "home <claim>";
+        return "home <поселение>";
     }
 
     @Override
     public String getDescription() {
-        return "Go to a claims home.";
+        return "Телепортация в поселение.";
     }
 }
