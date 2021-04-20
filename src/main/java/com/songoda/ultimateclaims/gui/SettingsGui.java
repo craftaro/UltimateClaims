@@ -78,7 +78,7 @@ public class SettingsGui extends CustomizableGui {
             this.setButton("tnt", 1, 6, CompatibleMaterial.TNT.getItem(), (event) -> toggle(ClaimSetting.TNT));
         }
         if (fly = player.hasPermission("ultimateclaims.toggle.fly")) {
-            this.setButton("tnt", 1, 7, CompatibleMaterial.ELYTRA.getItem(), (event) -> toggle(ClaimSetting.FLY));
+            this.setButton("fly", 1, 7, CompatibleMaterial.ELYTRA.getItem(), (event) -> toggle(ClaimSetting.FLY));
         }
 
         refreshDisplay();
