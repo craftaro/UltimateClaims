@@ -71,6 +71,6 @@ public class CommandRemoveClaim extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Remove a claim you're standing in.";
+        return "Модератор может распустить поселение.";
     }
 }
