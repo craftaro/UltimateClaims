@@ -108,9 +108,8 @@ public class CommandRClaim extends AbstractCommand {
 
                         Chunk chunk = centerChunk.getWorld().getChunkAt(x, z);
                         // more match
-                        int fx = x - centerChunk.getX();
-                        int fz = z - centerChunk.getZ();
-                        if (!((fx + .5) * (fx + .5) + (fz + .5) * (fz + .5) <= radius * radius)) {
+                        int r=radius-1;
+                        if( (x - centerChunk.getX()) * (x - centerChunk.getX()) + (z - centerChunk.getZ()) * (z - centerChunk.getZ()) < r*r) {
                             // skip claimed chunks
                             if (!plugin.getClaimManager().hasClaim(chunk)) {
 
