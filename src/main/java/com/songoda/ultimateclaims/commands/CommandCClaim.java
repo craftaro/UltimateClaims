@@ -22,12 +22,12 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandMassClaim extends AbstractCommand {
+public class CommandCClaim extends AbstractCommand {
 
     private final UltimateClaims plugin;
 
-    public CommandMassClaim(UltimateClaims plugin) {
-        super(true, "massclaim");
+    public CommandCClaim(UltimateClaims plugin) {
+        super(true, "cclaim");
         this.plugin = plugin;
     }
 
@@ -84,7 +84,7 @@ public class CommandMassClaim extends AbstractCommand {
 
             // value - number?
             if (!NumberUtils.isNumeric(radiuss)) {
-                plugin.getLocale().getMessage("command.massclaim.notanumber")
+                plugin.getLocale().getMessage("command.claim.notanumber")
                         .sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
             }
@@ -93,7 +93,7 @@ public class CommandMassClaim extends AbstractCommand {
 
             // value 1-10 ?
             if ((radius < 1) || (radius > 10)) {
-                plugin.getLocale().getMessage("command.massclaim.incorrectnumber")
+                plugin.getLocale().getMessage("command.claim.incorrectnumber")
                         .sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
             }
@@ -107,6 +107,8 @@ public class CommandMassClaim extends AbstractCommand {
                         Chunk chunk = centerChunk.getWorld().getChunkAt(x, z);
                         // skip claimed chunks
                         if (!plugin.getClaimManager().hasClaim(chunk)) {
+
+                            //DEV TODO REMOVE
                             Bukkit.getLogger().info("Create chunk:" + chunk);
 
                             // start save logic
@@ -202,16 +204,16 @@ public class CommandMassClaim extends AbstractCommand {
 
     @Override
     public String getPermissionNode() {
-        return "ultimateclaims.massclaim";
+        return "ultimateclaims.cclaim";
     }
 
     @Override
     public String getSyntax() {
-        return "massclaim <радиус>";
+        return "cclaim <радиус>";
     }
 
     @Override
     public String getDescription() {
-        return "Расширить радиус поселения.";
+        return "Расширить поселение по радиусу - кубоид.";
     }
 }
