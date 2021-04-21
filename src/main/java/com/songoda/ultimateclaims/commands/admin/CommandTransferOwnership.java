@@ -66,7 +66,7 @@ public class CommandTransferOwnership extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "admin transferownership <player>";
+        return "admin transferownership <игрок>";
     }
 
     @Override

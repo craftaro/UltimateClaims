@@ -58,7 +58,7 @@ public class CommandName extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "admin name <name>";
+        return "admin name <название>";
     }
 
     @Override
