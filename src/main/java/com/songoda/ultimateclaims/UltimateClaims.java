@@ -112,6 +112,7 @@ public class UltimateClaims extends SongodaPlugin {
                         new CommandSetSpawn(this),
                         new CommandName(this),
                         new CommandSetOwner(this),
+                        new CommandMassClaim(this),
 
                         new CommandRemoveClaim(this),
                         new CommandTransferOwnership(this),
