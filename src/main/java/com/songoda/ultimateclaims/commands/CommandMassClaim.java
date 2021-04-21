@@ -1,25 +1,26 @@
 package com.songoda.ultimateclaims.commands;
 
-        import com.songoda.core.commands.AbstractCommand;
-        import com.songoda.core.hooks.WorldGuardHook;
-        import com.songoda.core.utils.TimeUtils;
-        import com.songoda.ultimateclaims.UltimateClaims;
-        import com.songoda.ultimateclaims.api.events.ClaimChunkClaimEvent;
-        import com.songoda.ultimateclaims.api.events.ClaimCreateEvent;
-        import com.songoda.ultimateclaims.claim.Claim;
-        import com.songoda.ultimateclaims.claim.ClaimBuilder;
-        import com.songoda.ultimateclaims.claim.region.ClaimedChunk;
-        import com.songoda.ultimateclaims.claim.region.ClaimedRegion;
-        import com.songoda.ultimateclaims.member.ClaimMember;
-        import com.songoda.ultimateclaims.member.ClaimRole;
-        import com.songoda.ultimateclaims.settings.Settings;
-        import org.bukkit.Bukkit;
-        import org.bukkit.Chunk;
-        import org.bukkit.command.CommandSender;
-        import org.bukkit.entity.Player;
+import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.hooks.WorldGuardHook;
+import com.songoda.core.utils.NumberUtils;
+import com.songoda.core.utils.TimeUtils;
+import com.songoda.ultimateclaims.UltimateClaims;
+import com.songoda.ultimateclaims.api.events.ClaimChunkClaimEvent;
+import com.songoda.ultimateclaims.api.events.ClaimCreateEvent;
+import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.ultimateclaims.claim.ClaimBuilder;
+import com.songoda.ultimateclaims.claim.region.ClaimedChunk;
+import com.songoda.ultimateclaims.claim.region.ClaimedRegion;
+import com.songoda.ultimateclaims.member.ClaimMember;
+import com.songoda.ultimateclaims.member.ClaimRole;
+import com.songoda.ultimateclaims.settings.Settings;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
-        import java.util.ArrayList;
-        import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommandMassClaim extends AbstractCommand {
 
@@ -79,39 +80,56 @@ public class CommandMassClaim extends AbstractCommand {
                 return ReturnType.FAILURE;
             }
 
-            List<Chunk> getChunks; {
-                String radiuss = String.join(" ", args);
-                int radius = Integer.parseInt(radiuss);
+            String radiuss = String.join(" ", args);
+
+            if (!NumberUtils.isNumeric(radiuss)) {
+                plugin.getLocale().getMessage("command.massclaim.notanumber")
+                        .sendPrefixedMessage(player);
+                return ReturnType.FAILURE;
+            }
+
+            int radius = Integer.parseInt(radiuss);
+
+            if ((radius < 2) || (radius > 10)) {
+                plugin.getLocale().getMessage("command.massclaim.incorrectnumber")
+                        .sendPrefixedMessage(player);
+                return ReturnType.FAILURE;
+            }
+
+            //double fixc = 0.5;
+            //radius = radius + fixc;
+
+            List<Chunk> getChunks;
+            {
                 List<Chunk> chunks = new ArrayList<>();
-                for (int x = centerChunk.getX()-radius; x < centerChunk.getX() + radius; x++) {
-                    for (int z = centerChunk.getZ()-radius; z < centerChunk.getZ() + radius; z++) {
+                for (int x = centerChunk.getX() - radius; x < centerChunk.getX() + radius; x++) {
+                    for (int z = centerChunk.getZ() - radius; z < centerChunk.getZ() + radius; z++) {
+                        //int x = Integer.parseInt(x);
+                        //int y = Integer.parseInt(y);
                         Chunk chunk = centerChunk.getWorld().getChunkAt(x, z);
-                        Bukkit.getLogger().info("Create chunk:" + chunk);
+                        if (!plugin.getClaimManager().hasClaim(chunk)) {
+                            Bukkit.getLogger().info("Create chunk:" + chunk);
 
-                        if (plugin.getClaimManager().hasClaim(chunk)) {
-                            plugin.getLocale().getMessage("command.massclaim.claimed").sendPrefixedMessage(player);
-                            return ReturnType.FAILURE;
-                        }
+                            boolean newRegion = claim.isNewRegion(chunk);
 
-                        boolean newRegion = claim.isNewRegion(chunk);
+                            if (newRegion && claim.getClaimedRegions().size() >= Settings.MAX_REGIONS.getInt()) {
+                                plugin.getLocale().getMessage("command.claim.maxregions").sendPrefixedMessage(sender);
+                                return ReturnType.FAILURE;
+                            }
 
-                        if (newRegion && claim.getClaimedRegions().size() >= Settings.MAX_REGIONS.getInt()) {
-                            plugin.getLocale().getMessage("command.claim.maxregions").sendPrefixedMessage(sender);
-                            return ReturnType.FAILURE;
-                        }
+                            claim.addClaimedChunk(chunk, player);
+                            ClaimedChunk claimedChunk = claim.getClaimedChunk(chunk);
+                            plugin.getDataManager().createClaimedChunk(claimedChunk);
 
-                        claim.addClaimedChunk(chunk, player);
-                        ClaimedChunk claimedChunk = claim.getClaimedChunk(chunk);
-                        plugin.getDataManager().createClaimedChunk(claimedChunk);
+                            if (newRegion) {
+                                plugin.getDataManager().createClaimedRegion(claimedChunk.getRegion());
 
-                        if (newRegion) {
-                            plugin.getDataManager().createClaimedRegion(claimedChunk.getRegion());
+                                if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
+                                    plugin.getDynmapManager().refresh(claim);
 
-                        if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
-                            plugin.getDynmapManager().refresh(claim);
-
-                        if (Settings.POWERCELL_HOLOGRAMS.getBoolean())
-                            claim.getPowerCell().updateHologram();
+                                if (Settings.POWERCELL_HOLOGRAMS.getBoolean())
+                                    claim.getPowerCell().updateHologram();
+                            }
                         }
                     }
                 }
@@ -193,6 +211,6 @@ public class CommandMassClaim extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Создать поселение или расширить его.";
+        return "Расширить радиус поселения.";
     }
 }
