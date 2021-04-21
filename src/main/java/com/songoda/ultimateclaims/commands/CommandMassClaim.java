@@ -82,6 +82,7 @@ public class CommandMassClaim extends AbstractCommand {
 
             String radiuss = String.join(" ", args);
 
+            // value - number?
             if (!NumberUtils.isNumeric(radiuss)) {
                 plugin.getLocale().getMessage("command.massclaim.notanumber")
                         .sendPrefixedMessage(player);
@@ -90,28 +91,28 @@ public class CommandMassClaim extends AbstractCommand {
 
             int radius = Integer.parseInt(radiuss);
 
-            if ((radius < 2) || (radius > 10)) {
+            // value 1-10 ?
+            if ((radius < 1) || (radius > 10)) {
                 plugin.getLocale().getMessage("command.massclaim.incorrectnumber")
                         .sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
             }
 
-            //double fixc = 0.5;
-            //radius = radius + fixc;
-
             List<Chunk> getChunks;
             {
+                // start radius cuboid match
                 List<Chunk> chunks = new ArrayList<>();
-                for (int x = centerChunk.getX() - radius; x < centerChunk.getX() + radius; x++) {
-                    for (int z = centerChunk.getZ() - radius; z < centerChunk.getZ() + radius; z++) {
-                        //int x = Integer.parseInt(x);
-                        //int y = Integer.parseInt(y);
+                for (int x = centerChunk.getX() - radius; x < centerChunk.getX() + radius +1; x++) {
+                    for (int z = centerChunk.getZ() - radius; z < centerChunk.getZ() + radius +1; z++) {
                         Chunk chunk = centerChunk.getWorld().getChunkAt(x, z);
+                        // skip claimed chunks
                         if (!plugin.getClaimManager().hasClaim(chunk)) {
                             Bukkit.getLogger().info("Create chunk:" + chunk);
 
+                            // start save logic
                             boolean newRegion = claim.isNewRegion(chunk);
 
+                            // check max region limit
                             if (newRegion && claim.getClaimedRegions().size() >= Settings.MAX_REGIONS.getInt()) {
                                 plugin.getLocale().getMessage("command.claim.maxregions").sendPrefixedMessage(sender);
                                 return ReturnType.FAILURE;
