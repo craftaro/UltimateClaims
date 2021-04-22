@@ -92,24 +92,23 @@ public class CommandCClaim extends AbstractCommand {
             int radius = Integer.parseInt(radiuss);
 
             // value 1-10 ?
-            if ((radius < 1) || (radius > 10)) {
-                plugin.getLocale().getMessage("command.claim.incorrectnumber")
-                        .sendPrefixedMessage(player);
-                return ReturnType.FAILURE;
+            if (!player.hasPermission("ultimateclaims.administrator")) {
+                if ((radius < 1) || (radius > 10)) {
+                    plugin.getLocale().getMessage("command.claim.incorrectnumber")
+                            .sendPrefixedMessage(player);
+                    return ReturnType.FAILURE;
+                }
             }
 
             List<Chunk> getChunks;
             {
                 // start radius cuboid match
                 List<Chunk> chunks = new ArrayList<>();
-                for (int x = centerChunk.getX() - radius; x < centerChunk.getX() + radius +1; x++) {
-                    for (int z = centerChunk.getZ() - radius; z < centerChunk.getZ() + radius +1; z++) {
+                for (int x = centerChunk.getX() - radius; x < centerChunk.getX() + radius + 1; x++) {
+                    for (int z = centerChunk.getZ() - radius; z < centerChunk.getZ() + radius + 1; z++) {
                         Chunk chunk = centerChunk.getWorld().getChunkAt(x, z);
                         // skip claimed chunks
                         if (!plugin.getClaimManager().hasClaim(chunk)) {
-
-                            //DEV TODO REMOVE
-                            Bukkit.getLogger().info("Create chunk:" + chunk);
 
                             // start save logic
                             boolean newRegion = claim.isNewRegion(chunk);

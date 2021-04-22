@@ -31,6 +31,7 @@ public class CommandRClaim extends AbstractCommand {
         this.plugin = plugin;
     }
 
+
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
         Player player = (Player) sender;
@@ -50,9 +51,12 @@ public class CommandRClaim extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
+        int warnload = 0;
+
         if (plugin.getClaimManager().hasClaim(player)) {
             claim = plugin.getClaimManager().getClaim(player);
 
+            // monument check
             if (!claim.getPowerCell().hasLocation()) {
                 plugin.getLocale().getMessage("command.claim.nocell").sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
@@ -60,6 +64,7 @@ public class CommandRClaim extends AbstractCommand {
 
             ClaimedRegion region = claim.getPotentialRegion(centerChunk);
 
+            // checking touch chunks nearby
             if (Settings.CHUNKS_MUST_TOUCH.getBoolean() && region == null) {
                 plugin.getLocale().getMessage("command.claim.nottouching").sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
@@ -67,6 +72,7 @@ public class CommandRClaim extends AbstractCommand {
 
             int maxClaimable = claim.getMaxClaimSize(player);
 
+            // check chunk limit
             if (claim.getClaimSize() >= maxClaimable) {
                 plugin.getLocale().getMessage("command.claim.toomany")
                         .processPlaceholder("amount", maxClaimable)
@@ -91,11 +97,19 @@ public class CommandRClaim extends AbstractCommand {
 
             int radius = Integer.parseInt(radiuss);
 
-            // value 1-10 ?
-            if ((radius < 1) || (radius > 10)) {
-                plugin.getLocale().getMessage("command.claim.incorrectnumber")
-                        .sendPrefixedMessage(player);
-                return ReturnType.FAILURE;
+            // limit 1-10 for players and 1-30 for admins
+            if (!player.hasPermission("ultimateclaims.administrator")) {
+                if ((radius < 1) || (radius > 10)) {
+                    plugin.getLocale().getMessage("command.claim.incorrectnumber")
+                            .sendPrefixedMessage(player);
+                    return ReturnType.FAILURE;
+                }
+            } else {
+                if ((radius < 1) || (radius > 30)) {
+                    plugin.getLocale().getMessage("command.claim.incorrectnumber")
+                            .sendPrefixedMessage(player);
+                    return ReturnType.FAILURE;
+                }
             }
 
             List<Chunk> getChunks;
@@ -103,41 +117,44 @@ public class CommandRClaim extends AbstractCommand {
                 // start radius match
                 List<Chunk> chunks = new ArrayList<>();
 
-                for (int x = centerChunk.getX() - radius; x < centerChunk.getX() + radius + 1; x++) {
-                    for (int z = centerChunk.getZ() - radius; z < centerChunk.getZ() + radius + 1; z++) {
+                // optimize match
+                int ccx = centerChunk.getX();
+                int ccz = centerChunk.getZ();
+                int ccxmr = ccx - radius;
+                int cczmr = ccz - radius;
+                int ccxpr = ccx + radius + 1;
+                int cczpr = ccz + radius + 1;
+                int r = (radius - 1) * (radius - 1);
 
-                        Chunk chunk = centerChunk.getWorld().getChunkAt(x, z);
-                        // more match
-                        int r=radius-1;
-                        if( (x - centerChunk.getX()) * (x - centerChunk.getX()) + (z - centerChunk.getZ()) * (z - centerChunk.getZ()) < r*r) {
-                            // skip claimed chunks
-                            if (!plugin.getClaimManager().hasClaim(chunk)) {
+                // match
+                for (int x = ccxmr; x < ccxpr; x++) {
+                    for (int z = cczmr; z < cczpr; z++) {
+                        if ((x - ccx) * (x - ccx) + (z - ccz) * (z - ccz) < r) {
 
-                                //DEV TODO REMOVE
-                                Bukkit.getLogger().info("Create chunk:" + chunk);
+                            // check chunk loaded
+                            if (player.getLocation().getWorld().isChunkLoaded(x, z)) {
 
-                                // start save logic
-                                boolean newRegion = claim.isNewRegion(chunk);
+                                // skip claimed chunks
+                                Chunk chunk = centerChunk.getWorld().getChunkAt(x, z);
+                                if (!plugin.getClaimManager().hasClaim(chunk)) {
 
-                                // check max region limit
-                                if (newRegion && claim.getClaimedRegions().size() >= Settings.MAX_REGIONS.getInt()) {
-                                    plugin.getLocale().getMessage("command.claim.maxregions").sendPrefixedMessage(sender);
-                                    return ReturnType.FAILURE;
+                                    // start save logic
+                                    boolean newRegion = claim.isNewRegion(chunk);
+
+                                    // check max region limit
+                                    if (newRegion && claim.getClaimedRegions().size() >= Settings.MAX_REGIONS.getInt()) {
+                                        plugin.getLocale().getMessage("command.claim.maxregions").sendPrefixedMessage(sender);
+                                        return ReturnType.FAILURE;
+                                    }
+
+                                    claim.addClaimedChunk(chunk, player);
+                                    ClaimedChunk claimedChunk = claim.getClaimedChunk(chunk);
+                                    plugin.getDataManager().createClaimedChunk(claimedChunk);
+
                                 }
-
-                                claim.addClaimedChunk(chunk, player);
-                                ClaimedChunk claimedChunk = claim.getClaimedChunk(chunk);
-                                plugin.getDataManager().createClaimedChunk(claimedChunk);
-
-                                if (newRegion) {
-                                    plugin.getDataManager().createClaimedRegion(claimedChunk.getRegion());
-
-                                    if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
-                                        plugin.getDynmapManager().refresh(claim);
-
-                                    if (Settings.POWERCELL_HOLOGRAMS.getBoolean())
-                                        claim.getPowerCell().updateHologram();
-                                }
+                            } else {
+                                // warn player if chunks not loaded and skipped part 1
+                                warnload++;
                             }
                         }
                     }
@@ -165,7 +182,21 @@ public class CommandRClaim extends AbstractCommand {
             plugin.getLocale().getMessage("command.claim.info")
                     .processPlaceholder("time", TimeUtils.makeReadable((long) (Settings.STARTING_POWER.getInt() * 60 * 1000)))
                     .sendPrefixedMessage(sender);
+
         }
+
+        // warn player if chunks not loaded and skipped part2
+        if (warnload > 0) {
+            plugin.getLocale().getMessage("command.claim.chunksnotloaded")
+                    .sendPrefixedMessage(player);
+            warnload = 0;
+        }
+
+        if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
+            plugin.getDynmapManager().refresh(claim);
+
+        if (Settings.POWERCELL_HOLOGRAMS.getBoolean())
+            claim.getPowerCell().updateHologram();
 
         // we've just claimed the chunk we're in, so we've "moved" into the claim
         // Note: Can't use streams here because `Bukkit.getOnlinePlayers()` has a different protoype in legacy
