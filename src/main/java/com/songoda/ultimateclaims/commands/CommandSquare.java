@@ -22,12 +22,12 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandRClaim extends AbstractCommand {
+public class CommandSquare extends AbstractCommand {
 
     private final UltimateClaims plugin;
 
-    public CommandRClaim(UltimateClaims plugin) {
-        super(true, "rclaim");
+    public CommandSquare(UltimateClaims plugin) {
+        super(true, "square");
         this.plugin = plugin;
     }
 
@@ -65,9 +65,11 @@ public class CommandRClaim extends AbstractCommand {
             ClaimedRegion region = claim.getPotentialRegion(centerChunk);
 
             // checking touch chunks nearby
-            if (Settings.CHUNKS_MUST_TOUCH.getBoolean() && region == null) {
-                plugin.getLocale().getMessage("command.claim.nottouching").sendPrefixedMessage(player);
-                return ReturnType.FAILURE;
+            if (claim.getClaimSize() >= 2) {
+                if (Settings.CHUNKS_MUST_TOUCH.getBoolean() && region == null) {
+                    plugin.getLocale().getMessage("command.claim.nottouching").sendPrefixedMessage(player);
+                    return ReturnType.FAILURE;
+                }
             }
 
             int maxClaimable = claim.getMaxClaimSize(player);
@@ -116,46 +118,38 @@ public class CommandRClaim extends AbstractCommand {
             {
                 // start radius match
                 List<Chunk> chunks = new ArrayList<>();
-
-                // optimize match
-                int ccx = centerChunk.getX();
-                int ccz = centerChunk.getZ();
-                int ccxmr = ccx - radius;
-                int cczmr = ccz - radius;
-                int ccxpr = ccx + radius + 1;
-                int cczpr = ccz + radius + 1;
-                int r = (radius - 1) * (radius - 1);
+                
+                int xx = centerChunk.getX();
+                int zz = centerChunk.getZ();
 
                 // match
-                for (int x = ccxmr; x < ccxpr; x++) {
-                    for (int z = cczmr; z < cczpr; z++) {
-                        if ((x - ccx) * (x - ccx) + (z - ccz) * (z - ccz) < r) {
+                for (int x = xx - radius; x < xx + radius + 1; x++) {
+                    for (int z = zz - radius; z < zz + radius + 1; z++) {
 
-                            // check chunk loaded
-                            if (player.getLocation().getWorld().isChunkLoaded(x, z)) {
+                        // check chunk loaded
+                        if (player.getLocation().getWorld().isChunkLoaded(x, z)) {
 
-                                // skip claimed chunks
-                                Chunk chunk = centerChunk.getWorld().getChunkAt(x, z);
-                                if (!plugin.getClaimManager().hasClaim(chunk)) {
+                            // skip claimed chunks
+                            Chunk chunk = centerChunk.getWorld().getChunkAt(x, z);
+                            if (!plugin.getClaimManager().hasClaim(chunk)) {
 
-                                    // start save logic
-                                    boolean newRegion = claim.isNewRegion(chunk);
+                                // start save logic
+                                boolean newRegion = claim.isNewRegion(chunk);
 
-                                    // check max region limit
-                                    if (newRegion && claim.getClaimedRegions().size() >= Settings.MAX_REGIONS.getInt()) {
-                                        plugin.getLocale().getMessage("command.claim.maxregions").sendPrefixedMessage(sender);
-                                        return ReturnType.FAILURE;
-                                    }
-
-                                    claim.addClaimedChunk(chunk, player);
-                                    ClaimedChunk claimedChunk = claim.getClaimedChunk(chunk);
-                                    plugin.getDataManager().createClaimedChunk(claimedChunk);
-
+                                // check max region limit
+                                if (newRegion && claim.getClaimedRegions().size() >= Settings.MAX_REGIONS.getInt()) {
+                                    plugin.getLocale().getMessage("command.claim.maxregions").sendPrefixedMessage(sender);
+                                    return ReturnType.FAILURE;
                                 }
-                            } else {
-                                // warn player if chunks not loaded and skipped part 1
-                                warnload++;
+
+                                claim.addClaimedChunk(chunk, player);
+                                ClaimedChunk claimedChunk = claim.getClaimedChunk(chunk);
+                                plugin.getDataManager().createClaimedChunk(claimedChunk);
+
                             }
+                        } else {
+                            // warn player if chunks not loaded and skipped part 1
+                            warnload++;
                         }
                     }
                 }
@@ -241,16 +235,16 @@ public class CommandRClaim extends AbstractCommand {
 
     @Override
     public String getPermissionNode() {
-        return "ultimateclaims.rclaim";
+        return "ultimateclaims.square";
     }
 
     @Override
     public String getSyntax() {
-        return "rclaim <радиус>";
+        return "square <радиус>";
     }
 
     @Override
     public String getDescription() {
-        return "Расширить поселение по радиусу - окружность.";
+        return "Расширить поселение по радиусу - квадрат.";
     }
 }
