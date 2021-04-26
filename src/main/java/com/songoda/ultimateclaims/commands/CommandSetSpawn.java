@@ -1,7 +1,7 @@
 package com.songoda.ultimateclaims.commands;
 
-import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.UltimateClaims;
+import com.songoda.core.commands.AbstractCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -18,7 +18,7 @@ public class CommandSetSpawn extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        Player player = (Player) sender;
+        Player player = (Player)sender;
         plugin.getPluginSettings().setSpawnPoint(player.getLocation());
         plugin.getDataManager().createOrUpdatePluginSettings(plugin.getPluginSettings());
         plugin.getLocale().newMessage("&aSpawn point set!").sendPrefixedMessage(player);
@@ -42,6 +42,6 @@ public class CommandSetSpawn extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Установить центр поселения.";
+        return "Set the spawn point for varies use such as ejecting and banning.";
     }
 }

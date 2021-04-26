@@ -180,6 +180,6 @@ public class CommandClaim extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Создать поселение или расширить его.";
+        return "Claim the land you are currently standing in for your claim.";
     }
 }

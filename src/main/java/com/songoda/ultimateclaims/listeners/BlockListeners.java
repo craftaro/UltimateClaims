@@ -46,7 +46,7 @@ public class BlockListeners implements Listener {
         Claim claim = claimManager.getClaim(chunk);
 
         PowerCell powerCell = claim.getPowerCell();
-
+        
         if (powerCell.getLocation() != null) {
             Block blockPowerCell = powerCell.getLocation().getBlock();
 
@@ -142,7 +142,7 @@ public class BlockListeners implements Listener {
 
         if (!(event.getDestination().getHolder() instanceof Chest)) return;
 
-        Chest chest = (Chest) event.getDestination().getHolder();
+        Chest chest = (Chest)event.getDestination().getHolder();
         Chunk chunk = chest.getLocation().getChunk();
 
         if (!claimManager.hasClaim(chunk)) return;

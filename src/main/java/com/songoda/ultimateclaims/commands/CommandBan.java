@@ -1,10 +1,10 @@
 package com.songoda.ultimateclaims.commands;
 
-import com.songoda.core.commands.AbstractCommand;
-import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.api.events.ClaimPlayerBanEvent;
 import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
@@ -39,7 +39,7 @@ public class CommandBan extends AbstractCommand {
         ClaimMember target = claim.getMember(args[0]);
         OfflinePlayer toBan;
 
-        if (target != null) {
+        if(target != null) {
             toBan = target.getPlayer();
         } else {
             // unknown player: double-check
@@ -100,11 +100,11 @@ public class CommandBan extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "ban <игрок>";
+        return "ban <member>";
     }
 
     @Override
     public String getDescription() {
-        return "Запретить игроку входить на ваши земли.";
+        return "Ban a member from your claim.";
     }
 }

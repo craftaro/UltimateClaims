@@ -1,10 +1,10 @@
 package com.songoda.ultimateclaims.commands;
 
-import com.songoda.core.commands.AbstractCommand;
-import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.api.events.ClaimMemberAddEvent;
 import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
@@ -65,7 +65,7 @@ public class CommandAddMember extends AbstractCommand {
         ClaimMember newMember = claim.addMember(toInvite, ClaimRole.MEMBER);
         plugin.getDataManager().createMember(newMember);
 
-        if (toInvite.isOnline())
+        if(toInvite.isOnline())
             plugin.getLocale().getMessage("command.addmember.added")
                     .processPlaceholder("claim", claim.getName())
                     .sendPrefixedMessage(toInvite.getPlayer());
@@ -93,11 +93,11 @@ public class CommandAddMember extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "addmember <игрок>";
+        return "addmember <player>";
     }
 
     @Override
     public String getDescription() {
-        return "Добавить поселенца.";
+        return "Add a player to access your claim.";
     }
 }

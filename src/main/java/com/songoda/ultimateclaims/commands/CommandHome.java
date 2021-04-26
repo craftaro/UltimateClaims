@@ -1,8 +1,8 @@
 package com.songoda.ultimateclaims.commands;
 
-import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.core.commands.AbstractCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -80,11 +80,11 @@ public class CommandHome extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "home <поселение>";
+        return "home <claim>";
     }
 
     @Override
     public String getDescription() {
-        return "Телепортация в поселение.";
+        return "Go to a claims home.";
     }
 }

@@ -1,7 +1,7 @@
 package com.songoda.ultimateclaims.commands;
 
-import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.UltimateClaims;
+import com.songoda.core.commands.AbstractCommand;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
@@ -39,6 +39,6 @@ public class CommandReload extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Перезагрузить плагин.";
+        return "Reload the Configuration and Language files.";
     }
 }

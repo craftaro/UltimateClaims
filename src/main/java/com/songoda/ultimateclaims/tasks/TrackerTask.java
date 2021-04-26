@@ -60,14 +60,14 @@ public class TrackerTask extends BukkitRunnable {
                     member.eject(trackedPlayer.getLastBeforeClaim());
             }
 
-            /*if ((claim.getClaimSettings().isEnabled(ClaimSetting.FLY)
+            if ((claim.getClaimSettings().isEnabled(ClaimSetting.FLY)
                     && player.hasPermission("ultimateclaims.fly")
                     || player.hasPermission("Ultimateclaims.bypass.fly"))
                     && !player.getAllowFlight()
                     && player.getGameMode() != GameMode.CREATIVE) {
                 trackedPlayer.setWasFlyActivated(true);
                 player.setAllowFlight(true);
-            }*/
+            }
         }
         for (Claim claim : plugin.getClaimManager().getRegisteredClaims()) {
             for (Player player : Bukkit.getOnlinePlayers()) {

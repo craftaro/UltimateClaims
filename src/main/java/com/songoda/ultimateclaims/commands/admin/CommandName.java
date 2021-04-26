@@ -58,11 +58,11 @@ public class CommandName extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "admin name <название>";
+        return "admin name <name>";
     }
 
     @Override
     public String getDescription() {
-        return "Модератор может сменить название поселения.";
+        return "Set the display name for the claim you are standing in.";
     }
 }

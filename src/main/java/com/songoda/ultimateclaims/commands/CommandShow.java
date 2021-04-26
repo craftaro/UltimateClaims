@@ -1,13 +1,13 @@
 package com.songoda.ultimateclaims.commands;
 
-import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.UltimateClaims;
+import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.tasks.VisualizeTask;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import net.md_5.bungee.api.ChatColor;
 
 public class CommandShow extends AbstractCommand {
 
@@ -20,7 +20,7 @@ public class CommandShow extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        if (!(sender instanceof Player)) {
+        if(!(sender instanceof Player)) {
             sender.sendMessage(ChatColor.RED + "Command must be called as a player");
             return ReturnType.FAILURE;
         }
@@ -29,7 +29,7 @@ public class CommandShow extends AbstractCommand {
         if (args.length != 0)
             return ReturnType.SYNTAX_ERROR;
 
-        if (VisualizeTask.togglePlayer(player))
+        if(VisualizeTask.togglePlayer(player))
             plugin.getLocale().getMessage("command.show.start").sendPrefixedMessage(player);
         else
             plugin.getLocale().getMessage("command.show.stop").sendPrefixedMessage(player);
@@ -54,6 +54,6 @@ public class CommandShow extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Визуализировать территорию поселения.";
+        return "Visualize claims around you";
     }
 }

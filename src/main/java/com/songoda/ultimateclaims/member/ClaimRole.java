@@ -6,8 +6,8 @@ public enum ClaimRole {
     MEMBER(2, "interface.role.member"),
     OWNER(3, "interface.role.owner");
 
-    private final int index;
-    private final String localePath;
+    private int index;
+    private String localePath;
 
     ClaimRole(int index, String localePath) {
         this.index = index;

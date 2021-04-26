@@ -40,13 +40,13 @@ public class SettingsMemberGui extends CustomizableGui {
         // close button
         this.setButton("close", 8, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
                 plugin.getLocale().getMessage("general.interface.close").getMessage(),
-                plugin.getLocale().getMessage("general.interface.close2").getMessage()),
+                plugin.getLocale().getMessage("general.interface.closedescription").getMessage()),
                 (event) -> event.player.closeInventory());
 
         // back button
         this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
                 plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                plugin.getLocale().getMessage("general.interface.back2").getMessage()),
+                plugin.getLocale().getMessage("general.interface.backdescription").getMessage()),
                 (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
 
         // settings

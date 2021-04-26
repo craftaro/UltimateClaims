@@ -4,5 +4,5 @@ public enum CostEquation {
 
     DEFAULT,
     NONE,
-    LINEAR
+    LINEAR;
 }

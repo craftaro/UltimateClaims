@@ -1,9 +1,9 @@
 package com.songoda.ultimateclaims.commands;
 
-import com.songoda.core.commands.AbstractCommand;
-import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimateclaims.invite.Invite;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
@@ -88,11 +88,11 @@ public class CommandInvite extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "invite <игрок>";
+        return "invite <player>";
     }
 
     @Override
     public String getDescription() {
-        return "Пригласить в поселение.";
+        return "Invite a player to join your claim.";
     }
 }

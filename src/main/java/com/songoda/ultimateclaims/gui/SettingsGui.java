@@ -16,7 +16,7 @@ public class SettingsGui extends CustomizableGui {
     private final UltimateClaims plugin;
     private final Claim claim;
     private final boolean hostilemobspawning, firespread, pvp, mobgriefing, leafdecay, tnt, fly;
-
+    
     public SettingsGui(UltimateClaims plugin, Claim claim, Player player) {
         super(plugin, "settings");
         this.claim = claim;
@@ -38,13 +38,13 @@ public class SettingsGui extends CustomizableGui {
         // close button
         this.setButton("close", 8, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
                 plugin.getLocale().getMessage("general.interface.close").getMessage(),
-                plugin.getLocale().getMessage("general.interface.close2").getMessage()),
+                plugin.getLocale().getMessage("general.interface.closedescription").getMessage()),
                 (event) -> event.player.closeInventory());
 
         // back button
         this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
                 plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                plugin.getLocale().getMessage("general.interface.back2").getMessage()),
+                plugin.getLocale().getMessage("general.interface.backdescription").getMessage()),
                 (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
 
         // shortcuts for member settings
@@ -78,7 +78,7 @@ public class SettingsGui extends CustomizableGui {
             this.setButton("tnt", 1, 6, CompatibleMaterial.TNT.getItem(), (event) -> toggle(ClaimSetting.TNT));
         }
         if (fly = player.hasPermission("ultimateclaims.toggle.fly")) {
-            this.setButton("fly", 1, 7, CompatibleMaterial.ELYTRA.getItem(), (event) -> toggle(ClaimSetting.FLY));
+            this.setButton("tnt", 1, 7, CompatibleMaterial.ELYTRA.getItem(), (event) -> toggle(ClaimSetting.FLY));
         }
 
         refreshDisplay();

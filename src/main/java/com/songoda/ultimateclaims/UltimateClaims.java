@@ -111,9 +111,6 @@ public class UltimateClaims extends SongodaPlugin {
                         new CommandRecipe(this),
                         new CommandSetSpawn(this),
                         new CommandName(this),
-                        new CommandSetOwner(this),
-                        new CommandSquare(this),
-                        new CommandRound(this),
 
                         new CommandRemoveClaim(this),
                         new CommandTransferOwnership(this),
@@ -155,7 +152,7 @@ public class UltimateClaims extends SongodaPlugin {
             });
         }
     }
-
+    
     @Override
     public void onDataLoad() {
         // Database stuff, go!
@@ -182,7 +179,7 @@ public class UltimateClaims extends SongodaPlugin {
         this.dataManager = new DataManager(this.databaseConnector, this);
         this.dataMigrationManager = new DataMigrationManager(this.databaseConnector, this.dataManager,
                 new _1_InitialMigration(),
-                new _2_NewPermissions(),
+                new _2_NewPermissions(),    
                 new _3_MemberNames(),
                 new _4_TradingPermission(),
                 new _5_TntSetting(),

@@ -112,6 +112,6 @@ public class CommandUnClaim extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Освободить землю, на которой вы стоите.";
+        return "Unclaim land from your claim.";
     }
 }

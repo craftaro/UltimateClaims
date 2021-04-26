@@ -1,8 +1,8 @@
 package com.songoda.ultimateclaims.commands;
 
-import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import org.bukkit.command.CommandSender;
@@ -66,6 +66,6 @@ public class CommandLock extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Запретить входить гостям в поселение.";
+        return "Lock or unlock your claim.";
     }
 }

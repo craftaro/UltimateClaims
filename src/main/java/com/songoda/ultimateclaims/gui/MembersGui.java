@@ -47,13 +47,13 @@ public class MembersGui extends CustomizableGui {
         // close button
         this.setButton("close", 8, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
                 plugin.getLocale().getMessage("general.interface.close").getMessage(),
-                plugin.getLocale().getMessage("general.interface.close2").getMessage()),
+                plugin.getLocale().getMessage("general.interface.closedescription").getMessage()),
                 (event) -> event.player.closeInventory());
 
         // back button
         this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
                 plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                plugin.getLocale().getMessage("general.interface.back2").getMessage()),
+                plugin.getLocale().getMessage("general.interface.backdescription").getMessage()),
                 (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
 
         // Member Stats (update on refresh)
@@ -182,12 +182,12 @@ public class MembersGui extends CustomizableGui {
         showPage();
     }
 
-    public enum SortType {
+    public static enum SortType {
         DEFAULT("interface.sortingmode.default"),
         PLAYTIME("interface.sortingmode.playtime"),
         MEMBER_SINCE("interface.sortingmode.membersince");
 
-        private final String localePath;
+        private String localePath;
 
         SortType(String localePath) {
             this.localePath = localePath;

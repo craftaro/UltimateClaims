@@ -1,8 +1,8 @@
 package com.songoda.ultimateclaims.commands;
 
-import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.core.commands.AbstractCommand;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -61,6 +61,6 @@ public class CommandSetHome extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Установить центр поселения.";
+        return "Set the home for your claim.";
     }
 }

@@ -1,9 +1,9 @@
 package com.songoda.ultimateclaims.commands;
 
-import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.api.events.ClaimMemberLeaveEvent;
 import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.member.ClaimMember;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -32,7 +32,7 @@ public class CommandLeave extends AbstractCommand {
         String claimStr = String.join(" ", args);
 
         Optional<Claim> oClaim = plugin.getClaimManager().getRegisteredClaims().stream()
-                .filter(c -> c.getName().equalsIgnoreCase(claimStr)
+                .filter(c -> c.getName().toLowerCase().equals(claimStr.toLowerCase())
                         && c.getMember(player) != null).findFirst();
 
         if (!oClaim.isPresent()) {
@@ -100,11 +100,11 @@ public class CommandLeave extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "leave <поселение>";
+        return "leave <claim>";
     }
 
     @Override
     public String getDescription() {
-        return "Покинуть поселение.";
+        return "Leave a claim that you are a member of.";
     }
 }

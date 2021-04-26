@@ -1,7 +1,7 @@
 package com.songoda.ultimateclaims.commands;
 
-import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.UltimateClaims;
+import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.gui.RecipeDisplayGui;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -41,6 +41,6 @@ public class CommandRecipe extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Показать крафт Монумента.";
+        return "View the recipe for a powercell.";
     }
 }

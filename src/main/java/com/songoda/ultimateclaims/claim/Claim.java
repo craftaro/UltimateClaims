@@ -16,14 +16,26 @@ import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.Settings;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
 
 public class Claim {
 
@@ -237,7 +249,7 @@ public class Claim {
     }
 
     public boolean addClaimedChunk(Chunk chunk, Player player) {
-        animateChunk(chunk, player, Material.EMERALD_BLOCK);
+            animateChunk(chunk, player, Material.EMERALD_BLOCK);
         return addClaimedChunk(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
     }
 
@@ -324,7 +336,7 @@ public class Claim {
     }
 
     public void animateChunk(Chunk chunk, Player player, Material material) {
-      /*  int bx = chunk.getX() << 4;
+        int bx = chunk.getX() << 4;
         int bz = chunk.getZ() << 4;
 
         World world = player.getWorld();
@@ -346,7 +358,7 @@ public class Claim {
                         }, random.nextInt(30) + 1);
                     }
                 }
-            }*/
+            }
     }
 
     public List<RegionCorners> getCorners() {

@@ -6,9 +6,8 @@ import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.utils.ItemUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.settings.Settings;
-import org.bukkit.inventory.ItemStack;
-
 import java.util.List;
+import org.bukkit.inventory.ItemStack;
 
 public class RecipeDisplayGui extends Gui {
 

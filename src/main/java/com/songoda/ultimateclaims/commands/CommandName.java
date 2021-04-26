@@ -1,8 +1,8 @@
 package com.songoda.ultimateclaims.commands;
 
-import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
@@ -72,11 +72,11 @@ public class CommandName extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "name <название>";
+        return "name <name>";
     }
 
     @Override
     public String getDescription() {
-        return "Переименовать поселение.";
+        return "Set the display name for your claim.";
     }
 }

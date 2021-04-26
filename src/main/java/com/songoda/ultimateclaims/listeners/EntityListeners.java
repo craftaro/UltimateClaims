@@ -2,7 +2,6 @@ package com.songoda.ultimateclaims.listeners;
 
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
-import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.claim.ClaimSetting;
 import com.songoda.ultimateclaims.claim.PowerCell;
@@ -149,7 +148,7 @@ public class EntityListeners implements Listener {
         Claim claim = claimManager.getClaim(chunk);
 
         if (!claim.playerHasPerms((Player) event.getRemover(), ClaimPerm.PLACE)) {
-            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getRemover());
+            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage((Player) event.getRemover());
             event.setCancelled(true);
         }
     }
@@ -255,7 +254,7 @@ public class EntityListeners implements Listener {
             Entity source = event.getPlayer();
             Entity entity = event.getRightClicked();
             if (entity.getType().equals(EntityType.VILLAGER) && !claim.playerHasPerms((Player) source, ClaimPerm.TRADING)) {
-                plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(source);
+                plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage((Player) source);
                 event.setCancelled(true);
             }
         }
@@ -288,9 +287,6 @@ public class EntityListeners implements Listener {
                         member.setPresent(false);
                     plugin.getTrackerTask().toggleFlyOff(player);
                 }
-
-                Location location = player.getLocation();
-
                 if (Settings.CLAIMS_BOSSBAR.getBoolean()) {
                     claim.getVisitorBossBar().removePlayer(player);
                     claim.getMemberBossBar().removePlayer(player);
@@ -298,7 +294,6 @@ public class EntityListeners implements Listener {
                     plugin.getLocale().getMessage("event.claim.exit")
                             .processPlaceholder("claim", claim.getName())
                             .sendTitle(player);
-                    player.playSound(location, CompatibleSound.BLOCK_BELL_RESONATE.getSound(), 0.8F, 1.0F);
                 }
             }
         }
@@ -330,8 +325,6 @@ public class EntityListeners implements Listener {
                     return true;
                 }
 
-                Location location = player.getLocation();
-
                 if (Settings.CLAIMS_BOSSBAR.getBoolean()) {
                     if (member == null || member.getRole() == ClaimRole.VISITOR) {
                         claim.getVisitorBossBar().addPlayer(player);
@@ -342,7 +335,6 @@ public class EntityListeners implements Listener {
                     plugin.getLocale().getMessage("event.claim.enter")
                             .processPlaceholder("claim", claim.getName())
                             .sendTitle(player);
-                    player.playSound(location, CompatibleSound.UI_TOAST_CHALLENGE_COMPLETE.getSound(), 0.5F, 1.0F);
                 }
             }
         }

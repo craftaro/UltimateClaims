@@ -1,7 +1,7 @@
 package com.songoda.ultimateclaims.commands;
 
-import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.UltimateClaims;
+import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.api.events.ClaimMemberAddEvent;
 import com.songoda.ultimateclaims.invite.Invite;
 import com.songoda.ultimateclaims.member.ClaimMember;
@@ -89,6 +89,6 @@ public class CommandAccept extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Принять приглашение на вступление в поселение.";
+        return "Accept the latest claim invitation.";
     }
 }

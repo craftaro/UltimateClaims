@@ -66,11 +66,11 @@ public class CommandTransferOwnership extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "admin transferownership <игрок>";
+        return "admin transferownership <player>";
     }
 
     @Override
     public String getDescription() {
-        return "Модератор может сменить владельца поселения.";
+        return "Transfer the claim your are standing in to another player.";
     }
 }

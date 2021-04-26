@@ -1,9 +1,9 @@
 package com.songoda.ultimateclaims.commands;
 
-import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.api.events.ClaimPlayerUnbanEvent;
 import com.songoda.ultimateclaims.claim.Claim;
+import com.songoda.core.commands.AbstractCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -74,7 +74,7 @@ public class CommandUnBan extends AbstractCommand {
             // grab our ban list
             Claim claim = plugin.getClaimManager().getClaim((Player) sender);
             Set<UUID> bans;
-            if (claim != null && !(bans = claim.getBannedPlayers()).isEmpty()) {
+            if(claim != null && !(bans = claim.getBannedPlayers()).isEmpty()) {
                 return Bukkit.getOnlinePlayers().stream()
                         .filter(p -> p != sender && bans.stream().anyMatch(id -> p.getUniqueId().equals(id)))
                         .map(Player::getName).collect(Collectors.toList());
@@ -90,11 +90,11 @@ public class CommandUnBan extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "unban <игрок>";
+        return "unban <member>";
     }
 
     @Override
     public String getDescription() {
-        return "Снова разрешить игроку входить на ваши земли.";
+        return "Unban a member from your claim.";
     }
 }

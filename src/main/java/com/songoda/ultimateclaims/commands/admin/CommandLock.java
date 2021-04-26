@@ -68,6 +68,6 @@ public class CommandLock extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Модератор может управлять входом в поселение для гостей.";
+        return "Lock or unlock the claim you are standing in.";
     }
 }
