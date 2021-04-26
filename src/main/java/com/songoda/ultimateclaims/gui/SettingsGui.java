@@ -16,7 +16,7 @@ public class SettingsGui extends CustomizableGui {
     private final UltimateClaims plugin;
     private final Claim claim;
     private final boolean hostilemobspawning, firespread, pvp, mobgriefing, leafdecay, tnt, fly;
-    
+
     public SettingsGui(UltimateClaims plugin, Claim claim, Player player) {
         super(plugin, "settings");
         this.claim = claim;
@@ -78,7 +78,7 @@ public class SettingsGui extends CustomizableGui {
             this.setButton("tnt", 1, 6, CompatibleMaterial.TNT.getItem(), (event) -> toggle(ClaimSetting.TNT));
         }
         if (fly = player.hasPermission("ultimateclaims.toggle.fly")) {
-            this.setButton("tnt", 1, 7, CompatibleMaterial.ELYTRA.getItem(), (event) -> toggle(ClaimSetting.FLY));
+            this.setButton("fly", 1, 7, CompatibleMaterial.ELYTRA.getItem(), (event) -> toggle(ClaimSetting.FLY));
         }
 
         refreshDisplay();
