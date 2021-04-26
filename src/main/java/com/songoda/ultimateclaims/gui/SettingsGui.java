@@ -128,7 +128,7 @@ public class SettingsGui extends CustomizableGui {
                             .getMessage().split("\\|"));
         }
         if (fly) {
-            this.updateItem("tnt", 1, 7,
+            this.updateItem("fly", 1, 7,
                     plugin.getLocale().getMessage("interface.settings.flytitle").getMessage(),
                     plugin.getLocale().getMessage("general.interface.current")
                             .processPlaceholder("current", claim.getClaimSettings().getStatus(ClaimSetting.FLY))
