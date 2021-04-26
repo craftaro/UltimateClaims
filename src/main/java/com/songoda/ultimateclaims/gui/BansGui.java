@@ -39,12 +39,16 @@ public class BansGui extends CustomizableGui {
         mirrorFill("mirrorfill_2", 1, 0, true, true, glass2);
         mirrorFill("mirrorfill_2", 0, 1, true, true, glass2);
 
-        // exit buttons
+        // close button
+        this.setButton("close", 8, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
+                plugin.getLocale().getMessage("general.interface.close").getMessage(),
+                plugin.getLocale().getMessage("general.interface.closedescription").getMessage()),
+                (event) -> event.player.closeInventory());
+
+        // back button
         this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
                 plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                plugin.getLocale().getMessage("general.interface.exit").getMessage()),
-                (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
-        this.setButton("back",8, this.getItem(0),
+                plugin.getLocale().getMessage("general.interface.backdescription").getMessage()),
                 (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
 
         // Ban information
