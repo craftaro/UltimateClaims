@@ -39,7 +39,7 @@ public class AnimateTask extends BukkitRunnable {
             int x = location.getBlockX() >> 4;
             int z = location.getBlockZ() >> 4;
 
-            if (!location.getWorld().isChunkLoaded(x, z)) {
+            if (!location.isWorldLoaded() || !location.getWorld().isChunkLoaded(x, z)) {
                 continue;
             }
             int red = (powerCell.getCurrentPower() >= 0 ? 5 : 255);
