@@ -95,6 +95,10 @@ public class TrackerTask extends BukkitRunnable {
 
     public void toggleFlyOff(Player player) {
         TrackedPlayer trackedPlayer = trackedPlayers.get(player.getUniqueId());
+
+        if (trackedPlayer == null)
+            return;
+
         if (!trackedPlayer.wasFlyActivated()) return;
 
         trackedPlayer.setWasFlyActivated(false);

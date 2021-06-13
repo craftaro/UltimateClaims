@@ -80,6 +80,9 @@ public class Settings {
             "DEFAULT - Multiplies the cost by the claim size.",
             "LINEAR [value] - Multiplies the cost by the claim size multiplied by the value.");
 
+    public static final ConfigSetting PURGE_AUDIT_LOG_AFTER = new ConfigSetting(config, "Main.Purge Audit Log After", 15,
+            "After how many days should the audit log purge data.");
+
     public static final ConfigSetting ENABLE_FUEL = new ConfigSetting(config, "Main.Powercells Require Fuel", true,
             "Should power cells not require fuel?");
 

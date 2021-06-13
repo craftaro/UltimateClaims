@@ -197,6 +197,7 @@ public class UltimateClaims extends SongodaPlugin {
 
             if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
                 this.dynmapManager = new DynmapManager(this);
+            Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> dataManager.purgeAuditLog(), 1000, 15 * 60 * 1000);
         });
     }
 
