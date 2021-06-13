@@ -14,6 +14,7 @@ import com.songoda.ultimateclaims.member.ClaimPerm;
 import com.songoda.ultimateclaims.member.ClaimPermissions;
 import com.songoda.ultimateclaims.member.ClaimRole;
 import com.songoda.ultimateclaims.settings.PluginSettings;
+import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -390,6 +391,16 @@ public class DataManager extends DataManagerAbstract {
                 statement.setInt(1, claim.getId());
                 statement.setString(2, audit.getWho().toString());
                 statement.setLong(3, audit.getWhen());
+                statement.executeUpdate();
+            }
+        }));
+    }
+
+    public void purgeAuditLog() {
+        int purgeAfter = Settings.PURGE_AUDIT_LOG_AFTER.getInt();
+        this.async(() -> this.databaseConnector.connect(connection -> {
+            String createChunk = "DELETE FROM " + this.getTablePrefix() + "audit_log WHERE strftime('%Y-%m', time / 1000, 'unixepoch') <= date('now','-" + purgeAfter +" day')";
+            try (PreparedStatement statement = connection.prepareStatement(createChunk)) {
                 statement.executeUpdate();
             }
         }));
