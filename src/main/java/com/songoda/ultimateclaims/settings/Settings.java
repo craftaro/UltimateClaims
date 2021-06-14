@@ -21,8 +21,9 @@ public class Settings {
             "in order to create a powercell.");
 
     public static final ConfigSetting ITEM_VALUES = new ConfigSetting(config, "Main.PowerCell Item Values",
-            Arrays.asList("DIAMOND:120", "IRON_INGOT:30"),
-            "The value in minutes of each item put into the powercell.");
+            Arrays.asList(),
+            "The value in minutes of each item put into the powercell.",
+            "This is now configured in items.yml. Do not use this.");
 
     public static final ConfigSetting ECONOMY = new ConfigSetting(config, "Main.Economy", 
             EconomyManager.getEconomy() == null ? "Vault" : EconomyManager.getEconomy().getName(),

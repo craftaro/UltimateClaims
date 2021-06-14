@@ -6,6 +6,7 @@ import com.songoda.core.hooks.HologramManager;
 import com.songoda.core.utils.TimeUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.gui.PowerCellGui;
+import com.songoda.ultimateclaims.items.PowerCellItem;
 import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,13 +14,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PowerCell {
@@ -52,25 +47,29 @@ public class PowerCell {
 
         if (this.currentPower <= 0 && location != null) {
             updateItemsFromGui();
-            List<String> materials = Settings.ITEM_VALUES.getStringList();
-            for (String value : materials) {
-                CompatibleMaterial material = CompatibleMaterial.getMaterial(value.split(":")[0]);
-                if (getMaterialAmount(material) == 0) continue;
-                double itemValue = getItemValue(material);
+
+            ListIterator<ItemStack> iterator = items.listIterator();
+            while (iterator.hasNext()) {
+                ItemStack itemStack = iterator.next();
+                double itemValue = plugin.getItemManager().getItemValue(itemStack);
+
                 if (itemValue < 1) { // Remove items based on number of claimed chunks
                     int itemsToRemove = (int) Math.ceil(1 / itemValue);
-                    for (int i = 0; i < itemsToRemove; i++)
-                        this.removeOneMaterial(material);
-                    this.currentPower += getItemValue(material) * itemsToRemove;
+                    itemStack.setAmount(itemStack.getAmount() - itemsToRemove);
+                    this.currentPower += itemValue * itemsToRemove;
                 } else { // Remove only one item
-                    this.removeOneMaterial(material);
-                    this.currentPower += getItemValue(material);
+                    itemStack.setAmount(itemStack.getAmount() - 1);
+                    this.currentPower += itemValue;
                 }
+
+                if (itemStack.getAmount() <= 1)
+                    iterator.remove();
 
                 if (loaded && Settings.POWERCELL_HOLOGRAMS.getBoolean())
                     updateHologram();
                 return this.currentPower;
             }
+
             double economyValue = getEconomyValue();
             if (economyBalance >= economyValue) {
                 this.economyBalance -= economyValue;
@@ -86,43 +85,14 @@ public class PowerCell {
         return this.currentPower--;
     }
 
-    private int getMaterialAmount(CompatibleMaterial material) {
-        return getItems().stream().filter(material::matches)
-                .map(ItemStack::getAmount).mapToInt(Integer::intValue).sum();
-    }
-
-    private void removeOneMaterial(CompatibleMaterial material) {
-        updateItemsFromGui();
-        List<ItemStack> items = getItems();
-        for (int i = 0; i < items.size(); i++) {
-            ItemStack item = items.get(i);
-            if (material.matches(item)) {
-                item.setAmount(item.getAmount() - 1);
-
-                if (item.getAmount() <= 0)
-                    this.items.remove(item);
-                updateGuiInventory();
-                return;
-            }
-            if (i >= 28) break;
-        }
-    }
-
     public void rejectUnusable() {
         if (location == null)
             return;
-        // list of all valid materials with positive value
-        List<Material> materials = Settings.ITEM_VALUES.getStringList().stream()
-                .filter(value -> value.indexOf(':') != -1 && Double.parseDouble(value.split(":")[1]) > 0)
-                .map(value -> Material.valueOf(value.split(":")[0]))
-                .filter(value -> value != null)
-                .collect(Collectors.toList());
-
         // list of items in the inventory that are worthless and removed from our inventory
         List<ItemStack> rejects = new ArrayList();
         for (int i = items.size() - 1; i >= 0; i--) {
             final ItemStack item = items.get(i);
-            if (item != null && !materials.stream().anyMatch(m -> m == item.getType()))
+            if (item != null && !plugin.getItemManager().getItems().stream().anyMatch(powerCellItem -> powerCellItem.isSimilar(item)))
                 rejects.add(items.remove(i));
         }
 
@@ -209,23 +179,18 @@ public class PowerCell {
     public long getItemPower() {
         updateItemsFromGui();
         double total = 0;
-        List<String> materials = Settings.ITEM_VALUES.getStringList();
-        for (String value : materials) {
-            String parts[] = value.split(":");
-            CompatibleMaterial material;
-            if (parts.length == 2 && (material = CompatibleMaterial.getMaterial(parts[0].trim())) != null) {
-                double itemValue = getMaterialAmount(material) * Double.parseDouble(parts[1].trim());
+        for (ItemStack itemStack : items) {
+            double itemValue = itemStack.getAmount() * plugin.getItemManager().getItemValue(itemStack);
 
-                switch (getCostEquation()) {
-                    case DEFAULT:
-                        total += itemValue / claim.getClaimSize();
-                        break;
-                    case LINEAR:
-                        total += itemValue / (claim.getClaimSize() * getLinearValue());
-                        break;
-                    default:
-                        total += itemValue;
-                }
+            switch (getCostEquation()) {
+                case DEFAULT:
+                    total += itemValue / claim.getClaimSize();
+                    break;
+                case LINEAR:
+                    total += itemValue / (claim.getClaimSize() * getLinearValue());
+                    break;
+                default:
+                    total += itemValue;
             }
         }
         return (int) total;
@@ -278,26 +243,6 @@ public class PowerCell {
 
     public double getEconomyPower() {
         return economyBalance / getEconomyValue();
-    }
-
-    private double getItemValue(CompatibleMaterial material) {
-        List<String> materials = Settings.ITEM_VALUES.getStringList();
-        for (String value : materials) {
-            String parts[] = value.split(":");
-            if (parts.length == 2 && CompatibleMaterial.getMaterial(parts[0].trim()) == material) {
-                double itemValue = Double.parseDouble(parts[1].trim());
-
-                switch (getCostEquation()) {
-                    case DEFAULT:
-                        return itemValue / claim.getClaimSize();
-                    case LINEAR:
-                        return itemValue / (claim.getClaimSize() * getLinearValue());
-                    default:
-                        return itemValue;
-                }
-            }
-        }
-        return 0;
     }
 
     public double getEconomyValue() {

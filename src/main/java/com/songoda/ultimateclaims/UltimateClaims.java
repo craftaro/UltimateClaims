@@ -21,6 +21,7 @@ import com.songoda.ultimateclaims.commands.admin.CommandTransferOwnership;
 import com.songoda.ultimateclaims.database.DataManager;
 import com.songoda.ultimateclaims.database.migrations.*;
 import com.songoda.ultimateclaims.dynmap.DynmapManager;
+import com.songoda.ultimateclaims.items.ItemManager;
 import com.songoda.ultimateclaims.listeners.*;
 import com.songoda.ultimateclaims.placeholder.PlaceholderManager;
 import com.songoda.ultimateclaims.settings.PluginSettings;
@@ -44,6 +45,7 @@ public class UltimateClaims extends SongodaPlugin {
     private CommandManager commandManager;
     private ClaimManager claimManager;
     private DynmapManager dynmapManager;
+    private ItemManager itemManager;
 
     private DataMigrationManager dataMigrationManager;
     private DataManager dataManager;
@@ -79,6 +81,9 @@ public class UltimateClaims extends SongodaPlugin {
         HologramManager.getManager().setPreferredHook(Settings.HOLOGRAM.getString());
 
         PluginManager pluginManager = Bukkit.getPluginManager();
+
+        // Setup Item Manager
+        this.itemManager = new ItemManager(this);
 
         // Listeners
         guiManager.init();
@@ -252,5 +257,9 @@ public class UltimateClaims extends SongodaPlugin {
 
     public PluginSettings getPluginSettings() {
         return pluginSettings;
+    }
+
+    public ItemManager getItemManager() {
+        return itemManager;
     }
 }
