@@ -5,6 +5,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
+/**
+ * Called when a claim's ownership is transferred.
+ */
 public class ClaimTransferOwnershipEvent extends ClaimEvent implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private boolean cancel = false;
