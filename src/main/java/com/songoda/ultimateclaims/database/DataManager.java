@@ -399,7 +399,8 @@ public class DataManager extends DataManagerAbstract {
     public void purgeAuditLog() {
         int purgeAfter = Settings.PURGE_AUDIT_LOG_AFTER.getInt();
         this.async(() -> this.databaseConnector.connect(connection -> {
-            String createChunk = "DELETE FROM " + this.getTablePrefix() + "audit_log WHERE strftime('%Y-%m', time / 1000, 'unixepoch') <= date('now','-" + purgeAfter +" day')";
+            String createChunk = Settings.MYSQL_ENABLED.getBoolean() ? "DELETE FROM " + this.getTablePrefix() + "audit_log WHERE time < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL " + purgeAfter + " DAY))" :
+                    "DELETE FROM " + this.getTablePrefix() + "audit_log WHERE strftime('%Y-%m', time / 1000, 'unixepoch') <= date('now','-" + purgeAfter +" day')";
             try (PreparedStatement statement = connection.prepareStatement(createChunk)) {
                 statement.executeUpdate();
             }
