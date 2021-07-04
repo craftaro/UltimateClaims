@@ -6,7 +6,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a chunk is claimed by a claim.
+ * Called when a chunk is unclaimed by a claim.
  */
 public class ClaimChunkUnclaimEvent extends ClaimEvent implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
