@@ -8,6 +8,7 @@ import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class CommandName extends AbstractCommand {
@@ -48,8 +49,11 @@ public class CommandName extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
+        String rawString = name;
+        byte[] bytes = rawString.getBytes(StandardCharsets.UTF_8);
 
-        claim.setName(name);
+        String utf8EncodedString = new String(bytes, StandardCharsets.UTF_8);
+        claim.setName(utf8EncodedString);
 
         plugin.getDataManager().updateClaim(claim);
 
