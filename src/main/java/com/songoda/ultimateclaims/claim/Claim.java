@@ -192,6 +192,7 @@ public class Claim {
      * Search for a member by username
      *
      * @param name name to search
+     *
      * @return Member instance matching this username, if any
      */
     public ClaimMember getMember(String name) {
@@ -249,7 +250,7 @@ public class Claim {
     }
 
     public boolean addClaimedChunk(Chunk chunk, Player player) {
-            animateChunk(chunk, player, Material.EMERALD_BLOCK);
+        animateChunk(chunk, player, Material.EMERALD_BLOCK);
         return addClaimedChunk(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
     }
 
@@ -318,14 +319,12 @@ public class Claim {
         return chunks;
     }
 
-
     public ClaimedChunk getClaimedChunk(Chunk chunk) {
         for (ClaimedChunk claimedChunk : getClaimedChunks())
             if (claimedChunk.equals(chunk))
                 return claimedChunk;
         return null;
     }
-
 
     public int getClaimSize() {
         return claimedRegions.stream().map(r -> r.getChunks().size()).mapToInt(Integer::intValue).sum();
@@ -437,8 +436,10 @@ public class Claim {
         }
 
         this.claimedRegions.clear();
-        if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
-            UltimateClaims.getInstance().getDynmapManager().refresh(this);
+
+        if (UltimateClaims.getInstance().getDynmapManager() != null)
+            UltimateClaims.getInstance().getDynmapManager().refresh();
+
         this.powerCell.destroy();
         UltimateClaims.getInstance().getDataManager().deleteClaim(this);
         UltimateClaims.getInstance().getClaimManager().removeClaim(this);
@@ -448,7 +449,6 @@ public class Claim {
         if (bossBarVisitor != null) bossBarVisitor.removeAll();
         getOwnerAndMembers().forEach(m -> m.setPresent(false));
         members.clear();
-
     }
 
     public Set<UUID> getBannedPlayers() {
