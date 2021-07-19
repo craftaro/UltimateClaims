@@ -65,13 +65,19 @@ public class DynmapManager {
     public void refreshDescription(Claim claim) {
         if (markerSet == null) return;
 
+        String powerLeft;
+        if (claim.getPowerCell().getTotalPower() > 1) {
+            powerLeft = TimeUtils.makeReadable(claim.getPowerCell().getTotalPower() * 60 * 1000);
+        } else {
+            powerLeft = TimeUtils.makeReadable((claim.getPowerCell().getTotalPower() + Settings.MINIMUM_POWER.getInt()) * 60 * 1000);
+        }
+
         String markerDesc = Settings.DYNMAP_BUBBLE.getString()
                 .replace("${Claim}", claim.getName())
                 .replace("${Owner}", claim.getOwner().getName())
                 .replace("${OwnerUUID}", claim.getOwner().getUniqueId().toString())
                 .replace("${MemberCount}", claim.getMembers().size() + "")
-                .replace("${PowerLeft}",
-                        TimeUtils.makeReadable(claim.getPowerCell().getTotalPower() * 60 * 1000));
+                .replace("${PowerLeft}", powerLeft);
 
         for (AreaMarker aMarker : markerSet.getAreaMarkers()) {
             if (!aMarker.getMarkerID().startsWith(claim.getId() + ":")) continue;
