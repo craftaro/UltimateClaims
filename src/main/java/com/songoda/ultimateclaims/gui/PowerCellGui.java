@@ -126,12 +126,12 @@ public class PowerCellGui extends CustomizableGui {
             }
         }
 
+        refresh();
+
         // events
         this.setOnOpen((event) -> refresh());
         this.setDefaultAction((event) -> refreshPower());
         this.setOnClose((event) -> closed());
-
-        refresh();
     }
 
     private long lastUpdate = 0;
