@@ -118,6 +118,7 @@ public class InteractListeners implements Listener {
 
     private boolean isDoor(Block block) {
         if (block == null) return false;
+
         switch (block.getType().name()) {
             case "DARK_OAK_DOOR":
             case "ACACIA_DOOR":
@@ -178,5 +179,4 @@ public class InteractListeners implements Listener {
                 return false;
         }
     }
-
 }

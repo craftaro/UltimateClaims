@@ -72,12 +72,17 @@ public class DynmapManager {
             powerLeft = TimeUtils.makeReadable((claim.getPowerCell().getTotalPower() + Settings.MINIMUM_POWER.getInt()) * 60 * 1000);
         }
 
-        String markerDesc = Settings.DYNMAP_BUBBLE.getString()
-                .replace("${Claim}", claim.getName())
-                .replace("${Owner}", claim.getOwner().getName())
-                .replace("${OwnerUUID}", claim.getOwner().getUniqueId().toString())
-                .replace("${MemberCount}", claim.getMembers().size() + "")
-                .replace("${PowerLeft}", powerLeft);
+        String markerDesc = claim.getOwner() != null ?
+                Settings.DYNMAP_BUBBLE.getString()
+                        .replace("${Claim}", claim.getName())
+                        .replace("${Owner}", claim.getOwner().getName())
+                        .replace("${OwnerUUID}", claim.getOwner().getUniqueId().toString())
+                        .replace("${MemberCount}", claim.getMembers().size() + "")
+                        .replace("${PowerLeft}", powerLeft) :
+                Settings.DYNMAP_BUBBLE_UNCLAIMED.getString()
+                        .replace("${Claim}", claim.getName())
+                        .replace("${MemberCount}", claim.getMembers().size() + "")
+                        .replace("${PowerLeft}", powerLeft);
 
         for (AreaMarker aMarker : markerSet.getAreaMarkers()) {
             if (!aMarker.getMarkerID().startsWith(claim.getId() + ":")) continue;

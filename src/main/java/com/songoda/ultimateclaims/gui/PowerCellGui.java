@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PowerCellGui extends CustomizableGui {
-
     private final UltimateClaims plugin;
     private final PowerCell powercell;
     private final Claim claim;
@@ -36,12 +35,14 @@ public class PowerCellGui extends CustomizableGui {
 
     public PowerCellGui(UltimateClaims plugin, Claim claim, Player player) {
         super(plugin, "powercell");
+
         this.plugin = plugin;
         this.powercell = claim.getPowerCell();
         this.claim = claim;
+        this.fullPerms = claim.getOwner().getUniqueId().equals(player.getUniqueId());
+
         this.setRows(6);
         this.setTitle(TextUtils.formatText(claim.getName(), true));
-        fullPerms = claim.getOwner().getUniqueId().equals(player.getUniqueId());
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
@@ -65,7 +66,7 @@ public class PowerCellGui extends CustomizableGui {
                     (event) -> {
                         if (event.clickType == ClickType.LEFT) {
                             addEcon(event.player);
-                        }else if (event.clickType == ClickType.RIGHT) {
+                        } else if (event.clickType == ClickType.RIGHT) {
                             takeEcon(event.player);
                         }
                     });
@@ -81,8 +82,8 @@ public class PowerCellGui extends CustomizableGui {
         // Bans
         if (fullPerms)
             this.setButton("bans", 5, 2, GuiUtils.createButtonItem(CompatibleMaterial.IRON_AXE,
-                    plugin.getLocale().getMessage("interface.powercell.banstitle").getMessage(),
-                    plugin.getLocale().getMessage("interface.powercell.banslore").getMessageLines()),
+                            plugin.getLocale().getMessage("interface.powercell.banstitle").getMessage(),
+                            plugin.getLocale().getMessage("interface.powercell.banslore").getMessageLines()),
                     (event) -> {
                         closed();
                         event.manager.showGUI(event.player, new BansGui(plugin, claim));
@@ -91,8 +92,8 @@ public class PowerCellGui extends CustomizableGui {
         // Settings
         if (fullPerms)
             this.setButton("settings", 5, 3, GuiUtils.createButtonItem(CompatibleMaterial.REDSTONE,
-                    plugin.getLocale().getMessage("interface.powercell.settingstitle").getMessage(),
-                    plugin.getLocale().getMessage("interface.powercell.settingslore").getMessageLines()),
+                            plugin.getLocale().getMessage("interface.powercell.settingstitle").getMessage(),
+                            plugin.getLocale().getMessage("interface.powercell.settingslore").getMessageLines()),
                     (event) -> {
                         closed();
                         event.manager.showGUI(event.player, new SettingsGui(plugin, claim, event.player));
@@ -104,8 +105,8 @@ public class PowerCellGui extends CustomizableGui {
         // Members
         if (fullPerms)
             this.setButton("members", 5, 6, GuiUtils.createButtonItem(CompatibleMaterial.PAINTING,
-                    plugin.getLocale().getMessage("interface.powercell.memberstitle").getMessage(),
-                    plugin.getLocale().getMessage("interface.powercell.memberslore").getMessageLines()),
+                            plugin.getLocale().getMessage("interface.powercell.memberstitle").getMessage(),
+                            plugin.getLocale().getMessage("interface.powercell.memberslore").getMessageLines()),
                     (event) -> {
                         closed();
                         event.manager.showGUI(event.player, new MembersGui(plugin, claim));
@@ -220,9 +221,15 @@ public class PowerCellGui extends CustomizableGui {
     private void closed() {
         // update cell's inventory
         this.powercell.updateItemsFromGui(true);
+
         if (Settings.POWERCELL_HOLOGRAMS.getBoolean()) {
             this.powercell.updateHologram();
         }
+
+        if (this.plugin.getDynmapManager() != null) {
+            this.plugin.getDynmapManager().refreshDescription(this.claim);
+        }
+
         this.powercell.rejectUnusable();
     }
 
@@ -277,7 +284,7 @@ public class PowerCellGui extends CustomizableGui {
                             EconomyManager.deposit(player, amount);
                             powercell.removeEconomy(amount);
                             plugin.getDataManager().updateClaim(claim);
-                        }else{
+                        } else {
                             plugin.getLocale().getMessage("general.notenoughfundspowercell")
                                     .processPlaceholder("balance", powercell.getEconomyBalance()).sendPrefixedMessage(player);
                         }

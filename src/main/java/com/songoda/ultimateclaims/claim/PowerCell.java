@@ -6,7 +6,6 @@ import com.songoda.core.hooks.HologramManager;
 import com.songoda.core.utils.TimeUtils;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.gui.PowerCellGui;
-import com.songoda.ultimateclaims.items.PowerCellItem;
 import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,8 +13,15 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Objects;
+import java.util.UUID;
 
 public class PowerCell {
 
@@ -25,7 +31,7 @@ public class PowerCell {
     protected Location location = null;
 
     protected List<ItemStack> items = new ArrayList<>();
-    private Deque<Audit> auditLog = new ArrayDeque<>();
+    private final Deque<Audit> auditLog = new ArrayDeque<>();
 
     protected int currentPower = Settings.STARTING_POWER.getInt();
 
@@ -89,10 +95,10 @@ public class PowerCell {
         if (location == null)
             return;
         // list of items in the inventory that are worthless and removed from our inventory
-        List<ItemStack> rejects = new ArrayList();
+        List<ItemStack> rejects = new ArrayList<>();
         for (int i = items.size() - 1; i >= 0; i--) {
             final ItemStack item = items.get(i);
-            if (item != null && !plugin.getItemManager().getItems().stream().anyMatch(powerCellItem -> powerCellItem.isSimilar(item)))
+            if (item != null && plugin.getItemManager().getItems().stream().noneMatch(powerCellItem -> powerCellItem.isSimilar(item)))
                 rejects.add(items.remove(i));
         }
 
@@ -166,6 +172,10 @@ public class PowerCell {
 
     public void setCurrentPower(int currentPower) {
         this.currentPower = currentPower;
+
+        if (this.plugin.getDynmapManager() != null) {
+            this.plugin.getDynmapManager().refreshDescription(this.claim);
+        }
     }
 
     public void setEconomyBalance(double economyBalance) {
@@ -322,14 +332,16 @@ public class PowerCell {
     }
 
     public PowerCellGui getGui(Player player) {
-        if (opened != null && opened.isOpen())
+        if (opened != null && opened.isOpen()) {
             opened.close();
+        }
+
         return opened = new PowerCellGui(UltimateClaims.getInstance(), this.claim, player);
     }
 
     public void destroy() {
-        if (location != null) {
-            getItems().stream().filter(item -> item != null)
+        if (location != null && location.getWorld() != null) {
+            getItems().stream().filter(Objects::nonNull)
                     .forEach(item -> location.getWorld().dropItemNaturally(location, item));
             removeHologram();
 
