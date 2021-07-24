@@ -20,7 +20,6 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class InteractListeners implements Listener {
-
     private final UltimateClaims plugin;
 
     public InteractListeners(UltimateClaims plugin) {
@@ -95,12 +94,16 @@ public class InteractListeners implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBucketEmpty(PlayerBucketEmptyEvent event) {
-        onBucket(event.getBlock().getChunk(), event.getPlayer(), event);
+        Chunk chunk = event.getBlockClicked().getRelative(event.getBlockFace()).getChunk();
+
+        onBucket(chunk, event.getPlayer(), event);
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBucketEmpty(PlayerBucketFillEvent event) {
-        onBucket(event.getBlock().getChunk(), event.getPlayer(), event);
+        Chunk chunk = event.getBlockClicked().getRelative(event.getBlockFace()).getChunk();
+
+        onBucket(chunk, event.getPlayer(), event);
     }
 
     private void onBucket(Chunk chunk, Player player, Cancellable event) {
