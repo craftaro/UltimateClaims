@@ -31,7 +31,6 @@ public class PowerCell {
     protected Location location = null;
 
     protected List<ItemStack> items = new ArrayList<>();
-    private final Deque<Audit> auditLog = new ArrayDeque<>();
 
     protected int currentPower = Settings.STARTING_POWER.getInt();
 
@@ -232,7 +231,8 @@ public class PowerCell {
 
                 if (item.getAmount() >= second.getMaxStackSize()
                         || removed.contains(j)
-                        || CompatibleMaterial.getMaterial(second) != material)
+                        || CompatibleMaterial.getMaterial(second) != material
+                        || !second.isSimilar(item))
                     continue;
 
                 if (item.getAmount() + second.getAmount() > item.getMaxStackSize()) {
@@ -315,20 +315,6 @@ public class PowerCell {
 
     public void setLocation(Location location) {
         this.location = location;
-    }
-
-    public List<Audit> getAuditLog() {
-        return Collections.unmodifiableList(new LinkedList<>(auditLog));
-    }
-
-    public void addToAuditLog(UUID uuid, long time) {
-        if (auditLog.isEmpty()
-                || auditLog.getFirst().getWho() != uuid
-                || System.currentTimeMillis() - auditLog.getFirst().getWhen() > 5 * 1000 * 60) {
-            Audit audit = new Audit(uuid, time);
-            auditLog.addFirst(audit);
-            plugin.getDataManager().addAudit(claim, audit);
-        }
     }
 
     public PowerCellGui getGui(Player player) {

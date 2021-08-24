@@ -49,7 +49,7 @@ public class PowerCellGui extends CustomizableGui {
 
         // Add access to audit log.
         if (!player.hasPermission("ultimateclaims.admin.nolog"))
-            powercell.addToAuditLog(player.getUniqueId(), System.currentTimeMillis());
+            plugin.getAuditManager().addToAuditLog(claim, player.getUniqueId(), System.currentTimeMillis());
 
         // edges will be type 3
         setDefaultItem(glass3);
@@ -100,7 +100,17 @@ public class PowerCellGui extends CustomizableGui {
                     });
 
         // Claim info
-        this.setItem("information", 5, fullPerms ? 5 : 4, CompatibleMaterial.BOOK.getItem());
+        this.setButton("information", 5, this.fullPerms ? 5 : 4, GuiUtils.createButtonItem(CompatibleMaterial.BOOK,
+                plugin.getLocale().getMessage("interface.powercell.infotitle").getMessage(),
+                plugin.getLocale().getMessage("interface.powercell.infolore")
+                        .processPlaceholder("chunks", claim.getClaimSize())
+                        .processPlaceholder("members", claim.getOwnerAndMembers().stream().filter(m -> m.getRole() == ClaimRole.MEMBER || m.getRole() == ClaimRole.OWNER).count())
+                        .getMessage().split("\\|")), (event) -> {
+            if (Settings.ENABLE_AUDIT_LOG.getBoolean()) {
+                closed();
+                event.manager.showGUI(event.player, new AuditGui(plugin, claim, event.player));
+            }
+        });
 
         // Members
         if (fullPerms)
@@ -197,25 +207,14 @@ public class PowerCellGui extends CustomizableGui {
                             .processPlaceholder("time", TimeUtils.makeReadable((long) powercell.getItemPower() * 60 * 1000)).getMessage(),
                     ChatColor.BLACK.toString());
 
-        List<String> lore = new ArrayList<>(Arrays.asList(plugin.getLocale().getMessage("interface.powercell.infolore")
-                .processPlaceholder("chunks", claim.getClaimSize())
-                .processPlaceholder("members",
-                        claim.getOwnerAndMembers().stream().filter(m -> m.getRole() == ClaimRole.MEMBER || m.getRole() == ClaimRole.OWNER).count())
-                .getMessage().split("\\|")));
-        lore.add("");
-        lore.add(plugin.getLocale().getMessage("interface.powercell.auditlog").getMessage());
-
-        for (Audit audit : powercell.getAuditLog().stream().limit(5).collect(Collectors.toList()))
-            lore.add(plugin.getLocale().getMessage("interface.powercell.audit")
-                    .processPlaceholder("name", Bukkit.getOfflinePlayer(audit.getWho()).getName())
-                    .processPlaceholder("time", TimeUtils.makeReadable(System.currentTimeMillis() - audit.getWhen()) + "&7.")
-                    .getMessage());
-
         // buttons at the bottom of the screen
         // Claim info
         this.updateItem("information", 5, fullPerms ? 5 : 4,
                 plugin.getLocale().getMessage("interface.powercell.infotitle").getMessage(),
-                lore);
+                plugin.getLocale().getMessage("interface.powercell.infolore")
+                        .processPlaceholder("chunks", claim.getClaimSize())
+                        .processPlaceholder("members", claim.getOwnerAndMembers().stream().filter(m -> m.getRole() == ClaimRole.MEMBER || m.getRole() == ClaimRole.OWNER).count())
+                        .getMessage().split("\\|"));
     }
 
     private void closed() {

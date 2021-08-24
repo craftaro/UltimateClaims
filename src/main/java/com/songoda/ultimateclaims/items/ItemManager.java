@@ -28,7 +28,7 @@ public class ItemManager {
         this.itemConfig = new Config(plugin, "items.yml");
 
         loadLoaders();
-        loadConfig();
+        loadItems();
     }
 
     private void loadLoaders() {
@@ -44,8 +44,9 @@ public class ItemManager {
         itemLoaders.add(new VanillaLoader());
     }
 
-    private void loadConfig() {
+    public void loadItems() {
         itemConfig.load();
+        items.clear();
 
         if (!itemConfig.isConfigurationSection("items")) {
             itemConfig.setHeader("This is where you configure the power cell items.",

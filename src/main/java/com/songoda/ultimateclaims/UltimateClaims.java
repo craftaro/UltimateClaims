@@ -13,6 +13,7 @@ import com.songoda.core.gui.GuiManager;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.hooks.HologramManager;
 import com.songoda.core.hooks.WorldGuardHook;
+import com.songoda.ultimateclaims.claim.AuditManager;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.commands.*;
@@ -61,6 +62,7 @@ public class UltimateClaims extends SongodaPlugin {
     private ClaimManager claimManager;
     private DynmapManager dynmapManager;
     private ItemManager itemManager;
+    private AuditManager auditManager;
 
     private DataMigrationManager dataMigrationManager;
     private DataManager dataManager;
@@ -97,8 +99,9 @@ public class UltimateClaims extends SongodaPlugin {
 
         PluginManager pluginManager = Bukkit.getPluginManager();
 
-        // Setup Item Manager
+        // Setup managers
         this.itemManager = new ItemManager(this);
+        this.auditManager = new AuditManager(this);
 
         // Listeners
         guiManager.init();
@@ -235,6 +238,7 @@ public class UltimateClaims extends SongodaPlugin {
     @Override
     public void onConfigReload() {
         this.setLocale(Settings.LANGUGE_MODE.getString(), true);
+        this.itemManager.loadItems();
 
         if (this.dynmapManager != null)
             this.dynmapManager.reload();
@@ -282,5 +286,9 @@ public class UltimateClaims extends SongodaPlugin {
 
     public ItemManager getItemManager() {
         return itemManager;
+    }
+
+    public AuditManager getAuditManager() {
+        return auditManager;
     }
 }

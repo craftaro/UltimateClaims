@@ -40,7 +40,7 @@ public class AnimateTask extends BukkitRunnable {
             int x = location.getBlockX() >> 4;
             int z = location.getBlockZ() >> 4;
 
-            if ((ServerVersion.isServerVersionAtLeast(ServerVersion.V1_12) && !location.isWorldLoaded())
+            if ((ServerVersion.isServerVersionAtLeast(ServerVersion.V1_14) && !location.isWorldLoaded())
                     || !location.getWorld().isChunkLoaded(x, z)) {
                 continue;
             }
