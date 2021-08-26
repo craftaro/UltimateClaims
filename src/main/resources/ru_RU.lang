@@ -1,0 +1,190 @@
+# General Messages
+
+general:
+  nametag:
+    prefix: '&8[&6УльтимейтЗемли&8]'
+  word:
+    none: none
+  status:
+    true: true
+    false: false
+  claim:
+    defaultname: '%name%'' &7земля'
+    powercell:
+      low: '&cНизкий заряд!'
+      message: '&6%time% &7осталось.'
+    dissolve: '&7Ваша земля &6%claim% &7была удалена.'
+  notanumber: '&cВведеный параметр &4%value% &cэто не число'
+  notenoughfunds: '&cУ вас недостаточно средств.'
+  notenoughfundspowercell: '&cУ этого элемента питания недостаточно средств. %balance% доступно для снятия.'
+  powercellrecipe: '&6Рецепт элемента питания'
+  interface:
+    exit: '&cВыход'
+    back: '&cНазад'
+    next: '&cСледующая страница'
+    previous: '&cПредыдущая страница'
+    current: '&7Текущий: &6%current%&7.'
+
+# Command Messages
+
+command:
+  general:
+    notapartclaim: '&cВы не участник земли или ее не существует.'
+    noclaim: '&cВам нужно быть в претензии, чтобы сделать это.'
+    noplayer: '&cЭтот игрок не существует или не находится в сети.'
+    notinclaim: '&cЭтого игрока нет в вашей заявке.'
+    claimed: '&cЭта земля запривачена.'
+    notclaimed: '&cЭта земля не запривачена.'
+    notyourclaim: '&cНа эту землю претендует кто-то другой.'
+  invite:
+    invited: '&7Вас пригласили присоединиться &6%claim%&7. Используйте &6/c accept &7чтобы принять приглашение.'
+    invite: '&7Вы пригласили &6%name% &7присоединиться к вашей земле&7.'
+    notself: '&cВы не можете пригласить себя.'
+    already: '&cЭтот игрок уже является участником.'
+    alreadyinvited: '&cThis player already has an active invite.'
+  addmember:
+    added: '&7You have been added to &6%claim%&7.'
+    add: '&7You have added &6%name% &7to your claim&7.'
+  kick:
+    kicked: '&cYou have been kicked from &4%claim%&c.'
+    kick: '&7You kicked &6%name% &7from &6%claim%&7.'
+    notself: '&7You cannot kick yourself.'
+  ban:
+    notself: '&7You cannot ban yourself.'
+    banned: '&cYou have been banned from &4%claim%&c.'
+    ban: '&7You banned &6%name% &7from &6%claim%&7.'
+  unban:
+    unbanned: '&cYou have been unbanned from &4%claim%&c.'
+    unban: '&7You unbanned &6%name% &7from &6%claim%&7.'
+    notself: '&7You cannot unban yourself.'
+  accept:
+    none: '&cYou do not currently have any invites to accept.'
+    success: '&7You are now a member of %claim%&7.'
+    accepted: '&6%name% &7accepted your invitation.'
+    maxed: '&7This claim is at their max capacity.'
+  claim:
+    success: '&7You claimed this chunk for your claim.'
+    newregion: '&aYou created a new region successfully.'
+    maxregions: '&cYou cannot create anymore regions...'
+    nocell: '&cYou need to create a powercell before you can claim more land...'
+    noregion: '&cYou cannot claim a protected region!'
+    info: '&cYou have &4%time% &cto create a powercell before your claim is dissolved... To create one you need to construct the recipe which you can find at &6/c recipe&7. Form it in the center of a single chest within your claim.'
+    nottouching: '&cYou can only claim chunks that are touching each other.'
+    toomany: '&cYou can only claim &4%amount% &cchunks.'
+    disabledworld: '&cYou cannot do that in this world.'
+  unclaim:
+    success: '&7You unclaimed this chunk.'
+    powercell: '&cYou cannot unclaim the chunk holding your powercell... Please move it first.'
+  removeclaim:
+    success: '&7You removed claim %claim%.'
+  transferownership:
+    success: '&7You transferred ownership of %claim% successfully.'
+    failed: '&7You failed to transferred ownership of %claim%.'
+  leave:
+    youleft: '&7You left &6%claim%&7.'
+    left: '&6%player% &7left &6%claim%&7.'
+    owner: '&cYou cannot leave your own claim.'
+  lock:
+    locked: '&7You locked your claim.'
+    unlocked: '&7You unlocked your claim.'
+    lockedother: '&7You locked the claim.'
+    unlockedother: '&7You unlocked the claim.'
+  sethome:
+    set: '&7You set the home for your claim.'
+  name:
+    set: '&7The name for your claim changed to %name%'
+    toolong: '&cThat name is too long. The maximum character count is &9%max%&c.'
+  home:
+    none: '&cThat claim doesn''t have a home set...'
+    success: '&7You teleported to your claims home.'
+  show:
+    start: '&7Claim visualizer &2enabled.'
+    stop: '&7Claim visualizer &cdisabled.'
+
+# Interface Messages
+
+interface:
+  powercell:
+    economytitle: '&7Экономия сохранена: &6%time%&7.'
+    economylore: '&7Щелкните левой кнопкой мыши, чтобы внести средства.|&7Щелкните правой кнопкой мыши, чтобы вывести средства.|&7Stored Funds: &6%balance%'
+    valuablestitle: '&7Items stored: &6%time%&7.'
+    totaltitle: '&7Total Power: &6%time%&7.'
+    addfunds: '&7Enter an amount to deposit.'
+    takefunds: '&7Enter an amount to withdraw.'
+    infotitle: '&5&lInfo'
+    infolore: '&7You have &6%chunks% &7claimed|&7chunks and &6%members% &7members.||&7Click to open the audit log.'
+    banstitle: '&c&lBans'
+    banslore: '&7View your claims bans.'
+    memberstitle: '&9&lMembers'
+    memberslore: '&7View your claims members.'
+    settingstitle: '&6&lSettings'
+    settingslore: '&7Change your claims settings.'
+  members:
+    title: Members
+    statslore: '&7Total Members: &6%totalmembers%&7.|&7Max Members: &6%maxmembers%&7.|&7Members: &6%members%&7.'
+    skulllore: '&7Role: &a%role%|&7Playtime: &b%playtime%|&7Member Since: &d%membersince%'
+    changetypetitle: '&7Change Type'
+    changetypelore: '&7Currently: &d%current%|&7Click to change type.'
+    statstitle: '&7Stats'
+    changesorttitle: '&7Change Sorting'
+    changesortlore: '&7Currently: &d%current%|&7Click to change sort.'
+    visitorsettingstitle: '&9&lVisitor Settings'
+    visitorsettingslore: '&7Edit settings for visitors.'
+    membersettingstitle: '&5&lMember Settings'
+    membersettingslore: '&7Edit settings for members.'
+  permsettings:
+    title: '%role% Settings'
+    breaktitle: '&7Block Break'
+    placetitle: '&7Block Place'
+    interacttitle: '&7Interact'
+    mobkilltitle: '&7Mob Killing'
+    redstonetitle: '&7Redstone'
+    doorstitle: '&7Doors'
+    tradingtitle: '&7Trading'
+  bans:
+    title: Bans
+    infotitle: '&7Info'
+    skulllore: '&7Click to unban.'
+    infolore: '&7Ban count: &6%bancount%&7.'
+  settings:
+    title: Settings
+    hostilemobspawningtitle: '&6&lHostile Mob Spawning'
+    firespreadtitle: '&6&lFire Spread'
+    pvptitle: '&6&lPVP'
+    mobgriefingtitle: '&6&lMob Griefing'
+    leafdecaytitle: '&6&lLeaf Decay'
+    tnttitle: '&6&lTNT Griefing'
+    flytitle: '&6&lFly'
+  recipe:
+    title: Powercell Recipe
+  role:
+    all: All
+    owner: Owner
+    member: Member
+    visitor: Visitor
+  sortingmode:
+    default: DEFAULT
+    playtime: PLAYTIME
+    membersince: MEMBER SINCE
+  audits:
+    title: 'Audit Log'
+    entryname: '&6%who%'
+    entrylore: '&7When: &6%when% ago'
+
+# Event Messages
+
+event:
+  general:
+    nopermission: '&cYou do not have permission to do that.'
+  invite:
+    expired: '&cYour invitation has expired...'
+  claim:
+    enter: '&7You have entered &6%claim%&7.'
+    exit: '&7You have exited &6%claim%&7.'
+    locked: '&cA magical force prevents you from entering...'
+  powercell:
+    success: '&7You created a powercell. Fill it up with fuel to keep your land claimed.'
+    failopen: '&cYou need to be the owner of this claim to open its powercell.'
+    lowpower: '&cYour claim &4%claim% &cis out of power!'
+    superpower: '&cYour claim &4%claim% &cis still out of power and at risk of dissolution!'
+    destroyed: '&cPower cell destroyed. You have gained %balance% from its money storage.'
