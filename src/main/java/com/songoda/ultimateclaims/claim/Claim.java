@@ -232,7 +232,9 @@ public class Claim {
 
     public boolean isOwnerOrMember(OfflinePlayer player) {
         if (player.getUniqueId().equals(owner.getUniqueId())) return true;
-        return this.members.stream().anyMatch(member -> member.getRole() == ClaimRole.MEMBER);
+        ClaimMember member = getMember(player);
+        if (member == null) return false;
+        return member.getRole() == ClaimRole.MEMBER;
     }
 
     public boolean containsChunk(Chunk chunk) {
@@ -335,6 +337,9 @@ public class Claim {
     }
 
     public void animateChunk(Chunk chunk, Player player, Material material) {
+        if (!Settings.ENABLE_CHUNK_ANIMATION.getBoolean())
+            return;
+
         int bx = chunk.getX() << 4;
         int bz = chunk.getZ() << 4;
 

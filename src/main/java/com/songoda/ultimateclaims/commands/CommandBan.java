@@ -48,13 +48,15 @@ public class CommandBan extends AbstractCommand {
             if (toBan == null || !(toBan.hasPlayedBefore() || toBan.isOnline())) {
                 plugin.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
                 return ReturnType.FAILURE;
-            } else if (player.getUniqueId().equals(toBan.getUniqueId())) {
-                plugin.getLocale().getMessage("command.kick.notself").sendPrefixedMessage(sender);
-                return ReturnType.FAILURE;
             }
 
             // all good!
             target = claim.getMember(toBan.getUniqueId());
+        }
+
+        if (player.getUniqueId().equals(toBan.getUniqueId())) {
+            plugin.getLocale().getMessage("command.kick.notself").sendPrefixedMessage(sender);
+            return ReturnType.FAILURE;
         }
 
         ClaimPlayerBanEvent event = new ClaimPlayerBanEvent(claim, player, toBan);

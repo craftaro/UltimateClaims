@@ -92,6 +92,14 @@ public class Settings {
             "Should hoppers be able to put fuel into a power cell?",
             "Please note that this feature is experimental.");
 
+    public static final ConfigSetting ENABLE_AUDIT_LOG = new ConfigSetting(config, "Main.Enable Audit Log", true,
+            "Should we enable the audit log?",
+            "Disable if you have issues with big databases.");
+
+    public static final ConfigSetting ENABLE_CHUNK_ANIMATION = new ConfigSetting(config, "Main.Enable Chunk Animation", true,
+            "Should we enable the chunk animation",
+            "when chunks are claimed/unclaimed?");
+
     public static final ConfigSetting DEFAULT_CLAIM_HOSTILE_MOB_SPAWN = new ConfigSetting(config, "Default Settings.Claim.Hostile Mob Spawn", true,
             "Should hostile mob spawning be enabled by default in new claims?");
 
