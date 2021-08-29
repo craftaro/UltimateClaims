@@ -181,7 +181,7 @@ public class Settings {
     public static final ConfigSetting GLASS_TYPE_2 = new ConfigSetting(config, "Interfaces.Glass Type 2", "BLUE_STAINED_GLASS_PANE");
     public static final ConfigSetting GLASS_TYPE_3 = new ConfigSetting(config, "Interfaces.Glass Type 3", "LIGHT_BLUE_STAINED_GLASS_PANE");
 
-    public static final ConfigSetting LANGUGE_MODE = new ConfigSetting(config, "System.Language Mode", "en_US",
+    public static final ConfigSetting LANGUGE_MODE = new ConfigSetting(config, "System.Language Mode", "ru_RU",
             "The enabled language file.",
             "More language files (if available) can be found in the plugins data folder.");
 
