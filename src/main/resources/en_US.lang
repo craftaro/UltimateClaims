@@ -21,6 +21,7 @@ general:
   interface:
     exit: '&cExit'
     back: '&cBack'
+    backlore: '&cGo to back menu'
     next: '&cNext Page'
     previous: '&cPrevious Page'
     current: '&7Current: &6%current%&7.'

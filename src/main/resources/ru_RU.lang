@@ -29,7 +29,8 @@ general:
   notenoughfundspowercell: '&7У этого элемента питания недостаточно средств. &f%balance% &7доступно для снятия.'
   powercellrecipe: '&f&lРецепт элемента питания'
   interface:
-    exit: '&7Вернуться назад.'
+    exit: '&c&lВыход'
+    backlore: '&7Вернуться назад в меню.'
     back: '&c&lНазад'
     next: '&f&l> &eСледующая страница'
     previous: '&f&l< &eПредыдущая страница'
