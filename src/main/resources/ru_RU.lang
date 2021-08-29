@@ -2,28 +2,28 @@
 
 general:
   nametag:
-    prefix: '&8[&6УльтимейтЗемли&8]'
+    prefix: '&8[&6Земли&8]'
   word:
     none: none
   status:
     true: true
     false: false
   claim:
-    defaultname: '%name%'' &7земля'
+    defaultname: '&7Земля игрока &f%name%'
     powercell:
-      low: '&cНизкий заряд!'
-      message: '&6%time% &7осталось.'
-    dissolve: '&7Ваша земля &6%claim% &7была удалена.'
-  notanumber: '&cВведеный параметр &4%value% &cэто не число'
-  notenoughfunds: '&cУ вас недостаточно средств.'
-  notenoughfundspowercell: '&cУ этого элемента питания недостаточно средств. %balance% доступно для снятия.'
-  powercellrecipe: '&6Рецепт элемента питания'
+      low: '&7Низкий заряд!'
+      message: '&f%time%&7 осталось.'
+    dissolve: '&7Ваша земля &f%claim%&7 была удалена.'
+  notanumber: '&7Введеный параметр &f%value%&7 это не число'
+  notenoughfunds: '&7У вас недостаточно средств.'
+  notenoughfundspowercell: '&7У этого элемента питания недостаточно средств. &f%balance%&7 доступно для снятия.'
+  powercellrecipe: '&7Рецепт элемента питания'
   interface:
-    exit: '&cВыход'
-    back: '&cНазад'
-    next: '&cСледующая страница'
-    previous: '&cПредыдущая страница'
-    current: '&7Текущий: &6%current%&7.'
+    exit: '&c&lВыход'
+    back: '&c&lНазад'
+    next: '&f&l> &eСледующая страница'
+    previous: '&f&l< &eПредыдущая страница'
+    current: '&7Текущий: &f%current%&7.'
 
 # Command Messages
 
@@ -175,16 +175,16 @@ interface:
 
 event:
   general:
-    nopermission: '&cYou do not have permission to do that.'
+    nopermission: '&7У вас нет на это разрешения.'
   invite:
-    expired: '&cYour invitation has expired...'
+    expired: '&7Срок действия вашего приглашения истек.'
   claim:
-    enter: '&7You have entered &6%claim%&7.'
-    exit: '&7You have exited &6%claim%&7.'
-    locked: '&cA magical force prevents you from entering...'
+    enter: '&7Вы вошли в &f%claim%&7.'
+    exit: '&7Вы вышли из &f%claim%&7.'
+    locked: '&7Магическая сила мешает вам войти в землю.'
   powercell:
-    success: '&7You created a powercell. Fill it up with fuel to keep your land claimed.'
-    failopen: '&cYou need to be the owner of this claim to open its powercell.'
-    lowpower: '&cYour claim &4%claim% &cis out of power!'
-    superpower: '&cYour claim &4%claim% &cis still out of power and at risk of dissolution!'
-    destroyed: '&cPower cell destroyed. You have gained %balance% from its money storage.'
+    success: '&7Вы создали элемент питания. Заправьте его ресурсами, чтобы на вашу землю не претендовали.'
+    failopen: '&7Вам нужно быть владельцем этой земли, чтобы открыть элемент питания.'
+    lowpower: '&7Ваша земля &f%claim%&7имеет малый заряд!'
+    superpower: '&7Ваша земля &f%claim%&7is still out of power and at risk of dissolution!'
+    destroyed: '&7Элемент питания разрушен. Вы получили &f%balance%&7 из его денежного хранилища.'
