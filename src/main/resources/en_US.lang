@@ -20,6 +20,7 @@ general:
   powercellrecipe: '&6Powercell Recipe'
   interface:
     exit: '&cExit'
+    exitlore: '&7Exit from this menu.'
     back: '&cBack'
     backlore: '&cGo to back menu'
     next: '&cNext Page'

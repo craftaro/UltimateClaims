@@ -30,6 +30,7 @@ general:
   powercellrecipe: '&f&lРецепт элемента питания'
   interface:
     exit: '&c&lВыход'
+    exitlore: '&7Выйти из меню.'
     backlore: '&7Вернуться назад в меню.'
     back: '&c&lНазад'
     next: '&f&l> &eСледующая страница'

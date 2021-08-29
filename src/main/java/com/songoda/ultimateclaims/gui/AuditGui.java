@@ -51,7 +51,7 @@ public class AuditGui extends CustomizableGui {
             setNextPage(5, 7, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("general.interface.next").getMessage()));
             setPrevPage(5, 1, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("general.interface.previous").getMessage()));
             setOnPage(event -> showPage());
-            setButton("exit", 8, GuiUtils.createButtonItem(CompatibleMaterial.OAK_DOOR, plugin.getLocale().getMessage("general.interface.exit").getMessage()), (event) -> player.closeInventory());
+            setButton("exit", 8, GuiUtils.createButtonItem(CompatibleMaterial.OAK_DOOR,plugin.getLocale().getMessage("general.interface.exit").getMessage(),plugin.getLocale().getMessage("general.interface.exitlore").getMessage()), (event) -> player.closeInventory());
             List<Audit> entries = audits.stream().skip((page - 1) * 28).limit(28L).collect(Collectors.toList());
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                 int num = 11;
