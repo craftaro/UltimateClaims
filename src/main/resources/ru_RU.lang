@@ -23,7 +23,7 @@ general:
     back: '&c&lНазад'
     next: '&f&l> &eСледующая страница'
     previous: '&f&l< &eПредыдущая страница'
-    current: '&7Текущий: &f%current%&7.'
+    current: '&7Текущая: &f%current%&7.'
 
 # Command Messages
 
@@ -37,44 +37,44 @@ command:
     notclaimed: '&cЭта земля не запривачена.'
     notyourclaim: '&cНа эту землю претендует кто-то другой.'
   invite:
-    invited: '&7Вас пригласили присоединиться &6%claim%&7. Используйте &6/c accept &7чтобы принять приглашение.'
+    invited: '&7Вас пригласили присоединиться &f%claim%&7. Используйте &f/c accept &7чтобы принять приглашение.'
     invite: '&7Вы пригласили &6%name% &7присоединиться к вашей земле&7.'
-    notself: '&cВы не можете пригласить себя.'
-    already: '&cЭтот игрок уже является участником.'
-    alreadyinvited: '&cThis player already has an active invite.'
+    notself: '&7Вы не можете пригласить себя.'
+    already: '&7Этот игрок уже является участником.'
+    alreadyinvited: '&7У этого игрока уже есть активное приглашение.'
   addmember:
-    added: '&7You have been added to &6%claim%&7.'
-    add: '&7You have added &6%name% &7to your claim&7.'
+    added: '&7Вы были добавлены в &f%claim%&7.'
+    add: '&7Вы добавили &f%name% &7в вашу землю.'
   kick:
-    kicked: '&cYou have been kicked from &4%claim%&c.'
-    kick: '&7You kicked &6%name% &7from &6%claim%&7.'
-    notself: '&7You cannot kick yourself.'
+    kicked: '&cТебя выгнали из &f%claim%&7.'
+    kick: '&7Вы исключили &6%name% &7из &f%claim%&7.'
+    notself: '&7Вы не можете исключить себя.'
   ban:
-    notself: '&7You cannot ban yourself.'
-    banned: '&cYou have been banned from &4%claim%&c.'
-    ban: '&7You banned &6%name% &7from &6%claim%&7.'
+    notself: '&7Вы не можете заблокировать себя.'
+    banned: '&7Вы были заблокированы в земле &f%claim%&7.'
+    ban: '&7Вы заблокировали &f%name% &7в &f%claim%&7.'
   unban:
-    unbanned: '&cYou have been unbanned from &4%claim%&c.'
+    unbanned: '&7Вы были разблокированы в &f%claim%&7.'
     unban: '&7You unbanned &6%name% &7from &6%claim%&7.'
     notself: '&7You cannot unban yourself.'
   accept:
-    none: '&cYou do not currently have any invites to accept.'
+    none: '&7Вы do not currently have any invites to accept.'
     success: '&7You are now a member of %claim%&7.'
     accepted: '&6%name% &7accepted your invitation.'
     maxed: '&7This claim is at their max capacity.'
   claim:
-    success: '&7You claimed this chunk for your claim.'
-    newregion: '&aYou created a new region successfully.'
-    maxregions: '&cYou cannot create anymore regions...'
-    nocell: '&cYou need to create a powercell before you can claim more land...'
-    noregion: '&cYou cannot claim a protected region!'
-    info: '&cYou have &4%time% &cto create a powercell before your claim is dissolved... To create one you need to construct the recipe which you can find at &6/c recipe&7. Form it in the center of a single chest within your claim.'
-    nottouching: '&cYou can only claim chunks that are touching each other.'
-    toomany: '&cYou can only claim &4%amount% &cchunks.'
-    disabledworld: '&cYou cannot do that in this world.'
+    success: '&7Вы заприватили этот кусок для своей земли.'
+    newregion: '&aВы успешно создали новую землю.'
+    maxregions: '&7Вы cannot create anymore regions...'
+    nocell: '&7Вы need to create a powercell before you can claim more land...'
+    noregion: '&7Вы cannot claim a protected region!'
+    info: '&7Вы have &4%time% &cto create a powercell before your claim is dissolved... To create one you need to construct the recipe which you can find at &6/c recipe&7. Form it in the center of a single chest within your claim.'
+    nottouching: '&7Вы can only claim chunks that are touching each other.'
+    toomany: '&7Вы can only claim &4%amount% &cchunks.'
+    disabledworld: '&7Вы cannot do that in this world.'
   unclaim:
     success: '&7You unclaimed this chunk.'
-    powercell: '&cYou cannot unclaim the chunk holding your powercell... Please move it first.'
+    powercell: '&7Вы cannot unclaim the chunk holding your powercell... Please move it first.'
   removeclaim:
     success: '&7You removed claim %claim%.'
   transferownership:
@@ -83,7 +83,7 @@ command:
   leave:
     youleft: '&7You left &6%claim%&7.'
     left: '&6%player% &7left &6%claim%&7.'
-    owner: '&cYou cannot leave your own claim.'
+    owner: '&7Вы cannot leave your own claim.'
   lock:
     locked: '&7You locked your claim.'
     unlocked: '&7You unlocked your claim.'
@@ -105,7 +105,7 @@ command:
 
 interface:
   powercell:
-    economytitle: '&7Экономия сохранена: &6%time%&7.'
+    economytitle: '&7Экономия сохранена: &f%time%&7.'
     economylore: '&7Щелкните левой кнопкой мыши, чтобы внести средства.|&7Щелкните правой кнопкой мыши, чтобы вывести средства.|&7Stored Funds: &6%balance%'
     valuablestitle: '&7Items stored: &6%time%&7.'
     totaltitle: '&7Total Power: &6%time%&7.'
@@ -120,7 +120,7 @@ interface:
     settingstitle: '&6&lSettings'
     settingslore: '&7Change your claims settings.'
   members:
-    title: Members
+    title: 'Участники'
     statslore: '&7Total Members: &6%totalmembers%&7.|&7Max Members: &6%maxmembers%&7.|&7Members: &6%members%&7.'
     skulllore: '&7Role: &a%role%|&7Playtime: &b%playtime%|&7Member Since: &d%membersince%'
     changetypetitle: '&7Change Type'
@@ -142,34 +142,34 @@ interface:
     doorstitle: '&7Doors'
     tradingtitle: '&7Trading'
   bans:
-    title: Bans
-    infotitle: '&7Info'
-    skulllore: '&7Click to unban.'
-    infolore: '&7Ban count: &6%bancount%&7.'
+    title: 'Блокировки'
+    infotitle: '&7Информация'
+    skulllore: '&7Нажмите, чтобы отменить блокировку.'
+    infolore: '&7Кол-во заблокированных: &f%bancount%&7.'
   settings:
-    title: Settings
-    hostilemobspawningtitle: '&6&lHostile Mob Spawning'
-    firespreadtitle: '&6&lFire Spread'
-    pvptitle: '&6&lPVP'
-    mobgriefingtitle: '&6&lMob Griefing'
-    leafdecaytitle: '&6&lLeaf Decay'
-    tnttitle: '&6&lTNT Griefing'
-    flytitle: '&6&lFly'
+    title: 'Настройки'
+    hostilemobspawningtitle: '&6&lСпавн мобов'
+    firespreadtitle: '&6&lРаспространение огня'
+    pvptitle: '&6&lПВП'
+    mobgriefingtitle: '&6&lМоб грифинг'
+    leafdecaytitle: '&6&lГниение листьев'
+    tnttitle: '&6&lВзрывы динамитом'
+    flytitle: '&6&lПолет'
   recipe:
     title: Powercell Recipe
   role:
-    all: All
-    owner: Owner
-    member: Member
-    visitor: Visitor
+    all: Все
+    owner: Владелец
+    member: Участник
+    visitor: Посетитель
   sortingmode:
     default: DEFAULT
     playtime: PLAYTIME
     membersince: MEMBER SINCE
   audits:
-    title: 'Audit Log'
-    entryname: '&6%who%'
-    entrylore: '&7When: &6%when% ago'
+    title: 'Журнал аудита'
+    entryname: '&f%who%'
+    entrylore: '&7Когда: &f%when%&7 назад'
 
 # Event Messages
 
