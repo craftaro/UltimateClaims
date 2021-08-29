@@ -1,66 +1,74 @@
-# General Messages
+######################################################
+# New messages added for UltimateClaims v1.8.0.      #
+#                                                    #
+# These translations were found untranslated, join   #
+# our translation Discord https://discord.gg/f7fpZEf #
+# to request an official update!                     #
+#                                                    #
+# general.claim.returnfunds                          #
+# command.uan.notself                                #
+######################################################
 
 general:
   nametag:
     prefix: '&8[&6Земли&8]'
   word:
-    none: none
+    none: '&7Ничего'
   status:
-    true: true
-    false: false
+    'true': '&2&lРазрешено'
+    'false': '&4&lЗапрещено'
   claim:
-    defaultname: '&7Земля игрока &f%name%'
+    defaultname: '&7Земля игрока &f&l%name%'
     powercell:
       low: '&7Низкий заряд!'
-      message: '&f%time%&7 осталось.'
-    dissolve: '&7Ваша земля &f%claim%&7 была удалена.'
-  notanumber: '&7Введеный параметр &f%value%&7 это не число'
+      message: '&f%time% &7осталось.'
+    dissolve: '&7Ваша земля &f%claim% &7была удалена.'
+    returnfunds: '&f%amount% &7было возвращено вам.'
+  notanumber: '&7Введеный параметр &f%value% &7это не число!'
   notenoughfunds: '&7У вас недостаточно средств.'
-  notenoughfundspowercell: '&7У этого элемента питания недостаточно средств. &f%balance%&7 доступно для снятия.'
-  powercellrecipe: '&7Рецепт элемента питания'
+  notenoughfundspowercell: '&7У этого элемента питания недостаточно средств. &f%balance% &7доступно для снятия.'
+  powercellrecipe: '&f&lРецепт элемента питания'
   interface:
-    exit: '&c&lВыход'
+    exit: '&7Вернуться назад.'
     back: '&c&lНазад'
     next: '&f&l> &eСледующая страница'
     previous: '&f&l< &eПредыдущая страница'
-    current: '&7Текущая: &f%current%&7.'
-
+    current: '&7Значение: &f&l%current%&7.'
 # Command Messages
-
 command:
   general:
     notapartclaim: '&cВы не участник земли или ее не существует.'
     noclaim: '&cВам нужно быть в претензии, чтобы сделать это.'
     noplayer: '&cЭтот игрок не существует или не находится в сети.'
     notinclaim: '&cЭтого игрока нет в вашей заявке.'
-    claimed: '&cЭта земля запривачена.'
-    notclaimed: '&cЭта земля не запривачена.'
-    notyourclaim: '&cНа эту землю претендует кто-то другой.'
+    claimed: '&7Эта земля запривачена.'
+    notclaimed: '&7Эта земля не запривачена.'
+    notyourclaim: '&7Эта земля не в вашей власти!'
   invite:
-    invited: '&7Вас пригласили присоединиться &f%claim%&7. Используйте &f/c accept &7чтобы принять приглашение.'
-    invite: '&7Вы пригласили &6%name% &7присоединиться к вашей земле&7.'
+    invited: '&7Вас пригласили присоединиться &f&l%claim%&7. Используйте &f&l/c accept &7чтобы принять приглашение.'
+    invite: '&7Вы пригласили &f&l%name% &7присоединиться к вашей земле.'
     notself: '&7Вы не можете пригласить себя.'
     already: '&7Этот игрок уже является участником.'
     alreadyinvited: '&7У этого игрока уже есть активное приглашение.'
   addmember:
-    added: '&7Вы были добавлены в &f%claim%&7.'
-    add: '&7Вы добавили &f%name% &7в вашу землю.'
+    added: '&7Вы были добавлены в &f&l%claim%&7.'
+    add: '&7Вы добавили &f&l%name% &7в вашу землю.'
   kick:
-    kicked: '&cТебя выгнали из &f%claim%&7.'
-    kick: '&7Вы исключили &6%name% &7из &f%claim%&7.'
+    kicked: '&7Тебя выгнали из &f&l%claim%&7.'
+    kick: '&7Вы исключили &f&l%name% &7из &f&l%claim%&7.'
     notself: '&7Вы не можете исключить себя.'
   ban:
     notself: '&7Вы не можете заблокировать себя.'
-    banned: '&7Вы были заблокированы в земле &f%claim%&7.'
-    ban: '&7Вы заблокировали &f%name% &7в &f%claim%&7.'
+    banned: '&7Вы были заблокированы в земле &f&l%claim%&7.'
+    ban: '&7Вы заблокировали &f&l%name% &7в &f&l%claim%&7.'
   unban:
-    unbanned: '&7Вы были разблокированы в &f%claim%&7.'
-    unban: '&7Вы заблокировали &f%name% &7в &f%claim%&7.'
+    unbanned: '&7Вы были разблокированы в &f&l%claim%&7.'
+    unban: '&7Вы заблокировали &f&l%name% &7в &f&l%claim%&7.'
     notself: '&7Вы не можете разблокировать себя.'
   accept:
     none: '&7В настоящее время у вас нет никаких приглашений для принятия.'
-    success: '&7Теперь вы являетесь участником &f%claim%&7.'
-    accepted: '&f%name% &7принял ваше приглашение.'
+    success: '&7Теперь вы являетесь участником &f&l%claim%&7.'
+    accepted: '&f&l%name% &7принял ваше приглашение.'
     maxed: '&7В земле максимальное кол-во участников!'
   claim:
     success: '&7Вы заприватили этот кусок для своей земли.'
@@ -68,123 +76,122 @@ command:
     maxregions: '&7Вы создали максимальное кол-во земель.'
     nocell: '&7Вам нужно создать элемент питания, прежде чем вы сможете приватить на больше земли.'
     noregion: '&7Вы не может приватить заприваченную землю!'
-    info: '&7Вы имеете &f%time% &7времени, чтобы создать элемент питания до того, как ваша земля будет аннулирована. Используйте &f/c recipe&7.'
+    info: '&7Вы имеете &f&l%time% &7времени, чтобы создать элемент питания до того, как ваша земля будет аннулирована. Используйте &f/c recipe&7.'
     nottouching: '&7Вы можете расширять землю рядом с вашей землей!'
-    toomany: '&7Вы можете приватить только &f%amount% &7земель.'
+    toomany: '&7Вы можете приватить только &f&l%amount% &7земель.'
     disabledworld: '&7Вам нельзя делать это в этом мире.'
   unclaim:
     success: '&7Вы удалили эту землю.'
     powercell: '&7Вам не удается удалить землю, в котором находится ваш элемент питания. Пожалуйста, сначала передвиньте его.'
   removeclaim:
-    success: '&7Вы удалили землю &f%claim%&7.'
+    success: '&7Вы удалили землю &f&l%claim%&7.'
   transferownership:
-    success: '&7You transferred ownership of %claim% successfully.'
-    failed: '&7You failed to transferred ownership of %claim%.'
+    success: '&7Вы передали право собственности на &f&l%claim% &7успешно.'
+    failed: '&7Вы не смогли передать право собственности на &f&l%claim%&7.'
   leave:
-    youleft: '&7You left &6%claim%&7.'
-    left: '&6%player% &7left &6%claim%&7.'
-    owner: '&7Вы cannot leave your own claim.'
+    youleft: '&7Вы вышли из &f&l%claim%&7.'
+    left: '&f&l%player% &7вышел из &f&l%claim%&7.'
+    owner: '&7Вы не можете покинуть свою собственную землю.'
   lock:
-    locked: '&7You locked your claim.'
-    unlocked: '&7You unlocked your claim.'
-    lockedother: '&7You locked the claim.'
-    unlockedother: '&7You unlocked the claim.'
+    locked: '&7Вы заблокировали свою землю.'
+    unlocked: '&7Вы разблокировали свою землю.'
+    lockedother: '&7Вы заблокировали эту землю.'
+    unlockedother: '&7Вы разблокировали эту землю.'
   sethome:
-    set: '&7You set the home for your claim.'
+    set: '&7Вы устанавливаете дом для своей земли.'
   name:
-    set: '&7The name for your claim changed to %name%'
-    toolong: '&cThat name is too long. The maximum character count is &9%max%&c.'
+    set: '&7Название вашей земли изменено на &f%name%'
+    toolong: '&7Это имя слишком длинное. Максимальное количество символов &f&l%max%&7.'
   home:
-    none: '&cThat claim doesn''t have a home set...'
-    success: '&7You teleported to your claims home.'
+    none: '&7В этой земле нет позиции дома.'
+    success: '&7Вы телепортировались в дом земли.'
   show:
-    start: '&7Claim visualizer &2enabled.'
-    stop: '&7Claim visualizer &cdisabled.'
-
+    start: '&7Визуализатор земель &2&lвключен&7.'
+    stop: '&7Визуализатор земель &c&lвыключен&7.'
+  uan:
+    notself: '&7Вы не можете забанить себя.'
 # Interface Messages
-
 interface:
   powercell:
-    economytitle: '&7Экономия сохранена: &f%time%&7.'
-    economylore: '&7Щелкните левой кнопкой мыши, чтобы внести средства.|&7Щелкните правой кнопкой мыши, чтобы вывести средства.|&7Stored Funds: &6%balance%'
-    valuablestitle: '&7Items stored: &6%time%&7.'
-    totaltitle: '&7Total Power: &6%time%&7.'
-    addfunds: '&7Enter an amount to deposit.'
-    takefunds: '&7Enter an amount to withdraw.'
-    infotitle: '&5&lInfo'
-    infolore: '&7You have &6%chunks% &7claimed|&7chunks and &6%members% &7members.||&7Click to open the audit log.'
-    banstitle: '&c&lBans'
-    banslore: '&7View your claims bans.'
-    memberstitle: '&9&lMembers'
-    memberslore: '&7View your claims members.'
-    settingstitle: '&6&lSettings'
-    settingslore: '&7Change your claims settings.'
+    economytitle: '&7&lВалюты внесено на: &f&l%time%'
+    economylore: '&7Нажмите ЛКМ, чтобы внести средства.|&7Нажмите ПКМ, чтобы вывести средства.|&7Сейчас хранится: &f&l%balance%'
+    valuablestitle: '&7&lХранящиеся предметы на: &f&l%time%&7.'
+    totaltitle: '&7&lВсего заряда: &f&l%time%&7.'
+    addfunds: '&7Введите сумму для внесения депозита:'
+    takefunds: '&7Введите сумму для вывода:'
+    infotitle: '&f&lИнформация'
+    infolore: '&7Вы имеете &f&l%chunks% &7заприваченных земель|&7c &f&l%members% &7участник(ом/ами).||&7Нажмите, чтобы открыть журнал аудита.'
+    banstitle: '&f&lБлокировки'
+    banslore: '&7Посмотреть список заблокированных участников.'
+    memberstitle: '&f&lУчастники'
+    memberslore: '&7Посмотреть список участников.'
+    settingstitle: '&f&lНастройки'
+    settingslore: '&7Измените настройки своей земли.'
   members:
-    title: 'Участники'
-    statslore: '&7Total Members: &6%totalmembers%&7.|&7Max Members: &6%maxmembers%&7.|&7Members: &6%members%&7.'
-    skulllore: '&7Role: &a%role%|&7Playtime: &b%playtime%|&7Member Since: &d%membersince%'
-    changetypetitle: '&7Change Type'
-    changetypelore: '&7Currently: &d%current%|&7Click to change type.'
-    statstitle: '&7Stats'
-    changesorttitle: '&7Change Sorting'
-    changesortlore: '&7Currently: &d%current%|&7Click to change sort.'
-    visitorsettingstitle: '&9&lVisitor Settings'
-    visitorsettingslore: '&7Edit settings for visitors.'
-    membersettingstitle: '&5&lMember Settings'
-    membersettingslore: '&7Edit settings for members.'
+    title: '&7&lУчастники'
+    statslore: '&7Всего участников: &f%totalmembers%&7.|&7Максимальное количество участников: &f%maxmembers%&7.|&7Участников: &f%members%&7.'
+    skulllore: '&7Роль: &f&l%role%|&7Время в игре: &f&l%playtime%|&7Участник с &f&l%membersince%'
+    changetypetitle: '&f&lИзменить тип'
+    changetypelore: '&7Текущий: &f%current%|&7Нажмите, чтобы изменить тип.'
+    statstitle: '&f&lСтатистика'
+    changesorttitle: '&f&lИзменить сортировку'
+    changesortlore: '&7Текущее: &d%current%|&7Click to change sort.'
+    visitorsettingstitle: '&f&lНастройки посетителя'
+    visitorsettingslore: '&7Редактирование настроек для посетителей.'
+    membersettingstitle: '&f&lНастройки участника'
+    membersettingslore: '&7Изменение настроек для участников.'
   permsettings:
-    title: '%role% настройки'
-    breaktitle: '&7Разрушение блоков'
-    placetitle: '&7Установка блоков'
-    interacttitle: '&7Взаимодействовать'
-    mobkilltitle: '&7Убийство мобов'
-    redstonetitle: '&7Редстоун'
-    doorstitle: '&7Двери'
-    tradingtitle: '&7Торговец'
+    title: '&7&lНастройки "&8&l%role%&7&l"'
+    breaktitle: '&c&lРазрушение&7&l блоков'
+    placetitle: '&a&lУстановка&7&l блоков'
+    interacttitle: '&f&lВзаимодействовать'
+    mobkilltitle: '&c&lУбийство&7&l мобов'
+    redstonetitle: '&f&lРедстоун'
+    doorstitle: '&a&lИспользование&7&l дверей'
+    tradingtitle: '&f&lТорговля'
   bans:
-    title: 'Блокировки'
-    infotitle: '&7Информация'
+    title: '&7&lБлокировки'
+    infotitle: '&f&lИнформация'
     skulllore: '&7Нажмите, чтобы отменить блокировку.'
-    infolore: '&7Кол-во заблокированных: &f%bancount%&7.'
+    infolore: '&7Кол-во заблокированных: &f&l%bancount%&7.'
   settings:
-    title: 'Настройки'
-    hostilemobspawningtitle: '&6&lСпавн мобов'
-    firespreadtitle: '&6&lРаспространение огня'
-    pvptitle: '&6&lПВП'
-    mobgriefingtitle: '&6&lМоб грифинг'
-    leafdecaytitle: '&6&lГниение листьев'
-    tnttitle: '&6&lВзрывы динамитом'
-    flytitle: '&6&lПолет'
+    title: '&7&lНастройки'
+    hostilemobspawningtitle: '&a&lСпавн &7&lмобов'
+    firespreadtitle: '&c&lРаспространение &7&lогня'
+    pvptitle: '&c&lПВП'
+    mobgriefingtitle: '&c&lМоб грифинг'
+    leafdecaytitle: '&c&lГниение листьев'
+    tnttitle: '&c&lВзрывы динамитом'
+    flytitle: '&f&lПолет'
   recipe:
-    title: Powercell Recipe
+    title: '&7&lРецепт элемента питания'
   role:
     all: Все
     owner: Владелец
     member: Участник
     visitor: Посетитель
   sortingmode:
-    default: DEFAULT
-    playtime: PLAYTIME
-    membersince: MEMBER SINCE
+    default: ПО УМОЛЧАНИЮ
+    playtime: ВРЕМЯ В ИГРЕ
+    membersince: УЧАСТНИК С ДАТЫ
   audits:
-    title: 'Журнал аудита'
+    title: '&7&lЖурнал аудита'
     entryname: '&f%who%'
-    entrylore: '&7Когда: &f%when%&7 назад'
-
+    entrylore: '&7Когда: &f&l%when% &7назад'
 # Event Messages
-
 event:
   general:
     nopermission: '&7У вас нет на это разрешения.'
   invite:
     expired: '&7Срок действия вашего приглашения истек.'
   claim:
-    enter: '&7Вы вошли в &f%claim%&7.'
-    exit: '&7Вы вышли из &f%claim%&7.'
+    enter: '&7Вы вошли в &f&l%claim%&7.'
+    exit: '&7Вы вышли из &f&l%claim%&7.'
     locked: '&7Магическая сила мешает вам войти в землю.'
   powercell:
     success: '&7Вы создали элемент питания. Заправьте его ресурсами, чтобы на вашу землю не претендовали.'
     failopen: '&7Вам нужно быть владельцем этой земли, чтобы открыть элемент питания.'
-    lowpower: '&7Ваша земля &f%claim%&7имеет малый заряд!'
-    superpower: '&7Ваша земля &f%claim%&7is still out of power and at risk of dissolution!'
-    destroyed: '&7Элемент питания разрушен. Вы получили &f%balance%&7 из его денежного хранилища.'
+    lowpower: '&7Ваша земля &f&l%claim% &7имеет мало заряда!'
+    superpower: '&7Ваша земля &f&l%claim% &7все еще уязвим и находится под угрозой разрушения!'
+    destroyed: '&7Элемент питания разрушен. Вы получили &f&l%balance% &7из его хранилища.'
+  #1
