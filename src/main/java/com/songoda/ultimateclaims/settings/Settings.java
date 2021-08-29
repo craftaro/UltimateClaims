@@ -186,7 +186,7 @@ public class Settings {
             "More language files (if available) can be found in the plugins data folder.");
 
     public static final ConfigSetting DYNMAP_ENABLED = new ConfigSetting(config, "Dynmap.Enabled", true, "Set to 'false' to disable highlighting claimed areas on Dynmap.");
-    public static final ConfigSetting DYNMAP_LABEL = new ConfigSetting(config, "Dynmap.Label", "Claimed Chunks",
+    public static final ConfigSetting DYNMAP_LABEL = new ConfigSetting(config, "Dynmap.Label", "Заприваченные земли",
             "The label is shown to the user at the upper-right corner by default",
             "User can toggle a checkbox to disable this overlay");
     public static final ConfigSetting DYNMAP_BUBBLE = new ConfigSetting(config, "Dynmap.Bubble", "<b><u>${Claim}</u></b><br>\n<b>Owner</b>: ${Owner}<br>\n<b>Power left</b>: ${PowerLeft}",
