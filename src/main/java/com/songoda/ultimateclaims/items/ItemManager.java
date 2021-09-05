@@ -50,7 +50,8 @@ public class ItemManager {
 
         if (!itemConfig.isConfigurationSection("items")) {
             itemConfig.setHeader("This is where you configure the power cell items.",
-                    "Supported item types: vanilla, slimefun, itembridge, itemsadder");
+                    "Supported item types: vanilla, slimefun, itembridge, itemsadder",
+                    "Note: Vanilla items should be placed at the bottom to prevent conflicts.");
 
             List<String> oldItems = Settings.ITEM_VALUES.getStringList();
             if (!oldItems.isEmpty()) {
