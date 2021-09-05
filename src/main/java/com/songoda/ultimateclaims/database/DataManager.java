@@ -720,8 +720,13 @@ public class DataManager extends DataManagerAbstract {
             }
 
             Map<UUID, Claim> returnClaims = new HashMap<>();
-            for (Claim claim : claims.values())
+            for (Claim claim : claims.values()) {
+                if (claim.getOwner() == null) {
+                    plugin.getLogger().warning("Claim ID " + claim.getId() + " has no owner for some reason. Skipping.");
+                    continue;
+                }
                 returnClaims.put(claim.getOwner().getUniqueId(), claim);
+            }
 
             this.sync(() -> callback.accept(returnClaims));
         }));
