@@ -13,20 +13,36 @@ import com.songoda.core.gui.GuiManager;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.hooks.HologramManager;
 import com.songoda.core.hooks.WorldGuardHook;
+import com.songoda.ultimateclaims.claim.AuditManager;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
 import com.songoda.ultimateclaims.commands.*;
 import com.songoda.ultimateclaims.commands.admin.CommandRemoveClaim;
 import com.songoda.ultimateclaims.commands.admin.CommandTransferOwnership;
 import com.songoda.ultimateclaims.database.DataManager;
-import com.songoda.ultimateclaims.database.migrations.*;
+import com.songoda.ultimateclaims.database.migrations._1_InitialMigration;
+import com.songoda.ultimateclaims.database.migrations._2_NewPermissions;
+import com.songoda.ultimateclaims.database.migrations._3_MemberNames;
+import com.songoda.ultimateclaims.database.migrations._4_TradingPermission;
+import com.songoda.ultimateclaims.database.migrations._5_TntSetting;
+import com.songoda.ultimateclaims.database.migrations._6_FlySetting;
+import com.songoda.ultimateclaims.database.migrations._7_AuditLog;
+import com.songoda.ultimateclaims.database.migrations._8_ClaimedRegions;
 import com.songoda.ultimateclaims.dynmap.DynmapManager;
 import com.songoda.ultimateclaims.items.ItemManager;
-import com.songoda.ultimateclaims.listeners.*;
+import com.songoda.ultimateclaims.listeners.BlockListeners;
+import com.songoda.ultimateclaims.listeners.EntityListeners;
+import com.songoda.ultimateclaims.listeners.InteractListeners;
+import com.songoda.ultimateclaims.listeners.InventoryListeners;
+import com.songoda.ultimateclaims.listeners.LoginListeners;
 import com.songoda.ultimateclaims.placeholder.PlaceholderManager;
 import com.songoda.ultimateclaims.settings.PluginSettings;
 import com.songoda.ultimateclaims.settings.Settings;
-import com.songoda.ultimateclaims.tasks.*;
+import com.songoda.ultimateclaims.tasks.AnimateTask;
+import com.songoda.ultimateclaims.tasks.InviteTask;
+import com.songoda.ultimateclaims.tasks.PowerCellTask;
+import com.songoda.ultimateclaims.tasks.TrackerTask;
+import com.songoda.ultimateclaims.tasks.VisualizeTask;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
@@ -46,6 +62,7 @@ public class UltimateClaims extends SongodaPlugin {
     private ClaimManager claimManager;
     private DynmapManager dynmapManager;
     private ItemManager itemManager;
+    private AuditManager auditManager;
 
     private DataMigrationManager dataMigrationManager;
     private DataManager dataManager;
@@ -82,8 +99,9 @@ public class UltimateClaims extends SongodaPlugin {
 
         PluginManager pluginManager = Bukkit.getPluginManager();
 
-        // Setup Item Manager
+        // Setup managers
         this.itemManager = new ItemManager(this);
+        this.auditManager = new AuditManager(this);
 
         // Listeners
         guiManager.init();
@@ -157,7 +175,7 @@ public class UltimateClaims extends SongodaPlugin {
             });
         }
     }
-    
+
     @Override
     public void onDataLoad() {
         // Database stuff, go!
@@ -184,7 +202,7 @@ public class UltimateClaims extends SongodaPlugin {
         this.dataManager = new DataManager(this.databaseConnector, this);
         this.dataMigrationManager = new DataMigrationManager(this.databaseConnector, this.dataManager,
                 new _1_InitialMigration(),
-                new _2_NewPermissions(),    
+                new _2_NewPermissions(),
                 new _3_MemberNames(),
                 new _4_TradingPermission(),
                 new _5_TntSetting(),
@@ -195,27 +213,34 @@ public class UltimateClaims extends SongodaPlugin {
 
         this.dataManager.getPluginSettings((pluginSettings) -> this.pluginSettings = pluginSettings);
         final boolean useHolo = Settings.POWERCELL_HOLOGRAMS.getBoolean() && HologramManager.getManager().isEnabled();
+
+        if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
+            this.dynmapManager = new DynmapManager(this);
+
         this.dataManager.getClaims((claims) -> {
             this.claimManager.addClaims(claims);
             if (useHolo)
                 this.claimManager.getRegisteredClaims().stream().filter(Claim::hasPowerCell).forEach(x -> x.getPowerCell().updateHologram());
 
-            if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
-                this.dynmapManager = new DynmapManager(this);
+            if (this.dynmapManager != null) {
+                Bukkit.getScheduler().scheduleSyncDelayedTask(this, this.dynmapManager::refresh);
+            }
+
             Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> dataManager.purgeAuditLog(), 1000, 15 * 60 * 1000);
         });
     }
 
     @Override
     public List<Config> getExtraConfig() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     @Override
     public void onConfigReload() {
         this.setLocale(Settings.LANGUGE_MODE.getString(), true);
+        this.itemManager.loadItems();
 
-        if (getServer().getPluginManager().isPluginEnabled("dynmap"))
+        if (this.dynmapManager != null)
             this.dynmapManager.reload();
     }
 
@@ -261,5 +286,9 @@ public class UltimateClaims extends SongodaPlugin {
 
     public ItemManager getItemManager() {
         return itemManager;
+    }
+
+    public AuditManager getAuditManager() {
+        return auditManager;
     }
 }

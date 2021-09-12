@@ -25,13 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class DataManager extends DataManagerAbstract {
@@ -531,6 +525,23 @@ public class DataManager extends DataManagerAbstract {
         }));
     }
 
+    public void getAuditLog(Claim claim, Consumer<Deque<Audit>> callback) {
+        this.async(() -> this.databaseConnector.connect(connection -> {
+            String selectAudit = "SELECT * FROM " + this.getTablePrefix() + "audit_log WHERE claim_id = ?";
+            Deque<Audit> audits = new ArrayDeque<>();
+            try (PreparedStatement statement = connection.prepareStatement(selectAudit);){
+                statement.setInt(1, claim.getId());
+                ResultSet result = statement.executeQuery();
+                while (result.next()) {
+                    UUID who = UUID.fromString(result.getString("who"));
+                    long when = result.getLong("time");
+                    audits.addFirst(new Audit(who, when));
+                }
+            }
+            callback.accept(audits);
+        }));
+    }
+
     public void getClaims(Consumer<Map<UUID, Claim>> callback) {
         this.async(() -> this.databaseConnector.connect(connection -> {
             String selectClaims = "SELECT * FROM " + this.getTablePrefix() + "claim";
@@ -540,7 +551,6 @@ public class DataManager extends DataManagerAbstract {
             String selectRegions = "SELECT * FROM " + this.getTablePrefix() + "claimed_regions";
             String selectSettings = "SELECT * FROM " + this.getTablePrefix() + "settings";
             String selectPermissions = "SELECT * FROM " + this.getTablePrefix() + "permissions";
-            String selectAudit = "SELECT * FROM " + this.getTablePrefix() + "audit_log";
 
             Map<Integer, Claim> claims = new HashMap<>();
 
@@ -605,23 +615,6 @@ public class DataManager extends DataManagerAbstract {
 
                     if (claimMember.getRole() == ClaimRole.OWNER)
                         claim.setOwner(claimMember);
-                }
-            }
-
-            try (Statement statement = connection.createStatement()) {
-                ResultSet result = statement.executeQuery(selectAudit);
-                while (result.next()) {
-                    int claimId = result.getInt("claim_id");
-                    Claim claim = claims.get(claimId);
-                    if (claim == null)
-                        continue;
-
-                    UUID who = UUID.fromString(result.getString("who"));
-                    long when = result.getLong("time");
-
-                    if (claim.getPowerCell().hasLocation())
-                        claim.getPowerCell().addToAuditLog(who, when);
-
                 }
             }
 
@@ -727,8 +720,13 @@ public class DataManager extends DataManagerAbstract {
             }
 
             Map<UUID, Claim> returnClaims = new HashMap<>();
-            for (Claim claim : claims.values())
+            for (Claim claim : claims.values()) {
+                if (claim.getOwner() == null) {
+                    plugin.getLogger().warning("Claim ID " + claim.getId() + " has no owner for some reason. Skipping.");
+                    continue;
+                }
                 returnClaims.put(claim.getOwner().getUniqueId(), claim);
+            }
 
             this.sync(() -> callback.accept(returnClaims));
         }));

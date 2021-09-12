@@ -1,7 +1,7 @@
 package com.songoda.ultimateclaims.listeners;
 
-import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.compatibility.CompatibleParticleHandler;
+import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
@@ -34,7 +34,7 @@ public class InventoryListeners implements Listener {
 
         if (!(event.getInventory().getHolder() instanceof Chest)) return;
 
-        Chest chest = (Chest)event.getInventory().getHolder();
+        Chest chest = (Chest) event.getInventory().getHolder();
 
         if (!claimManager.hasClaim(player)
                 || chest.getLocation() == null) return;
@@ -71,6 +71,9 @@ public class InventoryListeners implements Listener {
 
         if (Settings.POWERCELL_HOLOGRAMS.getBoolean())
             claim.getPowerCell().updateHologram();
+
+        if (plugin.getDynmapManager() != null)
+            plugin.getDynmapManager().refresh();
 
         float xx = (float) (0 + (Math.random() * 1));
         float yy = (float) (0 + (Math.random() * 2));

@@ -112,9 +112,7 @@ interface:
     addfunds: '&7Enter an amount to deposit.'
     takefunds: '&7Enter an amount to withdraw.'
     infotitle: '&5&lInfo'
-    infolore: '&7You have &6%chunks% &7claimed|&7chunks and &6%members% &7members.'
-    auditlog: '&5Audit Log'
-    audit: '&7%name% &6%time%&7.'
+    infolore: '&7You have &6%chunks% &7claimed|&7chunks and &6%members% &7members.||&7Click to open the audit log.'
     banstitle: '&c&lBans'
     banslore: '&7View your claims bans.'
     memberstitle: '&9&lMembers'
@@ -168,6 +166,10 @@ interface:
     default: DEFAULT
     playtime: PLAYTIME
     membersince: MEMBER SINCE
+  audits:
+    title: 'Audit Log'
+    entryname: '&6%who%'
+    entrylore: '&7When: &6%when% ago'
 
 # Event Messages
 

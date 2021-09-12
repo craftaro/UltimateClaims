@@ -99,8 +99,8 @@ public class CommandClaim extends AbstractCommand {
                 plugin.getDataManager().createClaimedRegion(claimedChunk.getRegion());
             }
 
-            if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
-                plugin.getDynmapManager().refresh(claim);
+            if (plugin.getDynmapManager() != null)
+                plugin.getDynmapManager().refresh();
 
             if (Settings.POWERCELL_HOLOGRAMS.getBoolean())
                 claim.getPowerCell().updateHologram();
@@ -117,13 +117,13 @@ public class CommandClaim extends AbstractCommand {
             }
 
             plugin.getClaimManager().addClaim(player, claim);
-            if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
-                plugin.getDynmapManager().refresh(claim);
+            if (plugin.getDynmapManager() != null)
+                plugin.getDynmapManager().refresh();
 
             plugin.getDataManager().createClaim(claim);
 
             plugin.getLocale().getMessage("command.claim.info")
-                    .processPlaceholder("time", TimeUtils.makeReadable((long) (Settings.STARTING_POWER.getInt() * 60 * 1000)))
+                    .processPlaceholder("time", TimeUtils.makeReadable(Settings.STARTING_POWER.getLong() * 60 * 1000))
                     .sendPrefixedMessage(sender);
         }
 

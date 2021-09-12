@@ -28,7 +28,7 @@ public class ItemManager {
         this.itemConfig = new Config(plugin, "items.yml");
 
         loadLoaders();
-        loadConfig();
+        loadItems();
     }
 
     private void loadLoaders() {
@@ -44,12 +44,14 @@ public class ItemManager {
         itemLoaders.add(new VanillaLoader());
     }
 
-    private void loadConfig() {
+    public void loadItems() {
         itemConfig.load();
+        items.clear();
 
         if (!itemConfig.isConfigurationSection("items")) {
             itemConfig.setHeader("This is where you configure the power cell items.",
-                    "Supported item types: vanilla, slimefun, itembridge, itemsadder");
+                    "Supported item types: vanilla, slimefun, itembridge, itemsadder",
+                    "Note: Vanilla items should be placed at the bottom to prevent conflicts.");
 
             List<String> oldItems = Settings.ITEM_VALUES.getStringList();
             if (!oldItems.isEmpty()) {

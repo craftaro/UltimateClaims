@@ -56,8 +56,10 @@ public class TrackerTask extends BukkitRunnable {
 
                         || claim.isLocked()
                         && claim.getMember(player).getRole() == ClaimRole.VISITOR
-                        && !player.hasPermission("ultimateclaims.bypass.lock"))
+                        && !player.hasPermission("ultimateclaims.bypass.lock")) {
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> player.setAllowFlight(true));
                     member.eject(trackedPlayer.getLastBeforeClaim());
+                }
             }
 
             if ((claim.getClaimSettings().isEnabled(ClaimSetting.FLY)
@@ -66,9 +68,11 @@ public class TrackerTask extends BukkitRunnable {
                     && !player.getAllowFlight()
                     && player.getGameMode() != GameMode.CREATIVE) {
                 trackedPlayer.setWasFlyActivated(true);
-                player.setAllowFlight(true);
+
+                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> player.setAllowFlight(true));
             }
         }
+
         for (Claim claim : plugin.getClaimManager().getRegisteredClaims()) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 ClaimMember member = claim.getMember(player);

@@ -6,6 +6,7 @@ import com.songoda.core.configuration.ConfigSetting;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.hooks.HologramManager;
 import com.songoda.ultimateclaims.UltimateClaims;
+
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -25,12 +26,12 @@ public class Settings {
             "The value in minutes of each item put into the powercell.",
             "This is now configured in items.yml. Do not use this.");
 
-    public static final ConfigSetting ECONOMY = new ConfigSetting(config, "Main.Economy", 
+    public static final ConfigSetting ECONOMY = new ConfigSetting(config, "Main.Economy",
             EconomyManager.getEconomy() == null ? "Vault" : EconomyManager.getEconomy().getName(),
             "Which economy plugin should be used?",
             "You can choose from \"" + EconomyManager.getManager().getRegisteredPlugins().stream().collect(Collectors.joining("\", \"")) + "\".");
 
-    public static final ConfigSetting HOLOGRAM = new ConfigSetting(config, "Main.Hologram", 
+    public static final ConfigSetting HOLOGRAM = new ConfigSetting(config, "Main.Hologram",
             HologramManager.getHolograms() == null ? "HolographicDisplays" : HologramManager.getHolograms().getName(),
             "Which hologram plugin should be used?",
             "You can choose from \"" + HologramManager.getManager().getRegisteredPlugins().stream().collect(Collectors.joining(", ")) + "\".");
@@ -90,6 +91,14 @@ public class Settings {
     public static final ConfigSetting ENABLE_HOPPERS = new ConfigSetting(config, "Main.Enable Hoppers", true,
             "Should hoppers be able to put fuel into a power cell?",
             "Please note that this feature is experimental.");
+
+    public static final ConfigSetting ENABLE_AUDIT_LOG = new ConfigSetting(config, "Main.Enable Audit Log", true,
+            "Should we enable the audit log?",
+            "Disable if you have issues with big databases.");
+
+    public static final ConfigSetting ENABLE_CHUNK_ANIMATION = new ConfigSetting(config, "Main.Enable Chunk Animation", true,
+            "Should we enable the chunk animation",
+            "when chunks are claimed/unclaimed?");
 
     public static final ConfigSetting DEFAULT_CLAIM_HOSTILE_MOB_SPAWN = new ConfigSetting(config, "Default Settings.Claim.Hostile Mob Spawn", true,
             "Should hostile mob spawning be enabled by default in new claims?");
@@ -181,6 +190,9 @@ public class Settings {
             "The label is shown to the user at the upper-right corner by default",
             "User can toggle a checkbox to disable this overlay");
     public static final ConfigSetting DYNMAP_BUBBLE = new ConfigSetting(config, "Dynmap.Bubble", "<b><u>${Claim}</u></b><br>\n<b>Owner</b>: ${Owner}<br>\n<b>Power left</b>: ${PowerLeft}",
+            "The text shown when you click on an claim on the Dynmap. May contain HTML",
+            "Supported placeholder: ${Claim}, ${Owner}, ${OwnerUUID}, ${MemberCount}, ${PowerLeft}");
+    public static final ConfigSetting DYNMAP_BUBBLE_UNCLAIMED = new ConfigSetting(config, "Dynmap.BubbleUnClaimed", "<b><u>${Claim}</u></b><br>\n<i>Unclaimed</i><br>\n<b>Power left</b>: ${PowerLeft}",
             "The text shown when you click on an claim on the Dynmap. May contain HTML",
             "Supported placeholder: ${Claim}, ${Owner}, ${OwnerUUID}, ${MemberCount}, ${PowerLeft}");
     public static final ConfigSetting DYNMAP_UPDATE_INTERVAL = new ConfigSetting(config, "Dynmap.UpdateInterval", 60,
