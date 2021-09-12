@@ -40,7 +40,7 @@ public class SettingsMemberGui extends CustomizableGui {
         // exit buttons
         this.setButton("back", 0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_FENCE_GATE,
                 plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                plugin.getLocale().getMessage("general.interface.exit").getMessage()),
+                plugin.getLocale().getMessage("general.interface.backlore").getMessage()),
                 (event) -> event.player.closeInventory());
         this.setButton("back",8, this.getItem(0), (event) -> guiManager.showGUI(event.player, returnGui));
 

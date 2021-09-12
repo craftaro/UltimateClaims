@@ -1,5 +1,5 @@
 name: UltimateClaims
-description: UltimateClaims
+description: 'Земли'
 version: maven-version-number
 softdepend: [PlayerPoints, HolographicDisplays, Holograms, CMI, Vault, dynmap, ItemsAdder, Slimefun, ItemBridge]
 main: com.songoda.ultimateclaims.UltimateClaims
@@ -8,13 +8,13 @@ api-version: 1.13
 loadbefore: [WorldGuard]
 commands:
   c:
-    description: Reloads the configuration file
+    description: 'Перезагружает файл конфигурации'
     default: true
-    aliases: [ucl, claims, claim, UltimateClaims]
+    aliases: [claim]
     usage: /ultimateclaims reload
 permissions:
   ultimateclaims.*:
-    description: Inherits all plugin permissions
+    description: 'Наследует все разрешения плагина'
     children:
       ultimateclaims.bypass: true
       ultimateclaims.toggle.hostilemobspawning: true
@@ -36,59 +36,59 @@ permissions:
       ultimateclaims.unban: true
       ultimateclaims.unclaim: true
   ultimateclaims.bypass:
-    description: Allows a player or admin to bypass claim restrictions.
+    description: 'Позволяет игроку или администратору обойти ограничения по землям.'
     default: op
   ultimateclaims.toggle.hostilemobspawning:
-    description: Allows the claim owner to toggle mob spawning.
+    description: 'Позволяет владельцу земли переключать порождение толпы.'
     default: op
   ultimateclaims.toggle.firespread:
-    description: Allows the claim owner to toggle fire spread.
+    description: 'Позволяет владельцу земли переключать распространение огня.'
     default: op
   ultimateclaims.toggle.pvp:
-    description: Allows the claim owner to toggle pvp.
+    description: 'Позволяет владельцу земли переключать pvp.'
     default: op
   ultimateclaims.toggle.mobgriefing:
-    description: Allows the claim owner to toggle mob griefing.
+    description: 'Позволяет владельцу претензии переключать скорбь толпы.'
     default: op
   ultimateclaims.toggle.leafdecay:
-    description: Allows the claim owner to toggle leaf decay.
+    description: 'Позволяет владельцу претензии переключать распад листьев.'
     default: op
   ultimateclaims.accept:
-    description: Accept the latest claim invitation.
+    description: 'Примите последнее приглашение на подачу заявки.'
     default: op
   ultimateclaims.ban:
-    description: Ban a member from your claim.
+    description: 'Запретить участника в земле.'
     default: op
   ultimateclaims.claim:
-    description: Claim the land you are currently standing in for your claim.
+    description: 'Заприватьть землю для себя.'
     default: op
   ultimateclaims.dissolve:
-    description: Dissolve your claim.
+    description: 'Аннулировать свою землю.'
     default: op
   ultimateclaims.home:
-    description: Go to a claims home.
+    description: 'Отправиться в дом земли.'
     default: op
   ultimateclaims.invite:
-    description: Invite a player to join your claim.
+    description: 'Пригласить участника в землю.'
     default: op
   ultimateclaims.kick:
-    description: Kick a member from your claim.
+    description: 'Исключить участника из земли.'
     default: op
   ultimateclaims.leave:
-    description: Leave a claim that you are a member of.
+    description: 'Выйти из земли.'
     default: op
   ultimateclaims.lock:
-    description: Lock or unlock your claim.
+    description: 'Заблокировать или разблокировать свою землю.'
     default: op
   ultimateclaims.recipe:
-    description: View the recipe for a powercell.
+    description: 'Посмотреть рецепт элемента питания.'
     default: op
   ultimateclaims.sethome:
-    description: Set the home for your claim.
+    description: 'Установить дом земли.'
     default: op
   ultimateclaims.unban:
-    description: Unban a member from your claim.
+    description: 'Разблокировать участника земли.'
     default: op
   ultimateclaims.unclaim:
-    description: Unclaim land from your claim.
+    description: 'Освободите землю от своих земель.'
     default: op
