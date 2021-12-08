@@ -2,7 +2,7 @@
     <groupId>com.songoda</groupId>
     <artifactId>UltimateClaims</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>1.8.0</version>
+    <version>1.8.1</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -126,20 +126,25 @@
             <id>dynmap-repo</id>
             <url>https://repo.mikeprimm.com/</url>
         </repository>
+
+        <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
     </repositories>
 
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.17.1-R0.1-SNAPSHOT</version>
+            <version>1.18-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
-            <version>2.9.2</version>
+            <version>2.10.10</version>
             <scope>provided</scope>
         </dependency>
 
@@ -167,14 +172,14 @@
         <dependency>
             <groupId>com.github.TheBusyBiscuit</groupId>
             <artifactId>Slimefun4</artifactId>
-            <version>RC-23</version>
+            <version>RC-29</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.github.LoneDev6</groupId>
             <artifactId>api-itemsadder</artifactId>
-            <version>2.3.8</version>
+            <version>2.4.21</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
