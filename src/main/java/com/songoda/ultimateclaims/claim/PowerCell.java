@@ -366,6 +366,6 @@ public class PowerCell {
     }
 
     public String getHologramId() {
-        return "EpicFurnaces-" + uniqueId;
+        return "UltimateClaims-" + uniqueId;
     }
 }
