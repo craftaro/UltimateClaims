@@ -5,6 +5,7 @@ import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
+import com.songoda.ultimateclaims.items.PowerCellItem;
 import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -16,6 +17,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Map;
 
 public class InventoryListeners implements Listener {
 
@@ -48,16 +50,21 @@ public class InventoryListeners implements Listener {
         if (!claim.getOwner().getUniqueId().equals(player.getUniqueId())
                 || claim.getPowerCell().hasLocation()) return;
 
-        List<String> recipe = Settings.POWERCELL_RECIPE.getStringList();
+        Map<Integer, PowerCellItem> recipe = plugin.getItemManager().getRecipe();
 
-        int size = 0;
+        boolean failed = false;
         for (int i = 0; i < 27; i++) {
-            if (event.getInventory().getItem(i) == null) continue;
-            String line = i + ":" + event.getInventory().getItem(i).getType().name();
-            if (!recipe.contains(line)) return;
-            size++;
+            PowerCellItem item = recipe.get(i);
+            if (item == null) continue;
+            if (!item.isSimilar(event.getInventory().getItem(i))) {
+                failed = true;
+                break;
+            }
         }
-        if (size != recipe.size()) return;
+
+        if (failed) {
+            return;
+        }
 
         for (ItemStack item : event.getInventory().getContents()) {
             if (item == null) continue;
@@ -70,7 +77,7 @@ public class InventoryListeners implements Listener {
         plugin.getDataManager().updateClaim(claim);
 
         if (Settings.POWERCELL_HOLOGRAMS.getBoolean())
-            claim.getPowerCell().updateHologram();
+            claim.getPowerCell().createHologram();
 
         if (plugin.getDynmapManager() != null)
             plugin.getDynmapManager().refresh();

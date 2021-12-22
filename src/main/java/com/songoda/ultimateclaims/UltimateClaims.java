@@ -220,7 +220,7 @@ public class UltimateClaims extends SongodaPlugin {
         this.dataManager.getClaims((claims) -> {
             this.claimManager.addClaims(claims);
             if (useHolo)
-                this.claimManager.getRegisteredClaims().stream().filter(Claim::hasPowerCell).forEach(x -> x.getPowerCell().updateHologram());
+                this.claimManager.getRegisteredClaims().stream().filter(Claim::hasPowerCell).forEach(x -> x.getPowerCell().createHologram());
 
             if (this.dynmapManager != null) {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(this, this.dynmapManager::refresh);

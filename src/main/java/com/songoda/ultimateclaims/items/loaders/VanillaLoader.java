@@ -21,4 +21,9 @@ public class VanillaLoader implements ItemLoader {
 
         return itemStack -> CompatibleMaterial.getMaterial(itemStack) == compatibleMaterial;
     }
+
+    @Override
+    public ItemStack getItem(String key) {
+        return CompatibleMaterial.getMaterial(key).getItem();
+    }
 }

@@ -15,4 +15,7 @@ public interface ItemLoader {
 
     // Takes an item as specified in the config, returns a function to evaluate item stacks.
     Function<ItemStack, Boolean> loadItem(String item);
+
+    // Returns an item based on a key.
+    ItemStack getItem(String key);
 }

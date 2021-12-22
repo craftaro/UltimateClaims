@@ -16,11 +16,16 @@ public class ItemBridgeLoader implements ItemLoader {
     @Override
     public Function<ItemStack, Boolean> loadItem(String item) {
         return itemStack -> {
-            ItemStack itemStackBridge = ItemBridge.getItemStack(item);
+            ItemStack itemStackBridge = getItem(item);
             if (itemStackBridge == null) {
                 return false;
             }
             return itemStack.isSimilar(itemStackBridge);
         };
+    }
+
+    @Override
+    public ItemStack getItem(String key) {
+        return ItemBridge.getItemStack(key);
     }
 }
