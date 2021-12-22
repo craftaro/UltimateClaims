@@ -6,10 +6,12 @@ import java.util.function.Function;
 
 public class PowerCellItem {
 
+    private final ItemStack displayItem;
     private final Function<ItemStack, Boolean> similar;
     private final int value;
 
-    public PowerCellItem(Function<ItemStack, Boolean> similar, int value) {
+    public PowerCellItem(ItemStack displayItem, Function<ItemStack, Boolean> similar, int value) {
+        this.displayItem = displayItem;
         this.similar = similar;
         this.value = value;
     }
@@ -20,5 +22,9 @@ public class PowerCellItem {
 
     public int getValue() {
         return value;
+    }
+
+    public ItemStack getDisplayItem() {
+        return displayItem;
     }
 }

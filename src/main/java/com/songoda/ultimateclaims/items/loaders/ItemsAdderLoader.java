@@ -22,4 +22,12 @@ public class ItemsAdderLoader implements ItemLoader {
             return itemStack.isSimilar(customStack.getItemStack());
         };
     }
+
+    @Override
+    public ItemStack getItem(String key) {
+        CustomStack customStack = CustomStack.getInstance(key);
+        if (customStack == null) return null;
+
+        return customStack.getItemStack();
+    }
 }

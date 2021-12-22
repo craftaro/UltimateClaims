@@ -25,6 +25,11 @@ import java.util.UUID;
 
 public class PowerCell {
 
+    // This is the unique identifier for this power cell.
+    // It is reset on every plugin load.
+    // Used for holograms.
+    private final UUID uniqueId = UUID.randomUUID();
+
     protected final Claim claim;
     protected final UltimateClaims plugin = UltimateClaims.getInstance();
 
@@ -121,7 +126,7 @@ public class PowerCell {
     public void updateItemsFromGui(boolean force) {
         if (!isInventoryOpen()
                 && !force) return;
-        items.clear();
+        List<ItemStack> items = new ArrayList<>();
         for (int i = 10; i < 44; i++) {
             if (i == 17
                     || i == 18
@@ -131,8 +136,9 @@ public class PowerCell {
                     || i == 36) continue;
             ItemStack item = opened.getItem(i);
             if (item != null && item.getType() != Material.AIR)
-                addItem(item);
+                items.add(item);
         }
+        setItems(items);
     }
 
     public boolean isInventoryOpen() {
@@ -141,9 +147,22 @@ public class PowerCell {
                 && !opened.getInventory().getViewers().isEmpty();
     }
 
+    public void createHologram() {
+        if (location == null) {
+            return;
+        }
+
+        if (!HologramManager.isHologramLoaded(getHologramId())) {
+            HologramManager.createHologram(getHologramId(), location, getTimeRemaining());
+        }
+    }
     public void updateHologram() {
-        if (location != null) {
-            HologramManager.updateHologram(location, getTimeRemaining());
+        if (location == null) {
+            return;
+        }
+
+        if (HologramManager.isHologramLoaded(getHologramId())) {
+            HologramManager.updateHologram(getHologramId(), getTimeRemaining());
         }
     }
 
@@ -160,8 +179,8 @@ public class PowerCell {
     }
 
     public void removeHologram() {
-        if (location != null) {
-            HologramManager.removeHologram(location);
+        if (HologramManager.isHologramLoaded(getHologramId())) {
+            HologramManager.removeHologram(getHologramId());
         }
     }
 
@@ -344,5 +363,9 @@ public class PowerCell {
         this.opened = null;
         this.clearItems();
         this.location = null;
+    }
+
+    public String getHologramId() {
+        return "UltimateClaims-" + uniqueId;
     }
 }

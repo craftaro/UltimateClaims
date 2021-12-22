@@ -8,6 +8,7 @@ import com.songoda.core.hooks.HologramManager;
 import com.songoda.ultimateclaims.UltimateClaims;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 public class Settings {
@@ -15,14 +16,12 @@ public class Settings {
     static final Config config = UltimateClaims.getInstance().getCoreConfig();
 
     public static final ConfigSetting POWERCELL_RECIPE = new ConfigSetting(config, "Main.PowerCell Recipe",
-            Arrays.asList("3:IRON_INGOT", "4:DIAMOND", "5:IRON_INGOT",
-                    "12:DIAMOND", "13:IRON_INGOT", "14:DIAMOND",
-                    "21:IRON_INGOT", "22:DIAMOND", "23:IRON_INGOT"),
+            Collections.emptyList(),
             "The recipe players will need to place into a chest",
             "in order to create a powercell.");
 
     public static final ConfigSetting ITEM_VALUES = new ConfigSetting(config, "Main.PowerCell Item Values",
-            Arrays.asList(),
+            Collections.emptyList(),
             "The value in minutes of each item put into the powercell.",
             "This is now configured in items.yml. Do not use this.");
 

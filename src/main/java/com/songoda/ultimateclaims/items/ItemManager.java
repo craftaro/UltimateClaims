@@ -2,29 +2,26 @@ package com.songoda.ultimateclaims.items;
 
 import com.songoda.core.configuration.Config;
 import com.songoda.ultimateclaims.UltimateClaims;
-import com.songoda.ultimateclaims.items.loaders.ItemBridgeLoader;
-import com.songoda.ultimateclaims.items.loaders.ItemsAdderLoader;
-import com.songoda.ultimateclaims.items.loaders.SlimefunLoader;
-import com.songoda.ultimateclaims.items.loaders.VanillaLoader;
+import com.songoda.ultimateclaims.items.loaders.*;
 import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ItemManager {
 
     private final UltimateClaims plugin;
     private final List<ItemLoader> itemLoaders;
     private final List<PowerCellItem> items;
+    private final Map<Integer, PowerCellItem> recipe;
     private final Config itemConfig;
 
     public ItemManager(UltimateClaims plugin) {
         this.plugin = plugin;
         this.itemLoaders = new ArrayList<>();
         this.items = new ArrayList<>();
+        this.recipe = new HashMap<>();
         this.itemConfig = new Config(plugin, "items.yml");
 
         loadLoaders();
@@ -65,10 +62,23 @@ public class ItemManager {
                 itemConfig.addDefault("items.1.item", "IRON_INGOT");
                 itemConfig.addDefault("items.1.value", 30);
             }
-
-            itemConfig.options().copyDefaults(true);
-            itemConfig.save();
         }
+
+        if (!itemConfig.isConfigurationSection("recipe")) {
+            List<String> oldRecipe = Settings.POWERCELL_RECIPE.getStringList();
+            if (!oldRecipe.isEmpty()) {
+                convertOldRecipe(oldRecipe);
+            }else{
+                // We use this because putting in the items manually would be a lot of lines.
+                convertOldRecipe(Arrays.asList("3:IRON_INGOT", "4:DIAMOND", "5:IRON_INGOT",
+                        "12:DIAMOND", "13:IRON_INGOT", "14:DIAMOND",
+                        "21:IRON_INGOT", "22:DIAMOND", "23:IRON_INGOT"));
+            }
+        }
+
+
+        itemConfig.options().copyDefaults(true);
+        itemConfig.save();
 
         for (String key : itemConfig.getConfigurationSection("items").getKeys(false)) {
             String prefix = "items." + key;
@@ -78,7 +88,19 @@ public class ItemManager {
             int value = itemConfig.getInt(prefix + ".value");
 
             itemLoaders.stream().filter(loader -> loader.getName().equalsIgnoreCase(type)).findAny().ifPresent(loader ->
-                    items.add(new PowerCellItem(loader.loadItem(item), value)));
+                    items.add(new PowerCellItem(loader.getItem(item), loader.loadItem(item), value)));
+        }
+
+        for (String key : itemConfig.getConfigurationSection("recipe").getKeys(false)) {
+            String prefix = "recipe." + key;
+
+            String type = itemConfig.getString(prefix + ".type");
+            String item = itemConfig.getString(prefix + ".item");
+            int slot = itemConfig.getInt(prefix + ".slot");
+
+            itemLoaders.stream().filter(loader -> loader.getName().equalsIgnoreCase(type)).findAny().ifPresent(loader -> {
+                recipe.put(slot, new PowerCellItem(loader.getItem(item), loader.loadItem(item), 0));
+            });
         }
     }
 
@@ -95,8 +117,25 @@ public class ItemManager {
         }
     }
 
+    private void convertOldRecipe(List<String> recipe) {
+        int currentItem = 0;
+        for (String oldItem : recipe) {
+            String[] split = oldItem.split(":");
+            if (split.length == 2) {
+                itemConfig.set("recipe." + currentItem + ".type", "vanilla");
+                itemConfig.set("recipe." + currentItem + ".item", split[1]);
+                itemConfig.set("recipe." + currentItem + ".slot", Integer.parseInt(split[0]));
+                currentItem++;
+            }
+        }
+    }
+
     public List<PowerCellItem> getItems() {
-        return items;
+        return Collections.unmodifiableList(items);
+    }
+
+    public Map<Integer, PowerCellItem> getRecipe() {
+        return Collections.unmodifiableMap(recipe);
     }
 
     public int getItemValue(ItemStack itemStack) {
