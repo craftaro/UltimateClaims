@@ -1,5 +1,6 @@
 package com.songoda.ultimateclaims.listeners;
 
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.claim.Claim;
 import com.songoda.ultimateclaims.claim.ClaimManager;
@@ -12,7 +13,6 @@ import com.songoda.ultimateclaims.settings.Settings;
 import com.songoda.ultimateclaims.tasks.VisualizeTask;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -155,7 +155,7 @@ public class EntityListeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onDispense(BlockDispenseEvent event) {
-        if (event.getBlock().getType() != Material.DISPENSER) return;
+        if (event.getBlock().getType() != CompatibleMaterial.DISPENSER.getMaterial()) return;
         Dispenser dispenser = (Dispenser) event.getBlock().getState().getData();
         ClaimManager claimManager = plugin.getClaimManager();
 
