@@ -8,16 +8,11 @@ import com.songoda.ultimateclaims.UltimateClaims;
 import com.songoda.ultimateclaims.gui.PowerCellGui;
 import com.songoda.ultimateclaims.settings.Settings;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
@@ -109,7 +104,7 @@ public class PowerCell {
         if (!rejects.isEmpty()) {
             // YEET
             updateGuiInventory();
-            rejects.stream().filter(item -> item.getType() != Material.AIR)
+            rejects.stream().filter(item -> item.getType() != CompatibleMaterial.AIR.getMaterial())
                     .forEach(item -> location.getWorld().dropItemNaturally(location, item));
         }
     }
@@ -135,7 +130,7 @@ public class PowerCell {
                     || i == 35
                     || i == 36) continue;
             ItemStack item = opened.getItem(i);
-            if (item != null && item.getType() != Material.AIR)
+            if (item != null && item.getType() != CompatibleMaterial.AIR.getMaterial())
                 items.add(item);
         }
         setItems(items);
@@ -156,6 +151,7 @@ public class PowerCell {
             HologramManager.createHologram(getHologramId(), location, getTimeRemaining());
         }
     }
+
     public void updateHologram() {
         if (location == null) {
             return;

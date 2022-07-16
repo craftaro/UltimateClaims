@@ -252,7 +252,7 @@ public class Claim {
     }
 
     public boolean addClaimedChunk(Chunk chunk, Player player) {
-        animateChunk(chunk, player, Material.EMERALD_BLOCK);
+        animateChunk(chunk, player, CompatibleMaterial.EMERALD_BLOCK.getMaterial());
         return addClaimedChunk(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
     }
 
@@ -287,7 +287,7 @@ public class Claim {
     }
 
     public ClaimedChunk removeClaimedChunk(Chunk chunk, Player player) {
-        animateChunk(chunk, player, Material.REDSTONE_BLOCK);
+        animateChunk(chunk, player, CompatibleMaterial.REDSTONE_BLOCK.getMaterial());
         ClaimedChunk newChunk = getClaimedChunk(chunk);
         for (ClaimedRegion region : new ArrayList<>(claimedRegions)) {
             List<ClaimedRegion> claimedRegions = region.removeChunk(newChunk);
