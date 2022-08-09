@@ -11,7 +11,7 @@ public class CommandReload extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandReload(UltimateClaims plugin) {
-        super(false, "reload");
+        super(CommandType.PLAYER_ONLY, "reload");
         this.plugin = plugin;
     }
 

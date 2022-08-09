@@ -14,7 +14,7 @@ public class CommandSetHome extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandSetHome(UltimateClaims plugin) {
-        super(true, "sethome");
+        super(CommandType.PLAYER_ONLY, "sethome");
         this.plugin = plugin;
     }
 

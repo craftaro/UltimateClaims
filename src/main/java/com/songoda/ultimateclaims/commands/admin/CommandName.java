@@ -14,7 +14,7 @@ public class CommandName extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandName(UltimateClaims plugin) {
-        super(true, "admin name");
+        super(CommandType.PLAYER_ONLY, "admin name");
         this.plugin = plugin;
     }
 

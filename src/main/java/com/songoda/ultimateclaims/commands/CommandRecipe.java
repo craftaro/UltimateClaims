@@ -13,7 +13,7 @@ public class CommandRecipe extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandRecipe(UltimateClaims plugin) {
-        super(true, "recipe");
+        super(CommandType.PLAYER_ONLY, "recipe");
         this.plugin = plugin;
     }
 

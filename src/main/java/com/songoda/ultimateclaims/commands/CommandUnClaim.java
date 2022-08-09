@@ -22,7 +22,7 @@ public class CommandUnClaim extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandUnClaim(UltimateClaims plugin) {
-        super(true, "unclaim");
+        super(CommandType.PLAYER_ONLY, "unclaim");
         this.plugin = plugin;
     }
 

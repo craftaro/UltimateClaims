@@ -12,7 +12,7 @@ public class CommandSetSpawn extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandSetSpawn(UltimateClaims plugin) {
-        super(true, "setspawn");
+        super(CommandType.PLAYER_ONLY, "setspawn");
         this.plugin = plugin;
     }
 

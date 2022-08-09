@@ -16,7 +16,7 @@ public class CommandTransferOwnership extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandTransferOwnership(UltimateClaims plugin) {
-        super(true, "admin transferownership");
+        super(CommandType.PLAYER_ONLY, "admin transferownership");
         this.plugin = plugin;
     }
 

@@ -19,7 +19,7 @@ public class CommandBan extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandBan(UltimateClaims plugin) {
-        super(true, "ban");
+        super(CommandType.PLAYER_ONLY, "ban");
         this.plugin = plugin;
     }
 

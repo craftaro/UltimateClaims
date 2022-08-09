@@ -15,7 +15,7 @@ public class CommandHome extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandHome(UltimateClaims plugin) {
-        super(true, "home");
+        super(CommandType.PLAYER_ONLY, "home");
         this.plugin = plugin;
     }
 

@@ -13,7 +13,7 @@ public class CommandSettings extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandSettings(UltimateClaims plugin) {
-        super(true, "Settings");
+        super(CommandType.PLAYER_ONLY, "Settings");
         this.plugin = plugin;
     }
 

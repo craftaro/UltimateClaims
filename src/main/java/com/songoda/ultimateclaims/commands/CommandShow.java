@@ -14,7 +14,7 @@ public class CommandShow extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandShow(UltimateClaims plugin) {
-        super(true, "show");
+        super(CommandType.PLAYER_ONLY, "show");
         this.plugin = plugin;
     }
 

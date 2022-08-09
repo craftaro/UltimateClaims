@@ -18,7 +18,7 @@ public class CommandLeave extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandLeave(UltimateClaims plugin) {
-        super(true, "leave");
+        super(CommandType.PLAYER_ONLY, "leave");
         this.plugin = plugin;
     }
 

@@ -64,7 +64,7 @@ public class TrackerTask extends BukkitRunnable {
 
             if ((claim.getClaimSettings().isEnabled(ClaimSetting.FLY)
                     && player.hasPermission("ultimateclaims.fly")
-                    || player.hasPermission("Ultimateclaims.bypass.fly"))
+                    || player.hasPermission("ultimateclaims.bypass.fly"))
                     && !player.getAllowFlight()
                     && player.getGameMode() != GameMode.CREATIVE) {
                 trackedPlayer.setWasFlyActivated(true);

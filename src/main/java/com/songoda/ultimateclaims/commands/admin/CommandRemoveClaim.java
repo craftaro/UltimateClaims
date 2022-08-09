@@ -16,7 +16,7 @@ public class CommandRemoveClaim extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandRemoveClaim(UltimateClaims plugin) {
-        super(true, "admin removeclaim");
+        super(CommandType.PLAYER_ONLY, "admin removeclaim");
         this.plugin = plugin;
     }
 
