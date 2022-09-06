@@ -14,7 +14,7 @@ public class CommandDissolve extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandDissolve(UltimateClaims plugin) {
-        super(true, "dissolve");
+        super(CommandType.PLAYER_ONLY, "dissolve");
         this.plugin = plugin;
     }
 

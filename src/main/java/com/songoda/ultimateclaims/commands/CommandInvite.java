@@ -18,7 +18,7 @@ public class CommandInvite extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandInvite(UltimateClaims plugin) {
-        super(true, "invite");
+        super(CommandType.PLAYER_ONLY, "invite");
         this.plugin = plugin;
     }
 

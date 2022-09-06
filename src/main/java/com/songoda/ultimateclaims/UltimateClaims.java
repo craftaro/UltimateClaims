@@ -187,8 +187,9 @@ public class UltimateClaims extends SongodaPlugin {
                 String username = Settings.MYSQL_USERNAME.getString();
                 String password = Settings.MYSQL_PASSWORD.getString();
                 boolean useSSL = Settings.MYSQL_USE_SSL.getBoolean();
+                int poolSize = Settings.MYSQL_POOL_SIZE.getInt();
 
-                this.databaseConnector = new MySQLConnector(this, hostname, port, database, username, password, useSSL);
+                this.databaseConnector = new MySQLConnector(this, hostname, port, database, username, password, useSSL, poolSize);
                 this.getLogger().info("Data handler connected using MySQL.");
             } else {
                 this.databaseConnector = new SQLiteConnector(this);

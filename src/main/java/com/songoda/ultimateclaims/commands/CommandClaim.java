@@ -26,7 +26,7 @@ public class CommandClaim extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandClaim(UltimateClaims plugin) {
-        super(true, "claim");
+        super(CommandType.PLAYER_ONLY, "claim");
         this.plugin = plugin;
     }
 

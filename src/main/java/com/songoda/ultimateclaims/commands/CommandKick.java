@@ -19,7 +19,7 @@ public class CommandKick extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandKick(UltimateClaims plugin) {
-        super(true, "kick");
+        super(CommandType.PLAYER_ONLY, "kick");
         this.plugin = plugin;
     }
 

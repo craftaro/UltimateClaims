@@ -17,7 +17,7 @@ public class CommandLock extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandLock(UltimateClaims plugin) {
-        super(true, "admin lock");
+        super(CommandType.PLAYER_ONLY, "admin lock");
         this.plugin = plugin;
     }
 

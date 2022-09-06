@@ -335,6 +335,8 @@ public class PowerCell {
     public PowerCellGui getGui(Player player) {
         if (opened != null && opened.isOpen()) {
             opened.close();
+            updateItemsFromGui(true);
+            stackItems();
         }
 
         return opened = new PowerCellGui(UltimateClaims.getInstance(), this.claim, player);

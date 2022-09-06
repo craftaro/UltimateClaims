@@ -19,7 +19,7 @@ public class CommandAddMember extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandAddMember(UltimateClaims plugin) {
-        super(true, "addmember");
+        super(CommandType.PLAYER_ONLY, "addmember");
         this.plugin = plugin;
     }
 

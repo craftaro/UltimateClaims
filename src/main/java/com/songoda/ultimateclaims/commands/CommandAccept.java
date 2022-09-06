@@ -19,7 +19,7 @@ public class CommandAccept extends AbstractCommand {
     private final UltimateClaims plugin;
 
     public CommandAccept(UltimateClaims plugin) {
-        super(true, "accept");
+        super(CommandType.PLAYER_ONLY, "accept");
         this.plugin = plugin;
     }
 
