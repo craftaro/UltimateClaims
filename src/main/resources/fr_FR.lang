@@ -6,8 +6,8 @@ general:
   word:
     none: aucun
   status:
-    'true': true
-    'false': false
+    'true': Autorisé
+    'false': Interdit
   claim:
     defaultname: 'Parcelle appartenant à %name%'
     powercell:
@@ -165,7 +165,7 @@ interface:
   audits:
     title: Journal d'audit
     entryname: '&6%who%'
-    entrylore: '&7Quand: Depuis le &6%when%'
+    entrylore: '&7Visite: il y a &6%when%'
 # Event Messages
 event:
   general:
