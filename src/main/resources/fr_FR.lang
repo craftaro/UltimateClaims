@@ -9,7 +9,7 @@ general:
     'true': true
     'false': false
   claim:
-    defaultname: 'Zone appartenant à %name%''
+    defaultname: 'Parcelle appartenant à %name%'
     powercell:
       low: '&cPuissance faible!'
       message: '&6%time% &7restant.'
@@ -27,10 +27,10 @@ general:
 # Command Messages
 command:
   general:
-    notapartclaim: '&cVous n''êtes pas en dehors de cette parcelle ou elle n'existe pas.'
+    notapartclaim: '&cVous n''êtes pas en dehors de cette parcelle ou elle n''existe pas.'
     noclaim: '&cVous devez être dans une parcelle pour le faire.'
-    noplayer: '&cCe joueur n'existe pas ou n'est pas en ligne.'
-    notinclaim: '&cCe joueur n'est pas dans votre parcelle.'
+    noplayer: '&cCe joueur n''existe pas ou n''est pas en ligne.'
+    notinclaim: '&cCe joueur n''est pas dans votre parcelle.'
     claimed: '&cCe chunk est déjà attribué.'
     notclaimed: '&cCe chunk n''est pas encore attribué.'
     notyourclaim: '&cCe chunk a déjà été réclamé par quelqu''un d''autre.'
@@ -181,4 +181,4 @@ event:
     failopen: '&cVous devez être le propriétaire de cette parcelle pour ouvrir cette cellule d''énergie.'
     lowpower: '&cVotre parcelle &4%claim% &cn''a plus d''énergie!'
     superpower: '&cVotre parcelle &4%claim% &cest sans énergie et risque d''être dissoute!'
-    destroyed: '&cCellule de puissance détruite. Vous avez regagné %balance% de son stockage d'argent.'
+    destroyed: '&cCellule de puissance détruite. Vous avez regagné %balance% de son stockage d''argent.'
