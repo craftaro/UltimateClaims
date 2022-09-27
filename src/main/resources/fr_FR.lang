@@ -1,0 +1,184 @@
+# General Messages
+
+general:
+  nametag:
+    prefix: '&8[&UltimateClaims&8]'
+  word:
+    none: aucun
+  status:
+    'true': Autorisé
+    'false': Interdit
+  claim:
+    defaultname: 'Parcelle appartenant à %name%'
+    powercell:
+      low: '&cPuissance faible!'
+      message: '&6%time% &7restant.'
+    dissolve: '&7Votre parcelle &6%claim% &7a été dissoute.'
+  notanumber: '&cL''entrée &4%value% &cn''est pas un nombre'
+  notenoughfunds: '&cTu n''as pas assez de fonds.'
+  notenoughfundspowercell: '&cCette cellule de puissance n''a pas assez de fonds. %balance% est disponible pour être retiré.'
+  powercellrecipe: '&6Recette du PowerCell'
+  interface:
+    exit: '&cSortir'
+    back: '&cRetour'
+    next: '&cPage suivante'
+    previous: '&cPage précédente'
+    current: '&7Actuel &6%current%&7.'
+# Command Messages
+command:
+  general:
+    notapartclaim: '&cVous n''êtes pas en dehors de cette parcelle ou elle n''existe pas.'
+    noclaim: '&cVous devez être dans une parcelle pour le faire.'
+    noplayer: '&cCe joueur n''existe pas ou n''est pas en ligne.'
+    notinclaim: '&cCe joueur n''est pas dans votre parcelle.'
+    claimed: '&cCe chunk est déjà attribué.'
+    notclaimed: '&cCe chunk n''est pas encore attribué.'
+    notyourclaim: '&cCe chunk a déjà été réclamé par quelqu''un d''autre.'
+  invite:
+    invited: '&7Vous avez été invité à rejoindre &6%claim%&7. Utilisez &6/c accept &7pour accepter l''invitation.'
+    invite: '&7Vous avez invité &6%name% &7à rejoindre votre parcelle&7.'
+    notself: '&cVous ne pouvez pas vous inviter vous-même.'
+    already: '&cCe joueur est déjà membre de votre parcelle.'
+    alreadyinvited: '&cVous avez déjà invité ce joueur.'
+  addmember:
+    added: '&7Vous avez été ajouté à &6%claim%&7.'
+    add: '&7Vous avez ajouté &6%name% &7à votre parcelle&7.'
+  kick:
+    kicked: '&cVous avez été expulsé de &4%claim%&c.'
+    kick: '&7Vous avez expulsé &6%name% &7de &6%claim%&7.'
+    notself: '&7Vous ne pouvez pas vous expulser vous-même.'
+  ban:
+    notself: '&7&7Vous ne pouvez pas vous bannir vous-même.'
+    banned: '&cVous avez été banni de &4%claim%&c.'
+    ban: '&7Vous avez banni &6%name% &7de &6%claim%&7.'
+  unban:
+    unbanned: '&cVous avez été dé-banni de &4%claim%&c.'
+    unban: '&7Vous avez débanni &6%name% &7de &6%claim%&7.'
+    notself: '&7Vous ne pouvez pas vous débannir vous-même.'
+  accept:
+    none: '&cVous n''avez aucune invitation à accepter.'
+    success: '&7Vous êtes maintenant un membre de %claim%&7.'
+    accepted: '&6%name% &7a accepté votre invitation.'
+    maxed: '&7Cette parcelle a déjà atteint sa capacité maximale.'
+  claim:
+    success: '&7Vous avez acquéri ce terrain pour votre parcelle.'
+    newregion: '&aVous avez créé une nouvelle région avec succès.'
+    maxregions: '&cVous ne pouvez plus créer de régions ...'
+    nocell: '&cVous devez créer plus de célulles d''énergie avant de pouvoir acquérir plus de terrains...'
+    noregion: '&cVous ne pouvez pas acquérir un térrain protégé !'
+    info: '&cVous avez &4%time% &cpour créer une céllule d''énergie avant que votre parcelle ne soit dissoute... Vous pouvez trouver le plan pour l''assembler en tapant la commande: &6/c recipe&7. Formez-le au centre d''un coffre simple dans votre parcelle.'
+    nottouching: '&cVous ne pouvez réclamer que les terrains adjacents à vos parcelles.'
+    toomany: '&cVous ne pouvez protéger que &4%amount% &cchunks.'
+    disabledworld: '&cVous ne pouvez pas faire cela dans ce monde.'
+  unclaim:
+    success: '&7Vous avez abandonné cette parcelle.'
+    powercell: '&cVous ne pouvez pas abandonner la parcelle qui contient votre céllule d''énergie... Veuillez la déplacer avant de faire ceci.'
+  removeclaim:
+    success: '&7Vous avez supprimé la parcelle %claim%.'
+  transferownership:
+    success: '&7Vous avez transféré la propriété de %claim% avec succès.'
+    failed: '&7Vous n''avez pas transféré la propriété de %claim%.'
+  leave:
+    youleft: '&7Vous avez quitté &6%claim%&7.'
+    left: '&6%player% &7a quitté &6%claim%&7.'
+    owner: '&cVous ne pouvez pas quitter votre parcelle.'
+  lock:
+    locked: '&7Vous avez vérouillé votre parcelle.'
+    unlocked: '&7Vous avez dévérrouillé votre parcelle.'
+    lockedother: '&7Vous avez vérouillé la parcelle.'
+    unlockedother: '&7Vous avez dévérrouillé la parcelle.'
+  sethome:
+    set: '&7Vous avez défini le point de téléportation de votre parcelle.'
+  name:
+    set: '&7Le nom de votre parcelle a été changé pour %name%'
+    toolong: '&cCe nom est trop long. Le nombre maximal de caractères est &9%max%&c.'
+  home:
+    none: '&cCette parcelle n''a pas encore de point de téléportation...'
+    success: '&7Vous avez été téléporté au point de téléportation de votre parcelle.'
+  show:
+    start: '&7Visualisateur de parcelles &2activé.'
+    stop: '&7Visualisateur de parcelles &cdésactivé.'
+# Interface Messages
+interface:
+  powercell:
+    economytitle: '&7Argent stocké: &6%time%&7.'
+    economylore: '&7Cliquez pour déposer des fonds.'
+    valuablestitle: '&7Items stockés: &6%time%&7.'
+    totaltitle: '&7Puissance totale: &6%time%&7.'
+    addfunds: '&7Entrez une valeur à déposer.'
+    takefunds: '&7Entrez un montant à retirer.'
+    infotitle: '&5&lInfo'
+    infolore: '&7Vous avez &6%chunks% &7parcelles protégées|&7et &6%members% &7membres.'
+    banstitle: '&c&lBanissements'
+    banslore: '&7Voir les bannissements de votre parcelle.'
+    memberstitle: '&9&lMembres'
+    memberslore: '&7Voir les membres de votre parcelle.'
+    settingstitle: '&6&lParamètres'
+    settingslore: '&7Changer les paramètres de votre parcelle.'
+  members:
+    title: Membres
+    statslore: '&7Membres totaux: &6%totalmembers%&7.|&7Membres maximum: &6%maxmembers%&7.|&7Membres: &6%members%&7.'
+    skulllore: '&7Rôle: &a%role%|&7Temps de jeu: &b%playtime%|&7Membre depuis: &d%membersince%'
+    changetypetitle: '&7Changer le Type'
+    changetypelore: '&7Actuel: &d%current%|&7Clique pour changer de type.'
+    statstitle: '&7Statistiques'
+    changesorttitle: '&7Changer le tri'
+    changesortlore: '&7Actuel: &d%current%|&7Clique pour changer le tri.'
+    visitorsettingstitle: '&9&lParamètre des visiteurs'
+    visitorsettingslore: '&7Changer les paramètres des visiteurs.'
+    membersettingstitle: '&5&lParamètre des membres'
+    membersettingslore: '&7Changer les paramètres des membres.'
+  permsettings:
+    title: Options de %role%
+    breaktitle: '&7Casser des blocs'
+    placetitle: '&7Placer des blocs'
+    interacttitle: '&7Intéragir'
+    mobkilltitle: '&7Tuer des créatures'
+    redstonetitle: '&7Redstone'
+    doorstitle: '&7Portes'
+    tradingtitle: '&7Echanges'
+  bans:
+    title: Banissements
+    infotitle: '&7Info'
+    skulllore: '&7Clique pour débannir.'
+    infolore: '&7Nombre de banissements: &6%bancount%&7.'
+  settings:
+    title: Options
+    hostilemobspawningtitle: '&6&lApparition de créatures hostiles'
+    firespreadtitle: '&6&lPropagation du feu'
+    pvptitle: '&6&lPVP'
+    mobgriefingtitle: '&6&lDestruction par les créatures'
+    leafdecaytitle: '&6&lDisparition des feuilles'
+    tnttitle: '&6&lDégats des TNT'
+    flytitle: '&6&lVole (avec Élytra...)'
+  recipe:
+    title: Recette de la cellule d'énergie
+  role:
+    all: Tout
+    owner: Propriétaire
+    member: Membre
+    visitor: Visiteur
+  sortingmode:
+    default: DÉFAUT
+    playtime: TEMPS DE JEU
+    membersince: MEMBRE DEPUIS
+  audits:
+    title: Journal d'audit
+    entryname: '&6%who%'
+    entrylore: '&7Visite: il y a &6%when%'
+# Event Messages
+event:
+  general:
+    nopermission: '&cTu n''as pas le droit de faire cela.'
+  invite:
+    expired: '&cVotre invitation a expiré...'
+  claim:
+    enter: '&7Vous venez d''entrer dans &6%claim%&7.'
+    exit: '&7Vous venez de sortir de &6%claim%&7.'
+    locked: '&cUne force obscure vous empêche d''entrer...'
+  powercell:
+    success: '&7Tu as créé une cellule d''énergie. Remplis-la avec du carburant pour garder votre parcelle protégée.'
+    failopen: '&cVous devez être le propriétaire de cette parcelle pour ouvrir cette cellule d''énergie.'
+    lowpower: '&cVotre parcelle &4%claim% &cn''a plus d''énergie!'
+    superpower: '&cVotre parcelle &4%claim% &cest sans énergie et risque d''être dissoute!'
+    destroyed: '&cCellule de puissance détruite. Vous avez regagné %balance% de son stockage d''argent.'
