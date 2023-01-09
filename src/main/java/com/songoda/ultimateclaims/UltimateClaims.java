@@ -241,8 +241,9 @@ public class UltimateClaims extends SongodaPlugin {
         this.setLocale(Settings.LANGUGE_MODE.getString(), true);
         this.itemManager.loadItems();
 
-        if (this.dynmapManager != null)
+        if (this.dynmapManager != null) {
             this.dynmapManager.reload();
+        }
     }
 
     public GuiManager getGuiManager() {

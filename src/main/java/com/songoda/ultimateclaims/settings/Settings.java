@@ -185,6 +185,14 @@ public class Settings {
             "More language files (if available) can be found in the plugins data folder.");
 
     public static final ConfigSetting DYNMAP_ENABLED = new ConfigSetting(config, "Dynmap.Enabled", true, "Set to 'false' to disable highlighting claimed areas on Dynmap.");
+    public static final ConfigSetting DYNMAP_COLORS = new ConfigSetting(config, "Dynmap.Colors", false,
+            "The following options exist: false, true, <number>, file",
+            "false: Dynmap's default color will be used",
+            "true: A unique color will be generated for each player (based on their UUID)",
+            "<number>: You can configure a specific color to be used (replace '<number>' with the numeric representation of the RGB color) e.g. 0xFF0000 for red",
+            "file: A file containing the colors to use will be generated. If a UUID is not found in the file, a color will be generated (same as true)",
+            "",
+            "The 'file' is not recommended for servers with many players as it will generate a lot of unnecessary data");
     public static final ConfigSetting DYNMAP_LABEL = new ConfigSetting(config, "Dynmap.Label", "Claimed Chunks",
             "The label is shown to the user at the upper-right corner by default",
             "User can toggle a checkbox to disable this overlay");
