@@ -59,8 +59,7 @@ public class DynmapManager {
                         for (ClaimCorners cc : r.getClaimCorners()) {
                             if (markerSet.findAreaMarker(c.getId() + ":" + cc.chunkID) == null) {
                                 AreaMarker marker = markerSet.createAreaMarker(c.getId() + ":" + cc.chunkID, "Claim #" + c.getId(),
-                                        false, c.getFirstClaimedChunk().getWorld(), cc.x, cc.z, false);
-
+                                        false, cc.getWorld().getName(), cc.x, cc.z, false);
                                 if (this.colorsEnabled) {
                                     int color = determineColor(c);
                                     marker.setFillStyle(marker.getFillOpacity(), color);
