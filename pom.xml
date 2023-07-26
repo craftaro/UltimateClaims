@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0">
-    <groupId>com.songoda</groupId>
+    <groupId>com.craftaro</groupId>
     <artifactId>UltimateClaims</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>1.10.4</version>
+    <version>2.0.0-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -55,7 +55,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>3.4.1</version>
 
                 <executions>
                     <execution>
@@ -72,7 +72,7 @@
 
                             <artifactSet>
                                 <includes>
-                                    <include>com.songoda:SongodaCore</include>
+                                    <include>com.craftaro:CraftaroCore</include>
                                 </includes>
                             </artifactSet>
 
@@ -85,11 +85,19 @@
                                         <exclude>META-INF/*.RSA</exclude>
                                     </excludes>
                                 </filter>
+                                <filter>
+                                    <artifact>com.craftaro:CraftaroCore</artifact>
+                                    <excludeDefaults>false</excludeDefaults>
+                                    <includes>
+                                        <include>**/nms/v*/**</include>
+                                        <include>**/core/third_party/**</include>
+                                    </includes>
+                                </filter>
                             </filters>
 
                             <relocations>
                                 <relocation>
-                                    <pattern>com.songoda.core</pattern>
+                                    <pattern>com.craftaro.core</pattern>
                                     <shadedPattern>${project.groupId}.ultimateclaims.core</shadedPattern>
                                 </relocation>
                             </relocations>
@@ -107,8 +115,13 @@
         </repository>
 
         <repository>
-            <id>public</id>
-            <url>https://repo.songoda.com/repository/public/</url>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
+
+        <repository>
+            <id>craftaro-minecraft-plugins</id>
+            <url>https://repo.craftaro.com/repository/minecraft-plugins/</url>
         </repository>
 
         <repository>
@@ -133,14 +146,14 @@
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
-            <version>2.9.2</version>
+            <version>2.11.3</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>com.songoda</groupId>
-            <artifactId>SongodaCore</artifactId>
-            <version>2.6.21</version>
+            <groupId>com.craftaro</groupId>
+            <artifactId>CraftaroCore</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 
