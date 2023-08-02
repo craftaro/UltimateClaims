@@ -94,9 +94,9 @@ public class ClaimedRegion {
                     region.addChunk(searchedChunk);
                 }
                 if (region != this)
-                    UltimateClaims.getInstance().getDataManager().createClaimedRegion(region);
+                    UltimateClaims.getInstance().getDataHelper().createClaimedRegion(region);
             }
-            UltimateClaims.getInstance().getDataManager().updateClaimedChunks(scanned);
+            UltimateClaims.getInstance().getDataHelper().updateClaimedChunks(scanned);
             return newRegions;
         }
         return new ArrayList<>();

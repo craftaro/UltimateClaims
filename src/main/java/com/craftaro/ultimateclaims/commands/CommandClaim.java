@@ -93,10 +93,10 @@ public class CommandClaim extends AbstractCommand {
 
             claim.addClaimedChunk(chunk, player);
             ClaimedChunk claimedChunk = claim.getClaimedChunk(chunk);
-            plugin.getDataManager().createClaimedChunk(claimedChunk);
+            plugin.getDataHelper().createClaimedChunk(claimedChunk);
 
             if (newRegion) {
-                plugin.getDataManager().createClaimedRegion(claimedChunk.getRegion());
+                plugin.getDataHelper().createClaimedRegion(claimedChunk.getRegion());
             }
 
             if (plugin.getDynmapManager() != null)
@@ -120,7 +120,7 @@ public class CommandClaim extends AbstractCommand {
             if (plugin.getDynmapManager() != null)
                 plugin.getDynmapManager().refresh();
 
-            plugin.getDataManager().createClaim(claim);
+            plugin.getDataHelper().createClaim(claim);
 
             plugin.getLocale().getMessage("command.claim.info")
                     .processPlaceholder("time", TimeUtils.makeReadable(Settings.STARTING_POWER.getLong() * 60 * 1000))

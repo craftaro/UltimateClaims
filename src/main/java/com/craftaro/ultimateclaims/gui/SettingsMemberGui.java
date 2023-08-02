@@ -106,10 +106,10 @@ public class SettingsMemberGui extends CustomizableGui {
     private void toggle(ClaimPerm perm) {
         if (role == ClaimRole.MEMBER) {
             claim.getMemberPermissions().setAllowed(perm, !claim.getMemberPermissions().hasPermission(perm));
-            plugin.getDataManager().updatePermissions(claim, claim.getMemberPermissions(), ClaimRole.MEMBER);
+            plugin.getDataHelper().updatePermissions(claim, claim.getMemberPermissions(), ClaimRole.MEMBER);
         } else {
             claim.getVisitorPermissions().setAllowed(perm, !claim.getVisitorPermissions().hasPermission(perm));
-            plugin.getDataManager().updatePermissions(claim, claim.getVisitorPermissions(), ClaimRole.VISITOR);
+            plugin.getDataHelper().updatePermissions(claim, claim.getVisitorPermissions(), ClaimRole.VISITOR);
         }
         refreshDisplay();
     }

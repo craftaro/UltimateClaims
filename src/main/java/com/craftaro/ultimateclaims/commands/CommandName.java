@@ -51,7 +51,7 @@ public class CommandName extends AbstractCommand {
 
         claim.setName(name);
 
-        plugin.getDataManager().updateClaim(claim);
+        plugin.getDataHelper().updateClaim(claim);
 
         plugin.getLocale().getMessage("command.name.set")
                 .processPlaceholder("name", name)

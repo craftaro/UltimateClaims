@@ -1,9 +1,9 @@
 package com.craftaro.ultimateclaims.database;
 
+import com.craftaro.core.database.DataManager;
+import com.craftaro.core.database.DatabaseConnector;
 import com.craftaro.ultimateclaims.settings.PluginSettings;
 import com.craftaro.ultimateclaims.settings.Settings;
-import com.craftaro.core.database.DataManagerAbstract;
-import com.craftaro.core.database.DatabaseConnector;
 import com.craftaro.core.utils.ItemSerializer;
 import com.craftaro.ultimateclaims.claim.Audit;
 import com.craftaro.ultimateclaims.claim.Claim;
@@ -29,10 +29,29 @@ import java.sql.Types;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class DataManager extends DataManagerAbstract {
+public class DataHelper {
 
-    public DataManager(DatabaseConnector databaseConnector, Plugin plugin) {
-        super(databaseConnector, plugin);
+    private final DatabaseConnector databaseConnector;
+    private final DataManager dataManager;
+    private final Plugin plugin;
+
+    public DataHelper(DataManager dataManager, Plugin plugin) {
+        this.dataManager = dataManager;
+        this.databaseConnector = dataManager.getDatabaseConnector();
+        this.plugin = plugin;
+
+    }
+
+    private void runAsync(Runnable runnable) {
+        dataManager.getAsyncPool().execute(runnable);
+    }
+
+    private void sync(Runnable runnable) {
+        Bukkit.getScheduler().runTask(plugin, runnable);
+    }
+
+    private String getTablePrefix() {
+        return this.dataManager.getTablePrefix();
     }
 
     public void createOrUpdatePluginSettings(PluginSettings pluginSettings) {
@@ -86,6 +105,9 @@ public class DataManager extends DataManagerAbstract {
     public void createClaim(Claim claim) {
         this.runAsync(() -> {
             try (Connection connection = this.databaseConnector.getConnection()){
+
+                int claimId = this.dataManager.getNextId("claim"); //Method includes the table prefix. Run the method before inserting into the database.
+
                 String createClaim = "INSERT INTO " + this.getTablePrefix() + "claim (name, power, eco_bal, locked) VALUES (?, ?, ?, ?)";
                 try (PreparedStatement statement = connection.prepareStatement(createClaim)) {
                     statement.setString(1, claim.getName());
@@ -94,8 +116,6 @@ public class DataManager extends DataManagerAbstract {
                     statement.setInt(4, claim.isLocked() ? 1 : 0);
                     statement.executeUpdate();
                 }
-
-                int claimId = this.lastInsertedId(connection);
 
                 this.sync(() -> claim.setId(claimId));
 
@@ -428,7 +448,8 @@ public class DataManager extends DataManagerAbstract {
         this.runAsync(() -> {
             try (Connection connection = this.databaseConnector.getConnection()){
                 String createChunk = Settings.MYSQL_ENABLED.getBoolean() ? "DELETE FROM " + this.getTablePrefix() + "audit_log WHERE time < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL " + purgeAfter + " DAY))" :
-                        "DELETE FROM " + this.getTablePrefix() + "audit_log WHERE strftime('%Y-%m', time / 1000, 'unixepoch') <= date('now','-" + purgeAfter +" day')";
+                        "DELETE FROM " + this.getTablePrefix() + "audit_log WHERE TO_CHAR(time / 1000, 'YYYY-MM') <= CURRENT_DATE - INTERVAL '15' DAY";
+                //strftime is not supported in H2, recreate it
                 PreparedStatement statement = connection.prepareStatement(createChunk);
                 statement.executeUpdate();
             } catch (Exception ex) {
@@ -570,8 +591,8 @@ public class DataManager extends DataManagerAbstract {
                         double x = result.getDouble("spawn_x");
                         double y = result.getDouble("spawn_y");
                         double z = result.getDouble("spawn_z");
-                        double pitch = result.getDouble("spawn_pitch");
-                        double yaw = result.getDouble("spawn_yaw");
+                        float pitch = result.getFloat("spawn_pitch");
+                        float yaw = result.getFloat("spawn_yaw");
                         Location spawnPoint = new Location(Bukkit.getWorld(world), x, y, z, (float) pitch, (float) yaw);
 
                         pluginSettings.setSpawnPoint(spawnPoint);

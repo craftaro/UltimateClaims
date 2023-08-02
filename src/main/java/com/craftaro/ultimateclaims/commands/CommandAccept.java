@@ -55,7 +55,7 @@ public class CommandAccept extends AbstractCommand {
 
             invite.accepted();
 
-            plugin.getDataManager().createMember(newMember);
+            plugin.getDataHelper().createMember(newMember);
 
             plugin.getLocale().getMessage("command.accept.success")
                     .processPlaceholder("claim", invite.getClaim().getName())

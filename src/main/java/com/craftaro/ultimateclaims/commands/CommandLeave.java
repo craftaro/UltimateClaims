@@ -55,7 +55,7 @@ public class CommandLeave extends AbstractCommand {
 
         ClaimMember memberToRemove = claim.getMember(player);
 
-        plugin.getDataManager().deleteMember(memberToRemove);
+        plugin.getDataHelper().deleteMember(memberToRemove);
 
         claim.removeMember(player);
 

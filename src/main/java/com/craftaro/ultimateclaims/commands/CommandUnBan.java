@@ -64,7 +64,7 @@ public class CommandUnBan extends AbstractCommand {
                 .sendPrefixedMessage(player);
 
         claim.unBanPlayer(toBan.getUniqueId());
-        plugin.getDataManager().deleteBan(claim, toBan.getUniqueId());
+        plugin.getDataHelper().deleteBan(claim, toBan.getUniqueId());
         return ReturnType.SUCCESS;
     }
 

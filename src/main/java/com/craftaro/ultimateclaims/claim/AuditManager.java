@@ -29,7 +29,7 @@ public class AuditManager {
             return;
         }
 
-        plugin.getDataManager().getAuditLog(claim, audits -> {
+        plugin.getDataHelper().getAuditLog(claim, audits -> {
             auditCache.put(claim, audits);
             callback.accept(audits);
         });
@@ -45,7 +45,7 @@ public class AuditManager {
             if (auditLog.isEmpty()
                     || auditLog.getFirst().getWho() != audit.getWho()
                     || System.currentTimeMillis() - auditLog.getFirst().getWhen() > 5 * 1000 * 60) {
-                plugin.getDataManager().addAudit(claim, audit);
+                plugin.getDataHelper().addAudit(claim, audit);
                 auditLog.addFirst(audit);
             }
         });

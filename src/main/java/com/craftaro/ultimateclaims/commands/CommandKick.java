@@ -80,7 +80,7 @@ public class CommandKick extends AbstractCommand {
 
         // and YEET!
         target.setRole(ClaimRole.VISITOR);
-        plugin.getDataManager().deleteMember(target);
+        plugin.getDataHelper().deleteMember(target);
         return ReturnType.SUCCESS;
     }
 

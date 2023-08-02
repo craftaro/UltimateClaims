@@ -89,7 +89,7 @@ public class CommandUnClaim extends AbstractCommand {
 
             claim.destroy(ClaimDeleteReason.PLAYER);
         } else {
-            plugin.getDataManager().deleteClaimedChunk(removedChunk);
+            plugin.getDataHelper().deleteClaimedChunk(removedChunk);
 
             plugin.getLocale().getMessage("command.unclaim.success").sendPrefixedMessage(sender);
         }

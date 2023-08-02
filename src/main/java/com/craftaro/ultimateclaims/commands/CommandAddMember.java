@@ -63,7 +63,7 @@ public class CommandAddMember extends AbstractCommand {
         }
 
         ClaimMember newMember = claim.addMember(toInvite, ClaimRole.MEMBER);
-        plugin.getDataManager().createMember(newMember);
+        plugin.getDataHelper().createMember(newMember);
 
         if(toInvite.isOnline())
             plugin.getLocale().getMessage("command.addmember.added")

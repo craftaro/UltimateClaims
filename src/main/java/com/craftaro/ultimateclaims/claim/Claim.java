@@ -297,7 +297,7 @@ public class Claim {
             }
             if (region.getChunks().isEmpty()) {
                 this.claimedRegions.remove(region);
-                UltimateClaims.getInstance().getDataManager().deleteClaimedRegion(region);
+                UltimateClaims.getInstance().getDataHelper().deleteClaimedRegion(region);
             }
         }
         return newChunk;
@@ -448,7 +448,7 @@ public class Claim {
             UltimateClaims.getInstance().getDynmapManager().refresh();
 
         this.powerCell.destroy();
-        UltimateClaims.getInstance().getDataManager().deleteClaim(this);
+        UltimateClaims.getInstance().getDataHelper().deleteClaim(this);
         UltimateClaims.getInstance().getClaimManager().removeClaim(this);
 
         // we've just unclaimed the chunk we're in, so we've "moved" out of the claim

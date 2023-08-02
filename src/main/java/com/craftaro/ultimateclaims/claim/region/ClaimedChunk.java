@@ -75,9 +75,9 @@ public class ClaimedChunk {
             ClaimedRegion region = chunk.getRegion();
             if (isAttached(chunk) && region != claimedRegion) {
                 claim.removeClaimedRegion(region);
-                UltimateClaims.getInstance().getDataManager().deleteClaimedRegion(region);
+                UltimateClaims.getInstance().getDataHelper().deleteClaimedRegion(region);
                 claimedRegion.addChunks(region.getChunks());
-                UltimateClaims.getInstance().getDataManager().updateClaimedChunks(region.getChunks());
+                UltimateClaims.getInstance().getDataHelper().updateClaimedChunks(region.getChunks());
             }
         }
     }

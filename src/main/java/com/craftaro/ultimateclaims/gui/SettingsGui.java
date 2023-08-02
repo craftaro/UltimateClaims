@@ -134,7 +134,7 @@ public class SettingsGui extends CustomizableGui {
 
     private void toggle(ClaimSetting setting) {
         claim.getClaimSettings().setEnabled(setting, !claim.getClaimSettings().isEnabled(setting));
-        plugin.getDataManager().updateSettings(claim, claim.getClaimSettings());
+        plugin.getDataHelper().updateSettings(claim, claim.getClaimSettings());
         refreshDisplay();
     }
 }

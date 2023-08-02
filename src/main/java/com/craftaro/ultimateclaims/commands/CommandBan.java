@@ -79,11 +79,11 @@ public class CommandBan extends AbstractCommand {
             claim.removeMember(toBan);
             target.eject(null);
             if (target.getRole() == ClaimRole.MEMBER)
-                plugin.getDataManager().deleteMember(target);
+                plugin.getDataHelper().deleteMember(target);
         }
 
         claim.banPlayer(toBan.getUniqueId());
-        plugin.getDataManager().createBan(claim, toBan.getUniqueId());
+        plugin.getDataHelper().createBan(claim, toBan.getUniqueId());
         return ReturnType.SUCCESS;
     }
 

@@ -37,7 +37,7 @@ public class CommandSetHome extends AbstractCommand {
 
         claim.setHome(player.getLocation());
 
-        plugin.getDataManager().updateClaim(claim);
+        plugin.getDataHelper().updateClaim(claim);
 
         plugin.getLocale().getMessage("command.sethome.set").sendPrefixedMessage(sender);
 

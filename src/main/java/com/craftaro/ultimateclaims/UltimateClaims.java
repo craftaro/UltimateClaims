@@ -1,5 +1,6 @@
 package com.craftaro.ultimateclaims;
 
+import com.craftaro.core.database.DatabaseConnector;
 import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.ultimateclaims.claim.AuditManager;
 import com.craftaro.ultimateclaims.claim.Claim;
@@ -7,7 +8,7 @@ import com.craftaro.ultimateclaims.claim.ClaimManager;
 import com.craftaro.ultimateclaims.commands.*;
 import com.craftaro.ultimateclaims.commands.admin.CommandRemoveClaim;
 import com.craftaro.ultimateclaims.commands.admin.CommandTransferOwnership;
-import com.craftaro.ultimateclaims.database.DataManager;
+import com.craftaro.ultimateclaims.database.DataHelper;
 import com.craftaro.ultimateclaims.items.ItemManager;
 import com.craftaro.ultimateclaims.placeholder.PlaceholderManager;
 import com.craftaro.ultimateclaims.settings.PluginSettings;
@@ -16,15 +17,10 @@ import com.craftaro.core.SongodaCore;
 import com.craftaro.core.SongodaPlugin;
 import com.craftaro.core.commands.CommandManager;
 import com.craftaro.core.configuration.Config;
-import com.craftaro.core.database.DataMigrationManager;
-import com.craftaro.core.database.DatabaseConnector;
-import com.craftaro.core.database.MySQLConnector;
-import com.craftaro.core.database.SQLiteConnector;
 import com.craftaro.core.gui.GuiManager;
 import com.craftaro.core.hooks.EconomyManager;
 import com.craftaro.core.hooks.HologramManager;
 import com.craftaro.core.hooks.WorldGuardHook;
-import com.craftaro.ultimateclaims.commands.*;
 import com.craftaro.ultimateclaims.database.migrations._1_InitialMigration;
 import com.craftaro.ultimateclaims.database.migrations._2_NewPermissions;
 import com.craftaro.ultimateclaims.database.migrations._3_MemberNames;
@@ -47,6 +43,7 @@ import com.craftaro.ultimateclaims.tasks.VisualizeTask;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,7 +53,7 @@ public class UltimateClaims extends SongodaPlugin {
 
     private PluginSettings pluginSettings;
 
-    private DatabaseConnector databaseConnector;
+    private DataHelper dataHelper;
 
     private final GuiManager guiManager = new GuiManager(this);
     private CommandManager commandManager;
@@ -64,10 +61,6 @@ public class UltimateClaims extends SongodaPlugin {
     private DynmapManager dynmapManager;
     private ItemManager itemManager;
     private AuditManager auditManager;
-
-    private DataMigrationManager dataMigrationManager;
-    private DataManager dataManager;
-
     private InviteTask inviteTask;
     private TrackerTask trackerTask;
 
@@ -162,8 +155,8 @@ public class UltimateClaims extends SongodaPlugin {
     public void onPluginDisable() {
         // save all claims data
         this.guiManager.closeAll();
-        this.dataManager.bulkUpdateClaims(this.claimManager.getRegisteredClaims());
-        this.databaseConnector.closeConnection();
+        this.dataHelper.bulkUpdateClaims(this.claimManager.getRegisteredClaims());
+        this.dataManager.shutdown();
 
         // cleanup holograms
         HologramManager.removeAllHolograms();
@@ -180,29 +173,7 @@ public class UltimateClaims extends SongodaPlugin {
     @Override
     public void onDataLoad() {
         // Database stuff, go!
-        try {
-            if (Settings.MYSQL_ENABLED.getBoolean()) {
-                String hostname = Settings.MYSQL_HOSTNAME.getString();
-                int port = Settings.MYSQL_PORT.getInt();
-                String database = Settings.MYSQL_DATABASE.getString();
-                String username = Settings.MYSQL_USERNAME.getString();
-                String password = Settings.MYSQL_PASSWORD.getString();
-                boolean useSSL = Settings.MYSQL_USE_SSL.getBoolean();
-                int poolSize = Settings.MYSQL_POOL_SIZE.getInt();
-
-                this.databaseConnector = new MySQLConnector(this, hostname, port, database, username, password, useSSL, poolSize);
-                this.getLogger().info("Data handler connected using MySQL.");
-            } else {
-                this.databaseConnector = new SQLiteConnector(this);
-                this.getLogger().info("Data handler connected using SQLite.");
-            }
-        } catch (Exception ex) {
-            this.getLogger().severe("Fatal error trying to connect to database. Please make sure all your connection settings are correct and try again. Plugin has been disabled.");
-            this.emergencyStop();
-        }
-
-        this.dataManager = new DataManager(this.databaseConnector, this);
-        this.dataMigrationManager = new DataMigrationManager(this.databaseConnector, this.dataManager,
+        initDatabase(Arrays.asList(
                 new _1_InitialMigration(),
                 new _2_NewPermissions(),
                 new _3_MemberNames(),
@@ -210,16 +181,17 @@ public class UltimateClaims extends SongodaPlugin {
                 new _5_TntSetting(),
                 new _6_FlySetting(),
                 new _7_AuditLog(),
-                new _8_ClaimedRegions());
-        this.dataMigrationManager.runMigrations();
+                new _8_ClaimedRegions())
+        );
+        this.dataHelper = new DataHelper(getDataManager(), this);
 
-        this.dataManager.getPluginSettings((pluginSettings) -> this.pluginSettings = pluginSettings);
+        this.dataHelper.getPluginSettings((pluginSettings) -> this.pluginSettings = pluginSettings);
         final boolean useHolo = Settings.POWERCELL_HOLOGRAMS.getBoolean() && HologramManager.getManager().isEnabled();
 
         if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
             this.dynmapManager = new DynmapManager(this);
 
-        this.dataManager.getClaims((claims) -> {
+        this.dataHelper.getClaims((claims) -> {
             this.claimManager.addClaims(claims);
             if (useHolo)
                 this.claimManager.getRegisteredClaims().stream().filter(Claim::hasPowerCell).forEach(x -> x.getPowerCell().createHologram());
@@ -228,7 +200,7 @@ public class UltimateClaims extends SongodaPlugin {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(this, this.dynmapManager::refresh);
             }
 
-            Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> dataManager.purgeAuditLog(), 1000, 15 * 60 * 1000);
+            Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> dataHelper.purgeAuditLog(), 1000, 15 * 60 * 1000);
         });
     }
 
@@ -263,18 +235,6 @@ public class UltimateClaims extends SongodaPlugin {
         return dynmapManager;
     }
 
-    public DataMigrationManager getDataMigrationManager() {
-        return this.dataMigrationManager;
-    }
-
-    public DataManager getDataManager() {
-        return this.dataManager;
-    }
-
-    public DatabaseConnector getDatabaseConnector() {
-        return this.databaseConnector;
-    }
-
     public InviteTask getInviteTask() {
         return inviteTask;
     }
@@ -293,5 +253,9 @@ public class UltimateClaims extends SongodaPlugin {
 
     public AuditManager getAuditManager() {
         return auditManager;
+    }
+
+    public DataHelper getDataHelper() {
+        return dataHelper;
     }
 }

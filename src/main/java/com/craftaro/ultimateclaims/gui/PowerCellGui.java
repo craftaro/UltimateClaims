@@ -248,7 +248,7 @@ public class PowerCellGui extends CustomizableGui {
                         if (EconomyManager.hasBalance(player, amount)) {
                             EconomyManager.withdrawBalance(player, amount);
                             powercell.addEconomy(amount);
-                            plugin.getDataManager().updateClaim(claim);
+                            plugin.getDataHelper().updateClaim(claim);
                         } else {
                             plugin.getLocale().getMessage("general.notenoughfunds").sendPrefixedMessage(player);
                         }
@@ -277,7 +277,7 @@ public class PowerCellGui extends CustomizableGui {
                         if (powercell.getEconomyBalance() >= amount) {
                             EconomyManager.deposit(player, amount);
                             powercell.removeEconomy(amount);
-                            plugin.getDataManager().updateClaim(claim);
+                            plugin.getDataHelper().updateClaim(claim);
                         } else {
                             plugin.getLocale().getMessage("general.notenoughfundspowercell")
                                     .processPlaceholder("balance", powercell.getEconomyBalance()).sendPrefixedMessage(player);
