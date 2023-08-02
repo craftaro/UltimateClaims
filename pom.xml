@@ -2,7 +2,7 @@
     <groupId>com.craftaro</groupId>
     <artifactId>UltimateClaims</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT-b2</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
