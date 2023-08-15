@@ -2,21 +2,20 @@ package com.craftaro.ultimateclaims.database.migrations;
 
 import com.craftaro.core.database.DataMigration;
 import com.craftaro.core.database.DatabaseConnector;
-import com.craftaro.core.database.MySQLConnector;
-import com.craftaro.ultimateclaims.UltimateClaims;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class _1_InitialMigration extends DataMigration {
-
     public _1_InitialMigration() {
         super(1);
     }
 
     @Override
-    public void migrate(Connection connection, String tablePrefix) throws SQLException {
+    public void migrate(DatabaseConnector connector, String tablePrefix) throws SQLException {
+        Connection connection = connector.getConnection();
+
         String autoIncrement = " AUTO_INCREMENT";
 
         // Create plugin settings table
@@ -111,5 +110,4 @@ public class _1_InitialMigration extends DataMigration {
                     ")");
         }
     }
-
 }

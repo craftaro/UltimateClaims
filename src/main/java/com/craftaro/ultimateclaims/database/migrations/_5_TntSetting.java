@@ -8,18 +8,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class _5_TntSetting extends DataMigration {
-
     public _5_TntSetting() {
         super(5);
     }
 
     @Override
-    public void migrate(Connection connection, String tablePrefix) throws SQLException {
-
+    public void migrate(DatabaseConnector connector, String tablePrefix) throws SQLException {
         // Create permissions table
-        try (Statement statement = connection.createStatement()) {
+        try (Statement statement = connector.getConnection().createStatement()) {
             statement.execute("ALTER TABLE " + tablePrefix + "settings ADD COLUMN tnt TINYINT NOT NULL DEFAULT 0");
         }
     }
-
 }
