@@ -13,9 +13,7 @@ public class _1_InitialMigration extends DataMigration {
     }
 
     @Override
-    public void migrate(DatabaseConnector connector, String tablePrefix) throws SQLException {
-        Connection connection = connector.getConnection();
-
+    public void migrate(Connection connection, String tablePrefix) throws SQLException {
         String autoIncrement = " AUTO_INCREMENT";
 
         // Create plugin settings table
