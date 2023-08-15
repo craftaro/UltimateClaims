@@ -1,90 +1,76 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
     <groupId>com.craftaro</groupId>
     <artifactId>UltimateClaims</artifactId>
-    <modelVersion>4.0.0</modelVersion>
     <version>2.0.0-b2-SNAPSHOT</version>
 
+    <name>UltimateClaims</name>
+    <description>Claim land with this unique grief protection tool – Fill up your power cell and keep it supplied to keep your land protected</description>
+    <url>https://craftaro.com/marketplace/product/65</url>
+
     <properties>
+        <craftaro.coreVersion>3.0.0-SNAPSHOT</craftaro.coreVersion>
+
+        <maven.compiler.release>8</maven.compiler.release>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <build>
-        <defaultGoal>clean install</defaultGoal>
-        <finalName>UltimateClaims-${project.version}</finalName>
+    <issueManagement>
+        <url>https://discord.gg/craftaro</url>
+        <system>Discord server</system>
+    </issueManagement>
 
+    <scm>
+        <url>https://github.com/craftaro/UltimateClaims</url>
+        <connection>scm:git:git://github.com/craftaro/UltimateClaims.git</connection>
+    </scm>
+
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
-
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-
-                    <release>8</release>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>com.google.code.maven-replacer-plugin</groupId>
-                <artifactId>replacer</artifactId>
-                <version>1.5.3</version>
-
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>replace</goal>
-                        </goals>
-                    </execution>
-                </executions>
-
-                <configuration>
-                    <file>${project.build.directory}/classes/plugin.yml</file>
-
-                    <replacements>
-                        <replacement>
-                            <token>maven-version-number</token>
-                            <value>${project.version}</value>
-                        </replacement>
-                    </replacements>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.4.1</version>
+                <version>3.5.0</version>
 
                 <executions>
                     <execution>
-                        <id>shaded</id>
                         <phase>package</phase>
-
                         <goals>
                             <goal>shade</goal>
                         </goals>
 
                         <configuration>
-                            <shadedArtifactAttached>false</shadedArtifactAttached>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <finalName>${project.name}-${project.version}</finalName>
 
-                            <artifactSet>
-                                <includes>
-                                    <include>com.craftaro:CraftaroCore</include>
-                                </includes>
-                            </artifactSet>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <useDependencyReducedPomInJar>true</useDependencyReducedPomInJar>
+                            <minimizeJar>true</minimizeJar>
+
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.craftaro.core</pattern>
+                                    <shadedPattern>com.craftaro.ultimateclaims.core</shadedPattern>
+                                </relocation>
+                            </relocations>
 
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
+
                                     <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>META-INF/**</exclude>
+                                        <exclude>LICENSE</exclude>
+                                        <exclude>LICENSE.**</exclude>
                                     </excludes>
                                 </filter>
+
                                 <filter>
                                     <artifact>com.craftaro:CraftaroCore</artifact>
                                     <excludeDefaults>false</excludeDefaults>
@@ -94,34 +80,34 @@
                                     </includes>
                                 </filter>
                             </filters>
-
-                            <relocations>
-                                <relocation>
-                                    <pattern>com.craftaro.core</pattern>
-                                    <shadedPattern>${project.groupId}.ultimateclaims.core</shadedPattern>
-                                </relocation>
-                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 
     <repositories>
         <repository>
-            <id>spigot-repo</id>
+            <id>craftaro-minecraft-plugins</id>
+            <url>https://repo.craftaro.com/repository/minecraft-plugins/</url>
+        </repository>
+
+        <repository>
+            <id>SpigotMC</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
 
         <repository>
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
-        </repository>
-
-        <repository>
-            <id>craftaro-minecraft-plugins</id>
-            <url>https://repo.craftaro.com/repository/minecraft-plugins/</url>
         </repository>
 
         <repository>
@@ -137,9 +123,16 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.craftaro</groupId>
+            <artifactId>CraftaroCore</artifactId>
+            <version>${craftaro.coreVersion}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.18-R0.1-SNAPSHOT</version>
+            <version>1.20.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -148,13 +141,6 @@
             <artifactId>placeholderapi</artifactId>
             <version>2.11.3</version>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.craftaro</groupId>
-            <artifactId>CraftaroCore</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
