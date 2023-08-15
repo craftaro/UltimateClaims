@@ -1,8 +1,7 @@
 package com.craftaro.ultimateclaims.listeners;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
-import com.craftaro.ultimateclaims.settings.Settings;
 import com.craftaro.core.compatibility.ServerVersion;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
 import com.craftaro.ultimateclaims.claim.ClaimManager;
@@ -11,6 +10,7 @@ import com.craftaro.ultimateclaims.claim.PowerCell;
 import com.craftaro.ultimateclaims.member.ClaimMember;
 import com.craftaro.ultimateclaims.member.ClaimPerm;
 import com.craftaro.ultimateclaims.member.ClaimRole;
+import com.craftaro.ultimateclaims.settings.Settings;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -19,14 +19,21 @@ import org.bukkit.block.Chest;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.*;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockPistonEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
 public class BlockListeners implements Listener {
-
     private final UltimateClaims plugin;
 
     public BlockListeners(UltimateClaims plugin) {
@@ -35,13 +42,15 @@ public class BlockListeners implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
-        ClaimManager claimManager = plugin.getClaimManager();
+        ClaimManager claimManager = this.plugin.getClaimManager();
 
         Block block = event.getBlock();
 
         Chunk chunk = block.getChunk();
 
-        if (!claimManager.hasClaim(chunk)) return;
+        if (!claimManager.hasClaim(chunk)) {
+            return;
+        }
 
         Claim claim = claimManager.getClaim(chunk);
 
@@ -60,26 +69,27 @@ public class BlockListeners implements Listener {
         }
 
         if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.PLACE)) {
-            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
+            this.plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        ClaimManager claimManager = plugin.getClaimManager();
+        ClaimManager claimManager = this.plugin.getClaimManager();
 
         Block block = event.getBlock();
-
         Chunk chunk = event.getBlock().getChunk();
 
-        if (!claimManager.hasClaim(chunk)) return;
+        if (!claimManager.hasClaim(chunk)) {
+            return;
+        }
 
         Claim claim = claimManager.getClaim(chunk);
         PowerCell powerCell = claim.getPowerCell();
 
         if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.BREAK)) {
-            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
+            this.plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
             event.setCancelled(true);
             return;
         }
@@ -89,7 +99,7 @@ public class BlockListeners implements Listener {
             if ((member != null && member.getRole() == ClaimRole.OWNER) || event.getPlayer().hasPermission("ultimateclaims.admin.removeclaim")) {
                 powerCell.destroy();
             } else {
-                plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
+                this.plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
                 event.setCancelled(true);
             }
         }
@@ -97,7 +107,7 @@ public class BlockListeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void ignite(BlockIgniteEvent event) {
-        ClaimManager claimManager = plugin.getClaimManager();
+        ClaimManager claimManager = this.plugin.getClaimManager();
 
         Claim claim = claimManager.getClaim(event.getBlock().getChunk());
         if (claim != null && !claim.getClaimSettings().isEnabled(ClaimSetting.FIRE_SPREAD)) {
@@ -107,14 +117,14 @@ public class BlockListeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void ignite(BlockBurnEvent event) {
-        ClaimManager claimManager = plugin.getClaimManager();
+        ClaimManager claimManager = this.plugin.getClaimManager();
 
         Claim claim = claimManager.getClaim(event.getBlock().getChunk());
         if (claim != null && !claim.getClaimSettings().isEnabled(ClaimSetting.FIRE_SPREAD)) {
             if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_11)) {
                 event.getIgnitingBlock().setType(XMaterial.AIR.parseMaterial());
             } else {
-                for (BlockFace bf : new BlockFace[] {BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST}) {
+                for (BlockFace bf : new BlockFace[]{BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST}) {
                     Block b = event.getBlock().getRelative(bf);
                     if (b != null && b.getType() == XMaterial.FIRE.parseMaterial()) {
                         b.setType(XMaterial.AIR.parseMaterial());
@@ -127,7 +137,7 @@ public class BlockListeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void decay(LeavesDecayEvent event) {
-        ClaimManager claimManager = plugin.getClaimManager();
+        ClaimManager claimManager = this.plugin.getClaimManager();
 
         Claim claim = claimManager.getClaim(event.getBlock().getChunk());
         if (claim != null && !claim.getClaimSettings().isEnabled(ClaimSetting.LEAF_DECAY)) {
@@ -137,15 +147,19 @@ public class BlockListeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onHopper(InventoryMoveItemEvent event) {
-        ClaimManager claimManager = plugin.getClaimManager();
+        ClaimManager claimManager = this.plugin.getClaimManager();
         ItemStack item = event.getItem();
 
-        if (!(event.getDestination().getHolder() instanceof Chest)) return;
+        if (!(event.getDestination().getHolder() instanceof Chest)) {
+            return;
+        }
 
         Chest chest = (Chest) event.getDestination().getHolder();
         Chunk chunk = chest.getLocation().getChunk();
 
-        if (!claimManager.hasClaim(chunk)) return;
+        if (!claimManager.hasClaim(chunk)) {
+            return;
+        }
 
         Claim claim = claimManager.getClaim(chunk);
         // hopper in a claim, are we trying to push into a powercell?
@@ -187,7 +201,7 @@ public class BlockListeners implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockFromToEventMonitor(BlockFromToEvent event) {
         // prevent water/lava/egg griefs
-        ClaimManager claimManager = plugin.getClaimManager();
+        ClaimManager claimManager = this.plugin.getClaimManager();
         Claim fromClaim = claimManager.getClaim(event.getBlock().getChunk());
         Claim toClaim = claimManager.getClaim(event.getToBlock().getChunk());
         // if we're moving across a claim boundary, cancel the event
@@ -214,7 +228,7 @@ public class BlockListeners implements Listener {
     }
 
     void pistonCheck(BlockPistonEvent event, List<Block> blocks) {
-        ClaimManager claimManager = plugin.getClaimManager();
+        ClaimManager claimManager = this.plugin.getClaimManager();
         Block piston = event.getBlock();
         final BlockFace dir = event.getDirection();
         final int chunkX = piston.getX() >> 4, chunkZ = piston.getZ() >> 4;

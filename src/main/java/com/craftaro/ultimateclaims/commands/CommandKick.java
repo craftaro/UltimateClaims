@@ -1,10 +1,10 @@
 package com.craftaro.ultimateclaims.commands;
 
-import com.craftaro.ultimateclaims.claim.Claim;
-import com.craftaro.ultimateclaims.UltimateClaims;
-import com.craftaro.ultimateclaims.api.events.ClaimPlayerKickEvent;
 import com.craftaro.core.commands.AbstractCommand;
 import com.craftaro.core.utils.PlayerUtils;
+import com.craftaro.ultimateclaims.UltimateClaims;
+import com.craftaro.ultimateclaims.api.events.ClaimPlayerKickEvent;
+import com.craftaro.ultimateclaims.claim.Claim;
 import com.craftaro.ultimateclaims.member.ClaimMember;
 import com.craftaro.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class CommandKick extends AbstractCommand {
-
     private final UltimateClaims plugin;
 
     public CommandKick(UltimateClaims plugin) {
@@ -25,31 +24,32 @@ public class CommandKick extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
+        if (args.length < 1) {
+            return ReturnType.SYNTAX_ERROR;
+        }
+
         Player player = (Player) sender;
 
-        if (args.length < 1)
-            return ReturnType.SYNTAX_ERROR;
-
-        if (!plugin.getClaimManager().hasClaim(player)) {
-            plugin.getLocale().getMessage("command.general.noclaim").sendPrefixedMessage(sender);
+        if (!this.plugin.getClaimManager().hasClaim(player)) {
+            this.plugin.getLocale().getMessage("command.general.noclaim").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
-        Claim claim = plugin.getClaimManager().getClaim(player);
+        Claim claim = this.plugin.getClaimManager().getClaim(player);
         ClaimMember target = claim.getMember(args[0]);
         OfflinePlayer toKick;
 
-        if(target != null) {
+        if (target != null) {
             toKick = target.getPlayer();
         } else {
             // unknown player: double-check
             toKick = Bukkit.getOfflinePlayer(args[0]);
 
             if (toKick == null || !(toKick.hasPlayedBefore() || toKick.isOnline())) {
-                plugin.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
+                this.plugin.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
                 return ReturnType.FAILURE;
             } else if (player.getUniqueId().equals(toKick.getUniqueId())) {
-                plugin.getLocale().getMessage("command.kick.notself").sendPrefixedMessage(sender);
+                this.plugin.getLocale().getMessage("command.kick.notself").sendPrefixedMessage(sender);
                 return ReturnType.FAILURE;
             }
 
@@ -58,7 +58,7 @@ public class CommandKick extends AbstractCommand {
         }
 
         if (target == null || target.getRole() != ClaimRole.MEMBER) {
-            plugin.getLocale().getMessage("command.general.notinclaim").sendPrefixedMessage(sender);
+            this.plugin.getLocale().getMessage("command.general.notinclaim").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
@@ -68,19 +68,20 @@ public class CommandKick extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        if (toKick.isOnline())
-            plugin.getLocale().getMessage("command.kick.kicked")
+        if (toKick.isOnline()) {
+            this.plugin.getLocale().getMessage("command.kick.kicked")
                     .processPlaceholder("claim", claim.getName())
                     .sendPrefixedMessage(toKick.getPlayer());
+        }
 
-        plugin.getLocale().getMessage("command.kick.kick")
+        this.plugin.getLocale().getMessage("command.kick.kick")
                 .processPlaceholder("name", toKick.getName())
                 .processPlaceholder("claim", claim.getName())
                 .sendPrefixedMessage(player);
 
         // and YEET!
         target.setRole(ClaimRole.VISITOR);
-        plugin.getDataHelper().deleteMember(target);
+        this.plugin.getDataHelper().deleteMember(target);
         return ReturnType.SUCCESS;
     }
 

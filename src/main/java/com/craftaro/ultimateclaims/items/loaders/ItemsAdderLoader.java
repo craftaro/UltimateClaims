@@ -14,7 +14,7 @@ public class ItemsAdderLoader implements ItemLoader {
 
     @Override
     public Function<ItemStack, Boolean> loadItem(String item) {
-        return itemStack ->{
+        return itemStack -> {
             CustomStack customStack = CustomStack.getInstance(item);
             if (customStack == null) {
                 return false;
@@ -26,8 +26,9 @@ public class ItemsAdderLoader implements ItemLoader {
     @Override
     public ItemStack getItem(String key) {
         CustomStack customStack = CustomStack.getInstance(key);
-        if (customStack == null) return null;
-
+        if (customStack == null) {
+            return null;
+        }
         return customStack.getItemStack();
     }
 }

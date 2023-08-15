@@ -1,7 +1,6 @@
 package com.craftaro.ultimateclaims.listeners;
 
 import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
-import com.craftaro.ultimateclaims.settings.Settings;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
 import com.craftaro.ultimateclaims.claim.ClaimManager;
@@ -10,11 +9,18 @@ import com.craftaro.ultimateclaims.claim.PowerCell;
 import com.craftaro.ultimateclaims.member.ClaimMember;
 import com.craftaro.ultimateclaims.member.ClaimPerm;
 import com.craftaro.ultimateclaims.member.ClaimRole;
+import com.craftaro.ultimateclaims.settings.Settings;
 import com.craftaro.ultimateclaims.tasks.VisualizeTask;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseEvent;
@@ -24,7 +30,12 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.material.Dispenser;
@@ -34,7 +45,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class EntityListeners implements Listener {
-
     private final UltimateClaims plugin;
 
     public EntityListeners(UltimateClaims plugin) {
@@ -45,7 +55,7 @@ public class EntityListeners implements Listener {
     public void onPlayerLogin(PlayerLoginEvent event) {
         // update cached username on login
         final Player player = event.getPlayer();
-        plugin.getClaimManager().getRegisteredClaims().stream()
+        this.plugin.getClaimManager().getRegisteredClaims().stream()
                 .map(claim -> claim.getMember(player))
                 .filter(Objects::nonNull)
                 .forEach(member -> member.setName(player.getName()));
@@ -58,10 +68,14 @@ public class EntityListeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onMove(PlayerMoveEvent event) {
-        if (event.getTo() == null) return;
+        if (event.getTo() == null) {
+            return;
+        }
+
         if (playerMove(event.getFrom(), event.getTo(), event.getPlayer())) {
-            if (event.getPlayer().isInsideVehicle())
+            if (event.getPlayer().isInsideVehicle()) {
                 event.getPlayer().leaveVehicle();
+            }
             event.setCancelled(true);
         }
 
@@ -70,7 +84,9 @@ public class EntityListeners implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onMove(VehicleMoveEvent event) {
         Entity entity = event.getVehicle().getPassenger();
-        if (!(entity instanceof Player)) return;
+        if (!(entity instanceof Player)) {
+            return;
+        }
         if (playerMove(event.getFrom(), event.getTo(), (Player) entity)) {
             entity.leaveVehicle();
         }
@@ -78,21 +94,24 @@ public class EntityListeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent event) {
-        if (playerMove(event.getFrom(), event.getTo(), event.getPlayer()))
+        if (playerMove(event.getFrom(), event.getTo(), event.getPlayer())) {
             event.setCancelled(true);
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void ongetIn(VehicleEnterEvent event) {
-        if (!(event.getEntered() instanceof Player)) return;
-        if (playerMove(event.getEntered().getLocation(),
-                event.getVehicle().getLocation(), (Player) event.getEntered()))
+        if (!(event.getEntered() instanceof Player)) {
+            return;
+        }
+        if (playerMove(event.getEntered().getLocation(), event.getVehicle().getLocation(), (Player) event.getEntered())) {
             event.setCancelled(true);
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onSpawn(EntitySpawnEvent event) {
-        ClaimManager claimManager = plugin.getClaimManager();
+        ClaimManager claimManager = this.plugin.getClaimManager();
 
         if (claimManager.hasClaim(event.getLocation().getChunk())) {
             Claim claim = claimManager.getClaim(event.getLocation().getChunk());
@@ -104,9 +123,10 @@ public class EntityListeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onChange(EntityChangeBlockEvent event) {
-        ClaimManager claimManager = plugin.getClaimManager();
-        if (event.getEntity() instanceof Player
-                || event.getEntity() instanceof FallingBlock) return;
+        ClaimManager claimManager = this.plugin.getClaimManager();
+        if (event.getEntity() instanceof Player || event.getEntity() instanceof FallingBlock) {
+            return;
+        }
 
         if (claimManager.hasClaim(event.getBlock().getLocation().getChunk())) {
             Claim claim = claimManager.getClaim(event.getBlock().getLocation().getChunk());
@@ -118,46 +138,53 @@ public class EntityListeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onArmor(PlayerArmorStandManipulateEvent event) {
-        ClaimManager claimManager = plugin.getClaimManager();
+        ClaimManager claimManager = this.plugin.getClaimManager();
 
         Entity entity = event.getRightClicked();
-
         Chunk chunk = entity.getLocation().getChunk();
 
-        if (!claimManager.hasClaim(chunk)) return;
+        if (!claimManager.hasClaim(chunk)) {
+            return;
+        }
 
         Claim claim = claimManager.getClaim(chunk);
 
         if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.PLACE)) {
-            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
+            this.plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
             event.setCancelled(true);
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onItemFrame(HangingBreakByEntityEvent event) {
-        if (!(event.getRemover() instanceof Player)) return;
-        ClaimManager claimManager = plugin.getClaimManager();
+        if (!(event.getRemover() instanceof Player)) {
+            return;
+        }
+        ClaimManager claimManager = this.plugin.getClaimManager();
 
         Entity entity = event.getEntity();
 
         Chunk chunk = entity.getLocation().getChunk();
 
-        if (!claimManager.hasClaim(chunk)) return;
+        if (!claimManager.hasClaim(chunk)) {
+            return;
+        }
 
         Claim claim = claimManager.getClaim(chunk);
 
         if (!claim.playerHasPerms((Player) event.getRemover(), ClaimPerm.PLACE)) {
-            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage((Player) event.getRemover());
+            this.plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage((Player) event.getRemover());
             event.setCancelled(true);
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onDispense(BlockDispenseEvent event) {
-        if (event.getBlock().getType() != XMaterial.DISPENSER.parseMaterial()) return;
+        if (event.getBlock().getType() != XMaterial.DISPENSER.parseMaterial()) {
+            return;
+        }
         Dispenser dispenser = (Dispenser) event.getBlock().getState().getData();
-        ClaimManager claimManager = plugin.getClaimManager();
+        ClaimManager claimManager = this.plugin.getClaimManager();
 
         Chunk to = event.getBlock().getRelative(dispenser.getFacing()).getLocation().getChunk();
         Chunk from = event.getBlock().getLocation().getChunk();
@@ -172,7 +199,7 @@ public class EntityListeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onDamage(EntityDamageByEntityEvent event) {
-        ClaimManager claimManager = plugin.getClaimManager();
+        ClaimManager claimManager = this.plugin.getClaimManager();
         Chunk chunk = event.getEntity().getLocation().getChunk();
         Claim claim = claimManager.getClaim(chunk);
 
@@ -203,7 +230,7 @@ public class EntityListeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onBlowUp(EntityExplodeEvent event) {
-        ClaimManager claimManager = plugin.getClaimManager();
+        ClaimManager claimManager = this.plugin.getClaimManager();
 
         // Who is responsible for this?
         Entity entity = event.getEntity();
@@ -213,8 +240,9 @@ public class EntityListeners implements Listener {
 
         // Does this concern us?
         for (Block block : new ArrayList<>(event.blockList())) {
-            if (!claimManager.hasClaim(block.getChunk()))
+            if (!claimManager.hasClaim(block.getChunk())) {
                 continue; // nope - you're not important
+            }
 
             Claim claim = claimManager.getClaim(block.getChunk());
             PowerCell powerCell = claim.getPowerCell();
@@ -246,7 +274,7 @@ public class EntityListeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onVillagerTrade(PlayerInteractEntityEvent event) {
-        ClaimManager claimManager = plugin.getClaimManager();
+        ClaimManager claimManager = this.plugin.getClaimManager();
         Chunk chunk = event.getRightClicked().getLocation().getChunk();
         Claim claim = claimManager.getClaim(chunk);
 
@@ -254,7 +282,7 @@ public class EntityListeners implements Listener {
             Entity source = event.getPlayer();
             Entity entity = event.getRightClicked();
             if (entity.getType().equals(EntityType.VILLAGER) && !claim.playerHasPerms((Player) source, ClaimPerm.TRADING)) {
-                plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage((Player) source);
+                this.plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage((Player) source);
                 event.setCancelled(true);
             }
         }
@@ -263,7 +291,7 @@ public class EntityListeners implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockExplode(BlockExplodeEvent event) {
-        ClaimManager claimManager = plugin.getClaimManager();
+        ClaimManager claimManager = this.plugin.getClaimManager();
         // todo? setting to allow/disallow these in a claim?
         event.blockList().removeIf(block -> claimManager.hasClaim(block.getChunk()));
     }
@@ -271,27 +299,30 @@ public class EntityListeners implements Listener {
     private boolean playerMove(Location fromLocation, Location toLocation, Player player) {
         Chunk from = fromLocation.getChunk();
         Chunk to = toLocation.getChunk();
-        if (from == to) return false;
-        plugin.getTrackerTask().addLastBefore(player, fromLocation);
+        if (from == to) {
+            return false;
+        }
+        this.plugin.getTrackerTask().addLastBefore(player, fromLocation);
 
-        ClaimManager claimManager = plugin.getClaimManager();
+        ClaimManager claimManager = this.plugin.getClaimManager();
 
         if (claimManager.hasClaim(from)) {
             Claim claim = claimManager.getClaim(from);
             if (claimManager.getClaim(to) != claim) {
                 ClaimMember member = claim.getMember(player);
                 if (member != null) {
-                    if (member.getRole() == ClaimRole.VISITOR)
+                    if (member.getRole() == ClaimRole.VISITOR) {
                         claim.removeMember(member);
-                    else
+                    } else {
                         member.setPresent(false);
-                    plugin.getTrackerTask().toggleFlyOff(player);
+                    }
+                    this.plugin.getTrackerTask().toggleFlyOff(player);
                 }
                 if (Settings.CLAIMS_BOSSBAR.getBoolean()) {
                     claim.getVisitorBossBar().removePlayer(player);
                     claim.getMemberBossBar().removePlayer(player);
                 } else {
-                    plugin.getLocale().getMessage("event.claim.exit")
+                    this.plugin.getLocale().getMessage("event.claim.exit")
                             .processPlaceholder("claim", claim.getName())
                             .sendTitle(player);
                 }
@@ -304,7 +335,7 @@ public class EntityListeners implements Listener {
                 ClaimMember member = claim.getMember(player);
                 if (member == null) {
                     if (claim.isLocked() && !player.hasPermission("ultimateclaims.bypass.lock")) {
-                        plugin.getLocale().getMessage("event.claim.locked")
+                        this.plugin.getLocale().getMessage("event.claim.locked")
                                 .sendTitle(player);
                         return true;
                     }
@@ -314,13 +345,14 @@ public class EntityListeners implements Listener {
                         member = claim.getMember(player);
                     }
                 }
-                if (member != null)
+                if (member != null) {
                     member.setPresent(true);
+                }
 
                 if (member != null
                         && claim.isBanned(member.getUniqueId())
                         && !player.hasPermission("ultimateclaims.bypass.ban")) {
-                    plugin.getLocale().getMessage("event.claim.locked")
+                    this.plugin.getLocale().getMessage("event.claim.locked")
                             .sendTitle(player);
                     return true;
                 }
@@ -332,7 +364,7 @@ public class EntityListeners implements Listener {
                         claim.getMemberBossBar().addPlayer(player);
                     }
                 } else {
-                    plugin.getLocale().getMessage("event.claim.enter")
+                    this.plugin.getLocale().getMessage("event.claim.enter")
                             .processPlaceholder("claim", claim.getName())
                             .sendTitle(player);
                 }

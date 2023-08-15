@@ -1,10 +1,10 @@
 package com.craftaro.ultimateclaims.commands;
 
+import com.craftaro.core.commands.AbstractCommand;
+import com.craftaro.core.utils.PlayerUtils;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.api.events.ClaimPlayerBanEvent;
 import com.craftaro.ultimateclaims.claim.Claim;
-import com.craftaro.core.commands.AbstractCommand;
-import com.craftaro.core.utils.PlayerUtils;
 import com.craftaro.ultimateclaims.member.ClaimMember;
 import com.craftaro.ultimateclaims.member.ClaimRole;
 import org.bukkit.Bukkit;
@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class CommandBan extends AbstractCommand {
-
     private final UltimateClaims plugin;
 
     public CommandBan(UltimateClaims plugin) {
@@ -25,28 +24,29 @@ public class CommandBan extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
+        if (args.length < 1) {
+            return ReturnType.SYNTAX_ERROR;
+        }
+
         Player player = (Player) sender;
 
-        if (args.length < 1)
-            return ReturnType.SYNTAX_ERROR;
-
-        if (!plugin.getClaimManager().hasClaim(player)) {
-            plugin.getLocale().getMessage("command.general.noclaim").sendPrefixedMessage(sender);
+        if (!this.plugin.getClaimManager().hasClaim(player)) {
+            this.plugin.getLocale().getMessage("command.general.noclaim").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
-        Claim claim = plugin.getClaimManager().getClaim(player);
+        Claim claim = this.plugin.getClaimManager().getClaim(player);
         ClaimMember target = claim.getMember(args[0]);
         OfflinePlayer toBan;
 
-        if(target != null) {
+        if (target != null) {
             toBan = target.getPlayer();
         } else {
             // unknown player: double-check
             toBan = Bukkit.getOfflinePlayer(args[0]);
 
             if (toBan == null || !(toBan.hasPlayedBefore() || toBan.isOnline())) {
-                plugin.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
+                this.plugin.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
                 return ReturnType.FAILURE;
             }
 
@@ -55,7 +55,7 @@ public class CommandBan extends AbstractCommand {
         }
 
         if (player.getUniqueId().equals(toBan.getUniqueId())) {
-            plugin.getLocale().getMessage("command.kick.notself").sendPrefixedMessage(sender);
+            this.plugin.getLocale().getMessage("command.kick.notself").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
@@ -65,12 +65,13 @@ public class CommandBan extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        if (toBan.isOnline())
-            plugin.getLocale().getMessage("command.ban.banned")
+        if (toBan.isOnline()) {
+            this.plugin.getLocale().getMessage("command.ban.banned")
                     .processPlaceholder("claim", claim.getName())
                     .sendPrefixedMessage(toBan.getPlayer());
+        }
 
-        plugin.getLocale().getMessage("command.ban.ban")
+        this.plugin.getLocale().getMessage("command.ban.ban")
                 .processPlaceholder("name", toBan.getName())
                 .processPlaceholder("claim", claim.getName())
                 .sendPrefixedMessage(player);
@@ -78,12 +79,13 @@ public class CommandBan extends AbstractCommand {
         if (target != null) {
             claim.removeMember(toBan);
             target.eject(null);
-            if (target.getRole() == ClaimRole.MEMBER)
-                plugin.getDataHelper().deleteMember(target);
+            if (target.getRole() == ClaimRole.MEMBER) {
+                this.plugin.getDataHelper().deleteMember(target);
+            }
         }
 
         claim.banPlayer(toBan.getUniqueId());
-        plugin.getDataHelper().createBan(claim, toBan.getUniqueId());
+        this.plugin.getDataHelper().createBan(claim, toBan.getUniqueId());
         return ReturnType.SUCCESS;
     }
 

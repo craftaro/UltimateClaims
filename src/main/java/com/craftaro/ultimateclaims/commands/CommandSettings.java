@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class CommandSettings extends AbstractCommand {
-
     private final UltimateClaims plugin;
 
     public CommandSettings(UltimateClaims plugin) {
@@ -19,7 +18,7 @@ public class CommandSettings extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        plugin.getGuiManager().showGUI((Player) sender, new PluginConfigGui(plugin, null));
+        this.plugin.getGuiManager().showGUI((Player) sender, new PluginConfigGui(this.plugin, null));
         return ReturnType.SUCCESS;
     }
 

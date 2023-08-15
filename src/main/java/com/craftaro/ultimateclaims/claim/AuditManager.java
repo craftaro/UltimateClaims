@@ -1,9 +1,9 @@
 package com.craftaro.ultimateclaims.claim;
 
+import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.settings.Settings;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.craftaro.ultimateclaims.UltimateClaims;
 
 import java.util.Deque;
 import java.util.UUID;
@@ -11,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class AuditManager {
-
     private final UltimateClaims plugin;
     private final Cache<Claim, Deque<Audit>> auditCache;
 
@@ -23,32 +22,32 @@ public class AuditManager {
     }
 
     public void getAudits(Claim claim, Consumer<Deque<Audit>> callback) {
-        Deque<Audit> cached = auditCache.getIfPresent(claim);
+        Deque<Audit> cached = this.auditCache.getIfPresent(claim);
         if (cached != null) {
             callback.accept(cached);
             return;
         }
 
-        plugin.getDataHelper().getAuditLog(claim, audits -> {
-            auditCache.put(claim, audits);
+        this.plugin.getDataHelper().getAuditLog(claim, audits -> {
+            this.auditCache.put(claim, audits);
             callback.accept(audits);
         });
     }
 
 
     public void addToAuditLog(Claim claim, UUID who, long when) {
-        if (!Settings.ENABLE_AUDIT_LOG.getBoolean())
+        if (!Settings.ENABLE_AUDIT_LOG.getBoolean()) {
             return;
+        }
 
         Audit audit = new Audit(who, when);
         getAudits(claim, auditLog -> {
             if (auditLog.isEmpty()
                     || auditLog.getFirst().getWho() != audit.getWho()
                     || System.currentTimeMillis() - auditLog.getFirst().getWhen() > 5 * 1000 * 60) {
-                plugin.getDataHelper().addAudit(claim, audit);
+                this.plugin.getDataHelper().addAudit(claim, audit);
                 auditLog.addFirst(audit);
             }
         });
-
     }
 }

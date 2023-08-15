@@ -1,12 +1,12 @@
 package com.craftaro.ultimateclaims.commands;
 
-import com.craftaro.ultimateclaims.settings.Settings;
-import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.core.commands.AbstractCommand;
+import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.api.events.ClaimMemberAddEvent;
 import com.craftaro.ultimateclaims.invite.Invite;
 import com.craftaro.ultimateclaims.member.ClaimMember;
 import com.craftaro.ultimateclaims.member.ClaimRole;
+import com.craftaro.ultimateclaims.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class CommandAccept extends AbstractCommand {
-
     private final UltimateClaims plugin;
 
     public CommandAccept(UltimateClaims plugin) {
@@ -27,24 +26,22 @@ public class CommandAccept extends AbstractCommand {
     protected ReturnType runCommand(CommandSender sender, String... args) {
         Player player = (Player) sender;
 
-        Invite invite = plugin.getInviteTask().getInvite(player.getUniqueId());
+        Invite invite = this.plugin.getInviteTask().getInvite(player.getUniqueId());
 
         if (invite == null) {
-            plugin.getLocale().getMessage("command.accept.none").sendPrefixedMessage(player);
+            this.plugin.getLocale().getMessage("command.accept.none").sendPrefixedMessage(player);
         } else {
             if (Math.toIntExact(invite.getClaim().getMembers().stream()
                     .filter(member -> member.getRole() == ClaimRole.MEMBER).count()) >= Settings.MAX_MEMBERS.getInt()) {
-                plugin.getLocale().getMessage("command.accept.maxed").sendPrefixedMessage(player);
+                this.plugin.getLocale().getMessage("command.accept.maxed").sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
             }
-
 
             ClaimMemberAddEvent event = new ClaimMemberAddEvent(invite.getClaim(), player);
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) {
                 return ReturnType.FAILURE;
             }
-
 
             ClaimMember newMember = invite.getClaim().getMember(player);
             if (newMember == null) {
@@ -55,18 +52,19 @@ public class CommandAccept extends AbstractCommand {
 
             invite.accepted();
 
-            plugin.getDataHelper().createMember(newMember);
+            this.plugin.getDataHelper().createMember(newMember);
 
-            plugin.getLocale().getMessage("command.accept.success")
+            this.plugin.getLocale().getMessage("command.accept.success")
                     .processPlaceholder("claim", invite.getClaim().getName())
                     .sendPrefixedMessage(player);
 
             OfflinePlayer owner = Bukkit.getPlayer(invite.getInviter());
 
-            if (owner != null && owner.isOnline())
-                plugin.getLocale().getMessage("command.accept.accepted")
+            if (owner != null && owner.isOnline()) {
+                this.plugin.getLocale().getMessage("command.accept.accepted")
                         .processPlaceholder("name", player.getName())
                         .sendPrefixedMessage(owner.getPlayer());
+            }
         }
 
         return ReturnType.SUCCESS;

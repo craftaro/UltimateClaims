@@ -1,6 +1,5 @@
 package com.craftaro.ultimateclaims.commands;
 
-import com.craftaro.ultimateclaims.settings.Settings;
 import com.craftaro.core.commands.AbstractCommand;
 import com.craftaro.core.hooks.WorldGuardHook;
 import com.craftaro.core.utils.TimeUtils;
@@ -13,6 +12,7 @@ import com.craftaro.ultimateclaims.claim.region.ClaimedChunk;
 import com.craftaro.ultimateclaims.claim.region.ClaimedRegion;
 import com.craftaro.ultimateclaims.member.ClaimMember;
 import com.craftaro.ultimateclaims.member.ClaimRole;
+import com.craftaro.ultimateclaims.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandClaim extends AbstractCommand {
-
     private final UltimateClaims plugin;
 
     public CommandClaim(UltimateClaims plugin) {
@@ -35,12 +34,12 @@ public class CommandClaim extends AbstractCommand {
         Player player = (Player) sender;
 
         if (Settings.DISABLED_WORLDS.getStringList().contains(player.getWorld().getName())) {
-            plugin.getLocale().getMessage("command.claim.disabledworld").sendPrefixedMessage(player);
+            this.plugin.getLocale().getMessage("command.claim.disabledworld").sendPrefixedMessage(player);
             return ReturnType.FAILURE;
         }
 
-        if (plugin.getClaimManager().hasClaim(player.getLocation().getChunk())) {
-            plugin.getLocale().getMessage("command.general.claimed").sendPrefixedMessage(player);
+        if (this.plugin.getClaimManager().hasClaim(player.getLocation().getChunk())) {
+            this.plugin.getLocale().getMessage("command.general.claimed").sendPrefixedMessage(player);
             return ReturnType.FAILURE;
         }
 
@@ -50,29 +49,29 @@ public class CommandClaim extends AbstractCommand {
         // firstly, can we even claim this chunk?
         Boolean flag;
         if ((flag = WorldGuardHook.getBooleanFlag(chunk, "allow-claims")) != null && !flag) {
-            plugin.getLocale().getMessage("command.claim.noregion").sendPrefixedMessage(player);
+            this.plugin.getLocale().getMessage("command.claim.noregion").sendPrefixedMessage(player);
             return ReturnType.FAILURE;
         }
 
-        if (plugin.getClaimManager().hasClaim(player)) {
-            claim = plugin.getClaimManager().getClaim(player);
+        if (this.plugin.getClaimManager().hasClaim(player)) {
+            claim = this.plugin.getClaimManager().getClaim(player);
 
             if (!claim.getPowerCell().hasLocation()) {
-                plugin.getLocale().getMessage("command.claim.nocell").sendPrefixedMessage(player);
+                this.plugin.getLocale().getMessage("command.claim.nocell").sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
             }
 
             ClaimedRegion region = claim.getPotentialRegion(chunk);
 
             if (Settings.CHUNKS_MUST_TOUCH.getBoolean() && region == null) {
-                plugin.getLocale().getMessage("command.claim.nottouching").sendPrefixedMessage(player);
+                this.plugin.getLocale().getMessage("command.claim.nottouching").sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
             }
 
             int maxClaimable = claim.getMaxClaimSize(player);
 
             if (claim.getClaimSize() >= maxClaimable) {
-                plugin.getLocale().getMessage("command.claim.toomany")
+                this.plugin.getLocale().getMessage("command.claim.toomany")
                         .processPlaceholder("amount", maxClaimable)
                         .sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
@@ -87,23 +86,25 @@ public class CommandClaim extends AbstractCommand {
             boolean newRegion = claim.isNewRegion(chunk);
 
             if (newRegion && claim.getClaimedRegions().size() >= Settings.MAX_REGIONS.getInt()) {
-                plugin.getLocale().getMessage("command.claim.maxregions").sendPrefixedMessage(sender);
+                this.plugin.getLocale().getMessage("command.claim.maxregions").sendPrefixedMessage(sender);
                 return ReturnType.FAILURE;
             }
 
             claim.addClaimedChunk(chunk, player);
             ClaimedChunk claimedChunk = claim.getClaimedChunk(chunk);
-            plugin.getDataHelper().createClaimedChunk(claimedChunk);
+            this.plugin.getDataHelper().createClaimedChunk(claimedChunk);
 
             if (newRegion) {
-                plugin.getDataHelper().createClaimedRegion(claimedChunk.getRegion());
+                this.plugin.getDataHelper().createClaimedRegion(claimedChunk.getRegion());
             }
 
-            if (plugin.getDynmapManager() != null)
-                plugin.getDynmapManager().refresh();
+            if (this.plugin.getDynmapManager() != null) {
+                this.plugin.getDynmapManager().refresh();
+            }
 
-            if (Settings.POWERCELL_HOLOGRAMS.getBoolean())
+            if (Settings.POWERCELL_HOLOGRAMS.getBoolean()) {
                 claim.getPowerCell().updateHologram();
+            }
         } else {
             claim = new ClaimBuilder()
                     .setOwner(player)
@@ -116,13 +117,14 @@ public class CommandClaim extends AbstractCommand {
                 return ReturnType.FAILURE;
             }
 
-            plugin.getClaimManager().addClaim(player, claim);
-            if (plugin.getDynmapManager() != null)
-                plugin.getDynmapManager().refresh();
+            this.plugin.getClaimManager().addClaim(player, claim);
+            if (this.plugin.getDynmapManager() != null) {
+                this.plugin.getDynmapManager().refresh();
+            }
 
-            plugin.getDataHelper().createClaim(claim);
+            this.plugin.getDataHelper().createClaim(claim);
 
-            plugin.getLocale().getMessage("command.claim.info")
+            this.plugin.getLocale().getMessage("command.claim.info")
                     .processPlaceholder("time", TimeUtils.makeReadable(Settings.STARTING_POWER.getLong() * 60 * 1000))
                     .sendPrefixedMessage(sender);
         }
@@ -133,11 +135,13 @@ public class CommandClaim extends AbstractCommand {
             if (p.getLocation().getChunk().equals(chunk)) {
                 ClaimMember member = claim.getMember(p);
 
-                if (member != null)
+                if (member != null) {
                     member.setPresent(true);
-                else
-                    // todo: expunge banned players
+                } else
+                // todo: expunge banned players
+                {
                     member = claim.addMember(p, ClaimRole.VISITOR);
+                }
 
                 if (Settings.CLAIMS_BOSSBAR.getBoolean()) {
                     if (member.getRole() == ClaimRole.VISITOR) {
@@ -149,18 +153,22 @@ public class CommandClaim extends AbstractCommand {
             }
         }
 
-        plugin.getLocale().getMessage("command.claim.success").sendPrefixedMessage(sender);
+        this.plugin.getLocale().getMessage("command.claim.success").sendPrefixedMessage(sender);
         return ReturnType.SUCCESS;
     }
 
     @Override
     protected List<String> onTab(CommandSender sender, String... args) {
-        if (!(sender instanceof Player)) return null;
+        if (!(sender instanceof Player)) {
+            return null;
+        }
         if (args.length == 1) {
             List<String> claims = new ArrayList<>();
-            for (Claim claim : plugin.getClaimManager().getRegisteredClaims()) {
+            for (Claim claim : this.plugin.getClaimManager().getRegisteredClaims()) {
                 if (claim.getMember((Player) sender) == null
-                        || claim.getMember((Player) sender).getRole() == ClaimRole.VISITOR) continue;
+                        || claim.getMember((Player) sender).getRole() == ClaimRole.VISITOR) {
+                    continue;
+                }
                 claims.add(claim.getName());
             }
             return claims;

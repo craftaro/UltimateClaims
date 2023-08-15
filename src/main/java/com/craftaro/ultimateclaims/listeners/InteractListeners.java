@@ -20,6 +20,8 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.util.Optional;
+
 public class InteractListeners implements Listener {
     private final UltimateClaims plugin;
 
@@ -41,19 +43,21 @@ public class InteractListeners implements Listener {
             if (canRedstone) {
                 return;
             } else if (isRedstone(event.getClickedBlock()) && !claim.playerHasPerms(event.getPlayer(), ClaimPerm.REDSTONE)) {
-                plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
+                this.plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
                 event.setCancelled(true);
                 return;
             }
 
             if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.PLACE)) {
-                plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage((Player) event.getPlayer());
+                this.plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage((Player) event.getPlayer());
                 event.setCancelled(true);
             }
             return;
         }
 
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || !hasClaim) return;
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || !hasClaim) {
+            return;
+        }
 
         Claim claim = claimManager.getClaim(chunk);
 
@@ -64,7 +68,7 @@ public class InteractListeners implements Listener {
             return;
         } else if (isRedstone(event.getClickedBlock()) && !claim.playerHasPerms(event.getPlayer(), ClaimPerm.REDSTONE)
                 || isDoor(event.getClickedBlock()) && !claim.playerHasPerms(event.getPlayer(), ClaimPerm.DOORS)) {
-            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
+            this.plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
             event.setCancelled(true);
             return;
         }
@@ -79,16 +83,16 @@ public class InteractListeners implements Listener {
             // Make sure all items in the powercell are stacked.
             claim.getPowerCell().stackItems();
             if (member != null && member.getRole() != ClaimRole.VISITOR || event.getPlayer().hasPermission("ultimateclaims.powercell.view")) {
-                plugin.getGuiManager().showGUI(event.getPlayer(), claim.getPowerCell().getGui(event.getPlayer()));
+                this.plugin.getGuiManager().showGUI(event.getPlayer(), claim.getPowerCell().getGui(event.getPlayer()));
             } else {
-                plugin.getLocale().getMessage("event.powercell.failopen").sendPrefixedMessage(event.getPlayer());
+                this.plugin.getLocale().getMessage("event.powercell.failopen").sendPrefixedMessage(event.getPlayer());
             }
             event.setCancelled(true);
             return;
         }
 
         if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.INTERACT)) {
-            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
+            this.plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
             event.setCancelled(true);
         }
     }
@@ -108,20 +112,24 @@ public class InteractListeners implements Listener {
     }
 
     private void onBucket(Chunk chunk, Player player, Cancellable event) {
-        ClaimManager claimManager = plugin.getClaimManager();
+        ClaimManager claimManager = this.plugin.getClaimManager();
 
-        if (!claimManager.hasClaim(chunk)) return;
+        if (!claimManager.hasClaim(chunk)) {
+            return;
+        }
 
         Claim claim = claimManager.getClaim(chunk);
 
         if (!claim.playerHasPerms(player, ClaimPerm.PLACE)) {
-            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(player);
+            this.plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(player);
             event.setCancelled(true);
         }
     }
 
     private boolean isDoor(Block block) {
-        if (block == null) return false;
+        if (block == null) {
+            return false;
+        }
 
         switch (block.getType().name()) {
             case "DARK_OAK_DOOR":
@@ -154,11 +162,15 @@ public class InteractListeners implements Listener {
     }
 
     private boolean isRedstone(Block block) {
-        if (block == null) return false;
-        XMaterial material = XMaterial.matchXMaterial(block.getType());
-        if (material == null)
+        if (block == null) {
             return false;
-        switch (material) {
+        }
+
+        Optional<XMaterial> material = CompatibleMaterial.getMaterial(block.getType());
+        if (!material.isPresent()) {
+            return false;
+        }
+        switch (material.get()) {
             case LEVER:
             case BIRCH_BUTTON:
             case ACACIA_BUTTON:

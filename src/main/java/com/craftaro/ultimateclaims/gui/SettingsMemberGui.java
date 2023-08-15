@@ -1,19 +1,18 @@
 package com.craftaro.ultimateclaims.gui;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
-import com.craftaro.ultimateclaims.UltimateClaims;
-import com.craftaro.ultimateclaims.claim.Claim;
-import com.craftaro.ultimateclaims.settings.Settings;
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.TextUtils;
+import com.craftaro.ultimateclaims.UltimateClaims;
+import com.craftaro.ultimateclaims.claim.Claim;
 import com.craftaro.ultimateclaims.member.ClaimPerm;
 import com.craftaro.ultimateclaims.member.ClaimRole;
+import com.craftaro.ultimateclaims.settings.Settings;
 import org.bukkit.inventory.ItemStack;
 
 public class SettingsMemberGui extends CustomizableGui {
-
     private final UltimateClaims plugin;
     private final Claim claim;
     private final ClaimRole role;
@@ -25,7 +24,7 @@ public class SettingsMemberGui extends CustomizableGui {
         this.plugin = plugin;
         this.setRows(3);
         this.setTitle(plugin.getLocale().getMessage("interface.permsettings.title")
-                .processPlaceholder("role", TextUtils.formatText(role.toString().toLowerCase(), true)).getMessage());
+                .processPlaceholder("role", TextUtils.formatText(this.role.toString().toLowerCase(), true)).getMessage());
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
@@ -39,10 +38,10 @@ public class SettingsMemberGui extends CustomizableGui {
 
         // exit buttons
         this.setButton("back", 0, GuiUtils.createButtonItem(XMaterial.OAK_FENCE_GATE,
-                plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                plugin.getLocale().getMessage("general.interface.exit").getMessage()),
+                        plugin.getLocale().getMessage("general.interface.back").getMessage(),
+                        plugin.getLocale().getMessage("general.interface.exit").getMessage()),
                 (event) -> event.player.closeInventory());
-        this.setButton("back",8, this.getItem(0), (event) -> guiManager.showGUI(event.player, returnGui));
+        this.setButton("back", 8, this.getItem(0), (event) -> this.guiManager.showGUI(event.player, returnGui));
 
         // settings
         this.setButton("break", 1, 1, XMaterial.IRON_PICKAXE.parseItem(), (event) -> toggle(ClaimPerm.BREAK));
@@ -57,59 +56,59 @@ public class SettingsMemberGui extends CustomizableGui {
 
     private void refreshDisplay() {
         this.updateItem("break", 1, 1,
-                plugin.getLocale().getMessage("interface.permsettings.breaktitle").getMessage(),
-                plugin.getLocale().getMessage("general.interface.current")
-                        .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.BREAK) : claim.getVisitorPermissions().getStatus(ClaimPerm.BREAK))
+                this.plugin.getLocale().getMessage("interface.permsettings.breaktitle").getMessage(),
+                this.plugin.getLocale().getMessage("general.interface.current")
+                        .processPlaceholder("current", this.role == ClaimRole.MEMBER
+                                ? this.claim.getMemberPermissions().getStatus(ClaimPerm.BREAK) : this.claim.getVisitorPermissions().getStatus(ClaimPerm.BREAK))
                         .getMessage().split("\\|"));
         this.updateItem("place", 1, 2,
-                plugin.getLocale().getMessage("interface.permsettings.placetitle").getMessage(),
-                plugin.getLocale().getMessage("general.interface.current")
-                        .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.PLACE) : claim.getVisitorPermissions().getStatus(ClaimPerm.PLACE))
+                this.plugin.getLocale().getMessage("interface.permsettings.placetitle").getMessage(),
+                this.plugin.getLocale().getMessage("general.interface.current")
+                        .processPlaceholder("current", this.role == ClaimRole.MEMBER
+                                ? this.claim.getMemberPermissions().getStatus(ClaimPerm.PLACE) : this.claim.getVisitorPermissions().getStatus(ClaimPerm.PLACE))
                         .getMessage().split("\\|"));
         this.updateItem("interact", 1, 3,
-                plugin.getLocale().getMessage("interface.permsettings.interacttitle").getMessage(),
-                plugin.getLocale().getMessage("general.interface.current")
-                        .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.INTERACT) : claim.getVisitorPermissions().getStatus(ClaimPerm.INTERACT))
+                this.plugin.getLocale().getMessage("interface.permsettings.interacttitle").getMessage(),
+                this.plugin.getLocale().getMessage("general.interface.current")
+                        .processPlaceholder("current", this.role == ClaimRole.MEMBER
+                                ? this.claim.getMemberPermissions().getStatus(ClaimPerm.INTERACT) : this.claim.getVisitorPermissions().getStatus(ClaimPerm.INTERACT))
                         .getMessage().split("\\|"));
 
         this.updateItem("trading", 1, 4,
-                plugin.getLocale().getMessage("interface.permsettings.tradingtitle").getMessage(),
-                plugin.getLocale().getMessage("general.interface.current")
-                        .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.TRADING) : claim.getVisitorPermissions().getStatus(ClaimPerm.TRADING))
+                this.plugin.getLocale().getMessage("interface.permsettings.tradingtitle").getMessage(),
+                this.plugin.getLocale().getMessage("general.interface.current")
+                        .processPlaceholder("current", this.role == ClaimRole.MEMBER
+                                ? this.claim.getMemberPermissions().getStatus(ClaimPerm.TRADING) : this.claim.getVisitorPermissions().getStatus(ClaimPerm.TRADING))
                         .getMessage().split("\\|"));
 
         this.updateItem("doors", 1, 5,
-                plugin.getLocale().getMessage("interface.permsettings.doorstitle").getMessage(),
-                plugin.getLocale().getMessage("general.interface.current")
-                        .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.DOORS) : claim.getVisitorPermissions().getStatus(ClaimPerm.DOORS))
+                this.plugin.getLocale().getMessage("interface.permsettings.doorstitle").getMessage(),
+                this.plugin.getLocale().getMessage("general.interface.current")
+                        .processPlaceholder("current", this.role == ClaimRole.MEMBER
+                                ? this.claim.getMemberPermissions().getStatus(ClaimPerm.DOORS) : this.claim.getVisitorPermissions().getStatus(ClaimPerm.DOORS))
                         .getMessage().split("\\|"));
         this.updateItem("kills", 1, 6,
-                plugin.getLocale().getMessage("interface.permsettings.mobkilltitle").getMessage(),
-                plugin.getLocale().getMessage("general.interface.current")
-                        .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.MOB_KILLING) : claim.getVisitorPermissions().getStatus(ClaimPerm.MOB_KILLING))
+                this.plugin.getLocale().getMessage("interface.permsettings.mobkilltitle").getMessage(),
+                this.plugin.getLocale().getMessage("general.interface.current")
+                        .processPlaceholder("current", this.role == ClaimRole.MEMBER
+                                ? this.claim.getMemberPermissions().getStatus(ClaimPerm.MOB_KILLING) : this.claim.getVisitorPermissions().getStatus(ClaimPerm.MOB_KILLING))
                         .getMessage().split("\\|"));
         this.updateItem("redstone", 1, 7,
-                plugin.getLocale().getMessage("interface.permsettings.redstonetitle").getMessage(),
-                plugin.getLocale().getMessage("general.interface.current")
-                        .processPlaceholder("current", role == ClaimRole.MEMBER
-                                ? claim.getMemberPermissions().getStatus(ClaimPerm.REDSTONE) : claim.getVisitorPermissions().getStatus(ClaimPerm.REDSTONE))
+                this.plugin.getLocale().getMessage("interface.permsettings.redstonetitle").getMessage(),
+                this.plugin.getLocale().getMessage("general.interface.current")
+                        .processPlaceholder("current", this.role == ClaimRole.MEMBER
+                                ? this.claim.getMemberPermissions().getStatus(ClaimPerm.REDSTONE) : this.claim.getVisitorPermissions().getStatus(ClaimPerm.REDSTONE))
                         .getMessage().split("\\|"));
 
     }
 
     private void toggle(ClaimPerm perm) {
-        if (role == ClaimRole.MEMBER) {
-            claim.getMemberPermissions().setAllowed(perm, !claim.getMemberPermissions().hasPermission(perm));
-            plugin.getDataHelper().updatePermissions(claim, claim.getMemberPermissions(), ClaimRole.MEMBER);
+        if (this.role == ClaimRole.MEMBER) {
+            this.claim.getMemberPermissions().setAllowed(perm, !this.claim.getMemberPermissions().hasPermission(perm));
+            this.plugin.getDataHelper().updatePermissions(this.claim, this.claim.getMemberPermissions(), ClaimRole.MEMBER);
         } else {
-            claim.getVisitorPermissions().setAllowed(perm, !claim.getVisitorPermissions().hasPermission(perm));
-            plugin.getDataHelper().updatePermissions(claim, claim.getVisitorPermissions(), ClaimRole.VISITOR);
+            this.claim.getVisitorPermissions().setAllowed(perm, !this.claim.getVisitorPermissions().hasPermission(perm));
+            this.plugin.getDataHelper().updatePermissions(this.claim, this.claim.getVisitorPermissions(), ClaimRole.VISITOR);
         }
         refreshDisplay();
     }

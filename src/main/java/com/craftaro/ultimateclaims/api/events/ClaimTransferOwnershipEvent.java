@@ -4,12 +4,13 @@ import com.craftaro.ultimateclaims.claim.Claim;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Called when a claim's ownership is transferred.
+ * Called when a claim's ownership is transferred
  */
 public class ClaimTransferOwnershipEvent extends ClaimEvent implements Cancellable {
-    private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList HANDLER_LIST = new HandlerList();
     private boolean cancel = false;
     private final OfflinePlayer oldOwner;
     private final OfflinePlayer newOwner;
@@ -22,7 +23,7 @@ public class ClaimTransferOwnershipEvent extends ClaimEvent implements Cancellab
 
     @Override
     public boolean isCancelled() {
-        return cancel;
+        return this.cancel;
     }
 
     @Override
@@ -31,19 +32,19 @@ public class ClaimTransferOwnershipEvent extends ClaimEvent implements Cancellab
     }
 
     public OfflinePlayer getNewOwner() {
-        return newOwner;
+        return this.newOwner;
     }
 
     public OfflinePlayer getOldOwner() {
-        return oldOwner;
+        return this.oldOwner;
     }
 
     @Override
-    public HandlerList getHandlers() {
-        return handlers;
+    public @NotNull HandlerList getHandlers() {
+        return HANDLER_LIST;
     }
 
     public static HandlerList getHandlerList() {
-        return handlers;
+        return HANDLER_LIST;
     }
 }

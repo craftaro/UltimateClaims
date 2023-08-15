@@ -3,7 +3,6 @@ package com.craftaro.ultimateclaims.claim;
 import java.util.UUID;
 
 public class Audit {
-
     private UUID who;
     private long when;
 
@@ -13,7 +12,7 @@ public class Audit {
     }
 
     public UUID getWho() {
-        return who;
+        return this.who;
     }
 
     public void setWho(UUID who) {
@@ -21,7 +20,7 @@ public class Audit {
     }
 
     public long getWhen() {
-        return when;
+        return this.when;
     }
 
     public void setWhen(long when) {

@@ -5,12 +5,13 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Called when a player is unbanned from a claim.
+ * Called when a player is unbanned from a claim
  */
 public class ClaimPlayerUnbanEvent extends ClaimEvent implements Cancellable {
-    private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList HANDLER_LIST = new HandlerList();
     private boolean cancel = false;
     private final Player executor;
     private final OfflinePlayer unbannedPlayer;
@@ -23,7 +24,7 @@ public class ClaimPlayerUnbanEvent extends ClaimEvent implements Cancellable {
 
     @Override
     public boolean isCancelled() {
-        return cancel;
+        return this.cancel;
     }
 
     @Override
@@ -32,19 +33,19 @@ public class ClaimPlayerUnbanEvent extends ClaimEvent implements Cancellable {
     }
 
     public OfflinePlayer getUnbannedPlayer() {
-        return unbannedPlayer;
+        return this.unbannedPlayer;
     }
 
     public Player getExecutor() {
-        return executor;
+        return this.executor;
     }
 
     @Override
-    public HandlerList getHandlers() {
-        return handlers;
+    public @NotNull HandlerList getHandlers() {
+        return HANDLER_LIST;
     }
 
     public static HandlerList getHandlerList() {
-        return handlers;
+        return HANDLER_LIST;
     }
 }

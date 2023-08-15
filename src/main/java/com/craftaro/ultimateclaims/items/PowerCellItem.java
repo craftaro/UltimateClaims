@@ -5,7 +5,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.function.Function;
 
 public class PowerCellItem {
-
     private final ItemStack displayItem;
     private final Function<ItemStack, Boolean> similar;
     private final int value;
@@ -17,14 +16,14 @@ public class PowerCellItem {
     }
 
     public boolean isSimilar(ItemStack itemStack) {
-        return similar.apply(itemStack);
+        return this.similar.apply(itemStack);
     }
 
     public int getValue() {
-        return value;
+        return this.value;
     }
 
     public ItemStack getDisplayItem() {
-        return displayItem;
+        return this.displayItem;
     }
 }

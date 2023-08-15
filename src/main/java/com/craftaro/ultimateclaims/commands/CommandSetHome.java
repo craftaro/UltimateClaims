@@ -1,8 +1,8 @@
 package com.craftaro.ultimateclaims.commands;
 
+import com.craftaro.core.commands.AbstractCommand;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
-import com.craftaro.core.commands.AbstractCommand;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class CommandSetHome extends AbstractCommand {
-
     private final UltimateClaims plugin;
 
     public CommandSetHome(UltimateClaims plugin) {
@@ -23,23 +22,23 @@ public class CommandSetHome extends AbstractCommand {
         Player player = (Player) sender;
 
         Chunk chunk = player.getLocation().getChunk();
-        Claim claim = plugin.getClaimManager().getClaim(chunk);
+        Claim claim = this.plugin.getClaimManager().getClaim(chunk);
 
         if (claim == null) {
-            plugin.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
+            this.plugin.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         if (!claim.getOwner().getUniqueId().equals(player.getUniqueId())) {
-            plugin.getLocale().getMessage("command.general.notyourclaim").sendPrefixedMessage(sender);
+            this.plugin.getLocale().getMessage("command.general.notyourclaim").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         claim.setHome(player.getLocation());
 
-        plugin.getDataHelper().updateClaim(claim);
+        this.plugin.getDataHelper().updateClaim(claim);
 
-        plugin.getLocale().getMessage("command.sethome.set").sendPrefixedMessage(sender);
+        this.plugin.getLocale().getMessage("command.sethome.set").sendPrefixedMessage(sender);
 
         return ReturnType.SUCCESS;
     }

@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public class TrackerTask extends BukkitRunnable {
-
     private static TrackerTask instance;
     private static UltimateClaims plugin;
 
@@ -39,9 +38,11 @@ public class TrackerTask extends BukkitRunnable {
     @Override
     public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            TrackedPlayer trackedPlayer = trackedPlayers.computeIfAbsent(player.getUniqueId(), t -> new TrackedPlayer(player.getUniqueId()));
+            TrackedPlayer trackedPlayer = this.trackedPlayers.computeIfAbsent(player.getUniqueId(), t -> new TrackedPlayer(player.getUniqueId()));
             Claim claim = plugin.getClaimManager().getClaim(player.getLocation().getChunk());
-            if (claim == null) continue;
+            if (claim == null) {
+                continue;
+            }
 
             if (!player.hasPermission("ultimateclaims.admin.invisible")) {
                 ClaimMember member = claim.getMember(player);
@@ -77,11 +78,15 @@ public class TrackerTask extends BukkitRunnable {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 ClaimMember member = claim.getMember(player);
 
-                if (member == null || !member.isPresent()) continue;
+                if (member == null || !member.isPresent()) {
+                    continue;
+                }
 
                 Claim in = plugin.getClaimManager().getClaim(player.getLocation().getChunk());
 
-                if (in == claim) continue;
+                if (in == claim) {
+                    continue;
+                }
                 member.setPresent(false);
                 toggleFlyOff(player);
             }
@@ -89,21 +94,25 @@ public class TrackerTask extends BukkitRunnable {
     }
 
     public void addLastBefore(Player player, Location location) {
-        TrackedPlayer trackedPlayer = trackedPlayers.get(player.getUniqueId());
+        TrackedPlayer trackedPlayer = this.trackedPlayers.get(player.getUniqueId());
 
-        if (trackedPlayer == null)
+        if (trackedPlayer == null) {
             return;
+        }
 
         trackedPlayer.setLastBeforeClaim(location);
     }
 
     public void toggleFlyOff(Player player) {
-        TrackedPlayer trackedPlayer = trackedPlayers.get(player.getUniqueId());
+        TrackedPlayer trackedPlayer = this.trackedPlayers.get(player.getUniqueId());
 
-        if (trackedPlayer == null)
+        if (trackedPlayer == null) {
             return;
+        }
 
-        if (!trackedPlayer.wasFlyActivated()) return;
+        if (!trackedPlayer.wasFlyActivated()) {
+            return;
+        }
 
         trackedPlayer.setWasFlyActivated(false);
         player.setAllowFlight(false);
@@ -112,7 +121,6 @@ public class TrackerTask extends BukkitRunnable {
     }
 
     private static class TrackedPlayer {
-
         private final UUID uuid;
         private Location lastBeforeClaim;
         private boolean wasFlyActivated;
@@ -122,11 +130,11 @@ public class TrackerTask extends BukkitRunnable {
         }
 
         public UUID getUniqueId() {
-            return uuid;
+            return this.uuid;
         }
 
         public Location getLastBeforeClaim() {
-            return lastBeforeClaim;
+            return this.lastBeforeClaim;
         }
 
         public void setLastBeforeClaim(Location lastBeforeClaim) {
@@ -134,7 +142,7 @@ public class TrackerTask extends BukkitRunnable {
         }
 
         public boolean wasFlyActivated() {
-            return wasFlyActivated;
+            return this.wasFlyActivated;
         }
 
         public void setWasFlyActivated(boolean wasFlyActivated) {

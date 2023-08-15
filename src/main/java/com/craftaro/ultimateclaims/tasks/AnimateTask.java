@@ -1,17 +1,16 @@
 package com.craftaro.ultimateclaims.tasks;
 
+import com.craftaro.core.compatibility.CompatibleParticleHandler;
+import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
 import com.craftaro.ultimateclaims.claim.PowerCell;
-import com.craftaro.core.compatibility.CompatibleParticleHandler;
-import com.craftaro.core.compatibility.ServerVersion;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
 public class AnimateTask extends BukkitRunnable {
-
     private static AnimateTask instance;
     private static UltimateClaims plugin;
 
@@ -33,15 +32,15 @@ public class AnimateTask extends BukkitRunnable {
     public void run() {
         for (Claim claim : new ArrayList<>(plugin.getClaimManager().getRegisteredClaims())) {
             PowerCell powerCell = claim.getPowerCell();
+            if (!powerCell.hasLocation()) {
+                continue;
+            }
 
-            if (!powerCell.hasLocation()) continue;
             Location location = powerCell.getLocation().add(.5, .5, .5);
-
             int x = location.getBlockX() >> 4;
             int z = location.getBlockZ() >> 4;
 
-            if ((ServerVersion.isServerVersionAtLeast(ServerVersion.V1_14) && !location.isWorldLoaded())
-                    || !location.getWorld().isChunkLoaded(x, z)) {
+            if ((ServerVersion.isServerVersionAtLeast(ServerVersion.V1_14) && !location.isWorldLoaded()) || !location.getWorld().isChunkLoaded(x, z)) {
                 continue;
             }
             int red = (powerCell.getCurrentPower() >= 0 ? 5 : 255);

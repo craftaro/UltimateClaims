@@ -13,7 +13,6 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class LoginListeners implements Listener {
-
     private final UltimateClaims plugin;
 
     public LoginListeners(UltimateClaims plugin) {
@@ -21,12 +20,13 @@ public class LoginListeners implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onLoginb(PlayerLoginEvent event) {
-        ClaimManager claimManager = plugin.getClaimManager();
+    public void onLogin(PlayerLoginEvent event) {
+        ClaimManager claimManager = this.plugin.getClaimManager();
 
         Chunk chunk = event.getPlayer().getLocation().getChunk();
-
-        if (!claimManager.hasClaim(chunk)) return;
+        if (!claimManager.hasClaim(chunk)) {
+            return;
+        }
 
         Claim claim = claimManager.getClaim(chunk);
 
@@ -42,21 +42,23 @@ public class LoginListeners implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        ClaimManager claimManager = plugin.getClaimManager();
+        ClaimManager claimManager = this.plugin.getClaimManager();
 
         Chunk chunk = event.getPlayer().getLocation().getChunk();
-
-        if (!claimManager.hasClaim(chunk)) return;
+        if (!claimManager.hasClaim(chunk)) {
+            return;
+        }
 
         Claim claim = claimManager.getClaim(chunk);
 
         ClaimMember member = claim.getMember(player);
         if (member != null) {
-            if (member.getRole() == ClaimRole.VISITOR)
+            if (member.getRole() == ClaimRole.VISITOR) {
                 claim.removeMember(member);
-            else
+            } else {
                 member.setPresent(false);
-            plugin.getTrackerTask().toggleFlyOff(player);
+            }
+            this.plugin.getTrackerTask().toggleFlyOff(player);
         }
     }
 }

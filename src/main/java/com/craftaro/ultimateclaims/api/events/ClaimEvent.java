@@ -4,7 +4,6 @@ import com.craftaro.ultimateclaims.claim.Claim;
 import org.bukkit.event.Event;
 
 public abstract class ClaimEvent extends Event {
-
     protected Claim claim;
 
     public ClaimEvent(Claim claim) {
@@ -15,6 +14,6 @@ public abstract class ClaimEvent extends Event {
      * @return claim that fired the event
      */
     public Claim getClaim() {
-        return claim;
+        return this.claim;
     }
 }

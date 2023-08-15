@@ -1,18 +1,5 @@
 package com.craftaro.ultimateclaims;
 
-import com.craftaro.core.database.DatabaseConnector;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
-import com.craftaro.ultimateclaims.claim.AuditManager;
-import com.craftaro.ultimateclaims.claim.Claim;
-import com.craftaro.ultimateclaims.claim.ClaimManager;
-import com.craftaro.ultimateclaims.commands.*;
-import com.craftaro.ultimateclaims.commands.admin.CommandRemoveClaim;
-import com.craftaro.ultimateclaims.commands.admin.CommandTransferOwnership;
-import com.craftaro.ultimateclaims.database.DataHelper;
-import com.craftaro.ultimateclaims.items.ItemManager;
-import com.craftaro.ultimateclaims.placeholder.PlaceholderManager;
-import com.craftaro.ultimateclaims.settings.PluginSettings;
-import com.craftaro.ultimateclaims.settings.Settings;
 import com.craftaro.core.SongodaCore;
 import com.craftaro.core.SongodaPlugin;
 import com.craftaro.core.commands.CommandManager;
@@ -21,6 +8,32 @@ import com.craftaro.core.gui.GuiManager;
 import com.craftaro.core.hooks.EconomyManager;
 import com.craftaro.core.hooks.HologramManager;
 import com.craftaro.core.hooks.WorldGuardHook;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.ultimateclaims.claim.AuditManager;
+import com.craftaro.ultimateclaims.claim.Claim;
+import com.craftaro.ultimateclaims.claim.ClaimManager;
+import com.craftaro.ultimateclaims.commands.CommandAccept;
+import com.craftaro.ultimateclaims.commands.CommandAddMember;
+import com.craftaro.ultimateclaims.commands.CommandBan;
+import com.craftaro.ultimateclaims.commands.CommandClaim;
+import com.craftaro.ultimateclaims.commands.CommandDissolve;
+import com.craftaro.ultimateclaims.commands.CommandHome;
+import com.craftaro.ultimateclaims.commands.CommandInvite;
+import com.craftaro.ultimateclaims.commands.CommandKick;
+import com.craftaro.ultimateclaims.commands.CommandLeave;
+import com.craftaro.ultimateclaims.commands.CommandLock;
+import com.craftaro.ultimateclaims.commands.CommandName;
+import com.craftaro.ultimateclaims.commands.CommandRecipe;
+import com.craftaro.ultimateclaims.commands.CommandReload;
+import com.craftaro.ultimateclaims.commands.CommandSetHome;
+import com.craftaro.ultimateclaims.commands.CommandSetSpawn;
+import com.craftaro.ultimateclaims.commands.CommandSettings;
+import com.craftaro.ultimateclaims.commands.CommandShow;
+import com.craftaro.ultimateclaims.commands.CommandUnBan;
+import com.craftaro.ultimateclaims.commands.CommandUnClaim;
+import com.craftaro.ultimateclaims.commands.admin.CommandRemoveClaim;
+import com.craftaro.ultimateclaims.commands.admin.CommandTransferOwnership;
+import com.craftaro.ultimateclaims.database.DataHelper;
 import com.craftaro.ultimateclaims.database.migrations._1_InitialMigration;
 import com.craftaro.ultimateclaims.database.migrations._2_NewPermissions;
 import com.craftaro.ultimateclaims.database.migrations._3_MemberNames;
@@ -30,11 +43,15 @@ import com.craftaro.ultimateclaims.database.migrations._6_FlySetting;
 import com.craftaro.ultimateclaims.database.migrations._7_AuditLog;
 import com.craftaro.ultimateclaims.database.migrations._8_ClaimedRegions;
 import com.craftaro.ultimateclaims.dynmap.DynmapManager;
+import com.craftaro.ultimateclaims.items.ItemManager;
 import com.craftaro.ultimateclaims.listeners.BlockListeners;
 import com.craftaro.ultimateclaims.listeners.EntityListeners;
 import com.craftaro.ultimateclaims.listeners.InteractListeners;
 import com.craftaro.ultimateclaims.listeners.InventoryListeners;
 import com.craftaro.ultimateclaims.listeners.LoginListeners;
+import com.craftaro.ultimateclaims.placeholder.PlaceholderManager;
+import com.craftaro.ultimateclaims.settings.PluginSettings;
+import com.craftaro.ultimateclaims.settings.Settings;
 import com.craftaro.ultimateclaims.tasks.AnimateTask;
 import com.craftaro.ultimateclaims.tasks.InviteTask;
 import com.craftaro.ultimateclaims.tasks.PowerCellTask;
@@ -48,9 +65,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class UltimateClaims extends SongodaPlugin {
-
-    private static UltimateClaims INSTANCE;
-
     private PluginSettings pluginSettings;
 
     private DataHelper dataHelper;
@@ -64,13 +78,16 @@ public class UltimateClaims extends SongodaPlugin {
     private InviteTask inviteTask;
     private TrackerTask trackerTask;
 
+    /**
+     * @deprecated Use {@link org.bukkit.plugin.java.JavaPlugin#getPlugin(Class)} instead.
+     */
+    @Deprecated
     public static UltimateClaims getInstance() {
-        return INSTANCE;
+        return getPlugin(UltimateClaims.class);
     }
 
     @Override
     public void onPluginLoad() {
-        INSTANCE = this;
         WorldGuardHook.addHook("allow-claims", true);
     }
 
@@ -98,7 +115,7 @@ public class UltimateClaims extends SongodaPlugin {
         this.auditManager = new AuditManager(this);
 
         // Listeners
-        guiManager.init();
+        this.guiManager.init();
         pluginManager.registerEvents(new EntityListeners(this), this);
         pluginManager.registerEvents(new BlockListeners(this), this);
         pluginManager.registerEvents(new InteractListeners(this), this);
@@ -138,14 +155,16 @@ public class UltimateClaims extends SongodaPlugin {
         // Tasks
         this.inviteTask = InviteTask.startTask(this);
         AnimateTask.startTask(this);
-        if (Settings.ENABLE_FUEL.getBoolean())
+        if (Settings.ENABLE_FUEL.getBoolean()) {
             PowerCellTask.startTask(this);
+        }
         this.trackerTask = TrackerTask.startTask(this);
         VisualizeTask.startTask(this);
 
         // Register Placeholders
-        if (pluginManager.isPluginEnabled("PlaceholderAPI"))
+        if (pluginManager.isPluginEnabled("PlaceholderAPI")) {
             new PlaceholderManager(this).register();
+        }
 
         // Start our databases
         this.claimManager = new ClaimManager();
@@ -188,19 +207,21 @@ public class UltimateClaims extends SongodaPlugin {
         this.dataHelper.getPluginSettings((pluginSettings) -> this.pluginSettings = pluginSettings);
         final boolean useHolo = Settings.POWERCELL_HOLOGRAMS.getBoolean() && HologramManager.getManager().isEnabled();
 
-        if (Bukkit.getPluginManager().isPluginEnabled("dynmap"))
+        if (Bukkit.getPluginManager().isPluginEnabled("dynmap")) {
             this.dynmapManager = new DynmapManager(this);
+        }
 
         this.dataHelper.getClaims((claims) -> {
             this.claimManager.addClaims(claims);
-            if (useHolo)
+            if (useHolo) {
                 this.claimManager.getRegisteredClaims().stream().filter(Claim::hasPowerCell).forEach(x -> x.getPowerCell().createHologram());
+            }
 
             if (this.dynmapManager != null) {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(this, this.dynmapManager::refresh);
             }
 
-            Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> dataHelper.purgeAuditLog(), 1000, 15 * 60 * 1000);
+            Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> this.dataHelper.purgeAuditLog(), 1000, 15 * 60 * 1000);
         });
     }
 
@@ -220,7 +241,7 @@ public class UltimateClaims extends SongodaPlugin {
     }
 
     public GuiManager getGuiManager() {
-        return guiManager;
+        return this.guiManager;
     }
 
     public CommandManager getCommandManager() {
@@ -228,34 +249,34 @@ public class UltimateClaims extends SongodaPlugin {
     }
 
     public ClaimManager getClaimManager() {
-        return claimManager;
+        return this.claimManager;
     }
 
     public DynmapManager getDynmapManager() {
-        return dynmapManager;
+        return this.dynmapManager;
     }
 
     public InviteTask getInviteTask() {
-        return inviteTask;
+        return this.inviteTask;
     }
 
     public TrackerTask getTrackerTask() {
-        return trackerTask;
+        return this.trackerTask;
     }
 
     public PluginSettings getPluginSettings() {
-        return pluginSettings;
+        return this.pluginSettings;
     }
 
     public ItemManager getItemManager() {
-        return itemManager;
+        return this.itemManager;
     }
 
     public AuditManager getAuditManager() {
-        return auditManager;
+        return this.auditManager;
     }
 
     public DataHelper getDataHelper() {
-        return dataHelper;
+        return this.dataHelper;
     }
 }

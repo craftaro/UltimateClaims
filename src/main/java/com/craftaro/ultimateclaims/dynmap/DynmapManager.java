@@ -1,12 +1,12 @@
 package com.craftaro.ultimateclaims.dynmap;
 
+import com.craftaro.core.configuration.Config;
+import com.craftaro.core.utils.TimeUtils;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
 import com.craftaro.ultimateclaims.claim.region.ClaimCorners;
 import com.craftaro.ultimateclaims.claim.region.RegionCorners;
 import com.craftaro.ultimateclaims.settings.Settings;
-import com.craftaro.core.configuration.Config;
-import com.craftaro.core.utils.TimeUtils;
 import org.bukkit.Bukkit;
 import org.dynmap.DynmapAPI;
 import org.dynmap.markers.AreaMarker;
@@ -41,14 +41,16 @@ public class DynmapManager {
      * Creates new {@link AreaMarker} for a {@link Claim} and deletes old ones
      */
     public void refresh() {
-        if (markerSet == null) return;
+        if (this.markerSet == null) {
+            return;
+        }
 
         // Looks like the claim has been dissolved, as ClaimIds don't seem to be at least session unique, we need to
         // recreate all the markers as there is no way of guaranteeing for claim markers to be removed correctly (most of the time it fails)
         // Quit a weird behaviour... Maybe I'm just misunderstanding something?
 
         // Remove AreaMarkers of now unclaimed Chunks
-        for (AreaMarker aMarker : markerSet.getAreaMarkers()) {
+        for (AreaMarker aMarker : this.markerSet.getAreaMarkers()) {
             aMarker.deleteMarker();
         }
 
@@ -57,8 +59,8 @@ public class DynmapManager {
                 if (c.getCorners() != null) {
                     for (RegionCorners r : new HashSet<>(c.getCorners())) {
                         for (ClaimCorners cc : r.getClaimCorners()) {
-                            if (markerSet.findAreaMarker(c.getId() + ":" + cc.chunkID) == null) {
-                                AreaMarker marker = markerSet.createAreaMarker(c.getId() + ":" + cc.chunkID, "Claim #" + c.getId(),
+                            if (this.markerSet.findAreaMarker(c.getId() + ":" + cc.chunkID) == null) {
+                                AreaMarker marker = this.markerSet.createAreaMarker(c.getId() + ":" + cc.chunkID, "Claim #" + c.getId(),
                                         false, cc.getWorld().getName(), cc.x, cc.z, false);
                                 if (this.colorsEnabled) {
                                     int color = determineColor(c);
@@ -83,7 +85,9 @@ public class DynmapManager {
      * Update the description of existing {@link AreaMarker} for a {@link Claim}
      */
     public void refreshDescription(Claim claim) {
-        if (markerSet == null) return;
+        if (this.markerSet == null) {
+            return;
+        }
 
         String powerLeft;
         if (claim.getPowerCell().getTotalPower() > 1) {
@@ -104,8 +108,10 @@ public class DynmapManager {
                         .replace("${MemberCount}", claim.getMembers().size() + "")
                         .replace("${PowerLeft}", powerLeft);
 
-        for (AreaMarker aMarker : markerSet.getAreaMarkers()) {
-            if (!aMarker.getMarkerID().startsWith(claim.getId() + ":")) continue;
+        for (AreaMarker aMarker : this.markerSet.getAreaMarkers()) {
+            if (!aMarker.getMarkerID().startsWith(claim.getId() + ":")) {
+                continue;
+            }
 
             aMarker.setDescription(markerDesc);
         }
@@ -134,23 +140,23 @@ public class DynmapManager {
             }
         }
 
-        this.markerSet = dynmapAPI.getMarkerAPI().getMarkerSet("UltimateClaims.chunks");
+        this.markerSet = this.dynmapAPI.getMarkerAPI().getMarkerSet("UltimateClaims.chunks");
 
-        if (markerSet != null) {
+        if (this.markerSet != null) {
             this.markerSet.deleteMarkerSet();
             this.markerSet = null;
         }
 
         if (Settings.DYNMAP_ENABLED.getBoolean()) {
-            this.markerSet = dynmapAPI.getMarkerAPI().createMarkerSet("UltimateClaims.chunks",
-                    Settings.DYNMAP_LABEL.getString(), dynmapAPI.getMarkerAPI().getMarkerIcons(), false);
+            this.markerSet = this.dynmapAPI.getMarkerAPI().createMarkerSet("UltimateClaims.chunks",
+                    Settings.DYNMAP_LABEL.getString(), this.dynmapAPI.getMarkerAPI().getMarkerIcons(), false);
 
             int updateInterval = Settings.DYNMAP_UPDATE_INTERVAL.getInt();
 
             refresh();
 
-            if (taskID == -1 && updateInterval > 0) {
-                taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, () -> {
+            if (this.taskID == -1 && updateInterval > 0) {
+                this.taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, () -> {
                     if (this.plugin.getClaimManager() != null) {
                         for (Claim c : this.plugin.getClaimManager().getRegisteredClaims()) {
                             if (c.getCorners() != null) {
@@ -160,12 +166,12 @@ public class DynmapManager {
                     }
                 }, 20L * updateInterval, 20L * updateInterval);
             } else if (updateInterval <= 0) {
-                Bukkit.getScheduler().cancelTask(taskID);
+                Bukkit.getScheduler().cancelTask(this.taskID);
             }
         } else {
-            if (taskID != -1) {
-                Bukkit.getScheduler().cancelTask(taskID);
-                taskID = -1;
+            if (this.taskID != -1) {
+                Bukkit.getScheduler().cancelTask(this.taskID);
+                this.taskID = -1;
             }
         }
     }

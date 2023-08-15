@@ -1,9 +1,8 @@
 package com.craftaro.ultimateclaims.claim;
 
+import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.third_party.com.cryptomorin.xseries.XSound;
-import com.craftaro.ultimateclaims.settings.Settings;
-import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.core.utils.PlayerUtils;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.api.events.ClaimDeleteEvent;
@@ -16,6 +15,7 @@ import com.craftaro.ultimateclaims.member.ClaimMember;
 import com.craftaro.ultimateclaims.member.ClaimPerm;
 import com.craftaro.ultimateclaims.member.ClaimPermissions;
 import com.craftaro.ultimateclaims.member.ClaimRole;
+import com.craftaro.ultimateclaims.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -38,7 +38,6 @@ import java.util.Set;
 import java.util.UUID;
 
 public class Claim {
-
     private int id;
     private String name = null;
     private ClaimMember owner;
@@ -95,38 +94,42 @@ public class Claim {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
         this.name = name;
-        if (bossBarMember != null)
-            bossBarMember.setTitle(name);
-        if (bossBarVisitor != null)
-            bossBarVisitor.setTitle(name);
+        if (this.bossBarMember != null) {
+            this.bossBarMember.setTitle(name);
+        }
+        if (this.bossBarVisitor != null) {
+            this.bossBarVisitor.setTitle(name);
+        }
     }
 
     public String getDefaultName() {
         return UltimateClaims.getInstance().getLocale()
                 .getMessage("general.claim.defaultname")
-                .processPlaceholder("name", owner.getName())
+                .processPlaceholder("name", this.owner.getName())
                 .getMessage();
     }
 
     public BossBar getVisitorBossBar() {
-        if (bossBarVisitor == null)
-            bossBarVisitor = Bukkit.getServer().createBossBar(this.name, BarColor.YELLOW, BarStyle.SOLID);
-        return bossBarVisitor;
+        if (this.bossBarVisitor == null) {
+            this.bossBarVisitor = Bukkit.getServer().createBossBar(this.name, BarColor.YELLOW, BarStyle.SOLID);
+        }
+        return this.bossBarVisitor;
     }
 
     public BossBar getMemberBossBar() {
-        if (bossBarMember == null)
-            bossBarMember = Bukkit.getServer().createBossBar(this.name, BarColor.GREEN, BarStyle.SOLID);
-        return bossBarMember;
+        if (this.bossBarMember == null) {
+            this.bossBarMember = Bukkit.getServer().createBossBar(this.name, BarColor.GREEN, BarStyle.SOLID);
+        }
+        return this.bossBarMember;
     }
 
     public ClaimMember getOwner() {
-        return owner;
+        return this.owner;
     }
 
     public ClaimMember setOwner(UUID owner) {
@@ -138,28 +141,30 @@ public class Claim {
     }
 
     public boolean transferOwnership(OfflinePlayer newOwner) {
-        if (newOwner.getUniqueId() == owner.getUniqueId())
+        if (newOwner.getUniqueId() == this.owner.getUniqueId()) {
             return false;
+        }
 
-        ClaimTransferOwnershipEvent event = new ClaimTransferOwnershipEvent(this, owner.getPlayer(), newOwner);
+        ClaimTransferOwnershipEvent event = new ClaimTransferOwnershipEvent(this, this.owner.getPlayer(), newOwner);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return false;
         }
 
-        boolean wasNameChanged = name.equals(getDefaultName());
+        boolean wasNameChanged = this.name.equals(getDefaultName());
 
         removeMember(newOwner.getUniqueId());
-        owner.setRole(ClaimRole.MEMBER);
-        addMember(owner);
+        this.owner.setRole(ClaimRole.MEMBER);
+        addMember(this.owner);
         setOwner(newOwner);
-        if (!wasNameChanged)
+        if (!wasNameChanged) {
             setName(getDefaultName());
+        }
         return true;
     }
 
     public Set<ClaimMember> getMembers() {
-        return members;
+        return this.members;
     }
 
     public Set<ClaimMember> getOwnerAndMembers() {
@@ -180,9 +185,10 @@ public class Claim {
     }
 
     public ClaimMember getMember(UUID uuid) {
-        if (owner.getUniqueId().equals(uuid))
-            return owner;
-        return members.stream()
+        if (this.owner.getUniqueId().equals(uuid)) {
+            return this.owner;
+        }
+        return this.members.stream()
                 .filter(member -> member.getUniqueId().equals(uuid))
                 .findFirst()
                 .orElse(null);
@@ -192,13 +198,16 @@ public class Claim {
      * Search for a member by username
      *
      * @param name name to search
-     *
      * @return Member instance matching this username, if any
      */
     public ClaimMember getMember(String name) {
-        if (name == null) return null;
-        if (name.equals(owner.getName())) return owner;
-        return members.stream()
+        if (name == null) {
+            return null;
+        }
+        if (name.equals(this.owner.getName())) {
+            return this.owner;
+        }
+        return this.members.stream()
                 .filter(member -> name.equals(member.getName()))
                 .findFirst()
                 .orElse(null);
@@ -224,26 +233,34 @@ public class Claim {
     public boolean playerHasPerms(Player player, ClaimPerm claimPerm) {
         ClaimMember member = getMember(player);
         if (player.hasPermission("ultimateclaims.bypass.perms")
-                || player.getUniqueId().equals(owner.getUniqueId())) return true;
-        if (member == null) return false;
+                || player.getUniqueId().equals(this.owner.getUniqueId())) {
+            return true;
+        }
+        if (member == null) {
+            return false;
+        }
         return member.getRole() == ClaimRole.VISITOR && getVisitorPermissions().hasPermission(claimPerm)
                 || member.getRole() == ClaimRole.MEMBER && getMemberPermissions().hasPermission(claimPerm);
     }
 
     public boolean isOwnerOrMember(OfflinePlayer player) {
-        if (player.getUniqueId().equals(owner.getUniqueId())) return true;
+        if (player.getUniqueId().equals(this.owner.getUniqueId())) {
+            return true;
+        }
         ClaimMember member = getMember(player);
-        if (member == null) return false;
+        if (member == null) {
+            return false;
+        }
         return member.getRole() == ClaimRole.MEMBER;
     }
 
     public boolean containsChunk(Chunk chunk) {
         final String world = chunk.getWorld().getName();
-        return claimedRegions.stream().anyMatch(r -> r.containsChunk(world, chunk.getX(), chunk.getZ()));
+        return this.claimedRegions.stream().anyMatch(r -> r.containsChunk(world, chunk.getX(), chunk.getZ()));
     }
 
     public boolean containsChunk(String world, int chunkX, int chunkZ) {
-        return claimedRegions.stream().anyMatch(r -> r.containsChunk(world, chunkX, chunkZ));
+        return this.claimedRegions.stream().anyMatch(r -> r.containsChunk(world, chunkX, chunkZ));
     }
 
     public ClaimedRegion getPotentialRegion(Chunk chunk) {
@@ -269,7 +286,7 @@ public class Claim {
         ClaimedChunk newChunk = new ClaimedChunk(world, x, z);
         ClaimedRegion region = newChunk.getAttachedRegion(this);
         if (region == null) {
-            claimedRegions.add(new ClaimedRegion(newChunk, this));
+            this.claimedRegions.add(new ClaimedRegion(newChunk, this));
             return true;
         } else {
             region.addChunk(newChunk);
@@ -279,17 +296,17 @@ public class Claim {
     }
 
     public void addClaimedRegion(ClaimedRegion region) {
-        claimedRegions.add(region);
+        this.claimedRegions.add(region);
     }
 
     public void removeClaimedRegion(ClaimedRegion region) {
-        claimedRegions.remove(region);
+        this.claimedRegions.remove(region);
     }
 
     public ClaimedChunk removeClaimedChunk(Chunk chunk, Player player) {
         animateChunk(chunk, player, XMaterial.REDSTONE_BLOCK.parseMaterial());
         ClaimedChunk newChunk = getClaimedChunk(chunk);
-        for (ClaimedRegion region : new ArrayList<>(claimedRegions)) {
+        for (ClaimedRegion region : new ArrayList<>(this.claimedRegions)) {
             List<ClaimedRegion> claimedRegions = region.removeChunk(newChunk);
             if (!claimedRegions.isEmpty()) {
                 this.claimedRegions.remove(region);
@@ -304,32 +321,37 @@ public class Claim {
     }
 
     public Set<ClaimedRegion> getClaimedRegions() {
-        return Collections.unmodifiableSet(claimedRegions);
+        return Collections.unmodifiableSet(this.claimedRegions);
     }
 
     public ClaimedRegion getClaimedRegion(Chunk chunk) {
-        for (ClaimedChunk claimedChunk : getClaimedChunks())
-            if (claimedChunk.equals(chunk))
+        for (ClaimedChunk claimedChunk : getClaimedChunks()) {
+            if (claimedChunk.equals(chunk)) {
                 return claimedChunk.getRegion();
+            }
+        }
         return null;
     }
 
     public List<ClaimedChunk> getClaimedChunks() {
         List<ClaimedChunk> chunks = new ArrayList<>();
-        for (ClaimedRegion claimedRegion : claimedRegions)
+        for (ClaimedRegion claimedRegion : this.claimedRegions) {
             chunks.addAll(claimedRegion.getChunks());
+        }
         return chunks;
     }
 
     public ClaimedChunk getClaimedChunk(Chunk chunk) {
-        for (ClaimedChunk claimedChunk : getClaimedChunks())
-            if (claimedChunk.equals(chunk))
+        for (ClaimedChunk claimedChunk : getClaimedChunks()) {
+            if (claimedChunk.equals(chunk)) {
                 return claimedChunk;
+            }
+        }
         return null;
     }
 
     public int getClaimSize() {
-        return claimedRegions.stream().map(r -> r.getChunks().size()).mapToInt(Integer::intValue).sum();
+        return this.claimedRegions.stream().map(r -> r.getChunks().size()).mapToInt(Integer::intValue).sum();
     }
 
     public int getMaxClaimSize(Player player) {
@@ -337,8 +359,9 @@ public class Claim {
     }
 
     public void animateChunk(Chunk chunk, Player player, Material material) {
-        if (!Settings.ENABLE_CHUNK_ANIMATION.getBoolean())
+        if (!Settings.ENABLE_CHUNK_ANIMATION.getBoolean()) {
             return;
+        }
 
         int bx = chunk.getX() << 4;
         int bz = chunk.getZ() << 4;
@@ -347,7 +370,7 @@ public class Claim {
 
         Random random = new Random();
 
-        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))
+        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)) {
             for (int xx = bx; xx < bx + 16; xx++) {
                 for (int zz = bz; zz < bz + 16; zz++) {
                     for (int yy = player.getLocation().getBlockY() - 5; yy < player.getLocation().getBlockY() + 5; yy++) {
@@ -355,7 +378,9 @@ public class Claim {
                         // XMaterial m = XMaterial.matchXMaterial(block.getType());
                         // following 'if' does not work with XMaterial, i decided to make some changes needs to be tested
                         Material mat = Material.getMaterial(String.valueOf(block.getType()));
-                        if (!mat.isOccluding()|| mat.isInteractable()) continue;
+                        if (!mat.isOccluding() || mat.isInteractable()) {
+                            continue;
+                        }
                         Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () -> {
                             player.sendBlockChange(block.getLocation(), material, (byte) 0);
                             Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () ->
@@ -365,14 +390,17 @@ public class Claim {
                     }
                 }
             }
+        }
     }
 
     public List<RegionCorners> getCorners() {
-        if (this.claimedRegions.size() <= 0) return null;
+        if (this.claimedRegions.size() <= 0) {
+            return null;
+        }
 
         List<RegionCorners> result = new ArrayList<>();
 
-        for (ClaimedRegion region : claimedRegions) {
+        for (ClaimedRegion region : this.claimedRegions) {
             RegionCorners regionCorners = new RegionCorners();
             for (ClaimedChunk cChunk : region.getChunks()) {
                 double[] xArr = new double[2],
@@ -396,11 +424,11 @@ public class Claim {
     }
 
     public boolean hasPowerCell() {
-        return powerCell.location != null;
+        return this.powerCell.location != null;
     }
 
     public PowerCell getPowerCell() {
-        return powerCell;
+        return this.powerCell;
     }
 
     public void setPowerCell(PowerCell powerCell) {
@@ -408,7 +436,7 @@ public class Claim {
     }
 
     public ClaimPermissions getMemberPermissions() {
-        return memberPermissions;
+        return this.memberPermissions;
     }
 
     public void setMemberPermissions(ClaimPermissions memberPermissions) {
@@ -416,7 +444,7 @@ public class Claim {
     }
 
     public ClaimPermissions getVisitorPermissions() {
-        return visitorPermissions;
+        return this.visitorPermissions;
     }
 
     public void setVisitorPermissions(ClaimPermissions visitorPermissions) {
@@ -444,22 +472,27 @@ public class Claim {
 
         this.claimedRegions.clear();
 
-        if (UltimateClaims.getInstance().getDynmapManager() != null)
+        if (UltimateClaims.getInstance().getDynmapManager() != null) {
             UltimateClaims.getInstance().getDynmapManager().refresh();
+        }
 
         this.powerCell.destroy();
         UltimateClaims.getInstance().getDataHelper().deleteClaim(this);
         UltimateClaims.getInstance().getClaimManager().removeClaim(this);
 
         // we've just unclaimed the chunk we're in, so we've "moved" out of the claim
-        if (bossBarMember != null) bossBarMember.removeAll();
-        if (bossBarVisitor != null) bossBarVisitor.removeAll();
+        if (this.bossBarMember != null) {
+            this.bossBarMember.removeAll();
+        }
+        if (this.bossBarVisitor != null) {
+            this.bossBarVisitor.removeAll();
+        }
         getOwnerAndMembers().forEach(m -> m.setPresent(false));
-        members.clear();
+        this.members.clear();
     }
 
     public Set<UUID> getBannedPlayers() {
-        return bannedPlayers;
+        return this.bannedPlayers;
     }
 
     public void setOwner(ClaimMember owner) {
@@ -467,7 +500,7 @@ public class Claim {
     }
 
     public boolean isLocked() {
-        return locked;
+        return this.locked;
     }
 
     public void setLocked(boolean locked) {
@@ -475,7 +508,7 @@ public class Claim {
     }
 
     public Location getHome() {
-        return home;
+        return this.home;
     }
 
     public void setHome(Location home) {
@@ -483,20 +516,22 @@ public class Claim {
     }
 
     public ClaimSettings getClaimSettings() {
-        return claimSettings;
+        return this.claimSettings;
     }
 
     public String getPowercellTimeRemaining() {
-        if (hasPowerCell())
-            return powerCell.getTimeRemaining();
-        else
+        if (hasPowerCell()) {
+            return this.powerCell.getTimeRemaining();
+        } else {
             return null;
+        }
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || getClass() != obj.getClass())
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
+        }
         return this.id == ((Claim) obj).id;
     }
 

@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class CommandName extends AbstractCommand {
-
     private final UltimateClaims plugin;
 
     public CommandName(UltimateClaims plugin) {
@@ -20,16 +19,17 @@ public class CommandName extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        if (args.length < 1)
+        if (args.length < 1) {
             return ReturnType.SYNTAX_ERROR;
+        }
 
         Player player = (Player) sender;
 
         Chunk chunk = player.getLocation().getChunk();
-        Claim claim = plugin.getClaimManager().getClaim(chunk);
+        Claim claim = this.plugin.getClaimManager().getClaim(chunk);
 
         if (claim == null) {
-            plugin.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
+            this.plugin.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
@@ -37,9 +37,9 @@ public class CommandName extends AbstractCommand {
 
         claim.setName(name);
 
-        plugin.getDataHelper().updateClaim(claim);
+        this.plugin.getDataHelper().updateClaim(claim);
 
-        plugin.getLocale().getMessage("command.name.set")
+        this.plugin.getLocale().getMessage("command.name.set")
                 .processPlaceholder("name", name)
                 .sendPrefixedMessage(sender);
 

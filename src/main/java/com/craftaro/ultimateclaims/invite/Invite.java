@@ -5,7 +5,6 @@ import com.craftaro.ultimateclaims.claim.Claim;
 import java.util.UUID;
 
 public class Invite {
-
     private final UUID inviter;
     private final UUID invited;
 
@@ -23,19 +22,19 @@ public class Invite {
     }
 
     public UUID getInviter() {
-        return inviter;
+        return this.inviter;
     }
 
     public UUID getInvited() {
-        return invited;
+        return this.invited;
     }
 
     public Claim getClaim() {
-        return claim;
+        return this.claim;
     }
 
     public long getCreated() {
-        return created;
+        return this.created;
     }
 
     public void accepted() {
@@ -43,6 +42,6 @@ public class Invite {
     }
 
     public boolean isAccepted() {
-        return accepted;
+        return this.accepted;
     }
 }

@@ -1,15 +1,14 @@
 package com.craftaro.ultimateclaims.gui;
 
-import com.craftaro.ultimateclaims.settings.Settings;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.items.PowerCellItem;
+import com.craftaro.ultimateclaims.settings.Settings;
 
 import java.util.Map;
 
 public class RecipeDisplayGui extends Gui {
-
     public RecipeDisplayGui() {
         this.setRows(3);
         this.setTitle(UltimateClaims.getInstance().getLocale().getMessage("interface.recipe.title").getMessage());

@@ -2,8 +2,6 @@ package com.craftaro.ultimateclaims.database;
 
 import com.craftaro.core.database.DataManager;
 import com.craftaro.core.database.DatabaseConnector;
-import com.craftaro.ultimateclaims.settings.PluginSettings;
-import com.craftaro.ultimateclaims.settings.Settings;
 import com.craftaro.core.utils.ItemSerializer;
 import com.craftaro.ultimateclaims.claim.Audit;
 import com.craftaro.ultimateclaims.claim.Claim;
@@ -15,6 +13,8 @@ import com.craftaro.ultimateclaims.member.ClaimMember;
 import com.craftaro.ultimateclaims.member.ClaimPerm;
 import com.craftaro.ultimateclaims.member.ClaimPermissions;
 import com.craftaro.ultimateclaims.member.ClaimRole;
+import com.craftaro.ultimateclaims.settings.PluginSettings;
+import com.craftaro.ultimateclaims.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -26,11 +26,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Types;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class DataHelper {
-
     private final DatabaseConnector databaseConnector;
     private final DataManager dataManager;
     private final Plugin plugin;
@@ -43,11 +49,11 @@ public class DataHelper {
     }
 
     private void runAsync(Runnable runnable) {
-        dataManager.getAsyncPool().execute(runnable);
+        this.dataManager.getAsyncPool().execute(runnable);
     }
 
     private void sync(Runnable runnable) {
-        Bukkit.getScheduler().runTask(plugin, runnable);
+        Bukkit.getScheduler().runTask(this.plugin, runnable);
     }
 
     private String getTablePrefix() {
@@ -56,7 +62,7 @@ public class DataHelper {
 
     public void createOrUpdatePluginSettings(PluginSettings pluginSettings) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 // first check to see if there is a data row for plugin settings
                 String selectPluginSettings = "SELECT * FROM " + this.getTablePrefix() + "plugin_settings";
                 try (Statement statement = connection.createStatement()) {
@@ -104,7 +110,7 @@ public class DataHelper {
 
     public void createClaim(Claim claim) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
 
                 int claimId = this.dataManager.getNextId("claim"); //Method includes the table prefix. Run the method before inserting into the database.
 
@@ -189,7 +195,7 @@ public class DataHelper {
 
     public void updateClaim(Claim claim) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String updateClaim = "UPDATE " + this.getTablePrefix() + "claim SET name = ?, power = ?, eco_bal = ?, locked = ?, home_world = ?, home_x = ?, home_y = ?, home_z = ?, home_pitch = ?, home_yaw = ?, powercell_world = ?, powercell_x = ?, powercell_y = ?, powercell_z = ?, powercell_inventory = ? WHERE id = ?";
                 PreparedStatement statement = connection.prepareStatement(updateClaim);
                 statement.setString(1, claim.getName());
@@ -238,7 +244,7 @@ public class DataHelper {
     }
 
     public void bulkUpdateClaims(Collection<Claim> claims) {
-        try (Connection connection = this.databaseConnector.getConnection()){
+        try (Connection connection = this.databaseConnector.getConnection()) {
             String updateClaim = "UPDATE " + this.getTablePrefix() + "claim SET name = ?, power = ?, eco_bal = ?, locked = ?, home_world = ?, home_x = ?, home_y = ?, home_z = ?, home_pitch = ?, home_yaw = ?, powercell_world = ?, powercell_x = ?, powercell_y = ?, powercell_z = ?, powercell_inventory = ? WHERE id = ?";
             try (PreparedStatement statement = connection.prepareStatement(updateClaim)) {
                 for (Claim claim : claims) {
@@ -291,10 +297,11 @@ public class DataHelper {
                 for (Claim claim : claims) {
                     for (ClaimMember member : claim.getOwnerAndMembers()) {
                         statement.setLong(1, member.getPlayTime());
-                        if (member.getName() == null)
+                        if (member.getName() == null) {
                             statement.setNull(2, Types.VARCHAR);
-                        else
+                        } else {
                             statement.setString(2, member.getName());
+                        }
                         statement.setInt(3, claim.getId());
                         statement.setString(4, member.getUniqueId().toString());
                         statement.addBatch();
@@ -309,8 +316,8 @@ public class DataHelper {
     }
 
     public void deleteClaim(Claim claim) {
-        this.runAsync(() ->  {
-            try (Connection connection = this.databaseConnector.getConnection()){
+        this.runAsync(() -> {
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String deleteClaim = "DELETE FROM " + this.getTablePrefix() + "claim WHERE id = ?";
                 String deleteMembers = "DELETE FROM " + this.getTablePrefix() + "member WHERE claim_id = ?";
                 String deleteBans = "DELETE FROM " + this.getTablePrefix() + "ban WHERE claim_id = ?";
@@ -367,15 +374,16 @@ public class DataHelper {
 
     public void createMember(ClaimMember member) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String createMember = "INSERT INTO " + this.getTablePrefix() + "member (claim_id, player_uuid, player_name, role, play_time, member_since) VALUES (?, ?, ?, ?, ?, ?)";
                 PreparedStatement statement = connection.prepareStatement(createMember);
                 statement.setInt(1, member.getClaim().getId());
                 statement.setString(2, member.getUniqueId().toString());
-                if (member.getName() == null)
+                if (member.getName() == null) {
                     statement.setNull(3, Types.VARCHAR);
-                else
+                } else {
                     statement.setString(3, member.getName());
+                }
                 statement.setInt(4, member.getRole().getIndex());
                 statement.setLong(5, member.getPlayTime());
                 statement.setLong(6, member.getMemberSince());
@@ -387,8 +395,8 @@ public class DataHelper {
     }
 
     public void deleteMember(ClaimMember member) {
-        this.runAsync(() ->  {
-            try (Connection connection = this.databaseConnector.getConnection()){
+        this.runAsync(() -> {
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String deleteMember = "DELETE FROM " + this.getTablePrefix() + "member WHERE player_uuid = ? AND claim_id = ?";
                 PreparedStatement statement = connection.prepareStatement(deleteMember);
                 statement.setString(1, member.getUniqueId().toString());
@@ -402,7 +410,7 @@ public class DataHelper {
 
     public void createBan(Claim claim, UUID playerUUID) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String createBan = "INSERT INTO " + this.getTablePrefix() + "ban (claim_id, player_uuid) VALUES (?, ?)";
                 PreparedStatement statement = connection.prepareStatement(createBan);
                 statement.setInt(1, claim.getId());
@@ -416,7 +424,7 @@ public class DataHelper {
 
     public void deleteBan(Claim claim, UUID playerUUID) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String deleteBan = "DELETE FROM " + this.getTablePrefix() + "ban WHERE claim_id = ? AND player_uuid = ?";
                 PreparedStatement statement = connection.prepareStatement(deleteBan);
                 statement.setInt(1, claim.getId());
@@ -430,7 +438,7 @@ public class DataHelper {
 
     public void addAudit(Claim claim, Audit audit) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String createChunk = "INSERT INTO " + this.getTablePrefix() + "audit_log (claim_id, who, time) VALUES (?, ?, ?)";
                 PreparedStatement statement = connection.prepareStatement(createChunk);
                 statement.setInt(1, claim.getId());
@@ -446,7 +454,7 @@ public class DataHelper {
     public void purgeAuditLog() {
         int purgeAfter = Settings.PURGE_AUDIT_LOG_AFTER.getInt();
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String createChunk = Settings.MYSQL_ENABLED.getBoolean() ? "DELETE FROM " + this.getTablePrefix() + "audit_log WHERE time < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL " + purgeAfter + " DAY))" :
                         "DELETE FROM " + this.getTablePrefix() + "audit_log WHERE TO_CHAR(time / 1000, 'YYYY-MM') <= CURRENT_DATE - INTERVAL '15' DAY";
                 //strftime is not supported in H2, recreate it
@@ -460,7 +468,7 @@ public class DataHelper {
 
     public void createClaimedRegion(ClaimedRegion region) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String createPermission = "INSERT INTO " + this.getTablePrefix() + "claimed_regions (claim_id, id) VALUES (?, ?)";
                 PreparedStatement statement = connection.prepareStatement(createPermission);
                 statement.setInt(1, region.getClaim().getId());
@@ -474,7 +482,7 @@ public class DataHelper {
 
     public void deleteClaimedRegion(ClaimedRegion region) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String deleteRegion = "DELETE FROM " + this.getTablePrefix() + "claimed_regions WHERE id = ?";
                 PreparedStatement statement = connection.prepareStatement(deleteRegion);
                 statement.setString(1, region.getUniqueId().toString());
@@ -487,7 +495,7 @@ public class DataHelper {
 
     public void createClaimedChunk(ClaimedChunk claimedChunk) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String createPermission = "INSERT INTO " + this.getTablePrefix() + "chunk (claim_id, region_id, world, x, z) VALUES (?, ?, ?, ?, ?)";
                 PreparedStatement statement = connection.prepareStatement(createPermission);
                 statement.setInt(1, claimedChunk.getRegion().getClaim().getId());
@@ -504,7 +512,7 @@ public class DataHelper {
 
     public void deleteClaimedChunk(ClaimedChunk claimedChunk) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String deletePermission = "DELETE FROM " + this.getTablePrefix() + "chunk WHERE world = ? AND x = ? AND z = ?";
                 PreparedStatement statement = connection.prepareStatement(deletePermission);
                 statement.setString(1, claimedChunk.getWorld());
@@ -519,7 +527,7 @@ public class DataHelper {
 
     public void updateClaimedChunks(Set<ClaimedChunk> chunks) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String createMember = "UPDATE " + this.getTablePrefix() + "chunk SET region_id = ? WHERE world = ? AND x = ? AND z = ?";
                 PreparedStatement statement = connection.prepareStatement(createMember);
                 for (ClaimedChunk claimedChunk : chunks) {
@@ -538,7 +546,7 @@ public class DataHelper {
 
     public void updateSettings(Claim claim, ClaimSettings settings) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String updateClaim = "UPDATE " + this.getTablePrefix() + "settings SET hostile_mob_spawning = ?, fire_spread = ?, mob_griefing = ?, leaf_decay = ?, pvp = ?, tnt = ?, fly = ? WHERE claim_id = ?";
                 PreparedStatement statement = connection.prepareStatement(updateClaim);
                 statement.setInt(1, settings.isEnabled(ClaimSetting.HOSTILE_MOB_SPAWNING) ? 1 : 0);
@@ -558,7 +566,7 @@ public class DataHelper {
 
     public void updatePermissions(Claim claim, ClaimPermissions permissions, ClaimRole role) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String updateClaim = "UPDATE " + this.getTablePrefix() + "permissions SET interact = ?, break = ?, place = ?, mob_kill = ?, redstone = ?, doors = ?, trading = ? WHERE claim_id = ? AND type = ?";
                 PreparedStatement statement = connection.prepareStatement(updateClaim);
                 statement.setInt(1, permissions.hasPermission(ClaimPerm.INTERACT) ? 1 : 0);
@@ -579,7 +587,7 @@ public class DataHelper {
 
     public void getPluginSettings(Consumer<PluginSettings> callback) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String selectPluginSettings = "SELECT * FROM " + this.getTablePrefix() + "plugin_settings";
                 Statement statement = connection.createStatement();
                 ResultSet result = statement.executeQuery(selectPluginSettings);
@@ -608,7 +616,7 @@ public class DataHelper {
 
     public void getAuditLog(Claim claim, Consumer<Deque<Audit>> callback) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String selectAudit = "SELECT * FROM " + this.getTablePrefix() + "audit_log WHERE claim_id = ?";
                 Deque<Audit> audits = new ArrayDeque<>();
                 PreparedStatement statement = connection.prepareStatement(selectAudit);
@@ -628,7 +636,7 @@ public class DataHelper {
 
     public void getClaims(Consumer<Map<UUID, Claim>> callback) {
         this.runAsync(() -> {
-            try (Connection connection = this.databaseConnector.getConnection()){
+            try (Connection connection = this.databaseConnector.getConnection()) {
                 String selectClaims = "SELECT * FROM " + this.getTablePrefix() + "claim";
                 String selectMembers = "SELECT * FROM " + this.getTablePrefix() + "member";
                 String selectBans = "SELECT * FROM " + this.getTablePrefix() + "ban";
@@ -686,8 +694,9 @@ public class DataHelper {
                     while (result.next()) {
                         int claimId = result.getInt("claim_id");
                         Claim claim = claims.get(claimId);
-                        if (claim == null)
+                        if (claim == null) {
                             continue;
+                        }
 
                         UUID playerUUID = UUID.fromString(result.getString("player_uuid"));
                         ClaimRole role = ClaimRole.fromIndex(result.getInt("role"));
@@ -698,8 +707,9 @@ public class DataHelper {
 
                         claim.addMember(claimMember);
 
-                        if (claimMember.getRole() == ClaimRole.OWNER)
+                        if (claimMember.getRole() == ClaimRole.OWNER) {
                             claim.setOwner(claimMember);
+                        }
                     }
                 }
 
@@ -708,8 +718,9 @@ public class DataHelper {
                     while (result.next()) {
                         int claimId = result.getInt("claim_id");
                         Claim claim = claims.get(claimId);
-                        if (claim == null)
+                        if (claim == null) {
                             continue;
+                        }
 
                         UUID playerUUID = UUID.fromString(result.getString("player_uuid"));
                         claim.banPlayer(playerUUID);
@@ -746,8 +757,9 @@ public class DataHelper {
                         if (region == null) {
                             int claimId = result.getInt("claim_id");
                             Claim claim = claims.get(claimId);
-                            if (claim == null)
+                            if (claim == null) {
                                 continue;
+                            }
 
                             claim.addClaimedChunk(world, x, z);
                             continue;
@@ -761,8 +773,9 @@ public class DataHelper {
                     while (result.next()) {
                         int claimId = result.getInt("claim_id");
                         Claim claim = claims.get(claimId);
-                        if (claim == null)
+                        if (claim == null) {
                             continue;
+                        }
 
                         claim.getClaimSettings()
                                 .setEnabled(ClaimSetting.HOSTILE_MOB_SPAWNING, result.getInt("hostile_mob_spawning") == 1)
@@ -780,8 +793,9 @@ public class DataHelper {
                     while (result.next()) {
                         int claimId = result.getInt("claim_id");
                         Claim claim = claims.get(claimId);
-                        if (claim == null)
+                        if (claim == null) {
                             continue;
+                        }
 
                         ClaimPermissions permissions = new ClaimPermissions()
                                 .setAllowed(ClaimPerm.INTERACT, result.getInt("interact") == 1)
@@ -807,7 +821,7 @@ public class DataHelper {
                 Map<UUID, Claim> returnClaims = new HashMap<>();
                 for (Claim claim : claims.values()) {
                     if (claim.getOwner() == null) {
-                        plugin.getLogger().warning("Claim ID " + claim.getId() + " has no owner for some reason. Skipping.");
+                        this.plugin.getLogger().warning("Claim ID " + claim.getId() + " has no owner for some reason. Skipping.");
                         continue;
                     }
                     returnClaims.put(claim.getOwner().getUniqueId(), claim);

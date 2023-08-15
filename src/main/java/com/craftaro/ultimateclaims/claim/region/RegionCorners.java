@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class RegionCorners {
-
     private final Set<ClaimCorners> claimCorners = new HashSet<>();
 
     public void addCorners(ClaimCorners claimCorners) {
@@ -13,6 +12,6 @@ public class RegionCorners {
     }
 
     public Set<ClaimCorners> getClaimCorners() {
-        return Collections.unmodifiableSet(claimCorners);
+        return Collections.unmodifiableSet(this.claimCorners);
     }
 }

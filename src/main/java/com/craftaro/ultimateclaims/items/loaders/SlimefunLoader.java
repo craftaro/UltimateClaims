@@ -27,8 +27,9 @@ public class SlimefunLoader implements ItemLoader {
     @Override
     public ItemStack getItem(String key) {
         SlimefunItem slimefunItem = SlimefunItem.getById(key);
-        if (slimefunItem == null) return null;
-
+        if (slimefunItem == null) {
+            return null;
+        }
         return slimefunItem.getItem();
     }
 }

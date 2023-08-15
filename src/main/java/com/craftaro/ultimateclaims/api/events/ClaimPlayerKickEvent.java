@@ -4,12 +4,13 @@ import com.craftaro.ultimateclaims.claim.Claim;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Called when a player gets kicked out of a claim.
+ * Called when a player gets kicked out of a claim
  */
 public class ClaimPlayerKickEvent extends ClaimEvent implements Cancellable {
-    private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList HANDLER_LIST = new HandlerList();
     private boolean cancel = false;
     private final OfflinePlayer player;
 
@@ -20,7 +21,7 @@ public class ClaimPlayerKickEvent extends ClaimEvent implements Cancellable {
 
     @Override
     public boolean isCancelled() {
-        return cancel;
+        return this.cancel;
     }
 
     @Override
@@ -29,15 +30,15 @@ public class ClaimPlayerKickEvent extends ClaimEvent implements Cancellable {
     }
 
     public OfflinePlayer getPlayer() {
-        return player;
+        return this.player;
     }
 
     @Override
-    public HandlerList getHandlers() {
-        return handlers;
+    public @NotNull HandlerList getHandlers() {
+        return HANDLER_LIST;
     }
 
     public static HandlerList getHandlerList() {
-        return handlers;
+        return HANDLER_LIST;
     }
 }

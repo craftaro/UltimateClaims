@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.UUID;
 
 public class ClaimedRegion {
-
     private UUID uniqueId = UUID.randomUUID();
     private final Claim claim;
 
@@ -25,7 +24,7 @@ public class ClaimedRegion {
 
     public ClaimedRegion(ClaimedChunk newChunk, Claim claim) {
         this.claim = claim;
-        claimedChunks.add(newChunk);
+        this.claimedChunks.add(newChunk);
         newChunk.setRegion(this);
     }
 
@@ -40,27 +39,31 @@ public class ClaimedRegion {
     }
 
     public Claim getClaim() {
-        return claim;
+        return this.claim;
     }
 
     public void addChunk(ClaimedChunk chunk) {
-        claimedChunks.add(chunk);
+        this.claimedChunks.add(chunk);
         chunk.setRegion(this);
     }
 
     public void addChunks(Set<ClaimedChunk> chunks) {
-        for (ClaimedChunk chunk : chunks)
-            if (!claimedChunks.contains(chunk))
+        for (ClaimedChunk chunk : chunks) {
+            if (!this.claimedChunks.contains(chunk)) {
                 addChunk(chunk);
+            }
+        }
     }
 
     public List<ClaimedRegion> removeChunk(ClaimedChunk chunk) {
-        if (claimedChunks.remove(chunk)) {
+        if (this.claimedChunks.remove(chunk)) {
             List<ClaimedRegion> newRegions = new LinkedList<>();
             List<ClaimedChunk> toSearch = chunk.getAttachedChunks();
             Set<ClaimedChunk> scanned = new HashSet<>();
             for (ClaimedChunk claimedChunk : new LinkedList<>(toSearch)) {
-                if (scanned.contains(claimedChunk)) continue;
+                if (scanned.contains(claimedChunk)) {
+                    continue;
+                }
                 ClaimedChunk masterChunk = toSearch.get(0);
 
                 Set<ClaimedChunk> searchedChunks = new LinkedHashSet<>();
@@ -76,25 +79,28 @@ public class ClaimedRegion {
                             nextChunks.add(potentialChunk);
                         }
                     }
-                    if (nextChunks.isEmpty())
+                    if (nextChunks.isEmpty()) {
                         done = true;
+                    }
                 }
-                if (searchedChunks.containsAll(toSearch) && newRegions.isEmpty())
+                if (searchedChunks.containsAll(toSearch) && newRegions.isEmpty()) {
                     return new ArrayList<>();
+                }
                 toSearch.remove(0);
                 scanned.addAll(searchedChunks);
-                ClaimedRegion region = new ClaimedRegion(claim);
+                ClaimedRegion region = new ClaimedRegion(this.claim);
                 if (!newRegions.contains(this)) {
                     region = this;
-                    claimedChunks.clear();
+                    this.claimedChunks.clear();
                 }
                 newRegions.add(region);
                 for (ClaimedChunk searchedChunk : searchedChunks) {
                     searchedChunk.setRegion(region);
                     region.addChunk(searchedChunk);
                 }
-                if (region != this)
+                if (region != this) {
                     UltimateClaims.getInstance().getDataHelper().createClaimedRegion(region);
+                }
             }
             UltimateClaims.getInstance().getDataHelper().updateClaimedChunks(scanned);
             return newRegions;
@@ -105,15 +111,16 @@ public class ClaimedRegion {
     public ClaimedChunk getFirstClaimedChunk() {
         return this.claimedChunks.iterator().next();
     }
+
     public boolean containsChunk(String world, int chunkX, int chunkZ) {
         return this.claimedChunks.stream().anyMatch(x -> x.getWorld().equals(world) && x.getX() == chunkX && x.getZ() == chunkZ);
     }
 
     public Set<ClaimedChunk> getChunks() {
-        return Collections.unmodifiableSet(claimedChunks);
+        return Collections.unmodifiableSet(this.claimedChunks);
     }
 
     public UUID getUniqueId() {
-        return uniqueId;
+        return this.uniqueId;
     }
 }

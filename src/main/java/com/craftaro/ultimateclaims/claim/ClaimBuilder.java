@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 public class ClaimBuilder {
-
     private final Claim claim;
 
     public ClaimBuilder() {
@@ -22,15 +21,17 @@ public class ClaimBuilder {
     }
 
     public ClaimBuilder setOwner(Player player) {
-        claim.setOwner(player.getUniqueId()).setName(player.getName());
-        if (claim.getName() == null)
-            claim.setName(claim.getDefaultName());
+        this.claim.setOwner(player.getUniqueId()).setName(player.getName());
+        if (this.claim.getName() == null) {
+            this.claim.setName(this.claim.getDefaultName());
+        }
         return this;
     }
 
     public ClaimBuilder addMembers(Player... players) {
-        for (Player player : players)
+        for (Player player : players) {
             this.claim.addMember(player, ClaimRole.MEMBER);
+        }
         return this;
     }
 
@@ -55,8 +56,9 @@ public class ClaimBuilder {
     }
 
     public ClaimBuilder banPlayer(UUID... uuids) {
-        for (UUID uuid : uuids)
+        for (UUID uuid : uuids) {
             this.claim.banPlayer(uuid);
+        }
         return this;
     }
 
@@ -69,8 +71,6 @@ public class ClaimBuilder {
         this.setHome(home);
         return this;
     }
-
-
 
     public Claim build() {
         return this.claim;

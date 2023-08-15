@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class CommandRemoveClaim extends AbstractCommand {
-
     private final UltimateClaims plugin;
 
     public CommandRemoveClaim(UltimateClaims plugin) {
@@ -25,10 +24,10 @@ public class CommandRemoveClaim extends AbstractCommand {
         Player player = (Player) sender;
 
         Chunk chunk = player.getLocation().getChunk();
-        Claim claim = plugin.getClaimManager().getClaim(chunk);
+        Claim claim = this.plugin.getClaimManager().getClaim(chunk);
 
         if (claim == null) {
-            plugin.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
+            this.plugin.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
@@ -38,7 +37,7 @@ public class CommandRemoveClaim extends AbstractCommand {
         if (offlineOwner.isOnline()) {
             Player owner = offlineOwner.getPlayer();
 
-            plugin.getLocale().getMessage("general.claim.dissolve")
+            this.plugin.getLocale().getMessage("general.claim.dissolve")
                     .processPlaceholder("claim", claim.getName())
                     .sendPrefixedMessage(owner);
         }
@@ -47,7 +46,7 @@ public class CommandRemoveClaim extends AbstractCommand {
         claim.destroy(ClaimDeleteReason.ADMIN);
 
         // Send a message to player
-        plugin.getLocale().getMessage("command.removeclaim.success")
+        this.plugin.getLocale().getMessage("command.removeclaim.success")
                 .processPlaceholder("claim", claim.getName())
                 .sendPrefixedMessage(player);
 

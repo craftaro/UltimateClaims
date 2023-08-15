@@ -1,12 +1,12 @@
 package com.craftaro.ultimateclaims.claim;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
-import com.craftaro.ultimateclaims.gui.PowerCellGui;
-import com.craftaro.ultimateclaims.settings.Settings;
 import com.craftaro.core.hooks.EconomyManager;
 import com.craftaro.core.hooks.HologramManager;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.TimeUtils;
 import com.craftaro.ultimateclaims.UltimateClaims;
+import com.craftaro.ultimateclaims.gui.PowerCellGui;
+import com.craftaro.ultimateclaims.settings.Settings;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -19,7 +19,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class PowerCell {
-
     // This is the unique identifier for this power cell.
     // It is reset on every plugin load.
     // Used for holograms.
@@ -43,20 +42,20 @@ public class PowerCell {
 
     public int tick() {
         boolean loaded = false;
-        if (location != null && location.getWorld() != null) {
-            int x = location.getBlockX() >> 4;
-            int z = location.getBlockZ() >> 4;
+        if (this.location != null && this.location.getWorld() != null) {
+            int x = this.location.getBlockX() >> 4;
+            int z = this.location.getBlockZ() >> 4;
 
-            loaded = location.getWorld().isChunkLoaded(x, z);
+            loaded = this.location.getWorld().isChunkLoaded(x, z);
         }
 
-        if (this.currentPower <= 0 && location != null) {
+        if (this.currentPower <= 0 && this.location != null) {
             updateItemsFromGui();
 
-            ListIterator<ItemStack> iterator = items.listIterator();
+            ListIterator<ItemStack> iterator = this.items.listIterator();
             while (iterator.hasNext()) {
                 ItemStack itemStack = iterator.next();
-                double itemValue = plugin.getItemManager().getItemValue(itemStack);
+                double itemValue = this.plugin.getItemManager().getItemValue(itemStack);
 
                 if (itemValue < 1) { // Remove items based on number of claimed chunks
                     int itemsToRemove = (int) Math.ceil(1 / itemValue);
@@ -67,51 +66,58 @@ public class PowerCell {
                     this.currentPower += itemValue;
                 }
 
-                if (itemStack.getAmount() <= 1)
+                if (itemStack.getAmount() <= 1) {
                     iterator.remove();
+                }
 
-                if (loaded && Settings.POWERCELL_HOLOGRAMS.getBoolean())
+                if (loaded && Settings.POWERCELL_HOLOGRAMS.getBoolean()) {
                     updateHologram();
+                }
                 return this.currentPower;
             }
 
             double economyValue = getEconomyValue();
-            if (economyBalance >= economyValue) {
+            if (this.economyBalance >= economyValue) {
                 this.economyBalance -= economyValue;
                 this.currentPower += 1;
-                if (loaded && Settings.POWERCELL_HOLOGRAMS.getBoolean())
+                if (loaded && Settings.POWERCELL_HOLOGRAMS.getBoolean()) {
                     updateHologram();
+                }
                 return this.currentPower;
             }
         }
-        if (loaded && Settings.POWERCELL_HOLOGRAMS.getBoolean())
+        if (loaded && Settings.POWERCELL_HOLOGRAMS.getBoolean()) {
             updateHologram();
+        }
         stackItems();
         return this.currentPower--;
     }
 
     public void rejectUnusable() {
-        if (location == null)
+        if (this.location == null) {
             return;
+        }
         // list of items in the inventory that are worthless and removed from our inventory
         List<ItemStack> rejects = new ArrayList<>();
-        for (int i = items.size() - 1; i >= 0; i--) {
-            final ItemStack item = items.get(i);
-            if (item != null && plugin.getItemManager().getItems().stream().noneMatch(powerCellItem -> powerCellItem.isSimilar(item)))
-                rejects.add(items.remove(i));
+        for (int i = this.items.size() - 1; i >= 0; i--) {
+            final ItemStack item = this.items.get(i);
+            if (item != null && this.plugin.getItemManager().getItems().stream().noneMatch(powerCellItem -> powerCellItem.isSimilar(item))) {
+                rejects.add(this.items.remove(i));
+            }
         }
 
         if (!rejects.isEmpty()) {
             // YEET
             updateGuiInventory();
             rejects.stream().filter(item -> item.getType() != XMaterial.AIR.parseMaterial())
-                    .forEach(item -> location.getWorld().dropItemNaturally(location, item));
+                    .forEach(item -> this.location.getWorld().dropItemNaturally(this.location, item));
         }
     }
 
     public void updateGuiInventory() {
-        if (opened != null)
-            opened.updateGuiInventory(items);
+        if (this.opened != null) {
+            this.opened.updateGuiInventory(this.items);
+        }
     }
 
     public void updateItemsFromGui() {
@@ -120,7 +126,9 @@ public class PowerCell {
 
     public void updateItemsFromGui(boolean force) {
         if (!isInventoryOpen()
-                && !force) return;
+                && !force) {
+            return;
+        }
         List<ItemStack> items = new ArrayList<>();
         for (int i = 10; i < 44; i++) {
             if (i == 17
@@ -128,32 +136,35 @@ public class PowerCell {
                     || i == 26
                     || i == 27
                     || i == 35
-                    || i == 36) continue;
-            ItemStack item = opened.getItem(i);
-            if (item != null && item.getType() != XMaterial.AIR.parseMaterial())
+                    || i == 36) {
+                continue;
+            }
+            ItemStack item = this.opened.getItem(i);
+            if (item != null && item.getType() != XMaterial.AIR.parseMaterial()) {
                 items.add(item);
+            }
         }
         setItems(items);
     }
 
     public boolean isInventoryOpen() {
-        return opened != null
-                && opened.getInventory() != null
-                && !opened.getInventory().getViewers().isEmpty();
+        return this.opened != null
+                && this.opened.getInventory() != null
+                && !this.opened.getInventory().getViewers().isEmpty();
     }
 
     public void createHologram() {
-        if (location == null) {
+        if (this.location == null) {
             return;
         }
 
         if (!HologramManager.isHologramLoaded(getHologramId())) {
-            HologramManager.createHologram(getHologramId(), location, getTimeRemaining());
+            HologramManager.createHologram(getHologramId(), this.location, getTimeRemaining());
         }
     }
 
     public void updateHologram() {
-        if (location == null) {
+        if (this.location == null) {
             return;
         }
 
@@ -164,11 +175,11 @@ public class PowerCell {
 
     public String getTimeRemaining() {
         if (getTotalPower() > 1) {
-            return plugin.getLocale().getMessage("general.claim.powercell")
+            return this.plugin.getLocale().getMessage("general.claim.powercell")
                     .processPlaceholder("time", TimeUtils.makeReadable(getTotalPower() * 60 * 1000))
                     .getMessage();
         } else {
-            return plugin.getLocale().getMessage("general.claim.powercell.low")
+            return this.plugin.getLocale().getMessage("general.claim.powercell.low")
                     .processPlaceholder("time", TimeUtils.makeReadable((getTotalPower() + Settings.MINIMUM_POWER.getInt()) * 60 * 1000))
                     .getMessage();
         }
@@ -181,7 +192,7 @@ public class PowerCell {
     }
 
     public int getCurrentPower() {
-        return currentPower;
+        return this.currentPower;
     }
 
     public void setCurrentPower(int currentPower) {
@@ -197,21 +208,21 @@ public class PowerCell {
     }
 
     public long getTotalPower() {
-        return getItemPower() + (long) getEconomyPower() + currentPower;
+        return getItemPower() + (long) getEconomyPower() + this.currentPower;
     }
 
     public long getItemPower() {
         updateItemsFromGui();
         double total = 0;
-        for (ItemStack itemStack : items) {
-            double itemValue = itemStack.getAmount() * plugin.getItemManager().getItemValue(itemStack);
+        for (ItemStack itemStack : this.items) {
+            double itemValue = itemStack.getAmount() * this.plugin.getItemManager().getItemValue(itemStack);
 
             switch (getCostEquation()) {
                 case DEFAULT:
-                    total += itemValue / claim.getClaimSize();
+                    total += itemValue / this.claim.getClaimSize();
                     break;
                 case LINEAR:
-                    total += itemValue / (claim.getClaimSize() * getLinearValue());
+                    total += itemValue / (this.claim.getClaimSize() * getLinearValue());
                     break;
                 default:
                     total += itemValue;
@@ -224,31 +235,35 @@ public class PowerCell {
     public void stackItems() {
         List<Integer> removed = new ArrayList<>();
         List<ItemStack> newItems = new ArrayList<>();
-        for (int i = 0; i < items.size(); i++) {
-            ItemStack item = items.get(i);
+        for (int i = 0; i < this.items.size(); i++) {
+            ItemStack item = this.items.get(i);
             XMaterial material = XMaterial.matchXMaterial(item);
 
-            if (removed.contains(i))
+            if (removed.contains(i)) {
                 continue;
+            }
 
             ItemStack newItem = item.clone();
             newItems.add(newItem);
             removed.add(i);
 
-            if (item.getAmount() >= item.getMaxStackSize())
+            if (item.getAmount() >= item.getMaxStackSize()) {
                 continue;
+            }
 
-            for (int j = 0; j < items.size(); j++) {
-                ItemStack second = items.get(j);
+            for (int j = 0; j < this.items.size(); j++) {
+                ItemStack second = this.items.get(j);
 
-                if (newItem.getAmount() > newItem.getMaxStackSize())
+                if (newItem.getAmount() > newItem.getMaxStackSize()) {
                     break;
+                }
 
                 if (item.getAmount() >= second.getMaxStackSize()
                         || removed.contains(j)
                         || XMaterial.matchXMaterial(second) != material
-                        || !second.isSimilar(item))
+                        || !second.isSimilar(item)) {
                     continue;
+                }
 
                 if (item.getAmount() + second.getAmount() > item.getMaxStackSize()) {
                     second.setAmount(newItem.getAmount() + second.getAmount() - newItem.getMaxStackSize());
@@ -259,7 +274,7 @@ public class PowerCell {
                 }
             }
         }
-        items = newItems;
+        this.items = newItems;
     }
 
     public double getEconomyBalance() {
@@ -267,7 +282,7 @@ public class PowerCell {
     }
 
     public double getEconomyPower() {
-        return economyBalance / getEconomyValue();
+        return this.economyBalance / getEconomyValue();
     }
 
     public double getEconomyValue() {
@@ -275,21 +290,26 @@ public class PowerCell {
 
         switch (getCostEquation()) {
             case DEFAULT:
-                return value * claim.getClaimSize();
+                return value * this.claim.getClaimSize();
             case LINEAR:
-                return value * (claim.getClaimSize() * getLinearValue());
+                return value * (this.claim.getClaimSize() * getLinearValue());
             default:
                 return value;
         }
     }
 
     private CostEquation getCostEquation() {
-        if (Settings.COST_EQUATION.getString().startsWith("LINEAR")) return CostEquation.LINEAR;
-        else return CostEquation.valueOf(Settings.COST_EQUATION.getString());
+        if (Settings.COST_EQUATION.getString().startsWith("LINEAR")) {
+            return CostEquation.LINEAR;
+        } else {
+            return CostEquation.valueOf(Settings.COST_EQUATION.getString());
+        }
     }
 
     private double getLinearValue() {
-        if (getCostEquation() != CostEquation.LINEAR) return 1.0d;
+        if (getCostEquation() != CostEquation.LINEAR) {
+            return 1.0d;
+        }
         String[] equationSplit = Settings.COST_EQUATION.getString().split(" ");
         return Double.parseDouble(equationSplit[1]);
     }
@@ -303,7 +323,9 @@ public class PowerCell {
     }
 
     public boolean addItem(ItemStack item) {
-        if (items.size() >= 28) return false;
+        if (this.items.size() >= 28) {
+            return false;
+        }
         this.items.add(item);
         return true;
     }
@@ -321,11 +343,11 @@ public class PowerCell {
     }
 
     public Location getLocation() {
-        return location == null ? null : location.clone();
+        return this.location == null ? null : this.location.clone();
     }
 
     public boolean hasLocation() {
-        return location != null;
+        return this.location != null;
     }
 
     public void setLocation(Location location) {
@@ -333,37 +355,39 @@ public class PowerCell {
     }
 
     public PowerCellGui getGui(Player player) {
-        if (opened != null && opened.isOpen()) {
-            opened.close();
+        if (this.opened != null && this.opened.isOpen()) {
+            this.opened.close();
             updateItemsFromGui(true);
             stackItems();
         }
 
-        return opened = new PowerCellGui(UltimateClaims.getInstance(), this.claim, player);
+        return this.opened = new PowerCellGui(UltimateClaims.getInstance(), this.claim, player);
     }
 
     public void destroy() {
-        if (location != null && location.getWorld() != null) {
+        if (this.location != null && this.location.getWorld() != null) {
             getItems().stream().filter(Objects::nonNull)
-                    .forEach(item -> location.getWorld().dropItemNaturally(location, item));
+                    .forEach(item -> this.location.getWorld().dropItemNaturally(this.location, item));
             removeHologram();
 
-            OfflinePlayer owner = claim.getOwner().getPlayer();
-            EconomyManager.deposit(owner, economyBalance);
-            if (owner.isOnline())
-                owner.getPlayer().sendMessage(plugin.getLocale().getMessage("event.powercell.destroyed")
-                        .processPlaceholder("balance", economyBalance).getPrefixedMessage());
+            OfflinePlayer owner = this.claim.getOwner().getPlayer();
+            EconomyManager.deposit(owner, this.economyBalance);
+            if (owner.isOnline()) {
+                owner.getPlayer().sendMessage(this.plugin.getLocale().getMessage("event.powercell.destroyed")
+                        .processPlaceholder("balance", this.economyBalance).getPrefixedMessage());
+            }
         }
         this.economyBalance = 0;
         this.items.clear();
-        if (opened != null)
-            opened.exit();
+        if (this.opened != null) {
+            this.opened.exit();
+        }
         this.opened = null;
         this.clearItems();
         this.location = null;
     }
 
     public String getHologramId() {
-        return "UltimateClaims-" + uniqueId;
+        return "UltimateClaims-" + this.uniqueId;
     }
 }

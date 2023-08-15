@@ -1,8 +1,8 @@
 package com.craftaro.ultimateclaims.commands;
 
+import com.craftaro.core.commands.AbstractCommand;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
-import com.craftaro.core.commands.AbstractCommand;
 import com.craftaro.ultimateclaims.settings.Settings;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class CommandName extends AbstractCommand {
-
     private final UltimateClaims plugin;
 
     public CommandName(UltimateClaims plugin) {
@@ -21,28 +20,29 @@ public class CommandName extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        if (args.length < 1)
+        if (args.length < 1) {
             return ReturnType.SYNTAX_ERROR;
+        }
 
         Player player = (Player) sender;
 
         Chunk chunk = player.getLocation().getChunk();
-        Claim claim = plugin.getClaimManager().getClaim(chunk);
+        Claim claim = this.plugin.getClaimManager().getClaim(chunk);
 
         if (claim == null) {
-            plugin.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
+            this.plugin.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         if (!claim.getOwner().getUniqueId().equals(player.getUniqueId())) {
-            plugin.getLocale().getMessage("command.general.notyourclaim").sendPrefixedMessage(sender);
+            this.plugin.getLocale().getMessage("command.general.notyourclaim").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         final String name = String.join(" ", args);
 
         if (name.length() > Settings.NAME_CHAR_LIMIT.getInt()) {
-            plugin.getLocale().getMessage("command.name.toolong")
+            this.plugin.getLocale().getMessage("command.name.toolong")
                     .processPlaceholder("max", Settings.NAME_CHAR_LIMIT.getInt())
                     .sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
@@ -51,9 +51,9 @@ public class CommandName extends AbstractCommand {
 
         claim.setName(name);
 
-        plugin.getDataHelper().updateClaim(claim);
+        this.plugin.getDataHelper().updateClaim(claim);
 
-        plugin.getLocale().getMessage("command.name.set")
+        this.plugin.getLocale().getMessage("command.name.set")
                 .processPlaceholder("name", name)
                 .sendPrefixedMessage(sender);
 

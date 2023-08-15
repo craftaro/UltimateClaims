@@ -1,26 +1,30 @@
 package com.craftaro.ultimateclaims.gui;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
-import com.craftaro.ultimateclaims.claim.Claim;
-import com.craftaro.ultimateclaims.settings.Settings;
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.gui.GuiUtils;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.ItemUtils;
 import com.craftaro.core.utils.TimeUtils;
 import com.craftaro.ultimateclaims.UltimateClaims;
+import com.craftaro.ultimateclaims.claim.Claim;
 import com.craftaro.ultimateclaims.member.ClaimMember;
 import com.craftaro.ultimateclaims.member.ClaimRole;
+import com.craftaro.ultimateclaims.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class MembersGui extends CustomizableGui {
-
     private final UltimateClaims plugin;
     private final Claim claim;
     private ClaimRole displayedRole = ClaimRole.OWNER;
@@ -46,11 +50,11 @@ public class MembersGui extends CustomizableGui {
 
         // exit buttons
         this.setButton("back", 0, GuiUtils.createButtonItem(XMaterial.OAK_FENCE_GATE,
-                plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                plugin.getLocale().getMessage("general.interface.exit").getMessage()),
-                (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
-        this.setButton("back",8, this.getItem(0),
-                (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
+                        plugin.getLocale().getMessage("general.interface.back").getMessage(),
+                        plugin.getLocale().getMessage("general.interface.exit").getMessage()),
+                (event) -> this.guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
+        this.setButton("back", 8, this.getItem(0),
+                (event) -> this.guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
 
         // Member Stats (update on refresh)
         this.setItem("stats", 4, XMaterial.PAINTING.parseItem());
@@ -61,13 +65,13 @@ public class MembersGui extends CustomizableGui {
 
         // Settings shortcuts
         this.setButton("visitor_settings", 5, 3, GuiUtils.createButtonItem(XMaterial.OAK_SIGN,
-                plugin.getLocale().getMessage("interface.members.visitorsettingstitle").getMessage(),
-                plugin.getLocale().getMessage("interface.members.visitorsettingslore").getMessage().split("\\|")),
+                        plugin.getLocale().getMessage("interface.members.visitorsettingstitle").getMessage(),
+                        plugin.getLocale().getMessage("interface.members.visitorsettingslore").getMessage().split("\\|")),
                 (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.VISITOR)));
 
         this.setButton("member_settings", 5, 5, GuiUtils.createButtonItem(XMaterial.PAINTING,
-                plugin.getLocale().getMessage("interface.members.membersettingstitle").getMessage(),
-                plugin.getLocale().getMessage("interface.members.membersettingslore").getMessage().split("\\|")),
+                        plugin.getLocale().getMessage("interface.members.membersettingstitle").getMessage(),
+                        plugin.getLocale().getMessage("interface.members.membersettingslore").getMessage().split("\\|")),
                 (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.MEMBER)));
 
         // enable page events
@@ -80,48 +84,48 @@ public class MembersGui extends CustomizableGui {
     private void showPage() {
         // refresh stats
         this.setItem("stats", 4, GuiUtils.updateItem(this.getItem(4),
-                plugin.getLocale().getMessage("interface.members.statstitle").getMessage(),
-                plugin.getLocale().getMessage("interface.members.statslore")
-                        .processPlaceholder("totalmembers", claim.getOwnerAndMembers().size())
+                this.plugin.getLocale().getMessage("interface.members.statstitle").getMessage(),
+                this.plugin.getLocale().getMessage("interface.members.statslore")
+                        .processPlaceholder("totalmembers", this.claim.getOwnerAndMembers().size())
                         .processPlaceholder("maxmembers", Settings.MAX_MEMBERS.getInt())
-                        .processPlaceholder("members", claim.getMembers().size()).getMessage().split("\\|")));
+                        .processPlaceholder("members", this.claim.getMembers().size()).getMessage().split("\\|")));
 
         // Filters
         this.setItem("type", 3, GuiUtils.updateItem(this.getItem(3),
-                plugin.getLocale().getMessage("interface.members.changetypetitle").getMessage(),
-                plugin.getLocale().getMessage("general.interface.current")
+                this.plugin.getLocale().getMessage("interface.members.changetypetitle").getMessage(),
+                this.plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current",
-                                displayedRole == ClaimRole.OWNER ? plugin.getLocale().getMessage("interface.role.all").getMessage() : plugin.getLocale().getMessage(displayedRole.getLocalePath()).getMessage())
+                                this.displayedRole == ClaimRole.OWNER ? this.plugin.getLocale().getMessage("interface.role.all").getMessage() : this.plugin.getLocale().getMessage(this.displayedRole.getLocalePath()).getMessage())
                         .getMessage().split("\\|")));
         this.setItem("sort", 5, GuiUtils.updateItem(this.getItem(5),
-                plugin.getLocale().getMessage("interface.members.changesorttitle").getMessage(),
-                plugin.getLocale().getMessage("general.interface.current")
+                this.plugin.getLocale().getMessage("interface.members.changesorttitle").getMessage(),
+                this.plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current",
-                                plugin.getLocale().getMessage(sortType.getLocalePath()).getMessage())
+                                this.plugin.getLocale().getMessage(this.sortType.getLocalePath()).getMessage())
                         .getMessage().split("\\|")));
 
         // show members
-        List<ClaimMember> toDisplay = new ArrayList<>(claim.getOwnerAndMembers());
+        List<ClaimMember> toDisplay = new ArrayList<>(this.claim.getOwnerAndMembers());
         toDisplay = toDisplay.stream()
-                .filter(m -> m.getRole() == displayedRole || displayedRole == ClaimRole.OWNER)
+                .filter(m -> m.getRole() == this.displayedRole || this.displayedRole == ClaimRole.OWNER)
                 .sorted(Comparator.comparingInt(claimMember -> claimMember.getRole().getIndex()))
                 .collect(Collectors.toList());
 
-        if (sortType == SortType.PLAYTIME) {
+        if (this.sortType == SortType.PLAYTIME) {
             toDisplay = toDisplay.stream().sorted(Comparator.comparingLong(ClaimMember::getPlayTime))
                     .collect(Collectors.toList());
         }
-        if (sortType == SortType.MEMBER_SINCE) {
+        if (this.sortType == SortType.MEMBER_SINCE) {
             toDisplay = toDisplay.stream().sorted(Comparator.comparingLong(ClaimMember::getPlayTime))
                     .collect(Collectors.toList());
         }
 
         Collections.reverse(toDisplay);
         this.pages = (int) Math.max(1, Math.ceil(toDisplay.size() / (7 * 4)));
-        this.page = Math.max(page, pages);
+        this.page = Math.max(this.page, this.pages);
 
-        int currentMember = 21 * (page - 1);
-        for (int row = 1; row < rows - 1; row++) {
+        int currentMember = 21 * (this.page - 1);
+        for (int row = 1; row < this.rows - 1; row++) {
             for (int col = 1; col < 8; col++) {
                 if (toDisplay.size() - 1 < currentMember) {
                     this.clearActions(row, col);
@@ -135,9 +139,9 @@ public class MembersGui extends CustomizableGui {
 
                 this.setItem(row, col, GuiUtils.createButtonItem(ItemUtils.getPlayerSkull(skullPlayer),
                         ChatColor.AQUA + skullPlayer.getName(),
-                        plugin.getLocale().getMessage("interface.members.skulllore")
+                        this.plugin.getLocale().getMessage("interface.members.skulllore")
                                 .processPlaceholder("role",
-                                        plugin.getLocale().getMessage(toDisplay.get(currentMember).getRole().getLocalePath()).getMessage())
+                                        this.plugin.getLocale().getMessage(toDisplay.get(currentMember).getRole().getLocalePath()).getMessage())
                                 .processPlaceholder("playtime", TimeUtils.makeReadable(claimMember.getPlayTime()))
                                 .processPlaceholder("membersince",
                                         new SimpleDateFormat("dd/MM/yyyy").format(new Date(claimMember.getMemberSince())))
@@ -149,49 +153,48 @@ public class MembersGui extends CustomizableGui {
     }
 
     void toggleFilterType() {
-        switch (displayedRole) {
+        switch (this.displayedRole) {
             case OWNER:
-                displayedRole = ClaimRole.VISITOR;
+                this.displayedRole = ClaimRole.VISITOR;
                 break;
             case MEMBER:
-                displayedRole = ClaimRole.OWNER;
+                this.displayedRole = ClaimRole.OWNER;
                 break;
             case VISITOR:
-                displayedRole = ClaimRole.MEMBER;
+                this.displayedRole = ClaimRole.MEMBER;
                 break;
         }
         showPage();
     }
 
     void toggleSort() {
-        switch (sortType) {
+        switch (this.sortType) {
             case DEFAULT:
-                sortType = SortType.PLAYTIME;
+                this.sortType = SortType.PLAYTIME;
                 break;
             case PLAYTIME:
-                sortType = SortType.MEMBER_SINCE;
+                this.sortType = SortType.MEMBER_SINCE;
                 break;
             case MEMBER_SINCE:
-                sortType = SortType.DEFAULT;
+                this.sortType = SortType.DEFAULT;
                 break;
         }
         showPage();
     }
 
-    public static enum SortType {
+    public enum SortType {
         DEFAULT("interface.sortingmode.default"),
         PLAYTIME("interface.sortingmode.playtime"),
         MEMBER_SINCE("interface.sortingmode.membersince");
 
-        private String localePath;
+        private final String localePath;
 
         SortType(String localePath) {
             this.localePath = localePath;
         }
 
         public String getLocalePath() {
-            return localePath;
+            return this.localePath;
         }
     }
-
 }

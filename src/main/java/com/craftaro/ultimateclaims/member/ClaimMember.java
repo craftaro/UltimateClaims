@@ -9,7 +9,6 @@ import org.bukkit.OfflinePlayer;
 import java.util.UUID;
 
 public class ClaimMember {
-
     private int id;
     private final Claim claim;
     private final UUID uuid;
@@ -35,15 +34,15 @@ public class ClaimMember {
     }
 
     public Claim getClaim() {
-        return claim;
+        return this.claim;
     }
 
     public UUID getUniqueId() {
-        return uuid;
+        return this.uuid;
     }
 
     public String getName() {
-        return lastName;
+        return this.lastName;
     }
 
     public void setName(String name) {
@@ -51,7 +50,7 @@ public class ClaimMember {
     }
 
     public ClaimRole getRole() {
-        return role;
+        return this.role;
     }
 
     public void setRole(ClaimRole role) {
@@ -59,7 +58,7 @@ public class ClaimMember {
     }
 
     public boolean isPresent() {
-        return isPresent;
+        return this.isPresent;
     }
 
     public void setPresent(boolean present) {
@@ -67,7 +66,7 @@ public class ClaimMember {
     }
 
     public long getPlayTime() {
-        return playTime;
+        return this.playTime;
     }
 
     public void setPlayTime(long playTime) {
@@ -75,7 +74,7 @@ public class ClaimMember {
     }
 
     public long getMemberSince() {
-        return memberSince;
+        return this.memberSince;
     }
 
     public void setMemberSince(long memberSince) {
@@ -83,14 +82,18 @@ public class ClaimMember {
     }
 
     public OfflinePlayer getPlayer() {
-        return Bukkit.getOfflinePlayer(uuid);
+        return Bukkit.getOfflinePlayer(this.uuid);
     }
 
     public void eject(Location location) {
         OfflinePlayer player;
-        if (!isPresent || !(player = getPlayer()).isOnline()) return;
+        if (!this.isPresent || !(player = getPlayer()).isOnline()) {
+            return;
+        }
         Location spawn = UltimateClaims.getInstance().getPluginSettings().getSpawnPoint();
-        if (spawn == null && location == null) return;
+        if (spawn == null && location == null) {
+            return;
+        }
         Bukkit.getScheduler().runTask(UltimateClaims.getInstance(), () -> player.getPlayer().teleport(location == null ? spawn : location));
         this.isPresent = false;
     }

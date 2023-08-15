@@ -1,9 +1,9 @@
 package com.craftaro.ultimateclaims.commands;
 
+import com.craftaro.core.commands.AbstractCommand;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.api.events.ClaimMemberLeaveEvent;
 import com.craftaro.ultimateclaims.claim.Claim;
-import com.craftaro.core.commands.AbstractCommand;
 import com.craftaro.ultimateclaims.member.ClaimMember;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class CommandLeave extends AbstractCommand {
-
     private final UltimateClaims plugin;
 
     public CommandLeave(UltimateClaims plugin) {
@@ -26,22 +25,23 @@ public class CommandLeave extends AbstractCommand {
     protected ReturnType runCommand(CommandSender sender, String... args) {
         Player player = (Player) sender;
 
-        if (args.length < 1)
+        if (args.length < 1) {
             return ReturnType.SYNTAX_ERROR;
+        }
 
         String claimStr = String.join(" ", args);
 
-        Optional<Claim> oClaim = plugin.getClaimManager().getRegisteredClaims().stream()
-                .filter(c -> c.getName().toLowerCase().equals(claimStr.toLowerCase())
+        Optional<Claim> oClaim = this.plugin.getClaimManager().getRegisteredClaims().stream()
+                .filter(c -> c.getName().equalsIgnoreCase(claimStr)
                         && c.getMember(player) != null).findFirst();
 
         if (!oClaim.isPresent()) {
-            plugin.getLocale().getMessage("command.general.notapartclaim").sendPrefixedMessage(sender);
+            this.plugin.getLocale().getMessage("command.general.notapartclaim").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         if (player.getUniqueId().equals((oClaim.get()).getOwner().getUniqueId())) {
-            plugin.getLocale().getMessage("command.leave.owner").sendPrefixedMessage(sender);
+            this.plugin.getLocale().getMessage("command.leave.owner").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
@@ -55,28 +55,33 @@ public class CommandLeave extends AbstractCommand {
 
         ClaimMember memberToRemove = claim.getMember(player);
 
-        plugin.getDataHelper().deleteMember(memberToRemove);
+        this.plugin.getDataHelper().deleteMember(memberToRemove);
 
         claim.removeMember(player);
 
-        plugin.getLocale().getMessage("command.leave.youleft")
+        this.plugin.getLocale().getMessage("command.leave.youleft")
                 .processPlaceholder("claim", claim.getName())
                 .sendPrefixedMessage(player);
 
-        for (ClaimMember member : claim.getOwnerAndMembers())
+        for (ClaimMember member : claim.getOwnerAndMembers()) {
             this.notify(member);
+        }
 
         return ReturnType.SUCCESS;
     }
 
     @Override
     protected List<String> onTab(CommandSender sender, String... args) {
-        if (!(sender instanceof Player)) return null;
+        if (!(sender instanceof Player)) {
+            return null;
+        }
         Player player = ((Player) sender);
         if (args.length == 1) {
             List<String> claims = new ArrayList<>();
-            for (Claim claim : plugin.getClaimManager().getRegisteredClaims()) {
-                if (!claim.isOwnerOrMember(player)) continue;
+            for (Claim claim : this.plugin.getClaimManager().getRegisteredClaims()) {
+                if (!claim.isOwnerOrMember(player)) {
+                    continue;
+                }
                 claims.add(claim.getName());
             }
             return claims;
@@ -86,11 +91,12 @@ public class CommandLeave extends AbstractCommand {
 
     private void notify(ClaimMember member) {
         Player player = Bukkit.getPlayer(member.getUniqueId());
-        if (player != null)
-            plugin.getLocale().getMessage("command.leave.left")
+        if (player != null) {
+            this.plugin.getLocale().getMessage("command.leave.left")
                     .processPlaceholder("player", player.getName())
                     .processPlaceholder("claim", member.getClaim().getName())
                     .sendPrefixedMessage(player);
+        }
     }
 
     @Override

@@ -1,15 +1,14 @@
 package com.craftaro.ultimateclaims.commands;
 
-import com.craftaro.ultimateclaims.gui.RecipeDisplayGui;
-import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.core.commands.AbstractCommand;
+import com.craftaro.ultimateclaims.UltimateClaims;
+import com.craftaro.ultimateclaims.gui.RecipeDisplayGui;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public class CommandRecipe extends AbstractCommand {
-
     private final UltimateClaims plugin;
 
     public CommandRecipe(UltimateClaims plugin) {
@@ -19,7 +18,7 @@ public class CommandRecipe extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        plugin.getGuiManager().showGUI((Player) sender, new RecipeDisplayGui());
+        this.plugin.getGuiManager().showGUI((Player) sender, new RecipeDisplayGui());
         return ReturnType.SUCCESS;
     }
 

@@ -4,11 +4,14 @@ import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ClaimManager {
-
     // Owner, Claim
     private final Map<UUID, Claim> registeredClaims = new HashMap<>();
 
@@ -33,7 +36,9 @@ public class ClaimManager {
     }
 
     public boolean hasClaim(Chunk chunk) {
-        return this.registeredClaims.values().stream()
+        return this.registeredClaims
+                .values()
+                .stream()
                 .anyMatch(claim -> claim.containsChunk(chunk));
     }
 
@@ -56,7 +61,7 @@ public class ClaimManager {
     }
 
     public List<Claim> getClaims(OfflinePlayer player) {
-        return registeredClaims.values().stream().filter(c -> c.isOwnerOrMember(player)).collect(Collectors.toList());
+        return this.registeredClaims.values().stream().filter(c -> c.isOwnerOrMember(player)).collect(Collectors.toList());
     }
 
     public void removeClaim(Claim claim) {
@@ -64,6 +69,6 @@ public class ClaimManager {
     }
 
     public Collection<Claim> getRegisteredClaims() {
-        return registeredClaims.values();
+        return this.registeredClaims.values();
     }
 }

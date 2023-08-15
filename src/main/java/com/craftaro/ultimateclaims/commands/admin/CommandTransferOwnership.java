@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class CommandTransferOwnership extends AbstractCommand {
-
     private final UltimateClaims plugin;
 
     public CommandTransferOwnership(UltimateClaims plugin) {
@@ -22,34 +21,36 @@ public class CommandTransferOwnership extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        Player player = (Player) sender;
-
-        if (args.length < 1)
+        if (args.length < 1) {
             return ReturnType.SYNTAX_ERROR;
+        }
+
+        Player player = (Player) sender;
 
         OfflinePlayer newOwner = Bukkit.getPlayer(args[0]);
 
         if (newOwner == null || !newOwner.isOnline()) {
-            plugin.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
+            this.plugin.getLocale().getMessage("command.general.noplayer").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         Chunk chunk = player.getLocation().getChunk();
-        Claim claim = plugin.getClaimManager().getClaim(chunk);
+        Claim claim = this.plugin.getClaimManager().getClaim(chunk);
 
         if (claim == null) {
-            plugin.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
+            this.plugin.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
-        if (claim.transferOwnership(newOwner))
-            plugin.getLocale().getMessage("command.transferownership.success")
+        if (claim.transferOwnership(newOwner)) {
+            this.plugin.getLocale().getMessage("command.transferownership.success")
                     .processPlaceholder("claim", claim.getName())
                     .sendPrefixedMessage(player);
-        else
-            plugin.getLocale().getMessage("command.transferownership.failed")
+        } else {
+            this.plugin.getLocale().getMessage("command.transferownership.failed")
                     .processPlaceholder("claim", claim.getName())
                     .sendPrefixedMessage(player);
+        }
 
         return ReturnType.SUCCESS;
     }

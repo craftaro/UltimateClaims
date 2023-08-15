@@ -18,7 +18,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class CommandUnClaim extends AbstractCommand {
-
     private final UltimateClaims plugin;
 
     public CommandUnClaim(UltimateClaims plugin) {
@@ -31,22 +30,22 @@ public class CommandUnClaim extends AbstractCommand {
         Player player = (Player) sender;
 
         Chunk chunk = player.getLocation().getChunk();
-        Claim claim = plugin.getClaimManager().getClaim(chunk);
+        Claim claim = this.plugin.getClaimManager().getClaim(chunk);
 
         if (claim == null) {
-            plugin.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
+            this.plugin.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         if (!claim.getOwner().getUniqueId().equals(player.getUniqueId())) {
-            plugin.getLocale().getMessage("command.general.notyourclaim").sendPrefixedMessage(sender);
+            this.plugin.getLocale().getMessage("command.general.notyourclaim").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         if (claim.getPowerCell().hasLocation()) {
             PowerCell powerCell = claim.getPowerCell();
             if (powerCell.getLocation().getChunk() == chunk) {
-                plugin.getLocale().getMessage("command.unclaim.powercell").sendPrefixedMessage(sender);
+                this.plugin.getLocale().getMessage("command.unclaim.powercell").sendPrefixedMessage(sender);
                 return ReturnType.FAILURE;
             }
         }
@@ -63,11 +62,12 @@ public class CommandUnClaim extends AbstractCommand {
             if (p.getLocation().getChunk().equals(chunk)) {
                 ClaimMember member = claim.getMember(p);
                 if (member != null) {
-                    if (member.getRole() == ClaimRole.VISITOR)
+                    if (member.getRole() == ClaimRole.VISITOR) {
                         claim.removeMember(member);
-                    else
+                    } else {
                         member.setPresent(false);
-                    plugin.getTrackerTask().toggleFlyOff(p);
+                    }
+                    this.plugin.getTrackerTask().toggleFlyOff(p);
                 }
                 if (Settings.CLAIMS_BOSSBAR.getBoolean()) {
                     claim.getVisitorBossBar().removePlayer(p);
@@ -79,19 +79,20 @@ public class CommandUnClaim extends AbstractCommand {
         // Remove chunk from claim
         ClaimedChunk removedChunk = claim.removeClaimedChunk(chunk, player);
 
-        if (plugin.getDynmapManager() != null)
-            plugin.getDynmapManager().refresh();
+        if (this.plugin.getDynmapManager() != null) {
+            this.plugin.getDynmapManager().refresh();
+        }
 
         if (claim.getClaimSize() == 0) {
-            plugin.getLocale().getMessage("general.claim.dissolve")
+            this.plugin.getLocale().getMessage("general.claim.dissolve")
                     .processPlaceholder("claim", claim.getName())
                     .sendPrefixedMessage(player);
 
             claim.destroy(ClaimDeleteReason.PLAYER);
         } else {
-            plugin.getDataHelper().deleteClaimedChunk(removedChunk);
+            this.plugin.getDataHelper().deleteClaimedChunk(removedChunk);
 
-            plugin.getLocale().getMessage("command.unclaim.success").sendPrefixedMessage(sender);
+            this.plugin.getLocale().getMessage("command.unclaim.success").sendPrefixedMessage(sender);
         }
 
         return ReturnType.SUCCESS;

@@ -1,12 +1,12 @@
 package com.craftaro.ultimateclaims.gui;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
-import com.craftaro.ultimateclaims.settings.Settings;
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.gui.GuiUtils;
-import com.craftaro.core.utils.ItemUtils;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.SkullUtils;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
+import com.craftaro.ultimateclaims.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.UUID;
 
 public class BansGui extends CustomizableGui {
-
     private final UltimateClaims plugin;
     private final Claim claim;
 
@@ -41,11 +40,11 @@ public class BansGui extends CustomizableGui {
 
         // exit buttons
         this.setButton("back", 0, GuiUtils.createButtonItem(XMaterial.OAK_FENCE_GATE,
-                plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                plugin.getLocale().getMessage("general.interface.exit").getMessage()),
-                (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
-        this.setButton("back",8, this.getItem(0),
-                (event) -> guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
+                        plugin.getLocale().getMessage("general.interface.back").getMessage(),
+                        plugin.getLocale().getMessage("general.interface.exit").getMessage()),
+                (event) -> this.guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
+        this.setButton("back", 8, this.getItem(0),
+                (event) -> this.guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
 
         // Ban information
         this.setItem("information", 4, GuiUtils.createButtonItem(XMaterial.PAINTING,
@@ -61,11 +60,11 @@ public class BansGui extends CustomizableGui {
     }
 
     private void showPage() {
-        List<UUID> toDisplay = new ArrayList<>(claim.getBannedPlayers());
+        List<UUID> toDisplay = new ArrayList<>(this.claim.getBannedPlayers());
         this.pages = (int) Math.max(1, Math.ceil(toDisplay.size() / (7 * 4)));
-        this.page = Math.max(page, pages);
-        int current = 21 * (page - 1);
-        for (int row = 1; row < rows - 1; row++) {
+        this.page = Math.max(this.page, this.pages);
+        int current = 21 * (this.page - 1);
+        for (int row = 1; row < this.rows - 1; row++) {
             for (int col = 1; col < 8; col++) {
                 if (toDisplay.size() - 1 < current) {
                     this.clearActions(row, col);
@@ -76,11 +75,11 @@ public class BansGui extends CustomizableGui {
                 OfflinePlayer skullPlayer = Bukkit.getOfflinePlayer(toDisplay.get(current));
                 final UUID playerUUID = skullPlayer.getUniqueId();
 
-                this.setButton(row, col, GuiUtils.createButtonItem(ItemUtils.getPlayerSkull(skullPlayer),
-                        ChatColor.AQUA + skullPlayer.getName(),
-                        plugin.getLocale().getMessage("interface.bans.skulllore").getMessage().split("\\|")),
+                this.setButton(row, col, GuiUtils.createButtonItem(SkullUtils.getSkull(skullPlayer.getUniqueId()),
+                                ChatColor.AQUA + skullPlayer.getName(),
+                                this.plugin.getLocale().getMessage("interface.bans.skulllore").getMessage().split("\\|")),
                         (event) -> {
-                            claim.unBanPlayer(playerUUID);
+                            this.claim.unBanPlayer(playerUUID);
                             showPage();
                         });
 

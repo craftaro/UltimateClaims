@@ -3,12 +3,13 @@ package com.craftaro.ultimateclaims.api.events;
 import com.craftaro.ultimateclaims.claim.Claim;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Called when a claim is created.
+ * Called when a claim is created
  */
 public class ClaimCreateEvent extends ClaimEvent implements Cancellable {
-    private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList HANDLER_LIST = new HandlerList();
     private boolean cancel = false;
 
     public ClaimCreateEvent(Claim claim) {
@@ -17,7 +18,7 @@ public class ClaimCreateEvent extends ClaimEvent implements Cancellable {
 
     @Override
     public boolean isCancelled() {
-        return cancel;
+        return this.cancel;
     }
 
     @Override
@@ -26,11 +27,11 @@ public class ClaimCreateEvent extends ClaimEvent implements Cancellable {
     }
 
     @Override
-    public HandlerList getHandlers() {
-        return handlers;
+    public @NotNull HandlerList getHandlers() {
+        return HANDLER_LIST;
     }
 
     public static HandlerList getHandlerList() {
-        return handlers;
+        return HANDLER_LIST;
     }
 }

@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CommandLock extends AbstractCommand {
-
     private final UltimateClaims plugin;
 
     public CommandLock(UltimateClaims plugin) {
@@ -26,27 +25,28 @@ public class CommandLock extends AbstractCommand {
         Player player = (Player) sender;
 
         Chunk chunk = player.getLocation().getChunk();
-        Claim claim = plugin.getClaimManager().getClaim(chunk);
+        Claim claim = this.plugin.getClaimManager().getClaim(chunk);
 
         if (claim == null) {
-            plugin.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
+            this.plugin.getLocale().getMessage("command.general.notclaimed").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         if (!claim.isLocked()) {
-            plugin.getLocale().getMessage("command.lock.lockedother")
+            this.plugin.getLocale().getMessage("command.lock.lockedother")
                     .sendPrefixedMessage(player);
             for (ClaimMember member : claim.getMembers().stream().filter(m -> m.getRole() == ClaimRole.VISITOR)
                     .collect(Collectors.toList())) {
                 member.eject(null);
             }
-        } else
-            plugin.getLocale().getMessage("command.lock.unlockedother")
+        } else {
+            this.plugin.getLocale().getMessage("command.lock.unlockedother")
                     .sendPrefixedMessage(player);
+        }
 
         claim.setLocked(!claim.isLocked());
 
-        plugin.getDataHelper().updateClaim(claim);
+        this.plugin.getDataHelper().updateClaim(claim);
 
         return ReturnType.SUCCESS;
     }

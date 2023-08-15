@@ -1,8 +1,8 @@
 package com.craftaro.ultimateclaims.items.loaders;
 
+import com.craftaro.core.compatibility.CompatibleMaterial;
 import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.ultimateclaims.items.ItemLoader;
-import com.craftaro.core.compatibility.CompatibleMaterial;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Optional;
@@ -16,11 +16,11 @@ public class VanillaLoader implements ItemLoader {
 
     @Override
     public Function<ItemStack, Boolean> loadItem(String item) {
-        Optional<XMaterial> material = XMaterial.matchXMaterial(item);
-        if (material == null) {
+        Optional<XMaterial> material = CompatibleMaterial.getMaterial(item);
+        if (!material.isPresent()) {
             return null;
         }
-        return itemStack -> CompatibleMaterial.getMaterial(itemStack.getType()) == material;
+        return material.get()::isSimilar;
     }
 
     @Override

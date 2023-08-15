@@ -1,8 +1,8 @@
 package com.craftaro.ultimateclaims.commands;
 
+import com.craftaro.core.commands.AbstractCommand;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
-import com.craftaro.core.commands.AbstractCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class CommandHome extends AbstractCommand {
-
     private final UltimateClaims plugin;
 
     public CommandHome(UltimateClaims plugin) {
@@ -21,51 +20,54 @@ public class CommandHome extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
+        if (args.length < 1) {
+            return ReturnType.SYNTAX_ERROR;
+        }
+
         Player player = (Player) sender;
 
-        if (args.length < 1)
-            return ReturnType.SYNTAX_ERROR;
-
         StringBuilder claimBuilder = new StringBuilder();
-        for (int i = 0; i < args.length; i++) {
-            String line = args[i];
+        for (String line : args) {
             claimBuilder.append(line).append(" ");
         }
         String claimStr = claimBuilder.toString().trim();
 
         boolean bypass = sender.hasPermission("ultimateclaims.bypass.home");
-        Optional<Claim> oClaim = plugin.getClaimManager().getRegisteredClaims().stream()
+        Optional<Claim> oClaim = this.plugin.getClaimManager().getRegisteredClaims().stream()
                 .filter(c -> c.getName().equalsIgnoreCase(claimStr)
                         && (bypass || c.isOwnerOrMember(player))).findFirst();
 
         if (!oClaim.isPresent()) {
-            plugin.getLocale().getMessage("command.general.notapartclaim").sendPrefixedMessage(sender);
+            this.plugin.getLocale().getMessage("command.general.notapartclaim").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
         Claim claim = oClaim.get();
 
         if (claim.getHome() == null) {
-            plugin.getLocale().getMessage("command.home.none").sendPrefixedMessage(sender);
+            this.plugin.getLocale().getMessage("command.home.none").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         player.teleport(claim.getHome());
 
-        plugin.getLocale().getMessage("command.home.success")
-                .sendPrefixedMessage(player);
+        this.plugin.getLocale().getMessage("command.home.success").sendPrefixedMessage(player);
 
         return ReturnType.SUCCESS;
     }
 
     @Override
     protected List<String> onTab(CommandSender sender, String... args) {
-        if (!(sender instanceof Player)) return null;
+        if (!(sender instanceof Player)) {
+            return null;
+        }
         Player player = ((Player) sender);
         if (args.length == 1) {
             boolean bypass = sender.hasPermission("ultimateclaims.bypass.home");
             List<String> claims = new ArrayList<>();
-            for (Claim claim : plugin.getClaimManager().getRegisteredClaims()) {
-                if (!claim.isOwnerOrMember(player) && !bypass) continue;
+            for (Claim claim : this.plugin.getClaimManager().getRegisteredClaims()) {
+                if (!claim.isOwnerOrMember(player) && !bypass) {
+                    continue;
+                }
                 claims.add(claim.getName());
             }
             return claims;

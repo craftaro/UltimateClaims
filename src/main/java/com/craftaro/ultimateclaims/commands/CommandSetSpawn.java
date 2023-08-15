@@ -1,14 +1,13 @@
 package com.craftaro.ultimateclaims.commands;
 
-import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.core.commands.AbstractCommand;
+import com.craftaro.ultimateclaims.UltimateClaims;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public class CommandSetSpawn extends AbstractCommand {
-
     private final UltimateClaims plugin;
 
     public CommandSetSpawn(UltimateClaims plugin) {
@@ -18,10 +17,10 @@ public class CommandSetSpawn extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        Player player = (Player)sender;
-        plugin.getPluginSettings().setSpawnPoint(player.getLocation());
-        plugin.getDataHelper().createOrUpdatePluginSettings(plugin.getPluginSettings());
-        plugin.getLocale().newMessage("&aSpawn point set!").sendPrefixedMessage(player);
+        Player player = (Player) sender;
+        this.plugin.getPluginSettings().setSpawnPoint(player.getLocation());
+        this.plugin.getDataHelper().createOrUpdatePluginSettings(this.plugin.getPluginSettings());
+        this.plugin.getLocale().newMessage("&aSpawn point set!").sendPrefixedMessage(player);
         return ReturnType.SUCCESS;
     }
 

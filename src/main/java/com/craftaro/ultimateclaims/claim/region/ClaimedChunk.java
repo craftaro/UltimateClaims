@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class ClaimedChunk {
-
     private ClaimedRegion claimedRegion;
     private final String world;
     private final int x;
@@ -30,39 +29,42 @@ public class ClaimedChunk {
 
     public Chunk getChunk() {
         World world = Bukkit.getWorld(this.world);
-        if (world == null)
+        if (world == null) {
             return null;
+        }
         return world.getChunkAt(this.x, this.z);
     }
 
     public String getWorld() {
-        return world;
+        return this.world;
     }
 
     public int getX() {
-        return x;
+        return this.x;
     }
 
     public int getZ() {
-        return z;
+        return this.z;
     }
 
     public boolean isAttached(ClaimedChunk chunk) {
-        if (!world.equalsIgnoreCase(chunk.getWorld()))
+        if (!this.world.equalsIgnoreCase(chunk.getWorld())) {
             return false;
-        else if (chunk.getX() == x - 1 && z == chunk.getZ())
+        } else if (chunk.getX() == this.x - 1 && this.z == chunk.getZ()) {
             return true;
-        else if (chunk.getX() == x + 1 && z == chunk.getZ())
+        } else if (chunk.getX() == this.x + 1 && this.z == chunk.getZ()) {
             return true;
-        else if (chunk.getX() == x && z == chunk.getZ() - 1)
+        } else if (chunk.getX() == this.x && this.z == chunk.getZ() - 1) {
             return true;
-        else return chunk.getX() == x && z == chunk.getZ() + 1;
+        } else {
+            return chunk.getX() == this.x && this.z == chunk.getZ() + 1;
+        }
     }
 
     public List<ClaimedChunk> getAttachedChunks() {
         List<ClaimedChunk> chunks = new ArrayList<>();
 
-        for (ClaimedChunk chunk : claimedRegion.getChunks()) {
+        for (ClaimedChunk chunk : this.claimedRegion.getChunks()) {
             if (isAttached(chunk)) {
                 chunks.add(chunk);
             }
@@ -73,10 +75,10 @@ public class ClaimedChunk {
     public void mergeRegions(Claim claim) {
         for (ClaimedChunk chunk : claim.getClaimedChunks()) {
             ClaimedRegion region = chunk.getRegion();
-            if (isAttached(chunk) && region != claimedRegion) {
+            if (isAttached(chunk) && region != this.claimedRegion) {
                 claim.removeClaimedRegion(region);
                 UltimateClaims.getInstance().getDataHelper().deleteClaimedRegion(region);
-                claimedRegion.addChunks(region.getChunks());
+                this.claimedRegion.addChunks(region.getChunks());
                 UltimateClaims.getInstance().getDataHelper().updateClaimedChunks(region.getChunks());
             }
         }
@@ -93,7 +95,7 @@ public class ClaimedChunk {
 
 
     public ClaimedRegion getRegion() {
-        return claimedRegion;
+        return this.claimedRegion;
     }
 
     public void setRegion(ClaimedRegion claimedRegion) {
@@ -108,7 +110,9 @@ public class ClaimedChunk {
         } else if (o instanceof Chunk) {
             Chunk other = (Chunk) o;
             return this.world.equals(other.getWorld().getName()) && this.x == other.getX() && this.z == other.getZ();
-        } else return false;
+        } else {
+            return false;
+        }
     }
 
     @Override

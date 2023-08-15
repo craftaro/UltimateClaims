@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 
 public class Settings {
-
     static final Config config = UltimateClaims.getInstance().getCoreConfig();
 
     public static final ConfigSetting POWERCELL_RECIPE = new ConfigSetting(config, "Main.PowerCell Recipe",
