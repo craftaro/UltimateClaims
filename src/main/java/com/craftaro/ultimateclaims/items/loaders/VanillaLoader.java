@@ -20,7 +20,7 @@ public class VanillaLoader implements ItemLoader {
         if (!material.isPresent()) {
             return null;
         }
-        return material.get()::isSimilar;
+        return itemStack -> itemStack != null && material.get().isSimilar(itemStack);
     }
 
     @Override
