@@ -2,8 +2,8 @@ package com.craftaro.ultimateclaims.claim;
 
 import com.craftaro.core.hooks.EconomyManager;
 import com.craftaro.core.hooks.HologramManager;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.TimeUtils;
+import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.gui.PowerCellGui;
 import com.craftaro.ultimateclaims.settings.Settings;

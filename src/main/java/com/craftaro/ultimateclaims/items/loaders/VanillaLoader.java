@@ -1,7 +1,7 @@
 package com.craftaro.ultimateclaims.items.loaders;
 
 import com.craftaro.core.compatibility.CompatibleMaterial;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.ultimateclaims.items.ItemLoader;
 import org.bukkit.inventory.ItemStack;
 

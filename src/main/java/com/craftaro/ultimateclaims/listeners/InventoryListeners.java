@@ -1,7 +1,7 @@
 package com.craftaro.ultimateclaims.listeners;
 
 import com.craftaro.core.compatibility.CompatibleParticleHandler;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XSound;
+import com.craftaro.third_party.com.cryptomorin.xseries.XSound;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
 import com.craftaro.ultimateclaims.claim.ClaimManager;
