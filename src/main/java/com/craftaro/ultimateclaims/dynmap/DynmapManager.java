@@ -55,21 +55,25 @@ public class DynmapManager {
         }
 
         if (this.plugin.getClaimManager() != null) {
-            for (Claim c : this.plugin.getClaimManager().getRegisteredClaims()) {
-                if (c.getCorners() != null) {
-                    for (RegionCorners r : new HashSet<>(c.getCorners())) {
-                        for (ClaimCorners cc : r.getClaimCorners()) {
-                            if (this.markerSet.findAreaMarker(c.getId() + ":" + cc.chunkID) == null) {
-                                AreaMarker marker = this.markerSet.createAreaMarker(c.getId() + ":" + cc.chunkID, "Claim #" + c.getId(),
-                                        false, cc.getWorld().getName(), cc.x, cc.z, false);
+            for (Claim claim : this.plugin.getClaimManager().getRegisteredClaims()) {
+                if (Bukkit.getWorld(claim.getFirstClaimedChunk().getWorld()) == null) {
+                    continue;
+                }
+
+                if (claim.getCorners() != null) {
+                    for (RegionCorners r : new HashSet<>(claim.getCorners())) {
+                        for (ClaimCorners claimCorners : r.getClaimCorners()) {
+                            if (this.markerSet.findAreaMarker(claim.getId() + ":" + claimCorners.chunkID) == null) {
+                                AreaMarker marker = this.markerSet.createAreaMarker(claim.getId() + ":" + claimCorners.chunkID, "Claim #" + claim.getId(),
+                                        false, claimCorners.getWorld().getName(), claimCorners.x, claimCorners.z, false);
                                 if (this.colorsEnabled) {
-                                    int color = determineColor(c);
+                                    int color = determineColor(claim);
                                     marker.setFillStyle(marker.getFillOpacity(), color);
                                     marker.setLineStyle(marker.getLineWeight(), marker.getLineOpacity(), color);
                                 }
                             }
 
-                            refreshDescription(c);
+                            refreshDescription(claim);
                         }
                     }
                 }
@@ -158,9 +162,9 @@ public class DynmapManager {
             if (this.taskID == -1 && updateInterval > 0) {
                 this.taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, () -> {
                     if (this.plugin.getClaimManager() != null) {
-                        for (Claim c : this.plugin.getClaimManager().getRegisteredClaims()) {
-                            if (c.getCorners() != null) {
-                                refreshDescription(c);
+                        for (Claim claim : this.plugin.getClaimManager().getRegisteredClaims()) {
+                            if (Bukkit.getWorld(claim.getFirstClaimedChunk().getWorld()) != null && claim.getCorners() != null) {
+                                refreshDescription(claim);
                             }
                         }
                     }
