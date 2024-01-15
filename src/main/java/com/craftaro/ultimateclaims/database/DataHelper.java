@@ -2,6 +2,7 @@ package com.craftaro.ultimateclaims.database;
 
 import com.craftaro.core.database.DataManager;
 import com.craftaro.core.database.DatabaseConnector;
+import com.craftaro.core.database.DatabaseType;
 import com.craftaro.core.utils.ItemSerializer;
 import com.craftaro.ultimateclaims.claim.Audit;
 import com.craftaro.ultimateclaims.claim.Claim;
@@ -45,7 +46,6 @@ public class DataHelper {
         this.dataManager = dataManager;
         this.databaseConnector = dataManager.getDatabaseConnector();
         this.plugin = plugin;
-
     }
 
     private void runAsync(Runnable runnable) {
@@ -455,9 +455,13 @@ public class DataHelper {
         int purgeAfter = Settings.PURGE_AUDIT_LOG_AFTER.getInt();
         this.runAsync(() -> {
             try (Connection connection = this.databaseConnector.getConnection()) {
-                String createChunk = Settings.MYSQL_ENABLED.getBoolean() ? "DELETE FROM " + this.getTablePrefix() + "audit_log WHERE time < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL " + purgeAfter + " DAY))" :
-                        "DELETE FROM " + this.getTablePrefix() + "audit_log WHERE TO_CHAR(time / 1000, 'YYYY-MM') <= CURRENT_DATE - INTERVAL '15' DAY";
-                //strftime is not supported in H2, recreate it
+                String createChunk;
+                if (this.databaseConnector.getType() == DatabaseType.MYSQL) {
+                    createChunk = "DELETE FROM " + this.getTablePrefix() + "audit_log WHERE time < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL " + purgeAfter + " DAY))";
+                } else {
+                    createChunk = "DELETE FROM " + this.getTablePrefix() + "audit_log WHERE DATE(time / 1000) <= DATEADD('DAY', " + -purgeAfter + ", CURRENT_DATE)";
+                }
+
                 PreparedStatement statement = connection.prepareStatement(createChunk);
                 statement.executeUpdate();
             } catch (Exception ex) {
