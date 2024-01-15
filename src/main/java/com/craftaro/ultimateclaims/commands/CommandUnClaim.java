@@ -57,7 +57,6 @@ public class CommandUnClaim extends AbstractCommand {
         }
 
         // we've just unclaimed the chunk we're in, so we've "moved" out of the claim
-        // Note: Can't use streams here because `Bukkit.getOnlinePlayers()` has a different protoype in legacy
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.getLocation().getChunk().equals(chunk)) {
                 ClaimMember member = claim.getMember(p);
