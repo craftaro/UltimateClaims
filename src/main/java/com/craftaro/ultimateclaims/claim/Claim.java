@@ -220,8 +220,12 @@ public class Claim {
     }
 
     public void removeMember(UUID uuid) {
-        Optional<ClaimMember> optional = this.members.stream().filter(member -> member.getUniqueId().equals(uuid)).findFirst();
-        optional.ifPresent(this.members::remove);
+        for (ClaimMember member : this.members) {
+            if (member.getUniqueId().equals(uuid)) {
+                this.members.remove(member);
+                break;
+            }
+        }
     }
 
     public void removeMember(ClaimMember member) {
