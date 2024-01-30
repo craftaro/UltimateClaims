@@ -191,6 +191,7 @@
             <groupId>io.th0rgal</groupId>
             <artifactId>oraxen</artifactId>
             <version>1.167.0</version>
+            <classifier>dev</classifier>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
