@@ -175,14 +175,15 @@ public class Claim {
     }
 
     public ClaimMember addMember(ClaimMember member) {
+        // Removing the player if they already are a member (i.e. they are a visitor) to avoid conflict
+        this.removeMember(member.getUniqueId());
         this.members.add(member);
         return member;
     }
 
     public ClaimMember addMember(OfflinePlayer player, ClaimRole role) {
         ClaimMember newMember = new ClaimMember(this, player.getUniqueId(), player.getName(), role);
-        this.members.add(newMember);
-        return newMember;
+        return addMember(newMember);
     }
 
     public ClaimMember getMember(UUID uuid) {
