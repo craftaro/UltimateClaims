@@ -176,7 +176,7 @@
         <dependency>
             <groupId>io.github.thebusybiscuit</groupId>
             <artifactId>slimefun4</artifactId>
-            <version>RC-35</version>
+            <version>RC-36</version>
             <scope>provided</scope>
         </dependency>
 
