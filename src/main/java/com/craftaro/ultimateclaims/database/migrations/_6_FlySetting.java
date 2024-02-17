@@ -14,7 +14,6 @@ public class _6_FlySetting extends DataMigration {
 
     @Override
     public void migrate(Connection connection, String tablePrefix) throws SQLException {
-        // Create permissions table
         try (Statement statement = connection.createStatement()) {
             statement.execute("ALTER TABLE " + tablePrefix + "settings ADD COLUMN fly TINYINT NOT NULL DEFAULT 0");
         }

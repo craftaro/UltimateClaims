@@ -13,7 +13,6 @@ public class _2_NewPermissions extends DataMigration {
 
     @Override
     public void migrate(Connection connection, String tablePrefix) throws SQLException {
-        // Create permissions table
         try (Statement statement = connection.createStatement()) {
             statement.execute("ALTER TABLE " + tablePrefix + "permissions ADD COLUMN redstone TINYINT NOT NULL DEFAULT 0");
             statement.execute("ALTER TABLE " + tablePrefix + "permissions ADD COLUMN doors TINYINT NOT NULL DEFAULT 0");

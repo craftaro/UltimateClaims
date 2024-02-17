@@ -111,8 +111,7 @@ public class DataHelper {
     public void createClaim(Claim claim) {
         this.runAsync(() -> {
             try (Connection connection = this.databaseConnector.getConnection()) {
-
-                int claimId = this.dataManager.getNextId("claim"); //Method includes the table prefix. Run the method before inserting into the database.
+                int claimId = this.dataManager.getNextId("claim"); // Method includes the table prefix. Run the method before inserting into the database.
 
                 String createClaim = "INSERT INTO " + this.getTablePrefix() + "claim (name, power, eco_bal, locked) VALUES (?, ?, ?, ?)";
                 try (PreparedStatement statement = connection.prepareStatement(createClaim)) {
