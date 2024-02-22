@@ -103,8 +103,13 @@ public class ItemManager {
             String item = this.itemConfig.getString(prefix + ".item");
             int value = this.itemConfig.getInt(prefix + ".value");
 
-            this.itemLoaders.stream().filter(loader -> loader.getName().equalsIgnoreCase(type)).findAny().ifPresent(loader ->
-                    this.items.add(new PowerCellItem(loader.getItem(item), loader.loadItem(item), value)));
+            this.itemLoaders.stream().filter(loader -> loader.getName().equalsIgnoreCase(type)).findAny().ifPresent(loader -> {
+                if (loader.getItem(item) != null) {
+                    this.items.add(new PowerCellItem(loader.getItem(item), loader.loadItem(item), value));
+                } else {
+                    this.plugin.getLogger().warning("Failed to load item: " + item + " with type: " + type);
+                }
+            });
         }
 
         for (String key : this.itemConfig.getConfigurationSection("recipe").getKeys(false)) {

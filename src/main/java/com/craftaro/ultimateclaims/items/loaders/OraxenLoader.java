@@ -2,6 +2,7 @@ package com.craftaro.ultimateclaims.items.loaders;
 
 import com.craftaro.ultimateclaims.items.ItemLoader;
 import io.th0rgal.oraxen.api.OraxenItems;
+import io.th0rgal.oraxen.items.ItemBuilder;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Function;
@@ -15,10 +16,11 @@ public class OraxenLoader implements ItemLoader {
     @Override
     public Function<ItemStack, Boolean> loadItem(String item) {
         return itemStack -> {
-            ItemStack oraxenItem = OraxenItems.getItemById(item).build();
-            if (oraxenItem == null) {
+            ItemBuilder oraxenItemBuilder = OraxenItems.getItemById(item);
+            if (oraxenItemBuilder == null) {
                 return false;
             }
+            ItemStack oraxenItem = oraxenItemBuilder.build();
 
             return oraxenItem.isSimilar(itemStack);
         };
@@ -26,6 +28,7 @@ public class OraxenLoader implements ItemLoader {
 
     @Override
     public ItemStack getItem(String key) {
-        return OraxenItems.getItemById(key).build();
+        ItemBuilder oraxenItemBuilder = OraxenItems.getItemById(key);
+        return oraxenItemBuilder == null ? null : oraxenItemBuilder.build();
     }
 }
