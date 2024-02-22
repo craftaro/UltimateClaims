@@ -165,7 +165,7 @@ public class UltimateClaims extends SongodaPlugin {
         // Register Placeholders
         if (pluginManager.isPluginEnabled("PlaceholderAPI")) {
             this.placeholderManager = new PlaceholderManager(this);
-            placeholderManager.register();
+            this.placeholderManager.register();
         }
 
         // Start our databases
@@ -178,8 +178,8 @@ public class UltimateClaims extends SongodaPlugin {
         this.guiManager.closeAll();
         this.dataHelper.bulkUpdateClaims(this.claimManager.getRegisteredClaims());
         this.dataManager.shutdown();
-        if (placeholderManager != null) {
-            placeholderManager.unregister();
+        if (this.placeholderManager != null) {
+            this.placeholderManager.unregister();
         }
 
         // cleanup holograms

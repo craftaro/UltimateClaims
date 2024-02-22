@@ -14,7 +14,6 @@ public class _4_TradingPermission extends DataMigration {
 
     @Override
     public void migrate(Connection connection, String tablePrefix) throws SQLException {
-        // Create permissions table
         try (Statement statement = connection.createStatement()) {
             statement.execute("ALTER TABLE " + tablePrefix + "permissions ADD COLUMN trading TINYINT NOT NULL DEFAULT 0");
         }

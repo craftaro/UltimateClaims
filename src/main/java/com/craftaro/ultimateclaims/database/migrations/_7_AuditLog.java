@@ -14,7 +14,6 @@ public class _7_AuditLog extends DataMigration {
 
     @Override
     public void migrate(Connection connection, String tablePrefix) throws SQLException {
-        // Create audit log table
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE " + tablePrefix + "audit_log (" +
                     "claim_id TEXT NOT NULL, " +
