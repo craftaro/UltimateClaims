@@ -15,6 +15,7 @@ import com.craftaro.ultimateclaims.member.ClaimRole;
 import com.craftaro.ultimateclaims.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -123,6 +124,12 @@ public class CommandClaim extends AbstractCommand {
             }
 
             this.plugin.getDataHelper().createClaim(claim);
+
+            if (Settings.SET_HOME_AUTOMATICALLY.getBoolean() && player.hasPermission("ultimateclaims.home.auto")) {
+                Location powerCell = claim.getPowerCell().getLocation();
+                Location homeLocation = new Location(powerCell.getWorld(), powerCell.getX(), powerCell.getY() + 1, powerCell.getZ());
+                this.plugin.getDataHelper().updateClaim(claim);
+            }
 
             this.plugin.getLocale().getMessage("command.claim.info")
                     .processPlaceholder("time", TimeUtils.makeReadable(Settings.STARTING_POWER.getLong() * 60 * 1000))

@@ -41,6 +41,9 @@ public class Settings {
             "The minimum amount of power allowed before a claim",
             "auto dissolves.");
 
+    public static final ConfigSetting SET_HOME_AUTOMATICALLY = new ConfigSetting(config, "Main.Set Home Automatically", true,
+            "Should a home be set automatically when a claim is created?", "Player should have the permission 'ultimateclaims.home.auto'.");
+
     public static final ConfigSetting POWERCELL_HOLOGRAMS = new ConfigSetting(config, "Main.Powercell Holograms", true,
             "Should holograms be placed above powercells?");
 
