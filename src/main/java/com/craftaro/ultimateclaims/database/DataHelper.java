@@ -464,9 +464,10 @@ public class DataHelper {
         this.runAsync(() -> {
             try (Connection connection = this.databaseConnector.getConnection()) {
                 String createChunk;
-                if (this.databaseConnector.getType() == DatabaseType.MYSQL) {
+                if (this.databaseConnector.getType() == DatabaseType.MYSQL || this.databaseConnector.getType() == DatabaseType.MARIADB) {
                     createChunk = "DELETE FROM " + this.getTablePrefix() + "audit_log WHERE time < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL " + purgeAfter + " DAY))";
                 } else {
+                    //H2
                     createChunk = "DELETE FROM " + this.getTablePrefix() + "audit_log WHERE DATE(time / 1000) <= DATEADD('DAY', " + -purgeAfter + ", CURRENT_DATE)";
                 }
 
