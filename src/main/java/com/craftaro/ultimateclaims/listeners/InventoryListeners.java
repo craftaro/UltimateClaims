@@ -84,6 +84,21 @@ public class InventoryListeners implements Listener {
         Location location = chest.getLocation();
         claim.getPowerCell().setLocation(location.clone());
 
+        if (Settings.SET_HOME_AUTOMATICALLY.getBoolean() && player.hasPermission("ultimateclaims.home.auto")) {
+            System.err.println("Auto home");
+            Location powerCell = claim.getPowerCell().getLocation();
+            Location homeLocation = new Location(powerCell.getWorld(), powerCell.getX(), powerCell.getY() + 1, powerCell.getZ());
+
+            //Check if claim has a name set
+            if (claim.getName().isEmpty()) {
+                //Claim needs a name to be able to teleport to it
+                System.err.println("Claim needs a name to be able to teleport to it");
+                claim.setName(String.valueOf(this.plugin.getClaimManager().getClaims(player).size()));
+            }
+            claim.setHome(homeLocation);
+            this.plugin.getDataHelper().updateClaim(claim);
+        }
+
         this.plugin.getDataHelper().updateClaim(claim);
 
         if (Settings.POWERCELL_HOLOGRAMS.getBoolean()) {

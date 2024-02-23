@@ -125,12 +125,6 @@ public class CommandClaim extends AbstractCommand {
 
             this.plugin.getDataHelper().createClaim(claim);
 
-            if (Settings.SET_HOME_AUTOMATICALLY.getBoolean() && player.hasPermission("ultimateclaims.home.auto")) {
-                Location powerCell = claim.getPowerCell().getLocation();
-                Location homeLocation = new Location(powerCell.getWorld(), powerCell.getX(), powerCell.getY() + 1, powerCell.getZ());
-                this.plugin.getDataHelper().updateClaim(claim);
-            }
-
             this.plugin.getLocale().getMessage("command.claim.info")
                     .processPlaceholder("time", TimeUtils.makeReadable(Settings.STARTING_POWER.getLong() * 60 * 1000))
                     .sendPrefixedMessage(sender);
