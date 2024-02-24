@@ -44,7 +44,7 @@ public class CommandUnClaim extends AbstractCommand {
 
         if (claim.getPowerCell().hasLocation()) {
             PowerCell powerCell = claim.getPowerCell();
-            if (powerCell.getLocation().getChunk() == chunk) {
+            if (powerCell.getLocation().getChunk().equals(chunk)) {
                 this.plugin.getLocale().getMessage("command.unclaim.powercell").sendPrefixedMessage(sender);
                 return ReturnType.FAILURE;
             }
