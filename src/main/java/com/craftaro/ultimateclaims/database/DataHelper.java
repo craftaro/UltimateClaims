@@ -141,12 +141,13 @@ public class DataHelper {
             try (Connection connection = this.databaseConnector.getConnection()) {
                 int claimId = getNextClaimId();
 
-                String createClaim = "INSERT INTO " + this.getTablePrefix() + "claim (name, power, eco_bal, locked) VALUES (?, ?, ?, ?)";
+                String createClaim = "INSERT INTO " + this.getTablePrefix() + "claim (id, name, power, eco_bal, locked) VALUES (?, ?, ?, ?, ?)";
                 try (PreparedStatement statement = connection.prepareStatement(createClaim)) {
-                    statement.setString(1, claim.getName());
-                    statement.setInt(2, claim.getPowerCell().getCurrentPower());
-                    statement.setDouble(3, claim.getPowerCell().getEconomyBalance());
-                    statement.setInt(4, claim.isLocked() ? 1 : 0);
+                    statement.setInt(1, claimId);
+                    statement.setString(2, claim.getName());
+                    statement.setInt(3, claim.getPowerCell().getCurrentPower());
+                    statement.setDouble(4, claim.getPowerCell().getEconomyBalance());
+                    statement.setInt(5, claim.isLocked() ? 1 : 0);
                     statement.executeUpdate();
                 }
 
