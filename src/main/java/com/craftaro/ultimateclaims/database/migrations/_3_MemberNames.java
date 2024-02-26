@@ -14,7 +14,6 @@ public class _3_MemberNames extends DataMigration {
 
     @Override
     public void migrate(Connection connection, String tablePrefix) throws SQLException {
-        // Add player name to database
         try (Statement statement = connection.createStatement()) {
             statement.execute("ALTER TABLE " + tablePrefix + "member ADD COLUMN player_name VARCHAR(16) DEFAULT NULL");
         }

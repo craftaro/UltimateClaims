@@ -15,6 +15,7 @@ import com.craftaro.ultimateclaims.member.ClaimRole;
 import com.craftaro.ultimateclaims.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

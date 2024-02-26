@@ -41,6 +41,10 @@ public class TrackerTask extends BukkitRunnable {
             TrackedPlayer trackedPlayer = this.trackedPlayers.computeIfAbsent(player.getUniqueId(), t -> new TrackedPlayer(player.getUniqueId()));
             Claim claim = plugin.getClaimManager().getClaim(player.getLocation().getChunk());
             if (claim == null) {
+                //Disable fly if player is not in a claim
+                if (player.getGameMode() == GameMode.SURVIVAL && !player.hasPermission("essential.fly")) { //Essentials compatibility
+                    toggleFlyOff(player);
+                }
                 continue;
             }
 

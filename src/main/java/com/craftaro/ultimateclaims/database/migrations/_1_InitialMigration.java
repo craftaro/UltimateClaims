@@ -1,7 +1,6 @@
 package com.craftaro.ultimateclaims.database.migrations;
 
 import com.craftaro.core.database.DataMigration;
-import com.craftaro.core.database.DatabaseConnector;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,7 +15,6 @@ public class _1_InitialMigration extends DataMigration {
     public void migrate(Connection connection, String tablePrefix) throws SQLException {
         String autoIncrement = " AUTO_INCREMENT";
 
-        // Create plugin settings table
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE " + tablePrefix + "plugin_settings (" +
                     "spawn_world TEXT, " +
@@ -28,7 +26,6 @@ public class _1_InitialMigration extends DataMigration {
                     ")");
         }
 
-        // Create claim table
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE " + tablePrefix + "claim (" +
                     "id INTEGER PRIMARY KEY" + autoIncrement + ", " +
@@ -50,7 +47,6 @@ public class _1_InitialMigration extends DataMigration {
                     ")");
         }
 
-        // Create member table
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE " + tablePrefix + "member (" +
                     "id INTEGER PRIMARY KEY" + autoIncrement + ", " +
@@ -62,7 +58,6 @@ public class _1_InitialMigration extends DataMigration {
                     ")");
         }
 
-        // Create ban table
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE " + tablePrefix + "ban (" +
                     "id INTEGER PRIMARY KEY" + autoIncrement + ", " +
@@ -71,7 +66,6 @@ public class _1_InitialMigration extends DataMigration {
                     ")");
         }
 
-        // Create chunk table
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE " + tablePrefix + "chunk (" +
                     "id INTEGER PRIMARY KEY" + autoIncrement + ", " +
@@ -82,7 +76,6 @@ public class _1_InitialMigration extends DataMigration {
                     ")");
         }
 
-        // Create settings table
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE " + tablePrefix + "settings (" +
                     "id INTEGER PRIMARY KEY" + autoIncrement + ", " +
@@ -95,7 +88,6 @@ public class _1_InitialMigration extends DataMigration {
                     ")");
         }
 
-        // Create permissions table
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE " + tablePrefix + "permissions (" +
                     "id INTEGER PRIMARY KEY" + autoIncrement + ", " +

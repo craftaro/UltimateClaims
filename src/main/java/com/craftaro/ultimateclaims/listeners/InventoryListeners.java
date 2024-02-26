@@ -84,6 +84,18 @@ public class InventoryListeners implements Listener {
         Location location = chest.getLocation();
         claim.getPowerCell().setLocation(location.clone());
 
+        if (Settings.SET_HOME_AUTOMATICALLY.getBoolean() && player.hasPermission("ultimateclaims.home.auto")) {
+            Location powerCellLocation = claim.getPowerCell().getLocation();
+            if (powerCellLocation != null) {
+                Location homeLocation = powerCellLocation.add(0, 1, 0);
+                claim.setHome(homeLocation);
+
+                if (claim.getName() == null || claim.getName().isEmpty()) {
+                    claim.setName(claim.getDefaultName());
+                }
+            }
+        }
+
         this.plugin.getDataHelper().updateClaim(claim);
 
         if (Settings.POWERCELL_HOLOGRAMS.getBoolean()) {

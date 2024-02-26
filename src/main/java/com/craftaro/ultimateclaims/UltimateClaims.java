@@ -77,6 +77,7 @@ public class UltimateClaims extends SongodaPlugin {
     private AuditManager auditManager;
     private InviteTask inviteTask;
     private TrackerTask trackerTask;
+    private PlaceholderManager placeholderManager;
 
     /**
      * @deprecated Use {@link org.bukkit.plugin.java.JavaPlugin#getPlugin(Class)} instead.
@@ -163,7 +164,8 @@ public class UltimateClaims extends SongodaPlugin {
 
         // Register Placeholders
         if (pluginManager.isPluginEnabled("PlaceholderAPI")) {
-            new PlaceholderManager(this).register();
+            this.placeholderManager = new PlaceholderManager(this);
+            this.placeholderManager.register();
         }
 
         // Start our databases
@@ -176,6 +178,9 @@ public class UltimateClaims extends SongodaPlugin {
         this.guiManager.closeAll();
         this.dataHelper.bulkUpdateClaims(this.claimManager.getRegisteredClaims());
         this.dataManager.shutdown();
+        if (this.placeholderManager != null) {
+            this.placeholderManager.unregister();
+        }
 
         // cleanup holograms
         HologramManager.removeAllHolograms();

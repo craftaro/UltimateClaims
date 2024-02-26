@@ -175,14 +175,15 @@ public class Claim {
     }
 
     public ClaimMember addMember(ClaimMember member) {
+        // Removing the player if they already are a member (i.e. they are a visitor) to avoid conflict
+        this.removeMember(member.getUniqueId());
         this.members.add(member);
         return member;
     }
 
     public ClaimMember addMember(OfflinePlayer player, ClaimRole role) {
         ClaimMember newMember = new ClaimMember(this, player.getUniqueId(), player.getName(), role);
-        this.members.add(newMember);
-        return newMember;
+        return addMember(newMember);
     }
 
     public ClaimMember getMember(UUID uuid) {
@@ -219,8 +220,12 @@ public class Claim {
     }
 
     public void removeMember(UUID uuid) {
-        Optional<ClaimMember> optional = this.members.stream().filter(member -> member.getUniqueId().equals(uuid)).findFirst();
-        optional.ifPresent(this.members::remove);
+        for (ClaimMember member : this.members) {
+            if (member.getUniqueId().equals(uuid)) {
+                this.members.remove(member);
+                break;
+            }
+        }
     }
 
     public void removeMember(ClaimMember member) {

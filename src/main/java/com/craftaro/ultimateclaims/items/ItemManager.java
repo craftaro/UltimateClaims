@@ -4,6 +4,7 @@ import com.craftaro.core.configuration.Config;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.items.loaders.ItemBridgeLoader;
 import com.craftaro.ultimateclaims.items.loaders.ItemsAdderLoader;
+import com.craftaro.ultimateclaims.items.loaders.OraxenLoader;
 import com.craftaro.ultimateclaims.items.loaders.SlimefunLoader;
 import com.craftaro.ultimateclaims.items.loaders.VanillaLoader;
 import com.craftaro.ultimateclaims.settings.Settings;
@@ -47,6 +48,10 @@ public class ItemManager {
 
         if (Bukkit.getPluginManager().getPlugin("ItemsAdder") != null) {
             this.itemLoaders.add(new ItemsAdderLoader());
+        }
+
+        if (Bukkit.getPluginManager().getPlugin("Oraxen") != null) {
+            this.itemLoaders.add(new OraxenLoader());
         }
 
         this.itemLoaders.add(new VanillaLoader());
@@ -98,8 +103,13 @@ public class ItemManager {
             String item = this.itemConfig.getString(prefix + ".item");
             int value = this.itemConfig.getInt(prefix + ".value");
 
-            this.itemLoaders.stream().filter(loader -> loader.getName().equalsIgnoreCase(type)).findAny().ifPresent(loader ->
-                    this.items.add(new PowerCellItem(loader.getItem(item), loader.loadItem(item), value)));
+            this.itemLoaders.stream().filter(loader -> loader.getName().equalsIgnoreCase(type)).findAny().ifPresent(loader -> {
+                if (loader.getItem(item) != null) {
+                    this.items.add(new PowerCellItem(loader.getItem(item), loader.loadItem(item), value));
+                } else {
+                    this.plugin.getLogger().warning("Failed to load item: " + item + " with type: " + type);
+                }
+            });
         }
 
         for (String key : this.itemConfig.getConfigurationSection("recipe").getKeys(false)) {
