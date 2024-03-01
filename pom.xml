@@ -190,7 +190,7 @@
         <dependency>
             <groupId>io.th0rgal</groupId>
             <artifactId>oraxen</artifactId>
-            <version>1.168.0</version>
+            <version>1.170.0</version>
             <classifier>dev</classifier>
             <scope>provided</scope>
             <exclusions>
