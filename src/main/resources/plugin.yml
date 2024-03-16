@@ -4,8 +4,6 @@ version: ${project.version}
 api-version: 1.13
 
 main: com.craftaro.ultimateclaims.UltimateClaims
-loadbefore:
-  - WorldGuard
 softdepend:
   - CMI
   - DecentHolograms
