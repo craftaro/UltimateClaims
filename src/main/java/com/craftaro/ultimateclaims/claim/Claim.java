@@ -27,13 +27,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Claim {
@@ -91,7 +85,11 @@ public class Claim {
     }
 
     public ClaimedChunk getFirstClaimedChunk() {
-        return this.claimedRegions.iterator().next().getFirstClaimedChunk();
+        try {
+            return this.claimedRegions.iterator().next().getFirstClaimedChunk();
+        } catch (NoSuchElementException handled) {
+            return null;
+        }
     }
 
     public String getName() {

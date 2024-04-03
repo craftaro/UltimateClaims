@@ -56,8 +56,8 @@ public class DynmapManager {
 
         if (this.plugin.getClaimManager() != null) {
             for (Claim claim : this.plugin.getClaimManager().getRegisteredClaims()) {
-                if (Bukkit.getWorld(claim.getFirstClaimedChunk().getWorld()) == null) {
-                    continue;
+                if (claim.getFirstClaimedChunk() != null && Bukkit.getWorld(claim.getFirstClaimedChunk().getWorld()) == null) {
+                   continue;
                 }
 
                 if (claim.getCorners() != null) {
