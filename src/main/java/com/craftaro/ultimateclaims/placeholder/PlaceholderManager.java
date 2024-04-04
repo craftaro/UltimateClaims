@@ -32,7 +32,7 @@ public class PlaceholderManager extends PlaceholderExpansion {
                 return claims.isEmpty() ? "0" : claims.stream().map(Claim::getPowercellTimeRemaining).collect(Collectors.joining(", "));
             case "totalchunks": {
                 if (!player.isOnline()) return "0/0";
-                return claims.isEmpty() ? "0/0" : claims.stream().mapToInt(Claim::getClaimSize).sum() + "/" + claims.stream().mapToInt(c -> c.getMaxClaimSize(player.getPlayer())).sum();
+                return claims.isEmpty() ? "0/" + claims.stream().mapToInt(c -> c.getMaxClaimSize(player.getPlayer())).sum() : claims.stream().mapToInt(Claim::getClaimSize).sum() + "/" + claims.stream().mapToInt(c -> c.getMaxClaimSize(player.getPlayer())).sum();
             }
             case "owner":
                 return claims.isEmpty() ? this.plugin.getLocale().getMessage("general.word.none").getMessage() : claims.stream().map(c -> c.getOwner().getName()).collect(Collectors.joining(", "));
