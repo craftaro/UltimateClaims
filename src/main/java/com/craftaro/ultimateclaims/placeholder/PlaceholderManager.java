@@ -1,11 +1,14 @@
 package com.craftaro.ultimateclaims.placeholder;
 
+import com.craftaro.core.utils.PlayerUtils;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
 import com.craftaro.ultimateclaims.member.ClaimMember;
+import com.craftaro.ultimateclaims.settings.Settings;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
