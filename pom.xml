@@ -135,6 +135,17 @@
             <name>Oraxen Repository</name>
             <url>https://repo.oraxen.com/releases</url>
         </repository>
+
+        <repository>
+            <id>essentials-releases</id>
+            <url>https://repo.essentialsx.net/releases/</url>
+        </repository>
+
+        <!-- Required for Essentials -->
+        <repository>
+            <id>paper-repo</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -215,6 +226,13 @@
                     <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>net.essentialsx</groupId>
+            <artifactId>EssentialsX</artifactId>
+            <version>2.19.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

@@ -5,17 +5,23 @@ import com.craftaro.ultimateclaims.claim.Claim;
 import com.craftaro.ultimateclaims.claim.ClaimSetting;
 import com.craftaro.ultimateclaims.member.ClaimMember;
 import com.craftaro.ultimateclaims.member.ClaimRole;
+import com.earth2me.essentials.Essentials;
+import com.earth2me.essentials.User;
+import net.ess3.api.IUser;
+import net.ess3.api.events.FlyStatusChangeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class TrackerTask extends BukkitRunnable {
+public class TrackerTask extends BukkitRunnable implements Listener {
     private static TrackerTask instance;
     private static UltimateClaims plugin;
 
@@ -42,7 +48,7 @@ public class TrackerTask extends BukkitRunnable {
             Claim claim = plugin.getClaimManager().getClaim(player.getLocation().getChunk());
             if (claim == null) {
                 //Disable fly if player is not in a claim
-                if (player.getGameMode() == GameMode.SURVIVAL && !player.hasPermission("essential.fly")) { //Essentials compatibility
+                if (player.getGameMode() == GameMode.SURVIVAL) {
                     toggleFlyOff(player);
                 }
                 continue;
@@ -56,13 +62,9 @@ public class TrackerTask extends BukkitRunnable {
                 }
                 member.setPresent(true);
 
-                if (claim.isBanned(player.getUniqueId())
-                        && !player.hasPermission("ultimateclaims.bypass.ban")
-
-                        || claim.isLocked()
-                        && claim.getMember(player).getRole() == ClaimRole.VISITOR
-                        && !player.hasPermission("ultimateclaims.bypass.lock")) {
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> player.setAllowFlight(true));
+                if (claim.isBanned(player.getUniqueId()) && !player.hasPermission("ultimateclaims.bypass.ban")
+                        || claim.isLocked() && claim.getMember(player).getRole() == ClaimRole.VISITOR && !player.hasPermission("ultimateclaims.bypass.lock")) {
+                    toggleFlyOff(player);
                     member.eject(trackedPlayer.getLastBeforeClaim());
                 }
             }
@@ -118,16 +120,22 @@ public class TrackerTask extends BukkitRunnable {
             return;
         }
 
+        //Disable flight if player is not using essentials fly
+        if (!trackedPlayer.isEssentialsFly()) {
+            player.setAllowFlight(false);
+            player.setFlying(false);
+            player.setFallDistance(0F);
+        }
+
+        //Disable fly tracking regardless of Essentials fly status
         trackedPlayer.setWasFlyActivated(false);
-        player.setAllowFlight(false);
-        player.setFlying(false);
-        player.setFallDistance(0F);
     }
 
     private static class TrackedPlayer {
         private final UUID uuid;
         private Location lastBeforeClaim;
         private boolean wasFlyActivated;
+        private boolean essentialsFly;
 
         public TrackedPlayer(UUID uuid) {
             this.uuid = uuid;
@@ -152,5 +160,23 @@ public class TrackerTask extends BukkitRunnable {
         public void setWasFlyActivated(boolean wasFlyActivated) {
             this.wasFlyActivated = wasFlyActivated;
         }
+
+        public boolean isEssentialsFly() {
+            return this.essentialsFly;
+        }
+
+        public void setEssentialsFly(boolean essentialsFly) {
+            this.essentialsFly = essentialsFly;
+        }
+    }
+
+    @EventHandler
+    public void onEssentialsFly(FlyStatusChangeEvent event) {
+        Player player = event.getAffected().getBase();
+        TrackedPlayer trackedPlayer = this.trackedPlayers.get(player.getUniqueId());
+        if (trackedPlayer == null) {
+            return;
+        }
+        trackedPlayer.setEssentialsFly(event.getValue());
     }
 }

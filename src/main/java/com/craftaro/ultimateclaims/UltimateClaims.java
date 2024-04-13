@@ -160,6 +160,9 @@ public class UltimateClaims extends SongodaPlugin {
             PowerCellTask.startTask(this);
         }
         this.trackerTask = TrackerTask.startTask(this);
+        if (trackerTask != null) {
+            pluginManager.registerEvents(trackerTask, this);
+        }
         VisualizeTask.startTask(this);
 
         // Register Placeholders
