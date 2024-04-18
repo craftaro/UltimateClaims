@@ -141,11 +141,6 @@
             <url>https://repo.essentialsx.net/snapshots/</url>
         </repository>
 
-        <repository>
-            <id>paper-repo</id>
-            <url>https://papermc.io/repo/repository/maven-public/</url>
-        </repository>
-
         <!-- Required for Essentials -->
         <repository>
             <id>paper-repo</id>
