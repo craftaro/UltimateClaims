@@ -369,36 +369,36 @@ public class Claim {
     }
 
     public void animateChunk(Chunk chunk, Player player, Material material) {
-        if (!Settings.ENABLE_CHUNK_ANIMATION.getBoolean()) {
-            return;
-        }
-        if (!ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)) {
-            if (!reportedClaimAnimationsNotSupportedOnCurrentServerVersion) {
-                reportedClaimAnimationsNotSupportedOnCurrentServerVersion = true;
-                UltimateClaims.getInstance().getLogger().warning("Chunk (claim) animations are not supported on this server version. Please update to 1.13 or higher.");
-            }
-            return;
-        }
-
-        int bx = chunk.getX() << 4;
-        int bz = chunk.getZ() << 4;
-
-        Location playerLocation = player.getLocation();
-        for (int xx = bx; xx < bx + 16; ++xx) {
-            for (int zz = bz; zz < bz + 16; ++zz) {
-                for (int yy = playerLocation.getBlockY() - 5; yy < playerLocation.getBlockY() + 5; ++yy) {
-                    Block block = playerLocation.getWorld().getBlockAt(xx, yy, zz);
-                    if (!block.getType().isOccluding() || block.getType().isInteractable()) {
-                        continue;
-                    }
-
-                    Location blockLocation = block.getLocation();
-                    Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () -> {
-                        player.sendBlockChange(blockLocation, material.createBlockData());
-                        Bukkit.getScheduler().runTaskLater(UltimateClaims.getInstance(), () -> player.sendBlockChange(blockLocation, block.getBlockData()), ThreadLocalRandom.current().nextInt(30) + 1);
-                        player.playSound(blockLocation, XSound.BLOCK_METAL_STEP.parseSound(), 1F, .2F);
-                    }, ThreadLocalRandom.current().nextInt(30) + 1);
+        if (Settings.ENABLE_CHUNK_ANIMATION.getBoolean()) {
+            if (!ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)) {
+                if (!reportedClaimAnimationsNotSupportedOnCurrentServerVersion) {
+                    reportedClaimAnimationsNotSupportedOnCurrentServerVersion = true;
+                    UltimateClaims.getInstance().getLogger().warning("Chunk (claim) animations are not supported on this server version. Please update to 1.13 or higher.");
                 }
+
+            } else {
+                int bx = chunk.getX() << 4;
+                int bz = chunk.getZ() << 4;
+                Location playerLocation = player.getLocation();
+
+                for(int xx = bx; xx < bx + 16; ++xx) {
+                    for(int zz = bz; zz < bz + 16; ++zz) {
+                        for(int yy = playerLocation.getBlockY() - 5; yy < playerLocation.getBlockY() + 5; ++yy) {
+                            Block block = playerLocation.getWorld().getBlockAt(xx, yy, zz);
+                            if (block.getType().isOccluding() && !block.getType().isInteractable()) {
+                                Location blockLocation = block.getLocation();
+                                UltimateClaims.getInstance().getTaskScheduler().addTask(() -> {
+                                    player.sendBlockChange(blockLocation, material.createBlockData());
+                                    UltimateClaims.getInstance().getTaskScheduler().addTask(() -> {
+                                        player.sendBlockChange(blockLocation, block.getBlockData());
+                                    }, (long)(ThreadLocalRandom.current().nextInt(10, 50) + 1) * 20L);
+                                    player.playSound(blockLocation, XSound.BLOCK_METAL_STEP.parseSound(), 1.0F, 0.2F);
+                                }, (long)(ThreadLocalRandom.current().nextInt(10, 50) + 1) * 20L);
+                            }
+                        }
+                    }
+                }
+
             }
         }
     }
