@@ -5,15 +5,10 @@ import com.craftaro.ultimateclaims.claim.Claim;
 import com.craftaro.ultimateclaims.claim.ClaimSetting;
 import com.craftaro.ultimateclaims.member.ClaimMember;
 import com.craftaro.ultimateclaims.member.ClaimRole;
-import com.earth2me.essentials.Essentials;
-import com.earth2me.essentials.User;
-import net.ess3.api.IUser;
-import net.ess3.api.events.FlyStatusChangeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -131,7 +126,11 @@ public class TrackerTask extends BukkitRunnable implements Listener {
         trackedPlayer.setWasFlyActivated(false);
     }
 
-    private static class TrackedPlayer {
+    public TrackedPlayer getTrackedPlayer(UUID uniqueId) {
+        return this.trackedPlayers.computeIfAbsent(uniqueId, TrackedPlayer::new);
+    }
+
+    public static class TrackedPlayer {
         private final UUID uuid;
         private Location lastBeforeClaim;
         private boolean wasFlyActivated;
@@ -168,15 +167,5 @@ public class TrackerTask extends BukkitRunnable implements Listener {
         public void setEssentialsFly(boolean essentialsFly) {
             this.essentialsFly = essentialsFly;
         }
-    }
-
-    @EventHandler
-    public void onEssentialsFly(FlyStatusChangeEvent event) {
-        Player player = event.getAffected().getBase();
-        TrackedPlayer trackedPlayer = this.trackedPlayers.get(player.getUniqueId());
-        if (trackedPlayer == null) {
-            return;
-        }
-        trackedPlayer.setEssentialsFly(event.getValue());
     }
 }

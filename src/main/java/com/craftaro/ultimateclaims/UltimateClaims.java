@@ -46,6 +46,7 @@ import com.craftaro.ultimateclaims.dynmap.DynmapManager;
 import com.craftaro.ultimateclaims.items.ItemManager;
 import com.craftaro.ultimateclaims.listeners.BlockListeners;
 import com.craftaro.ultimateclaims.listeners.EntityListeners;
+import com.craftaro.ultimateclaims.listeners.EssentialsListener;
 import com.craftaro.ultimateclaims.listeners.InteractListeners;
 import com.craftaro.ultimateclaims.listeners.InventoryListeners;
 import com.craftaro.ultimateclaims.listeners.LoginListeners;
@@ -163,8 +164,8 @@ public class UltimateClaims extends SongodaPlugin {
             PowerCellTask.startTask(this);
         }
         this.trackerTask = TrackerTask.startTask(this);
-        if (trackerTask != null) {
-            pluginManager.registerEvents(trackerTask, this);
+        if (Bukkit.getPluginManager().isPluginEnabled("Essentials")) {
+            pluginManager.registerEvents(new EssentialsListener(), this);
         }
         VisualizeTask.startTask(this);
 
