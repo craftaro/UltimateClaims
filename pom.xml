@@ -13,7 +13,7 @@
     <url>https://craftaro.com/marketplace/product/65</url>
 
     <properties>
-        <craftaro.coreVersion>3.0.5-SNAPSHOT</craftaro.coreVersion>
+        <craftaro.coreVersion>3.0.6-SNAPSHOT</craftaro.coreVersion>
 
         <maven.compiler.release>8</maven.compiler.release>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -137,8 +137,13 @@
         </repository>
 
         <repository>
-            <id>essentials-releases</id>
-            <url>https://repo.essentialsx.net/releases/</url>
+            <id>essentials-snapshots</id>
+            <url>https://repo.essentialsx.net/snapshots/</url>
+        </repository>
+
+        <repository>
+            <id>paper-repo</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
 
         <!-- Required for Essentials -->
@@ -231,7 +236,7 @@
         <dependency>
             <groupId>net.essentialsx</groupId>
             <artifactId>EssentialsX</artifactId>
-            <version>2.19.0</version>
+            <version>2.19.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
