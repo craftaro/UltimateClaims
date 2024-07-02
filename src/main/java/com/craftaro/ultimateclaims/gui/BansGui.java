@@ -26,7 +26,7 @@ public class BansGui extends CustomizableGui {
         this.claim = claim;
         this.plugin = plugin;
         setRows(6);
-        this.setTitle(plugin.getLocale().getMessage("interface.bans.title").getMessage());
+        this.setTitle(plugin.getLocale().getMessage("interface.bans.title").getMessage().toString());
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
@@ -41,21 +41,21 @@ public class BansGui extends CustomizableGui {
 
         // exit buttons
         this.setButton("back", 0, GuiUtils.createButtonItem(XMaterial.OAK_FENCE_GATE,
-                        plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                        plugin.getLocale().getMessage("general.interface.exit").getMessage()),
+                        plugin.getLocale().getMessage("general.interface.back").getMessage().toString(),
+                        plugin.getLocale().getMessage("general.interface.exit").getMessage().toString()),
                 (event) -> this.guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
         this.setButton("back", 8, this.getItem(0),
                 (event) -> this.guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
 
         // Ban information
         this.setItem("information", 4, GuiUtils.createButtonItem(XMaterial.PAINTING,
-                plugin.getLocale().getMessage("interface.bans.infotitle").getMessage(),
+                plugin.getLocale().getMessage("interface.bans.infotitle").getMessage().toString(),
                 plugin.getLocale().getMessage("interface.bans.infolore")
-                        .processPlaceholder("bancount", claim.getBannedPlayers().size()).getMessage().split("\\|")));
+                        .processPlaceholder("bancount", claim.getBannedPlayers().size()).getMessage().toString().split("\\|")));
 
         // enable page events
-        setNextPage(5, 6, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("general.interface.next").getMessage()));
-        setPrevPage(5, 2, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("general.interface.previous").getMessage()));
+        setNextPage(5, 6, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("general.interface.next").getMessage().toString()));
+        setPrevPage(5, 2, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("general.interface.previous").getMessage().toString()));
         setOnPage((event) -> showPage());
         showPage();
     }
@@ -78,7 +78,7 @@ public class BansGui extends CustomizableGui {
 
                 this.setButton(row, col, GuiUtils.createButtonItem(XSkull.createItem().profile(new Profileable.OfflinePlayerProfileable(skullPlayer)).apply(),
                                 ChatColor.AQUA + skullPlayer.getName(),
-                                this.plugin.getLocale().getMessage("interface.bans.skulllore").getMessage().split("\\|")),
+                                this.plugin.getLocale().getMessage("interface.bans.skulllore").getMessage().toString().split("\\|")),
                         (event) -> {
                             this.claim.unBanPlayer(playerUUID);
                             showPage();

@@ -21,7 +21,7 @@ public class SettingsGui extends CustomizableGui {
         this.claim = claim;
         this.plugin = plugin;
         this.setRows(3);
-        this.setTitle(plugin.getLocale().getMessage("interface.settings.title").getMessage());
+        this.setTitle(plugin.getLocale().getMessage("interface.settings.title").getMessage().toString());
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
@@ -36,21 +36,21 @@ public class SettingsGui extends CustomizableGui {
 
         // exit buttons
         this.setButton("back", 0, GuiUtils.createButtonItem(XMaterial.OAK_FENCE_GATE,
-                        plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                        plugin.getLocale().getMessage("general.interface.exit").getMessage()),
+                        plugin.getLocale().getMessage("general.interface.back").getMessage().toString(),
+                        plugin.getLocale().getMessage("general.interface.exit").getMessage().toString()),
                 (event) -> event.player.closeInventory());
         this.setButton("back", 8, this.getItem(0),
                 (event) -> this.guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
 
         // shortcuts for member settings
         this.setButton("visitors", this.rows - 1, 3, GuiUtils.createButtonItem(XMaterial.OAK_SIGN,
-                        plugin.getLocale().getMessage("interface.members.visitorsettingstitle").getMessage(),
-                        plugin.getLocale().getMessage("interface.members.visitorsettingslore").getMessage().split("\\|")),
+                        plugin.getLocale().getMessage("interface.members.visitorsettingstitle").getMessage().toString(),
+                        plugin.getLocale().getMessage("interface.members.visitorsettingslore").getMessage().toString().split("\\|")),
                 (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.VISITOR)));
 
         this.setButton("visitors", this.rows - 1, 5, GuiUtils.createButtonItem(XMaterial.PAINTING,
-                        plugin.getLocale().getMessage("interface.members.membersettingstitle").getMessage(),
-                        plugin.getLocale().getMessage("interface.members.membersettingslore").getMessage().split("\\|")),
+                        plugin.getLocale().getMessage("interface.members.membersettingstitle").getMessage().toString(),
+                        plugin.getLocale().getMessage("interface.members.membersettingslore").getMessage().toString().split("\\|")),
                 (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.MEMBER)));
 
         this.setItem(1, 4, AIR);
@@ -82,52 +82,52 @@ public class SettingsGui extends CustomizableGui {
     private void refreshDisplay() {
         if (this.hostilemobspawning) {
             this.updateItem("hostilemobspawning", 1, 1,
-                    this.plugin.getLocale().getMessage("interface.settings.hostilemobspawningtitle").getMessage(),
+                    this.plugin.getLocale().getMessage("interface.settings.hostilemobspawningtitle").getMessage().toString(),
                     this.plugin.getLocale().getMessage("general.interface.current")
                             .processPlaceholder("current", this.claim.getClaimSettings().getStatus(ClaimSetting.HOSTILE_MOB_SPAWNING))
-                            .getMessage().split("\\|"));
+                            .getMessage().toString().split("\\|"));
         }
         if (this.firespread) {
             this.updateItem("flintandsteal", 1, 2,
-                    this.plugin.getLocale().getMessage("interface.settings.firespreadtitle").getMessage(),
+                    this.plugin.getLocale().getMessage("interface.settings.firespreadtitle").getMessage().toString(),
                     this.plugin.getLocale().getMessage("general.interface.current")
                             .processPlaceholder("current", this.claim.getClaimSettings().getStatus(ClaimSetting.FIRE_SPREAD))
-                            .getMessage().split("\\|"));
+                            .getMessage().toString().split("\\|"));
         }
         if (this.pvp) {
             this.updateItem("pvp", 1, 3,
-                    this.plugin.getLocale().getMessage("interface.settings.pvptitle").getMessage(),
+                    this.plugin.getLocale().getMessage("interface.settings.pvptitle").getMessage().toString(),
                     this.plugin.getLocale().getMessage("general.interface.current")
                             .processPlaceholder("current", this.claim.getClaimSettings().getStatus(ClaimSetting.PVP))
-                            .getMessage().split("\\|"));
+                            .getMessage().toString().split("\\|"));
         }
         if (this.mobgriefing) {
             this.updateItem("mobgriefing", 1, 4,
-                    this.plugin.getLocale().getMessage("interface.settings.mobgriefingtitle").getMessage(),
+                    this.plugin.getLocale().getMessage("interface.settings.mobgriefingtitle").getMessage().toString(),
                     this.plugin.getLocale().getMessage("general.interface.current")
                             .processPlaceholder("current", this.claim.getClaimSettings().getStatus(ClaimSetting.MOB_GRIEFING))
-                            .getMessage().split("\\|"));
+                            .getMessage().toString().split("\\|"));
         }
         if (this.leafdecay) {
             this.updateItem("leafdecay", 1, 5,
-                    this.plugin.getLocale().getMessage("interface.settings.leafdecaytitle").getMessage(),
+                    this.plugin.getLocale().getMessage("interface.settings.leafdecaytitle").getMessage().toString(),
                     this.plugin.getLocale().getMessage("general.interface.current")
                             .processPlaceholder("current", this.claim.getClaimSettings().getStatus(ClaimSetting.LEAF_DECAY))
-                            .getMessage().split("\\|"));
+                            .getMessage().toString().split("\\|"));
         }
         if (this.tnt) {
             this.updateItem("tnt", 1, 6,
-                    this.plugin.getLocale().getMessage("interface.settings.tnttitle").getMessage(),
+                    this.plugin.getLocale().getMessage("interface.settings.tnttitle").getMessage().toString(),
                     this.plugin.getLocale().getMessage("general.interface.current")
                             .processPlaceholder("current", this.claim.getClaimSettings().getStatus(ClaimSetting.TNT))
-                            .getMessage().split("\\|"));
+                            .getMessage().toString().split("\\|"));
         }
         if (this.fly) {
             this.updateItem("tnt", 1, 7,
-                    this.plugin.getLocale().getMessage("interface.settings.flytitle").getMessage(),
+                    this.plugin.getLocale().getMessage("interface.settings.flytitle").getMessage().toString(),
                     this.plugin.getLocale().getMessage("general.interface.current")
                             .processPlaceholder("current", this.claim.getClaimSettings().getStatus(ClaimSetting.FLY))
-                            .getMessage().split("\\|"));
+                            .getMessage().toString().split("\\|"));
         }
     }
 

@@ -115,7 +115,7 @@ public class Claim {
         return UltimateClaims.getInstance().getLocale()
                 .getMessage("general.claim.defaultname")
                 .processPlaceholder("name", this.owner.getName())
-                .getMessage();
+                .getMessage().toString();
     }
 
     public BossBar getVisitorBossBar() {
