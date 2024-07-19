@@ -2,9 +2,8 @@ package com.craftaro.ultimateclaims.gui;
 
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.gui.GuiUtils;
+import com.craftaro.core.utils.SkullItemCreator;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
-import com.craftaro.third_party.com.cryptomorin.xseries.profiles.builder.XSkull;
-import com.craftaro.third_party.com.cryptomorin.xseries.profiles.objects.Profileable;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
 import com.craftaro.ultimateclaims.settings.Settings;
@@ -76,7 +75,8 @@ public class BansGui extends CustomizableGui {
                 OfflinePlayer skullPlayer = Bukkit.getOfflinePlayer(toDisplay.get(current));
                 final UUID playerUUID = skullPlayer.getUniqueId();
 
-                this.setButton(row, col, GuiUtils.createButtonItem(XSkull.createItem().profile(new Profileable.OfflinePlayerProfileable(skullPlayer)).apply(),
+
+                this.setButton(row, col, GuiUtils.createButtonItem(SkullItemCreator.byUuid(playerUUID),
                                 ChatColor.AQUA + skullPlayer.getName(),
                                 this.plugin.getLocale().getMessage("interface.bans.skulllore").getMessage().toString().split("\\|")),
                         (event) -> {
