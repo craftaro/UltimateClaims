@@ -13,7 +13,7 @@
     <url>https://songoda.com/product/ultimateclaims-14</url>
 
     <properties>
-        <craftaro.coreVersion>3.1.0-SNAPSHOT</craftaro.coreVersion>
+        <craftaro.coreVersion>3.2.0-SNAPSHOT</craftaro.coreVersion>
 
         <maven.compiler.release>8</maven.compiler.release>
         <maven.compiler.target>1.8</maven.compiler.target>
