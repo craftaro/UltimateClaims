@@ -173,7 +173,7 @@ public class EntityListeners implements Listener {
         Claim claim = claimManager.getClaim(chunk);
 
         if (!claim.playerHasPerms((Player) event.getRemover(), ClaimPerm.PLACE)) {
-            this.plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage((Player) event.getRemover());
+            this.plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getRemover());
             event.setCancelled(true);
         }
     }
@@ -279,10 +279,10 @@ public class EntityListeners implements Listener {
         Claim claim = claimManager.getClaim(chunk);
 
         if (claim != null) {
-            Entity source = event.getPlayer();
+            Player source = event.getPlayer();
             Entity entity = event.getRightClicked();
-            if (entity.getType().equals(EntityType.VILLAGER) && !claim.playerHasPerms((Player) source, ClaimPerm.TRADING)) {
-                this.plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage((Player) source);
+            if (entity.getType().equals(EntityType.VILLAGER) && !claim.playerHasPerms(source, ClaimPerm.TRADING)) {
+                this.plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(source);
                 event.setCancelled(true);
             }
         }

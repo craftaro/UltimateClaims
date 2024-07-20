@@ -1,5 +1,6 @@
 package com.craftaro.ultimateclaims.gui;
 
+import com.craftaro.core.chat.AdventureUtils;
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.hooks.EconomyManager;
@@ -79,8 +80,8 @@ public class PowerCellGui extends CustomizableGui {
         // Bans
         if (this.fullPerms) {
             this.setButton("bans", 5, 2, GuiUtils.createButtonItem(XMaterial.IRON_AXE,
-                            plugin.getLocale().getMessage("interface.powercell.banstitle").getMessage().toString(),
-                            plugin.getLocale().getMessage("interface.powercell.banslore").getMessageLines().stream().map(Object::toString).collect(Collectors.toList())),
+                            plugin.getLocale().getMessage("interface.powercell.banstitle").toText(),
+                            plugin.getLocale().getMessage("interface.powercell.banslore").getMessageLines().stream().map(AdventureUtils::toLegacy).collect(Collectors.toList())),
                     (event) -> {
                         closed();
                         event.manager.showGUI(event.player, new BansGui(plugin, claim));
@@ -90,8 +91,8 @@ public class PowerCellGui extends CustomizableGui {
         // Settings
         if (this.fullPerms) {
             this.setButton("settings", 5, 3, GuiUtils.createButtonItem(XMaterial.REDSTONE,
-                            plugin.getLocale().getMessage("interface.powercell.settingstitle").getMessage().toString(),
-                            plugin.getLocale().getMessage("interface.powercell.settingslore").getMessageLines().stream().map(Object::toString).collect(Collectors.toList())),
+                            plugin.getLocale().getMessage("interface.powercell.settingstitle").toText(),
+                            plugin.getLocale().getMessage("interface.powercell.settingslore").getMessageLines().stream().map(AdventureUtils::toLegacy).collect(Collectors.toList())),
                     (event) -> {
                         closed();
                         event.manager.showGUI(event.player, new SettingsGui(plugin, claim, event.player));
@@ -100,11 +101,11 @@ public class PowerCellGui extends CustomizableGui {
 
         // Claim info
         this.setButton("information", 5, this.fullPerms ? 5 : 4, GuiUtils.createButtonItem(XMaterial.BOOK,
-                plugin.getLocale().getMessage("interface.powercell.infotitle").getMessage().toString(),
+                plugin.getLocale().getMessage("interface.powercell.infotitle").toText(),
                 plugin.getLocale().getMessage("interface.powercell.infolore")
                         .processPlaceholder("chunks", claim.getClaimSize())
                         .processPlaceholder("members", claim.getOwnerAndMembers().stream().filter(m -> m.getRole() == ClaimRole.MEMBER || m.getRole() == ClaimRole.OWNER).count())
-                        .getMessage().toString().split("\\|")), (event) -> {
+                        .toText().split("\\|")), (event) -> {
             if (Settings.ENABLE_AUDIT_LOG.getBoolean()) {
                 closed();
                 event.manager.showGUI(event.player, new AuditGui(plugin, claim, event.player));
@@ -114,8 +115,8 @@ public class PowerCellGui extends CustomizableGui {
         // Members
         if (this.fullPerms) {
             this.setButton("members", 5, 6, GuiUtils.createButtonItem(XMaterial.PAINTING,
-                            plugin.getLocale().getMessage("interface.powercell.memberstitle").getMessage().toString(),
-                            plugin.getLocale().getMessage("interface.powercell.memberslore").getMessageLines().stream().map(Object::toString).collect(Collectors.toList())),
+                            plugin.getLocale().getMessage("interface.powercell.memberstitle").toText(),
+                            plugin.getLocale().getMessage("interface.powercell.memberslore").getMessageLines().stream().map(AdventureUtils::toLegacy).collect(Collectors.toList())),
                     (event) -> {
                         closed();
                         event.manager.showGUI(event.player, new MembersGui(plugin, claim));
@@ -191,16 +192,16 @@ public class PowerCellGui extends CustomizableGui {
             this.updateItem("economy", 0, 2,
                     this.plugin.getLocale().getMessage("interface.powercell.economytitle")
                             .processPlaceholder("time", TimeUtils.makeReadable((long) this.powercell.getEconomyPower() * 60 * 1000))
-                            .processPlaceholder("balance", this.powercell.getEconomyBalance()).getMessage().toString(),
+                            .processPlaceholder("balance", this.powercell.getEconomyBalance()).toText(),
                     this.plugin.getLocale().getMessage("interface.powercell.economylore")
-                            .processPlaceholder("balance", this.powercell.getEconomyBalance()).getMessage().toString().split("\\|"));
+                            .processPlaceholder("balance", this.powercell.getEconomyBalance()).toText().split("\\|"));
         }
 
         // Display the total time
         if (Settings.ENABLE_FUEL.getBoolean()) {
             this.updateItem("time", 0, 4,
                     this.plugin.getLocale().getMessage("interface.powercell.totaltitle")
-                            .processPlaceholder("time", TimeUtils.makeReadable((long) this.powercell.getTotalPower() * 60 * 1000)).getMessage().toString(),
+                            .processPlaceholder("time", TimeUtils.makeReadable(this.powercell.getTotalPower() * 60 * 1000)).toText(),
                     ChatColor.BLACK.toString());
         }
 
@@ -208,18 +209,18 @@ public class PowerCellGui extends CustomizableGui {
         if (Settings.ENABLE_FUEL.getBoolean()) {
             this.updateItem("item", 0, 6,
                     this.plugin.getLocale().getMessage("interface.powercell.valuablestitle")
-                            .processPlaceholder("time", TimeUtils.makeReadable((long) this.powercell.getItemPower() * 60 * 1000)).getMessage().toString(),
+                            .processPlaceholder("time", TimeUtils.makeReadable(this.powercell.getItemPower() * 60 * 1000)).toText(),
                     ChatColor.BLACK.toString());
         }
 
         // buttons at the bottom of the screen
         // Claim info
         this.updateItem("information", 5, this.fullPerms ? 5 : 4,
-                this.plugin.getLocale().getMessage("interface.powercell.infotitle").getMessage().toString(),
+                this.plugin.getLocale().getMessage("interface.powercell.infotitle").toText(),
                 this.plugin.getLocale().getMessage("interface.powercell.infolore")
                         .processPlaceholder("chunks", this.claim.getClaimSize())
                         .processPlaceholder("members", this.claim.getOwnerAndMembers().stream().filter(m -> m.getRole() == ClaimRole.MEMBER || m.getRole() == ClaimRole.OWNER).count())
-                        .getMessage().toString().split("\\|"));
+                        .toText().split("\\|"));
     }
 
     private void closed() {
@@ -245,15 +246,15 @@ public class PowerCellGui extends CustomizableGui {
         player.closeInventory();
 
         ChatPrompt.showPrompt(this.plugin, player,
-                this.plugin.getLocale().getMessage("interface.powercell.addfunds").getPrefixedMessage().toString(),
+                AdventureUtils.toLegacy(this.plugin.getLocale().getMessage("interface.powercell.addfunds").getPrefixedMessage()),
                 response -> {
-                    if (!NumberUtils.isInt(response.getMessage().toString())) {
+                    if (!NumberUtils.isInt(response.getMessage())) {
                         this.plugin.getLocale().getMessage("general.notanumber")
-                                .processPlaceholder("value", response.getMessage().toString())
+                                .processPlaceholder("value", response.getMessage())
                                 .sendPrefixedMessage(player);
                         return;
                     }
-                    double amount = Double.parseDouble(response.getMessage().toString().trim());
+                    double amount = Double.parseDouble(response.getMessage().trim());
                     if (amount > 0 && this.powercell.hasLocation()) {
                         if (EconomyManager.hasBalance(player, amount)) {
                             EconomyManager.withdrawBalance(player, amount);
@@ -274,15 +275,15 @@ public class PowerCellGui extends CustomizableGui {
         player.closeInventory();
 
         ChatPrompt.showPrompt(this.plugin, player,
-                this.plugin.getLocale().getMessage("interface.powercell.takefunds").getPrefixedMessage().toString(),
+                AdventureUtils.toLegacy(this.plugin.getLocale().getMessage("interface.powercell.takefunds").getPrefixedMessage()),
                 response -> {
-                    if (!NumberUtils.isInt(response.getMessage().toString())) {
+                    if (!NumberUtils.isInt(response.getMessage())) {
                         this.plugin.getLocale().getMessage("general.notanumber")
-                                .processPlaceholder("value", response.getMessage().toString())
+                                .processPlaceholder("value", response.getMessage())
                                 .sendPrefixedMessage(player);
                         return;
                     }
-                    double amount = Double.parseDouble(response.getMessage().toString().trim());
+                    double amount = Double.parseDouble(response.getMessage().trim());
                     if (amount > 0 && this.powercell.hasLocation()) {
                         if (this.powercell.getEconomyBalance() >= amount) {
                             EconomyManager.deposit(player, amount);

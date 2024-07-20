@@ -177,11 +177,11 @@ public class PowerCell {
         if (getTotalPower() > 1) {
             return this.plugin.getLocale().getMessage("general.claim.powercell")
                     .processPlaceholder("time", TimeUtils.makeReadable(getTotalPower() * 60 * 1000))
-                    .getMessage().toString();
+                    .toText();
         } else {
             return this.plugin.getLocale().getMessage("general.claim.powercell.low")
                     .processPlaceholder("time", TimeUtils.makeReadable((getTotalPower() + Settings.MINIMUM_POWER.getInt()) * 60 * 1000))
-                    .getMessage().toString();
+                    .toText();
         }
     }
 
