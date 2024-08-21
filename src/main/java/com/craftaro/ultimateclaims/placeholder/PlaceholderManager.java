@@ -1,11 +1,14 @@
 package com.craftaro.ultimateclaims.placeholder;
 
+import com.craftaro.core.utils.PlayerUtils;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
 import com.craftaro.ultimateclaims.member.ClaimMember;
+import com.craftaro.ultimateclaims.settings.Settings;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -32,7 +35,7 @@ public class PlaceholderManager extends PlaceholderExpansion {
                 return claims.isEmpty() ? "0" : claims.stream().map(Claim::getPowercellTimeRemaining).collect(Collectors.joining(", "));
             case "totalchunks": {
                 if (!player.isOnline()) return "0/0";
-                return claims.isEmpty() ? "0/0" : claims.stream().mapToInt(Claim::getClaimSize).sum() + "/" + claims.stream().mapToInt(c -> c.getMaxClaimSize(player.getPlayer())).sum();
+                return claims.isEmpty() ? "0/" + PlayerUtils.getNumberFromPermission((Player) player, "ultimateclaims.maxclaims", Settings.MAX_CHUNKS.getInt()) + "/" + claims.stream().mapToInt(c -> c.getMaxClaimSize(player.getPlayer())).sum();
             }
             case "owner":
                 return claims.isEmpty() ? this.plugin.getLocale().getMessage("general.word.none").toText() : claims.stream().map(c -> c.getOwner().getName()).collect(Collectors.joining(", "));
