@@ -39,7 +39,7 @@ public class PowerCellGui extends CustomizableGui {
         this.fullPerms = claim.getOwner().getUniqueId().equals(player.getUniqueId());
 
         this.setRows(6);
-        this.setTitle(TextUtils.formatText(claim.getName(), true));
+        this.setTitle(plugin.getLocale().getMessageOrDefault("interface.powercell.claimtitle", ChatColor.WHITE + "\uE57C\uE57C\uE57C\uE57C\uE57C\uE57C\uE57C\uE57C\uE57C\uE57C\uE57C\uE582").toText());
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
