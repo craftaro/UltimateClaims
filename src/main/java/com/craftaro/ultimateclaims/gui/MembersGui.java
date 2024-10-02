@@ -35,7 +35,7 @@ public class MembersGui extends CustomizableGui {
         this.claim = claim;
         this.plugin = plugin;
         this.setRows(6);
-        this.setTitle(plugin.getLocale().getMessage("interface.members.title").getMessage());
+        this.setTitle(plugin.getLocale().getMessage("interface.members.title").toText());
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
@@ -50,8 +50,8 @@ public class MembersGui extends CustomizableGui {
 
         // exit buttons
         this.setButton("back", 0, GuiUtils.createButtonItem(XMaterial.OAK_FENCE_GATE,
-                        plugin.getLocale().getMessage("general.interface.back").getMessage(),
-                        plugin.getLocale().getMessage("general.interface.exit").getMessage()),
+                        plugin.getLocale().getMessage("general.interface.back").toText(),
+                        plugin.getLocale().getMessage("general.interface.exit").toText()),
                 (event) -> this.guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
         this.setButton("back", 8, this.getItem(0),
                 (event) -> this.guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
@@ -65,18 +65,18 @@ public class MembersGui extends CustomizableGui {
 
         // Settings shortcuts
         this.setButton("visitor_settings", 5, 3, GuiUtils.createButtonItem(XMaterial.OAK_SIGN,
-                        plugin.getLocale().getMessage("interface.members.visitorsettingstitle").getMessage(),
-                        plugin.getLocale().getMessage("interface.members.visitorsettingslore").getMessage().split("\\|")),
+                        plugin.getLocale().getMessage("interface.members.visitorsettingstitle").toText(),
+                        plugin.getLocale().getMessage("interface.members.visitorsettingslore").toText().split("\\|")),
                 (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.VISITOR)));
 
         this.setButton("member_settings", 5, 5, GuiUtils.createButtonItem(XMaterial.PAINTING,
-                        plugin.getLocale().getMessage("interface.members.membersettingstitle").getMessage(),
-                        plugin.getLocale().getMessage("interface.members.membersettingslore").getMessage().split("\\|")),
+                        plugin.getLocale().getMessage("interface.members.membersettingstitle").toText(),
+                        plugin.getLocale().getMessage("interface.members.membersettingslore").toText().split("\\|")),
                 (event) -> event.manager.showGUI(event.player, new SettingsMemberGui(plugin, claim, this, ClaimRole.MEMBER)));
 
         // enable page events
-        setNextPage(5, 6, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("general.interface.next").getMessage()));
-        setPrevPage(5, 2, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("general.interface.previous").getMessage()));
+        setNextPage(5, 6, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("general.interface.next").toText()));
+        setPrevPage(5, 2, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("general.interface.previous").toText()));
         setOnPage((event) -> showPage());
         showPage();
     }
@@ -84,25 +84,25 @@ public class MembersGui extends CustomizableGui {
     private void showPage() {
         // refresh stats
         this.setItem("stats", 4, GuiUtils.updateItem(this.getItem(4),
-                this.plugin.getLocale().getMessage("interface.members.statstitle").getMessage(),
+                this.plugin.getLocale().getMessage("interface.members.statstitle").toText(),
                 this.plugin.getLocale().getMessage("interface.members.statslore")
                         .processPlaceholder("totalmembers", this.claim.getOwnerAndMembers().size())
                         .processPlaceholder("maxmembers", Settings.MAX_MEMBERS.getInt())
-                        .processPlaceholder("members", this.claim.getMembers().size()).getMessage().split("\\|")));
+                        .processPlaceholder("members", this.claim.getMembers().size()).toText().split("\\|")));
 
         // Filters
         this.setItem("type", 3, GuiUtils.updateItem(this.getItem(3),
-                this.plugin.getLocale().getMessage("interface.members.changetypetitle").getMessage(),
+                this.plugin.getLocale().getMessage("interface.members.changetypetitle").toText(),
                 this.plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current",
-                                this.displayedRole == ClaimRole.OWNER ? this.plugin.getLocale().getMessage("interface.role.all").getMessage() : this.plugin.getLocale().getMessage(this.displayedRole.getLocalePath()).getMessage())
-                        .getMessage().split("\\|")));
+                                this.displayedRole == ClaimRole.OWNER ? this.plugin.getLocale().getMessage("interface.role.all").toText() : this.plugin.getLocale().getMessage(this.displayedRole.getLocalePath()).toText())
+                        .toText().split("\\|")));
         this.setItem("sort", 5, GuiUtils.updateItem(this.getItem(5),
-                this.plugin.getLocale().getMessage("interface.members.changesorttitle").getMessage(),
+                this.plugin.getLocale().getMessage("interface.members.changesorttitle").toText(),
                 this.plugin.getLocale().getMessage("general.interface.current")
                         .processPlaceholder("current",
-                                this.plugin.getLocale().getMessage(this.sortType.getLocalePath()).getMessage())
-                        .getMessage().split("\\|")));
+                                this.plugin.getLocale().getMessage(this.sortType.getLocalePath()).toText())
+                        .toText().split("\\|")));
 
         // show members
         List<ClaimMember> toDisplay = new ArrayList<>(this.claim.getOwnerAndMembers());
@@ -141,11 +141,11 @@ public class MembersGui extends CustomizableGui {
                         ChatColor.AQUA + skullPlayer.getName(),
                         this.plugin.getLocale().getMessage("interface.members.skulllore")
                                 .processPlaceholder("role",
-                                        this.plugin.getLocale().getMessage(toDisplay.get(currentMember).getRole().getLocalePath()).getMessage())
+                                        this.plugin.getLocale().getMessage(toDisplay.get(currentMember).getRole().getLocalePath()).toText())
                                 .processPlaceholder("playtime", TimeUtils.makeReadable(claimMember.getPlayTime()))
                                 .processPlaceholder("membersince",
                                         new SimpleDateFormat("dd/MM/yyyy").format(new Date(claimMember.getMemberSince())))
-                                .getMessage().split("\\|")));
+                                .toText().split("\\|")));
 
                 currentMember++;
             }

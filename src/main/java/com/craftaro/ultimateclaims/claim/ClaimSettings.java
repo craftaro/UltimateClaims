@@ -25,6 +25,6 @@ public class ClaimSettings {
 
     public String getStatus(ClaimSetting setting) {
         Locale locale = UltimateClaims.getInstance().getLocale();
-        return isEnabled(setting) ? locale.getMessage("general.status.true").getMessage() : locale.getMessage("general.status.false").getMessage();
+        return isEnabled(setting) ? locale.getMessage("general.status.true").toText() : locale.getMessage("general.status.false").toText();
     }
 }

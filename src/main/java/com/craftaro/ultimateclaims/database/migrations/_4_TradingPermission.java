@@ -1,7 +1,6 @@
 package com.craftaro.ultimateclaims.database.migrations;
 
 import com.craftaro.core.database.DataMigration;
-import com.craftaro.core.database.DatabaseConnector;
 
 import java.sql.Connection;
 import java.sql.SQLException;

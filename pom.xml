@@ -6,14 +6,14 @@
 
     <groupId>com.craftaro</groupId>
     <artifactId>UltimateClaims</artifactId>
-    <version>2.2.1</version>
+    <version>2.4.0</version>
 
     <name>UltimateClaims</name>
     <description>Claim land with this unique grief protection tool – Fill up your power cell and keep it supplied to keep your land protected</description>
-    <url>https://craftaro.com/marketplace/product/65</url>
+    <url>https://songoda.com/product/ultimateclaims-14</url>
 
     <properties>
-        <craftaro.coreVersion>3.0.5-SNAPSHOT</craftaro.coreVersion>
+        <craftaro.coreVersion>3.5.0-SNAPSHOT</craftaro.coreVersion>
 
         <maven.compiler.release>8</maven.compiler.release>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -37,7 +37,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.2</version>
+                <version>3.6.0</version>
 
                 <executions>
                     <execution>
@@ -76,10 +76,10 @@
                                     <excludeDefaults>false</excludeDefaults>
                                     <includes>
                                         <include>**/nms/v*/**</include>
+                                        <include>**/third_party/net/kyori/**</include>
                                     </includes>
                                     <excludes>
                                         <exclude>**/third_party/org/apache/**</exclude>
-                                        <exclude>**/third_party/net/kyori/**</exclude>
                                         <exclude>**/third_party/com/zaxxer/**</exclude>
                                         <exclude>**/third_party/org/jooq/**</exclude>
                                         <exclude>**/third_party/org/mariadb/**</exclude>
@@ -135,6 +135,17 @@
             <name>Oraxen Repository</name>
             <url>https://repo.oraxen.com/releases</url>
         </repository>
+
+        <repository>
+            <id>essentials-snapshots</id>
+            <url>https://repo.essentialsx.net/snapshots/</url>
+        </repository>
+
+        <!-- Required for Essentials -->
+        <repository>
+            <id>paper-repo</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -155,7 +166,7 @@
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
-            <version>2.11.5</version>
+            <version>2.11.6</version>
             <scope>provided</scope>
         </dependency>
 
@@ -215,6 +226,13 @@
                     <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>net.essentialsx</groupId>
+            <artifactId>EssentialsX</artifactId>
+            <version>2.19.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

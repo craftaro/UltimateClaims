@@ -11,7 +11,7 @@ import java.util.Map;
 public class RecipeDisplayGui extends Gui {
     public RecipeDisplayGui() {
         this.setRows(3);
-        this.setTitle(UltimateClaims.getInstance().getLocale().getMessage("interface.recipe.title").getMessage());
+        this.setTitle(UltimateClaims.getInstance().getLocale().getMessage("interface.recipe.title").toText());
         this.setDefaultItem(GuiUtils.getBorderItem(Settings.GLASS_TYPE_1.getMaterial()));
 
         Map<Integer, PowerCellItem> recipe = UltimateClaims.getInstance().getItemManager().getRecipe();

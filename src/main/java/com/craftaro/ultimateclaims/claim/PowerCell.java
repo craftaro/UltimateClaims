@@ -177,11 +177,11 @@ public class PowerCell {
         if (getTotalPower() > 1) {
             return this.plugin.getLocale().getMessage("general.claim.powercell")
                     .processPlaceholder("time", TimeUtils.makeReadable(getTotalPower() * 60 * 1000))
-                    .getMessage();
+                    .toText();
         } else {
             return this.plugin.getLocale().getMessage("general.claim.powercell.low")
                     .processPlaceholder("time", TimeUtils.makeReadable((getTotalPower() + Settings.MINIMUM_POWER.getInt()) * 60 * 1000))
-                    .getMessage();
+                    .toText();
         }
     }
 
@@ -373,8 +373,8 @@ public class PowerCell {
             OfflinePlayer owner = this.claim.getOwner().getPlayer();
             EconomyManager.deposit(owner, this.economyBalance);
             if (owner.isOnline()) {
-                owner.getPlayer().sendMessage(this.plugin.getLocale().getMessage("event.powercell.destroyed")
-                        .processPlaceholder("balance", this.economyBalance).getPrefixedMessage());
+                this.plugin.getLocale().getMessage("event.powercell.destroyed")
+                        .processPlaceholder("balance", this.economyBalance).sendPrefixedMessage(owner.getPlayer());
             }
         }
         this.economyBalance = 0;

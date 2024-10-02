@@ -29,7 +29,7 @@ public class AuditGui extends CustomizableGui {
         this.claim = claim;
         this.player = player;
         this.setRows(6);
-        this.setTitle(plugin.getLocale().getMessage("interface.audits.title").getMessage());
+        this.setTitle(plugin.getLocale().getMessage("interface.audits.title").toText());
         this.showPage();
     }
 
@@ -46,10 +46,10 @@ public class AuditGui extends CustomizableGui {
 
         this.plugin.getAuditManager().getAudits(this.claim, audits -> {
             this.pages = (int) Math.max(1, Math.ceil(audits.size() / ((double) 28)));
-            setNextPage(5, 7, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.interface.next").getMessage()));
-            setPrevPage(5, 1, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.interface.previous").getMessage()));
+            setNextPage(5, 7, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.interface.next").toText()));
+            setPrevPage(5, 1, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.interface.previous").toText()));
             setOnPage(event -> showPage());
-            setButton("exit", 8, GuiUtils.createButtonItem(XMaterial.OAK_DOOR, this.plugin.getLocale().getMessage("general.interface.exit").getMessage()), (event) -> this.player.closeInventory());
+            setButton("exit", 8, GuiUtils.createButtonItem(XMaterial.OAK_DOOR, this.plugin.getLocale().getMessage("general.interface.exit").toText()), (event) -> this.player.closeInventory());
             List<Audit> entries = audits.stream().skip((this.page - 1) * 28).limit(28L).collect(Collectors.toList());
             Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
                 int num = 11;
@@ -62,11 +62,11 @@ public class AuditGui extends CustomizableGui {
                     ItemStack itemStack = GuiUtils.createButtonItem(XMaterial.PLAYER_HEAD, this.plugin.getLocale().getMessage("interface.audits.entryname")
                                     .processPlaceholder("who", offlinePlayer.getName())
                                     .processPlaceholder("when", TimeUtils.makeReadable(System.currentTimeMillis() - entry.getWhen()))
-                                    .getMessage(),
+                                    .toText(),
                             this.plugin.getLocale().getMessage("interface.audits.entrylore")
                                     .processPlaceholder("who", offlinePlayer.getName())
                                     .processPlaceholder("when", TimeUtils.makeReadable(System.currentTimeMillis() - entry.getWhen()))
-                                    .getMessage().split("\\|"));
+                                    .toText().split("\\|"));
 
                     SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
                     if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)) {

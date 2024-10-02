@@ -24,6 +24,6 @@ public class ClaimPermissions {
 
     public String getStatus(ClaimPerm perm) {
         Locale locale = UltimateClaims.getInstance().getLocale();
-        return hasPermission(perm) ? locale.getMessage("general.status.true").getMessage() : locale.getMessage("general.status.false").getMessage();
+        return hasPermission(perm) ? locale.getMessage("general.status.true").toText() : locale.getMessage("general.status.false").toText();
     }
 }

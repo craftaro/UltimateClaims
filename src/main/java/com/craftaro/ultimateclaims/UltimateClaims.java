@@ -46,6 +46,7 @@ import com.craftaro.ultimateclaims.dynmap.DynmapManager;
 import com.craftaro.ultimateclaims.items.ItemManager;
 import com.craftaro.ultimateclaims.listeners.BlockListeners;
 import com.craftaro.ultimateclaims.listeners.EntityListeners;
+import com.craftaro.ultimateclaims.listeners.EssentialsListener;
 import com.craftaro.ultimateclaims.listeners.InteractListeners;
 import com.craftaro.ultimateclaims.listeners.InventoryListeners;
 import com.craftaro.ultimateclaims.listeners.LoginListeners;
@@ -57,6 +58,7 @@ import com.craftaro.ultimateclaims.tasks.InviteTask;
 import com.craftaro.ultimateclaims.tasks.PowerCellTask;
 import com.craftaro.ultimateclaims.tasks.TrackerTask;
 import com.craftaro.ultimateclaims.tasks.VisualizeTask;
+import com.craftaro.ultimateclaims.tasks.VisualizeTaskScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
@@ -78,6 +80,7 @@ public class UltimateClaims extends SongodaPlugin {
     private InviteTask inviteTask;
     private TrackerTask trackerTask;
     private PlaceholderManager placeholderManager;
+    private VisualizeTaskScheduler taskScheduler;
 
     /**
      * @deprecated Use {@link org.bukkit.plugin.java.JavaPlugin#getPlugin(Class)} instead.
@@ -96,6 +99,7 @@ public class UltimateClaims extends SongodaPlugin {
     public void onPluginEnable() {
         // Register in Songoda Core
         SongodaCore.registerPlugin(this, 65, XMaterial.CHEST);
+        this.taskScheduler = new VisualizeTaskScheduler(this);
 
         // Load Economy & Hologram hooks
         EconomyManager.load();
@@ -160,6 +164,9 @@ public class UltimateClaims extends SongodaPlugin {
             PowerCellTask.startTask(this);
         }
         this.trackerTask = TrackerTask.startTask(this);
+        if (Bukkit.getPluginManager().isPluginEnabled("Essentials")) {
+            pluginManager.registerEvents(new EssentialsListener(), this);
+        }
         VisualizeTask.startTask(this);
 
         // Register Placeholders
@@ -283,5 +290,9 @@ public class UltimateClaims extends SongodaPlugin {
 
     public DataHelper getDataHelper() {
         return this.dataHelper;
+    }
+
+    public VisualizeTaskScheduler getTaskScheduler() {
+        return taskScheduler;
     }
 }
