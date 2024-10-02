@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 public class BansGui extends CustomizableGui {
     private final UltimateClaims plugin;
@@ -76,13 +77,17 @@ public class BansGui extends CustomizableGui {
                 final UUID playerUUID = skullPlayer.getUniqueId();
 
 
-                this.setButton(row, col, GuiUtils.createButtonItem(SkullItemCreator.byUuid(playerUUID),
-                                ChatColor.AQUA + skullPlayer.getName(),
-                                this.plugin.getLocale().getMessage("interface.bans.skulllore").toText().split("\\|")),
-                        (event) -> {
-                            this.claim.unBanPlayer(playerUUID);
-                            showPage();
-                        });
+                try {
+                    this.setButton(row, col, GuiUtils.createButtonItem(SkullItemCreator.byUuid(skullPlayer.getUniqueId()).get(),
+                                    ChatColor.AQUA + skullPlayer.getName(),
+                                    this.plugin.getLocale().getMessage("interface.bans.skulllore").toText().split("\\|")),
+                            (event) -> {
+                                this.claim.unBanPlayer(playerUUID);
+                                showPage();
+                            });
+                } catch (InterruptedException | ExecutionException ex) {
+                    throw new RuntimeException(ex);
+                }
 
                 current++;
             }
