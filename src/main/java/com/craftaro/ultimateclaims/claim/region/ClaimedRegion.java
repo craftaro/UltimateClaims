@@ -2,21 +2,18 @@ package com.craftaro.ultimateclaims.claim.region;
 
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
+import com.craftaro.ultimateclaims.claim.PowerCell;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class ClaimedRegion {
     private UUID uniqueId = UUID.randomUUID();
     private final Claim claim;
 
     private final Set<ClaimedChunk> claimedChunks = new HashSet<>();
+
+    // Add this:
+    private PowerCell powerCell;
 
     public ClaimedRegion(Claim claim) {
         this.claim = claim;
@@ -58,16 +55,13 @@ public class ClaimedRegion {
     public List<ClaimedRegion> removeChunk(ClaimedChunk chunk) {
         if (this.claimedChunks.remove(chunk)) {
             List<ClaimedRegion> newRegions = new LinkedList<>();
-            List<ClaimedChunk> toSearch = chunk.getAttachedChunks();
+            List<ClaimedChunk> toSearch = new ArrayList<>(this.claimedChunks);
             Set<ClaimedChunk> scanned = new HashSet<>();
-            for (ClaimedChunk claimedChunk : new LinkedList<>(toSearch)) {
-                if (scanned.contains(claimedChunk)) {
-                    continue;
-                }
+            while (!toSearch.isEmpty()) {
                 ClaimedChunk masterChunk = toSearch.get(0);
 
                 Set<ClaimedChunk> searchedChunks = new LinkedHashSet<>();
-                List<ClaimedChunk> nextChunks = new LinkedList<>(masterChunk.getAttachedChunks());
+                List<ClaimedChunk> nextChunks = new LinkedList<>();
                 nextChunks.add(masterChunk);
                 boolean done = false;
                 while (!done) {
@@ -75,7 +69,7 @@ public class ClaimedRegion {
                     nextChunks.remove(currentChunk);
                     searchedChunks.add(currentChunk);
                     for (ClaimedChunk potentialChunk : currentChunk.getAttachedChunks()) {
-                        if (!searchedChunks.contains(potentialChunk)) {
+                        if (!searchedChunks.contains(potentialChunk) && this.claimedChunks.contains(potentialChunk)) {
                             nextChunks.add(potentialChunk);
                         }
                     }
@@ -83,10 +77,7 @@ public class ClaimedRegion {
                         done = true;
                     }
                 }
-                if (searchedChunks.containsAll(toSearch) && newRegions.isEmpty()) {
-                    return new ArrayList<>();
-                }
-                toSearch.remove(0);
+                toSearch.removeAll(searchedChunks);
                 scanned.addAll(searchedChunks);
                 ClaimedRegion region = new ClaimedRegion(this.claim);
                 if (!newRegions.contains(this)) {
@@ -97,6 +88,12 @@ public class ClaimedRegion {
                 for (ClaimedChunk searchedChunk : searchedChunks) {
                     searchedChunk.setRegion(region);
                     region.addChunk(searchedChunk);
+                }
+                // Handle power cells during region splitting
+                if (this.powerCell != null && region == this) {
+                    region.setPowerCell(this.powerCell);
+                } else if (region != this) {
+                    region.setPowerCell(null);
                 }
                 if (region != this) {
                     UltimateClaims.getInstance().getDataHelper().createClaimedRegion(region);
@@ -122,5 +119,17 @@ public class ClaimedRegion {
 
     public UUID getUniqueId() {
         return this.uniqueId;
+    }
+
+    public PowerCell getPowerCell() {
+        return this.powerCell;
+    }
+
+    public void setPowerCell(PowerCell powerCell) {
+        this.powerCell = powerCell;
+    }
+
+    public boolean hasPowerCell() {
+        return this.powerCell != null && this.powerCell.hasLocation();
     }
 }

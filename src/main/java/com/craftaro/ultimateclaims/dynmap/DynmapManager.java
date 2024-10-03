@@ -4,6 +4,7 @@ import com.craftaro.core.configuration.Config;
 import com.craftaro.core.utils.TimeUtils;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
+import com.craftaro.ultimateclaims.claim.PowerCell;
 import com.craftaro.ultimateclaims.claim.region.ClaimCorners;
 import com.craftaro.ultimateclaims.claim.region.RegionCorners;
 import com.craftaro.ultimateclaims.settings.Settings;
@@ -45,10 +46,6 @@ public class DynmapManager {
             return;
         }
 
-        // Looks like the claim has been dissolved, as ClaimIds don't seem to be at least session unique, we need to
-        // recreate all the markers as there is no way of guaranteeing for claim markers to be removed correctly (most of the time it fails)
-        // Quit a weird behaviour... Maybe I'm just misunderstanding something?
-
         // Remove AreaMarkers of now unclaimed Chunks
         for (AreaMarker aMarker : this.markerSet.getAreaMarkers()) {
             aMarker.deleteMarker();
@@ -57,7 +54,7 @@ public class DynmapManager {
         if (this.plugin.getClaimManager() != null) {
             for (Claim claim : this.plugin.getClaimManager().getRegisteredClaims()) {
                 if (claim.getFirstClaimedChunk() != null && Bukkit.getWorld(claim.getFirstClaimedChunk().getWorld()) == null) {
-                   continue;
+                    continue;
                 }
 
                 if (claim.getCorners() != null) {
@@ -73,6 +70,7 @@ public class DynmapManager {
                                 }
                             }
 
+                            // Update description for each marker
                             refreshDescription(claim);
                         }
                     }
@@ -93,11 +91,17 @@ public class DynmapManager {
             return;
         }
 
+        // Sum total power from all power cells in the claim
+        long totalPower = 0;
+        for (PowerCell powerCell : claim.getPowerCells()) {
+            totalPower += powerCell.getTotalPower();
+        }
+
         String powerLeft;
-        if (claim.getPowerCell().getTotalPower() > 1) {
-            powerLeft = TimeUtils.makeReadable(claim.getPowerCell().getTotalPower() * 60 * 1000);
+        if (totalPower > 1) {
+            powerLeft = TimeUtils.makeReadable(totalPower * 60 * 1000);
         } else {
-            powerLeft = TimeUtils.makeReadable((claim.getPowerCell().getTotalPower() + Settings.MINIMUM_POWER.getInt()) * 60 * 1000);
+            powerLeft = TimeUtils.makeReadable((totalPower + Settings.MINIMUM_POWER.getInt()) * 60 * 1000);
         }
 
         String markerDesc = claim.getOwner() != null ?

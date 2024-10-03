@@ -4,10 +4,7 @@ import com.craftaro.core.database.DataManager;
 import com.craftaro.core.database.DatabaseConnector;
 import com.craftaro.core.database.DatabaseType;
 import com.craftaro.core.utils.ItemSerializer;
-import com.craftaro.ultimateclaims.claim.Audit;
-import com.craftaro.ultimateclaims.claim.Claim;
-import com.craftaro.ultimateclaims.claim.ClaimSetting;
-import com.craftaro.ultimateclaims.claim.ClaimSettings;
+import com.craftaro.ultimateclaims.claim.*;
 import com.craftaro.ultimateclaims.claim.region.ClaimedChunk;
 import com.craftaro.ultimateclaims.claim.region.ClaimedRegion;
 import com.craftaro.ultimateclaims.member.ClaimMember;
@@ -22,19 +19,8 @@ import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.sql.Types;
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.sql.*;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
@@ -82,6 +68,10 @@ public class DataHelper {
             this.nextClaimId = this.dataManager.getNextId("claim");
         }
         return ++this.nextClaimId;
+    }
+
+    private synchronized int getNextPowerCellId() {
+        return this.dataManager.getNextId("powercell");
     }
 
     private String getTablePrefix() {
@@ -141,13 +131,11 @@ public class DataHelper {
             try (Connection connection = this.databaseConnector.getConnection()) {
                 int claimId = getNextClaimId();
 
-                String createClaim = "INSERT INTO " + this.getTablePrefix() + "claim (id, name, power, eco_bal, locked) VALUES (?, ?, ?, ?, ?)";
+                String createClaim = "INSERT INTO " + this.getTablePrefix() + "claim (id, name, locked) VALUES (?, ?, ?, ?)";
                 try (PreparedStatement statement = connection.prepareStatement(createClaim)) {
                     statement.setInt(1, claimId);
                     statement.setString(2, claim.getName());
-                    statement.setInt(3, claim.getPowerCell().getCurrentPower());
-                    statement.setDouble(4, claim.getPowerCell().getEconomyBalance());
-                    statement.setInt(5, claim.isLocked() ? 1 : 0);
+                    statement.setInt(3, claim.isLocked() ? 1 : 0);
                     statement.executeUpdate();
                 }
 
@@ -224,44 +212,52 @@ public class DataHelper {
     public void updateClaim(Claim claim) {
         this.runAsync(() -> {
             try (Connection connection = this.databaseConnector.getConnection()) {
-                String updateClaim = "UPDATE " + this.getTablePrefix() + "claim SET name = ?, power = ?, eco_bal = ?, locked = ?, home_world = ?, home_x = ?, home_y = ?, home_z = ?, home_pitch = ?, home_yaw = ?, powercell_world = ?, powercell_x = ?, powercell_y = ?, powercell_z = ?, powercell_inventory = ? WHERE id = ?";
+                String updateClaim = "UPDATE " + this.getTablePrefix() + "claim SET name = ?, locked = ?, home_world = ?, home_x = ?, home_y = ?, home_z = ?, home_pitch = ?, home_yaw = ?, WHERE id = ?";
                 PreparedStatement statement = connection.prepareStatement(updateClaim);
                 statement.setString(1, claim.getName());
-                statement.setInt(2, claim.getPowerCell().getCurrentPower());
-                statement.setDouble(3, claim.getPowerCell().getEconomyBalance());
-                statement.setInt(4, claim.isLocked() ? 1 : 0);
+                statement.setInt(2, claim.isLocked() ? 1 : 0);
 
                 if (claim.getHome() != null) {
                     Location location = claim.getHome();
-                    statement.setString(5, location.getWorld().getName());
-                    statement.setDouble(6, location.getX());
-                    statement.setDouble(7, location.getY());
-                    statement.setDouble(8, location.getZ());
-                    statement.setDouble(9, location.getPitch());
-                    statement.setDouble(10, location.getYaw());
+                    statement.setString(3, location.getWorld().getName());
+                    statement.setDouble(4, location.getX());
+                    statement.setDouble(5, location.getY());
+                    statement.setDouble(6, location.getZ());
+                    statement.setDouble(7, location.getPitch());
+                    statement.setDouble(8, location.getYaw());
                 } else {
-                    statement.setString(5, null);
+                    statement.setString(3, null);
+                    statement.setNull(4, Types.DOUBLE);
+                    statement.setNull(5, Types.DOUBLE);
                     statement.setNull(6, Types.DOUBLE);
                     statement.setNull(7, Types.DOUBLE);
                     statement.setNull(8, Types.DOUBLE);
-                    statement.setNull(9, Types.DOUBLE);
-                    statement.setNull(10, Types.DOUBLE);
                 }
 
-                if (claim.getPowerCell().hasLocation()) {
-                    Location location = claim.getPowerCell().getLocation();
-                    statement.setString(11, location.getWorld().getName());
-                    statement.setInt(12, location.getBlockX());
-                    statement.setInt(13, location.getBlockY());
-                    statement.setInt(14, location.getBlockZ());
-                    statement.setString(15, ItemSerializer.toBase64(claim.getPowerCell().getItems()));
-                } else {
-                    statement.setString(11, null);
-                    statement.setNull(12, Types.INTEGER);
-                    statement.setNull(13, Types.INTEGER);
-                    statement.setNull(14, Types.INTEGER);
-                    statement.setString(15, null);
-                }
+                statement.setInt(9, claim.getId());
+                statement.executeUpdate();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    // For the record I do not like this save system at all. But I don't have the time to change how it works for now.
+    public void updatePowerCell(Claim claim, PowerCell powerCell) {
+        this.runAsync(() -> {
+            try (Connection connection = this.databaseConnector.getConnection()) {
+                String updateClaim = "UPDATE " + this.getTablePrefix() + "powercell SET claim_id = ?, power = ?, eco_bal = ?, world = ?, x = ?, y = ?, z = ?, inventory = ?, WHERE id = ?";
+                PreparedStatement statement = connection.prepareStatement(updateClaim);
+                statement.setInt(1, claim.getId());
+                statement.setInt(2, powerCell.getCurrentPower());
+                statement.setDouble(3, powerCell.getEconomyBalance());
+
+                Location location = powerCell.getLocation();
+                statement.setString(11, location.getWorld().getName());
+                statement.setInt(12, location.getBlockX());
+                statement.setInt(13, location.getBlockY());
+                statement.setInt(14, location.getBlockZ());
+                statement.setString(15, ItemSerializer.toBase64(powerCell.getItems()));
 
                 statement.setInt(16, claim.getId());
                 statement.executeUpdate();
@@ -271,51 +267,61 @@ public class DataHelper {
         });
     }
 
+    public void createPowerCell(Claim claim, PowerCell powerCell) {
+        this.runAsync(() -> {
+            int powerCellId = getNextPowerCellId();
+
+            try (Connection connection = this.databaseConnector.getConnection()) {
+                String createPowerCell = "INSERT INTO " + this.getTablePrefix() + "powercell (claim_id, power, eco_bal, world, x, y, z, inventory) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                PreparedStatement statement = connection.prepareStatement(createPowerCell);
+                statement.setInt(1, claim.getId());
+                statement.setInt(2, powerCell.getCurrentPower());
+                statement.setDouble(3, powerCell.getEconomyBalance());
+
+                Location location = powerCell.getLocation();
+                statement.setString(4, location.getWorld().getName());
+                statement.setInt(5, location.getBlockX());
+                statement.setInt(6, location.getBlockY());
+                statement.setInt(7, location.getBlockZ());
+                statement.setString(8, ItemSerializer.toBase64(powerCell.getItems()));
+
+                statement.executeUpdate();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            Bukkit.getScheduler().runTask(this.plugin, () -> powerCell.setId(powerCellId));
+        });
+    }
+
     public void bulkUpdateClaims(Collection<Claim> claims) {
         runAndWait(() -> {
             try (Connection connection = this.databaseConnector.getConnection()) {
-                String updateClaim = "UPDATE " + this.getTablePrefix() + "claim SET name = ?, power = ?, eco_bal = ?, locked = ?, home_world = ?, home_x = ?, home_y = ?, home_z = ?, home_pitch = ?, home_yaw = ?, powercell_world = ?, powercell_x = ?, powercell_y = ?, powercell_z = ?, powercell_inventory = ? WHERE id = ?";
-                try (PreparedStatement statement = connection.prepareStatement(updateClaim)) {
-                    for (Claim claim : claims) {
-                        statement.setString(1, claim.getName());
-                        statement.setInt(2, claim.getPowerCell().getCurrentPower());
-                        statement.setDouble(3, claim.getPowerCell().getEconomyBalance());
-                        statement.setInt(4, claim.isLocked() ? 1 : 0);
+                String updateClaim = "UPDATE " + this.getTablePrefix() + "claim SET name = ?, locked = ?, home_world = ?, home_x = ?, home_y = ?, home_z = ?, home_pitch = ?, home_yaw = ?, WHERE id = ?";
+                        try (PreparedStatement statement = connection.prepareStatement(updateClaim)) {
+                            for (Claim claim : claims) {
+                                statement.setString(1, claim.getName());
+                                statement.setInt(2, claim.isLocked() ? 1 : 0);
 
-                        if (claim.getHome() != null) {
-                            Location location = claim.getHome();
-                            statement.setString(5, location.getWorld().getName());
-                            statement.setDouble(6, location.getX());
-                            statement.setDouble(7, location.getY());
-                            statement.setDouble(8, location.getZ());
-                            statement.setDouble(9, location.getPitch());
-                            statement.setDouble(10, location.getYaw());
-                        } else {
-                            statement.setString(5, null);
-                            statement.setNull(6, Types.DOUBLE);
-                            statement.setNull(7, Types.DOUBLE);
-                            statement.setNull(8, Types.DOUBLE);
-                            statement.setNull(9, Types.DOUBLE);
-                            statement.setNull(10, Types.DOUBLE);
-                        }
+                                if (claim.getHome() != null) {
+                                    Location location = claim.getHome();
+                                    statement.setString(3, location.getWorld().getName());
+                                    statement.setDouble(4, location.getX());
+                                    statement.setDouble(5, location.getY());
+                                    statement.setDouble(6, location.getZ());
+                                    statement.setDouble(7, location.getPitch());
+                                    statement.setDouble(8, location.getYaw());
+                                } else {
+                                    statement.setString(3, null);
+                                    statement.setNull(4, Types.DOUBLE);
+                                    statement.setNull(5, Types.DOUBLE);
+                                    statement.setNull(6, Types.DOUBLE);
+                                    statement.setNull(7, Types.DOUBLE);
+                                    statement.setNull(8, Types.DOUBLE);
+                                }
 
-                        if (claim.getPowerCell().hasLocation()) {
-                            Location location = claim.getPowerCell().getLocation();
-                            statement.setString(11, location.getWorld().getName());
-                            statement.setInt(12, location.getBlockX());
-                            statement.setInt(13, location.getBlockY());
-                            statement.setInt(14, location.getBlockZ());
-                            statement.setString(15, ItemSerializer.toBase64(claim.getPowerCell().getItems()));
-                        } else {
-                            statement.setString(11, null);
-                            statement.setNull(12, Types.INTEGER);
-                            statement.setNull(13, Types.INTEGER);
-                            statement.setNull(14, Types.INTEGER);
-                            statement.setString(15, null);
-                        }
-
-                        statement.setInt(16, claim.getId());
-                        statement.addBatch();
+                                statement.setInt(9, claim.getId());
+                                statement.addBatch();
                     }
 
                     statement.executeBatch();
@@ -339,6 +345,28 @@ public class DataHelper {
 
                     statement.executeBatch();
                 }
+
+                String updatePowerCell = "UPDATE " + this.getTablePrefix() + "powercell SET power = ?, eco_bal = ?, world = ?, x = ?, y = ?, z = ?, inventory = ? WHERE claim_id = ?";
+                try (PreparedStatement statement = connection.prepareStatement(updatePowerCell)) {
+                    for (Claim claim : claims) {
+                        for (PowerCell powerCell : claim.getPowerCells()) {
+                        statement.setInt(1, powerCell.getCurrentPower());
+                        statement.setDouble(2, powerCell.getEconomyBalance());
+
+                        Location location = powerCell.getLocation();
+                        statement.setString(3, location.getWorld().getName());
+                        statement.setInt(4, location.getBlockX());
+                        statement.setInt(5, location.getBlockY());
+                        statement.setInt(6, location.getBlockZ());
+                        statement.setString(7, ItemSerializer.toBase64(powerCell.getItems()));
+                        statement.setInt(8, claim.getId());
+                        statement.addBatch();
+                        }
+
+                    }
+
+                    statement.executeBatch();
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -356,6 +384,7 @@ public class DataHelper {
                 String deleteSettings = "DELETE FROM " + this.getTablePrefix() + "settings WHERE claim_id = ?";
                 String deletePermissions = "DELETE FROM " + this.getTablePrefix() + "permissions WHERE claim_id = ?";
                 String deleteAudits = "DELETE FROM " + this.getTablePrefix() + "audit_log WHERE claim_id = ?";
+                String deletePowerCells = "DELETE FROM " + this.getTablePrefix() + "powercell WHERE claim_id = ?";
 
                 try (PreparedStatement statement = connection.prepareStatement(deleteClaim)) {
                     statement.setInt(1, claim.getId());
@@ -394,6 +423,25 @@ public class DataHelper {
 
                 try (PreparedStatement statement = connection.prepareStatement(deleteAudits)) {
                     statement.setInt(1, claim.getId());
+                    statement.executeUpdate();
+                }
+
+                try (PreparedStatement statement = connection.prepareStatement(deletePowerCells)) {
+                    statement.setInt(1, claim.getId());
+                    statement.executeUpdate();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    public void deletePowerCell(PowerCell powerCell) {
+        this.runAsync(() -> {
+            try (Connection connection = this.databaseConnector.getConnection()) {
+                String deletePowerCell = "DELETE FROM " + this.getTablePrefix() + "powercell WHERE id = ?";
+                try (PreparedStatement statement = connection.prepareStatement(deletePowerCell)) {
+                    statement.setInt(1, powerCell.getId());
                     statement.executeUpdate();
                 }
             } catch (Exception ex) {
@@ -679,6 +727,7 @@ public class DataHelper {
                 String selectRegions = "SELECT * FROM " + this.getTablePrefix() + "claimed_regions";
                 String selectSettings = "SELECT * FROM " + this.getTablePrefix() + "settings";
                 String selectPermissions = "SELECT * FROM " + this.getTablePrefix() + "permissions";
+                String selectPowerCells = "SELECT * FROM " + this.getTablePrefix() + "powercell";
 
                 Map<Integer, Claim> claims = new HashMap<>();
 
@@ -704,23 +753,62 @@ public class DataHelper {
                             claim.setHome(location);
                         }
 
+                        // old powercell system conversion
                         String powercellWorld = result.getString("powercell_world");
                         if (powercellWorld != null) {
                             double x = result.getDouble("powercell_x");
                             double y = result.getDouble("powercell_y");
                             double z = result.getDouble("powercell_z");
                             Location location = new Location(Bukkit.getWorld(powercellWorld), x, y, z);
-                            claim.getPowerCell().setLocation(location);
+
+                            PowerCell newPowerCell = new PowerCell(claim);
+                            newPowerCell.setLocation(location);
+                            newPowerCell.setCurrentPower(result.getInt("power"));
+                            newPowerCell.setEconomyBalance(result.getDouble("eco_bal"));
 
                             List<ItemStack> items = ItemSerializer.fromBase64(result.getString("powercell_inventory"));
-                            claim.getPowerCell().setItems(items);
-                        }
+                            newPowerCell.setItems(items);
 
-                        claim.getPowerCell().setCurrentPower(result.getInt("power"));
-                        claim.getPowerCell().setEconomyBalance(result.getDouble("eco_bal"));
+                            // Save new PowerCell to the claim
+                            ClaimedRegion region = claim.getClaimedRegion(location);
+                            if (region != null) {
+                                region.setPowerCell(newPowerCell);
+                            }
+
+                            // Null out the old power cell fields in the database
+                            String nullOldPowerCellFields = "UPDATE " + getTablePrefix() + "claim SET powercell_world = NULL, powercell_x = NULL, powercell_y = NULL, powercell_z = NULL, powercell_inventory = NULL WHERE id = ?";
+                            try (PreparedStatement nullOldFieldsStatement = connection.prepareStatement(nullOldPowerCellFields)) {
+                                nullOldFieldsStatement.setInt(1, claimId);
+                                nullOldFieldsStatement.executeUpdate();
+                            }
+                        }
                         claim.setLocked(result.getInt("locked") == 1);
 
                         claims.put(claimId, claim);
+                    }
+                }
+
+                try (Statement statement = connection.createStatement()) {
+                    ResultSet result = statement.executeQuery(selectPowerCells);
+                    while (result.next()) {
+                        int claimId = result.getInt("claim_id");
+                        Claim claim = claims.get(claimId);
+                        if (claim == null) {
+                            continue;
+                        }
+
+                        Location location = new Location(Bukkit.getWorld(result.getString("world")), result.getInt("x"), result.getInt("y"), result.getInt("z"));
+                        PowerCell powerCell = new PowerCell(claim);
+                        powerCell.setId(result.getInt("id"));
+                        powerCell.setCurrentPower(result.getInt("power"));
+                        powerCell.setEconomyBalance(result.getDouble("eco_bal"));
+                        powerCell.setItems(ItemSerializer.fromBase64(result.getString("inventory")));
+                        powerCell.setLocation(location);
+
+                        ClaimedRegion region = claim.getClaimedRegion(location);
+                        if (region != null) {
+                            region.setPowerCell(powerCell);
+                        }
                     }
                 }
 

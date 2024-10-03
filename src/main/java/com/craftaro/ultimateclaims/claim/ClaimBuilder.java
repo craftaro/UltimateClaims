@@ -40,11 +40,6 @@ public class ClaimBuilder {
         return this;
     }
 
-    public ClaimBuilder setPowerCell(PowerCell powerCell) {
-        this.claim.setPowerCell(powerCell);
-        return this;
-    }
-
     public ClaimBuilder setMemberPermissions(ClaimPermissions memberPermissions) {
         this.claim.setMemberPermissions(memberPermissions);
         return this;

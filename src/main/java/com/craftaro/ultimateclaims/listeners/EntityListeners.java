@@ -245,29 +245,30 @@ public class EntityListeners implements Listener {
             }
 
             Claim claim = claimManager.getClaim(block.getChunk());
-            PowerCell powerCell = claim.getPowerCell();
+            for (PowerCell powerCell : claim.getPowerCells()) {
 
-            // Pay special attention to mobs
-            switch (entity.getType()) {
-                case CREEPER:
-                case GHAST:
-                case FIREBALL:
-                case WITHER:
-                    // For explosions caused by mobs, check if allowed
-                    if (!claim.getClaimSettings().isEnabled(ClaimSetting.MOB_GRIEFING)
-                            || (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation()))) {
+                // Pay special attention to mobs
+                switch (entity.getType()) {
+                    case CREEPER:
+                    case GHAST:
+                    case FIREBALL:
+                    case WITHER:
+                        // For explosions caused by mobs, check if allowed
+                        if (!claim.getClaimSettings().isEnabled(ClaimSetting.MOB_GRIEFING)
+                                || (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation()))) {
+                            event.blockList().remove(block);
+                        }
+                        break;
+                    case PRIMED_TNT:
+                        if (!claim.getClaimSettings().isEnabled(ClaimSetting.TNT)
+                                || (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation()))) {
+                            event.blockList().remove(block);
+                        }
+                        break;
+                    default:
+                        // Cancel block damage from all other explosions
                         event.blockList().remove(block);
-                    }
-                    break;
-                case PRIMED_TNT:
-                    if (!claim.getClaimSettings().isEnabled(ClaimSetting.TNT)
-                            || (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation()))) {
-                        event.blockList().remove(block);
-                    }
-                    break;
-                default:
-                    // Cancel block damage from all other explosions
-                    event.blockList().remove(block);
+                }
             }
         }
     }

@@ -7,6 +7,7 @@ import com.craftaro.core.utils.TimeUtils;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
+import com.craftaro.ultimateclaims.claim.PowerCell;
 import com.craftaro.ultimateclaims.member.ClaimMember;
 import com.craftaro.ultimateclaims.member.ClaimRole;
 import com.craftaro.ultimateclaims.settings.Settings;
@@ -30,7 +31,7 @@ public class MembersGui extends CustomizableGui {
     private ClaimRole displayedRole = ClaimRole.OWNER;
     private SortType sortType = SortType.DEFAULT;
 
-    public MembersGui(UltimateClaims plugin, Claim claim) {
+    public MembersGui(UltimateClaims plugin, Claim claim, PowerCell powerCell) {
         super(plugin, "members");
         this.claim = claim;
         this.plugin = plugin;
@@ -52,9 +53,9 @@ public class MembersGui extends CustomizableGui {
         this.setButton("back", 0, GuiUtils.createButtonItem(XMaterial.OAK_FENCE_GATE,
                         plugin.getLocale().getMessage("general.interface.back").toText(),
                         plugin.getLocale().getMessage("general.interface.exit").toText()),
-                (event) -> this.guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
+                (event) -> this.guiManager.showGUI(event.player, powerCell.getGui(event.player)));
         this.setButton("back", 8, this.getItem(0),
-                (event) -> this.guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
+                (event) -> this.guiManager.showGUI(event.player, powerCell.getGui(event.player)));
 
         // Member Stats (update on refresh)
         this.setItem("stats", 4, XMaterial.PAINTING.parseItem());

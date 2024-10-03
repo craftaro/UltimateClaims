@@ -54,17 +54,17 @@ public class BlockListeners implements Listener {
 
         Claim claim = claimManager.getClaim(chunk);
 
-        PowerCell powerCell = claim.getPowerCell();
+        for (PowerCell powerCell : claim.getPowerCells()) {
+            if (powerCell.getLocation() != null) {
+                Block blockPowerCell = powerCell.getLocation().getBlock();
 
-        if (powerCell.getLocation() != null) {
-            Block blockPowerCell = powerCell.getLocation().getBlock();
-
-            if (block.getType() == XMaterial.CHEST.parseMaterial() && (block.getRelative(BlockFace.NORTH).equals(blockPowerCell)
-                    || block.getRelative(BlockFace.SOUTH).equals(blockPowerCell)
-                    || block.getRelative(BlockFace.EAST).equals(blockPowerCell)
-                    || block.getRelative(BlockFace.WEST).equals(blockPowerCell))) {
-                event.setCancelled(true);
-                return;
+                if (block.getType() == XMaterial.CHEST.parseMaterial() && (block.getRelative(BlockFace.NORTH).equals(blockPowerCell)
+                        || block.getRelative(BlockFace.SOUTH).equals(blockPowerCell)
+                        || block.getRelative(BlockFace.EAST).equals(blockPowerCell)
+                        || block.getRelative(BlockFace.WEST).equals(blockPowerCell))) {
+                    event.setCancelled(true);
+                    return;
+                }
             }
         }
 
@@ -86,21 +86,22 @@ public class BlockListeners implements Listener {
         }
 
         Claim claim = claimManager.getClaim(chunk);
-        PowerCell powerCell = claim.getPowerCell();
+        for (PowerCell powerCell : claim.getPowerCells()) {
 
-        if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.BREAK)) {
-            this.plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
-            event.setCancelled(true);
-            return;
-        }
-
-        if (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation())) {
-            ClaimMember member = claim.getMember(event.getPlayer());
-            if ((member != null && member.getRole() == ClaimRole.OWNER) || event.getPlayer().hasPermission("ultimateclaims.admin.removeclaim")) {
-                powerCell.destroy();
-            } else {
+            if (!claim.playerHasPerms(event.getPlayer(), ClaimPerm.BREAK)) {
                 this.plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
                 event.setCancelled(true);
+                return;
+            }
+
+            if (powerCell.hasLocation() && powerCell.getLocation().equals(block.getLocation())) {
+                ClaimMember member = claim.getMember(event.getPlayer());
+                if ((member != null && member.getRole() == ClaimRole.OWNER) || event.getPlayer().hasPermission("ultimateclaims.admin.removeclaim")) {
+                    powerCell.destroy();
+                } else {
+                    this.plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(event.getPlayer());
+                    event.setCancelled(true);
+                }
             }
         }
     }
@@ -163,37 +164,38 @@ public class BlockListeners implements Listener {
 
         Claim claim = claimManager.getClaim(chunk);
         // hopper in a claim, are we trying to push into a powercell?
-        PowerCell powerCell = claim.getPowerCell();
+        for (PowerCell powerCell : claim.getPowerCells()) {
 
-        if (powerCell == null || !powerCell.hasLocation() || !powerCell.getLocation().equals(chest.getLocation())) {
-            return;
-        }
-
-        // To prevent issues with items getting lost, let's prevent
-        // items from getting moved if someone is opening the inventory.
-        if (powerCell.isInventoryOpen()) {
-            event.setCancelled(true);
-            return;
-        }
-
-        if (!Settings.ENABLE_HOPPERS.getBoolean()) {
-            final Location target = chest.getLocation();
-            // Powercells have a different inventory than the chest
-            // To help out players a bit, we're just going to not let hoppers do their thing
-            if (powerCell.hasLocation() && powerCell.getLocation().equals(target)) {
-                // yep, let's not do that
-                event.setCancelled(true);
+            if (powerCell == null || !powerCell.hasLocation() || !powerCell.getLocation().equals(chest.getLocation())) {
+                return;
             }
-            return;
-        }
 
-        boolean isFull = !powerCell.addItem(item);
-        if (isFull) {
-            event.setCancelled(true);
-            return;
+            // To prevent issues with items getting lost, let's prevent
+            // items from getting moved if someone is opening the inventory.
+            if (powerCell.isInventoryOpen()) {
+                event.setCancelled(true);
+                return;
+            }
+
+            if (!Settings.ENABLE_HOPPERS.getBoolean()) {
+                final Location target = chest.getLocation();
+                // Powercells have a different inventory than the chest
+                // To help out players a bit, we're just going to not let hoppers do their thing
+                if (powerCell.hasLocation() && powerCell.getLocation().equals(target)) {
+                    // yep, let's not do that
+                    event.setCancelled(true);
+                }
+                return;
+            }
+
+            boolean isFull = !powerCell.addItem(item);
+            if (isFull) {
+                event.setCancelled(true);
+                return;
+            }
+            powerCell.rejectUnusable();
+            powerCell.stackItems();
         }
-        powerCell.rejectUnusable();
-        powerCell.stackItems();
 
         event.getDestination().remove(item);
     }

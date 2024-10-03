@@ -35,35 +35,36 @@ public class PowerCellTask extends BukkitRunnable {
     @Override
     public void run() {
         for (Claim claim : new ArrayList<>(plugin.getClaimManager().getRegisteredClaims())) {
-            PowerCell powerCell = claim.getPowerCell();
-            List<ClaimMember> members = claim.getOwnerAndMembers().stream()
-                    .filter(member -> member.getRole() != ClaimRole.VISITOR).collect(Collectors.toList());
-            for (ClaimMember member : members) {
-                if (member.getPlayer().isOnline()) {
-                    member.setPlayTime(member.getPlayTime() + (60 * 1000)); // Should be a var.
+            for (PowerCell powerCell : claim.getPowerCells()) {
+                List<ClaimMember> members = claim.getOwnerAndMembers().stream()
+                        .filter(member -> member.getRole() != ClaimRole.VISITOR).collect(Collectors.toList());
+                for (ClaimMember member : members) {
+                    if (member.getPlayer().isOnline()) {
+                        member.setPlayTime(member.getPlayTime() + (60 * 1000)); // Should be a var.
+                    }
                 }
-            }
-            int tick = powerCell.tick();
-            if (powerCell.getTotalPower() <= 0) {
-                if (tick == -1 && !powerCell.hasLocation()) {
-                    for (ClaimMember member : claim.getMembers()) {
-                        this.dissolved(member);
+                int tick = powerCell.tick();
+                if (powerCell.getTotalPower() <= 0) {
+                    if (tick == -1 && !powerCell.hasLocation()) {
+                        for (ClaimMember member : claim.getMembers()) {
+                            this.dissolved(member);
+                        }
+                        this.dissolved(claim.getOwner());
+                        claim.destroy(ClaimDeleteReason.POWERCELL_TIMEOUT);
+                    } else if (tick == -1) {
+                        for (ClaimMember member : members) {
+                            this.outOfPower(member);
+                        }
+                    } else if (tick == (Settings.MINIMUM_POWER.getInt() + 10)) {
+                        for (ClaimMember member : members) {
+                            this.tenLeft(member);
+                        }
+                    } else if (tick <= Settings.MINIMUM_POWER.getInt()) {
+                        for (ClaimMember member : members) {
+                            this.dissolved(member);
+                        }
+                        claim.destroy(ClaimDeleteReason.POWERCELL_TIMEOUT);
                     }
-                    this.dissolved(claim.getOwner());
-                    claim.destroy(ClaimDeleteReason.POWERCELL_TIMEOUT);
-                } else if (tick == -1) {
-                    for (ClaimMember member : members) {
-                        this.outOfPower(member);
-                    }
-                } else if (tick == (Settings.MINIMUM_POWER.getInt() + 10)) {
-                    for (ClaimMember member : members) {
-                        this.tenLeft(member);
-                    }
-                } else if (tick <= Settings.MINIMUM_POWER.getInt()) {
-                    for (ClaimMember member : members) {
-                        this.dissolved(member);
-                    }
-                    claim.destroy(ClaimDeleteReason.POWERCELL_TIMEOUT);
                 }
             }
         }

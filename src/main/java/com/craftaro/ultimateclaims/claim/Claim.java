@@ -2,6 +2,7 @@ package com.craftaro.ultimateclaims.claim;
 
 import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.core.utils.PlayerUtils;
+import com.craftaro.core.utils.TimeUtils;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.third_party.com.cryptomorin.xseries.XSound;
 import com.craftaro.ultimateclaims.UltimateClaims;
@@ -16,23 +17,14 @@ import com.craftaro.ultimateclaims.member.ClaimPerm;
 import com.craftaro.ultimateclaims.member.ClaimPermissions;
 import com.craftaro.ultimateclaims.member.ClaimRole;
 import com.craftaro.ultimateclaims.settings.Settings;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Claim {
@@ -75,8 +67,6 @@ public class Claim {
             .setAllowed(ClaimPerm.REDSTONE, Settings.DEFAULT_VISITOR_REDSTONE.getBoolean())
             .setAllowed(ClaimPerm.DOORS, Settings.DEFAULT_VISITOR_DOORS.getBoolean())
             .setAllowed(ClaimPerm.TRADING, Settings.DEFAULT_VISITOR_TRADE.getBoolean());
-
-    private PowerCell powerCell = new PowerCell(this);
 
     private BossBar bossBarVisitor = null;
     private BossBar bossBarMember = null;
@@ -199,12 +189,6 @@ public class Claim {
                 .orElse(null);
     }
 
-    /**
-     * Search for a member by username
-     *
-     * @param name name to search
-     * @return Member instance matching this username, if any
-     */
     public ClaimMember getMember(String name) {
         if (name == null) {
             return null;
@@ -223,12 +207,7 @@ public class Claim {
     }
 
     public void removeMember(UUID uuid) {
-        for (ClaimMember member : this.members) {
-            if (member.getUniqueId().equals(uuid)) {
-                this.members.remove(member);
-                break;
-            }
-        }
+        this.members.removeIf(member -> member.getUniqueId().equals(uuid));
     }
 
     public void removeMember(ClaimMember member) {
@@ -342,6 +321,16 @@ public class Claim {
         return null;
     }
 
+    // Idk if this needs to be done but if I recall correctly getting a chunk loads the chunk so I'll just do it this way. Replace this if I'm wrong.
+    public ClaimedRegion getClaimedRegion(Location location) {
+        for (ClaimedChunk claimedChunk : getClaimedChunks()) {
+            if (claimedChunk.getX() == (((int)location.getX()) >> 4) && claimedChunk.getZ() == (((int)location.getZ()) >> 4)) {
+                return claimedChunk.getRegion();
+            }
+        }
+        return null;
+    }
+
     public List<ClaimedChunk> getClaimedChunks() {
         List<ClaimedChunk> chunks = new ArrayList<>();
         for (ClaimedRegion claimedRegion : this.claimedRegions) {
@@ -432,16 +421,31 @@ public class Claim {
         return result;
     }
 
+    public List<PowerCell> getPowerCells() {
+        List<PowerCell> powerCells = new ArrayList<>();
+        for (ClaimedRegion region : this.claimedRegions) {
+            if (region.hasPowerCell()) {
+                powerCells.add(region.getPowerCell());
+            }
+        }
+        return powerCells;
+    }
+
+    public PowerCell getPowerCellAt(Location location) {
+        for (PowerCell powerCell : getPowerCells()) {
+            if (powerCell.hasLocation() && powerCell.getLocation().equals(location)) {
+                return powerCell;
+            }
+        }
+        return null;
+    }
+
+    public boolean hasPowerCellAt(Location location) {
+        return getPowerCellAt(location) != null;
+    }
+
     public boolean hasPowerCell() {
-        return this.powerCell.location != null;
-    }
-
-    public PowerCell getPowerCell() {
-        return this.powerCell;
-    }
-
-    public void setPowerCell(PowerCell powerCell) {
-        this.powerCell = powerCell;
+        return !getPowerCells().isEmpty();
     }
 
     public ClaimPermissions getMemberPermissions() {
@@ -485,7 +489,11 @@ public class Claim {
             UltimateClaims.getInstance().getDynmapManager().refresh();
         }
 
-        this.powerCell.destroy();
+        // Destroy all power cells
+        for (PowerCell powerCell : getPowerCells()) {
+            powerCell.destroy();
+        }
+
         UltimateClaims.getInstance().getDataHelper().deleteClaim(this);
         UltimateClaims.getInstance().getClaimManager().removeClaim(this);
 
@@ -529,11 +537,11 @@ public class Claim {
     }
 
     public String getPowercellTimeRemaining() {
-        if (hasPowerCell()) {
-            return this.powerCell.getTimeRemaining();
-        } else {
-            return null;
+        long totalPower = 0;
+        for (PowerCell pc : getPowerCells()) {
+            totalPower += pc.getTotalPower();
         }
+        return totalPower > 0 ? TimeUtils.makeReadable(totalPower * 60 * 1000) : null;
     }
 
     @Override

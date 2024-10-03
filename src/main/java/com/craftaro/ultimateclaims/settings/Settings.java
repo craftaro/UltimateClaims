@@ -207,6 +207,9 @@ public class Settings {
     public static final ConfigSetting DYNMAP_UPDATE_INTERVAL = new ConfigSetting(config, "Dynmap.UpdateInterval", 60,
             "How often should existing Claims be updated on Dynmap");
 
+    public static final ConfigSetting ALLOW_MULTIPLE_POWERCELLS = new ConfigSetting(config, "Main.Allow Multiple Powercells", false,
+            "Should claims be able to have multiple powercells?");
+
     /**
      * In order to set dynamic economy comment correctly, this needs to be
      * called after EconomyManager load

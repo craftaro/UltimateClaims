@@ -12,6 +12,7 @@ import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.ultimateclaims.claim.AuditManager;
 import com.craftaro.ultimateclaims.claim.Claim;
 import com.craftaro.ultimateclaims.claim.ClaimManager;
+import com.craftaro.ultimateclaims.claim.PowerCell;
 import com.craftaro.ultimateclaims.commands.CommandAccept;
 import com.craftaro.ultimateclaims.commands.CommandAddMember;
 import com.craftaro.ultimateclaims.commands.CommandBan;
@@ -34,14 +35,7 @@ import com.craftaro.ultimateclaims.commands.CommandUnClaim;
 import com.craftaro.ultimateclaims.commands.admin.CommandRemoveClaim;
 import com.craftaro.ultimateclaims.commands.admin.CommandTransferOwnership;
 import com.craftaro.ultimateclaims.database.DataHelper;
-import com.craftaro.ultimateclaims.database.migrations._1_InitialMigration;
-import com.craftaro.ultimateclaims.database.migrations._2_NewPermissions;
-import com.craftaro.ultimateclaims.database.migrations._3_MemberNames;
-import com.craftaro.ultimateclaims.database.migrations._4_TradingPermission;
-import com.craftaro.ultimateclaims.database.migrations._5_TntSetting;
-import com.craftaro.ultimateclaims.database.migrations._6_FlySetting;
-import com.craftaro.ultimateclaims.database.migrations._7_AuditLog;
-import com.craftaro.ultimateclaims.database.migrations._8_ClaimedRegions;
+import com.craftaro.ultimateclaims.database.migrations.*;
 import com.craftaro.ultimateclaims.dynmap.DynmapManager;
 import com.craftaro.ultimateclaims.items.ItemManager;
 import com.craftaro.ultimateclaims.listeners.BlockListeners;
@@ -212,7 +206,8 @@ public class UltimateClaims extends SongodaPlugin {
                 new _5_TntSetting(),
                 new _6_FlySetting(),
                 new _7_AuditLog(),
-                new _8_ClaimedRegions())
+                new _8_ClaimedRegions(),
+                new _9_DisconnectedPowerCells())
         );
         this.dataHelper = new DataHelper(getDataManager(), this);
 
@@ -226,7 +221,7 @@ public class UltimateClaims extends SongodaPlugin {
         this.dataHelper.getClaims((claims) -> {
             this.claimManager.addClaims(claims);
             if (useHolo) {
-                this.claimManager.getRegisteredClaims().stream().filter(Claim::hasPowerCell).forEach(x -> x.getPowerCell().createHologram());
+                this.claimManager.getRegisteredClaims().stream().filter(Claim::hasPowerCell).forEach(x -> x.getPowerCells().forEach(PowerCell::createHologram));
             }
 
             if (this.dynmapManager != null) {

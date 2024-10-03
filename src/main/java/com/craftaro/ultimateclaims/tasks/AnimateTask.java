@@ -31,21 +31,22 @@ public class AnimateTask extends BukkitRunnable {
     @Override
     public void run() {
         for (Claim claim : new ArrayList<>(plugin.getClaimManager().getRegisteredClaims())) {
-            PowerCell powerCell = claim.getPowerCell();
-            if (!powerCell.hasLocation()) {
-                continue;
-            }
+            for (PowerCell powerCell : claim.getPowerCells()) {
+                if (!powerCell.hasLocation()) {
+                    continue;
+                }
 
-            Location location = powerCell.getLocation().add(.5, .5, .5);
-            int x = location.getBlockX() >> 4;
-            int z = location.getBlockZ() >> 4;
+                Location location = powerCell.getLocation().add(.5, .5, .5);
+                int x = location.getBlockX() >> 4;
+                int z = location.getBlockZ() >> 4;
 
-            if ((ServerVersion.isServerVersionAtLeast(ServerVersion.V1_14) && !location.isWorldLoaded()) || !location.getWorld().isChunkLoaded(x, z)) {
-                continue;
+                if ((ServerVersion.isServerVersionAtLeast(ServerVersion.V1_14) && !location.isWorldLoaded()) || !location.getWorld().isChunkLoaded(x, z)) {
+                    continue;
+                }
+                int red = (powerCell.getCurrentPower() >= 0 ? 5 : 255);
+                int green = (powerCell.getCurrentPower() >= 0 ? 255 : 5);
+                CompatibleParticleHandler.redstoneParticles(location, red, green, 5, 1.3F, 2, 1);
             }
-            int red = (powerCell.getCurrentPower() >= 0 ? 5 : 255);
-            int green = (powerCell.getCurrentPower() >= 0 ? 255 : 5);
-            CompatibleParticleHandler.redstoneParticles(location, red, green, 5, 1.3F, 2, 1);
         }
     }
 }

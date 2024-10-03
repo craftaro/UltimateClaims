@@ -6,6 +6,7 @@ import com.craftaro.core.utils.SkullItemCreator;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
+import com.craftaro.ultimateclaims.claim.PowerCell;
 import com.craftaro.ultimateclaims.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,7 +22,7 @@ public class BansGui extends CustomizableGui {
     private final UltimateClaims plugin;
     private final Claim claim;
 
-    public BansGui(UltimateClaims plugin, Claim claim) {
+    public BansGui(UltimateClaims plugin, Claim claim, PowerCell powerCell) {
         super(plugin, "bans");
         this.claim = claim;
         this.plugin = plugin;
@@ -43,9 +44,9 @@ public class BansGui extends CustomizableGui {
         this.setButton("back", 0, GuiUtils.createButtonItem(XMaterial.OAK_FENCE_GATE,
                         plugin.getLocale().getMessage("general.interface.back").toText(),
                         plugin.getLocale().getMessage("general.interface.exit").toText()),
-                (event) -> this.guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
+                (event) -> this.guiManager.showGUI(event.player, powerCell.getGui(event.player)));
         this.setButton("back", 8, this.getItem(0),
-                (event) -> this.guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
+                (event) -> this.guiManager.showGUI(event.player, powerCell.getGui(event.player)));
 
         // Ban information
         this.setItem("information", 4, GuiUtils.createButtonItem(XMaterial.PAINTING,

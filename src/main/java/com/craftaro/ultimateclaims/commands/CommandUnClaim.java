@@ -42,11 +42,12 @@ public class CommandUnClaim extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        if (claim.getPowerCell().hasLocation()) {
-            PowerCell powerCell = claim.getPowerCell();
-            if (powerCell.getLocation().getChunk().equals(chunk)) {
-                this.plugin.getLocale().getMessage("command.unclaim.powercell").sendPrefixedMessage(sender);
-                return ReturnType.FAILURE;
+        for (PowerCell powerCell : claim.getPowerCells()) {
+            if (powerCell.hasLocation()) {
+                if (powerCell.getLocation().getChunk().equals(chunk)) {
+                    this.plugin.getLocale().getMessage("command.unclaim.powercell").sendPrefixedMessage(sender);
+                    return ReturnType.FAILURE;
+                }
             }
         }
 

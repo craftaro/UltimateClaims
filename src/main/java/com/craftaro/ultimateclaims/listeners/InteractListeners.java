@@ -5,6 +5,7 @@ import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
 import com.craftaro.ultimateclaims.claim.ClaimManager;
+import com.craftaro.ultimateclaims.claim.PowerCell;
 import com.craftaro.ultimateclaims.member.ClaimMember;
 import com.craftaro.ultimateclaims.member.ClaimPerm;
 import com.craftaro.ultimateclaims.member.ClaimRole;
@@ -31,6 +32,10 @@ public class InteractListeners implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent event) {
+        if (event.getClickedBlock() == null) {
+            return;
+        }
+
         ClaimManager claimManager = UltimateClaims.getInstance().getClaimManager();
 
         Chunk chunk = event.getClickedBlock().getChunk();
@@ -75,15 +80,16 @@ public class InteractListeners implements Listener {
 
         ClaimMember member = claim.getMember(event.getPlayer());
 
-        if (claim.getPowerCell().hasLocation()
-                && claim.getPowerCell().getLocation().equals(event.getClickedBlock().getLocation())
+        // Get the power cell at the clicked location
+        PowerCell powerCell = claim.getPowerCellAt(event.getClickedBlock().getLocation());
+        if (powerCell != null
                 && event.getAction() == Action.RIGHT_CLICK_BLOCK
                 && !event.getPlayer().isSneaking()) {
 
             // Make sure all items in the powercell are stacked.
-            claim.getPowerCell().stackItems();
+            powerCell.stackItems();
             if (member != null && member.getRole() != ClaimRole.VISITOR || event.getPlayer().hasPermission("ultimateclaims.powercell.view")) {
-                this.plugin.getGuiManager().showGUI(event.getPlayer(), claim.getPowerCell().getGui(event.getPlayer()));
+                this.plugin.getGuiManager().showGUI(event.getPlayer(), powerCell.getGui(event.getPlayer()));
             } else {
                 this.plugin.getLocale().getMessage("event.powercell.failopen").sendPrefixedMessage(event.getPlayer());
             }

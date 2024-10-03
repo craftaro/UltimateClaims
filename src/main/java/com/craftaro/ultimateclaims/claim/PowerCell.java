@@ -19,10 +19,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class PowerCell {
-    // This is the unique identifier for this power cell.
-    // It is reset on every plugin load.
-    // Used for holograms.
-    private final UUID uniqueId = UUID.randomUUID();
+
+    private int id = -1;
 
     protected final Claim claim;
     protected final UltimateClaims plugin = UltimateClaims.getInstance();
@@ -361,7 +359,7 @@ public class PowerCell {
             stackItems();
         }
 
-        return this.opened = new PowerCellGui(UltimateClaims.getInstance(), this.claim, player);
+        return this.opened = new PowerCellGui(UltimateClaims.getInstance(), this.claim, this, player);
     }
 
     public void destroy() {
@@ -385,9 +383,18 @@ public class PowerCell {
         this.opened = null;
         this.clearItems();
         this.location = null;
+        plugin.getDataHelper().deletePowerCell(this);
     }
 
     public String getHologramId() {
-        return "UltimateClaims-" + this.uniqueId;
+        return "UltimateClaims-" + this.id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return this.id;
     }
 }

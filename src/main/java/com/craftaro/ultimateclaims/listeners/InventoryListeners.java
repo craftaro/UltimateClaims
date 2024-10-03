@@ -5,6 +5,9 @@ import com.craftaro.third_party.com.cryptomorin.xseries.XSound;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
 import com.craftaro.ultimateclaims.claim.ClaimManager;
+import com.craftaro.ultimateclaims.claim.PowerCell;
+import com.craftaro.ultimateclaims.claim.region.ClaimedChunk;
+import com.craftaro.ultimateclaims.claim.region.ClaimedRegion;
 import com.craftaro.ultimateclaims.items.PowerCellItem;
 import com.craftaro.ultimateclaims.settings.Settings;
 import org.bukkit.Chunk;
@@ -51,8 +54,33 @@ public class InventoryListeners implements Listener {
 
         Claim claim = claimManager.getClaim(chunk);
 
-        if (!claim.getOwner().getUniqueId().equals(player.getUniqueId())
-                || claim.getPowerCell().hasLocation()) {
+        if (!claim.getOwner().getUniqueId().equals(player.getUniqueId())) {
+            return;
+        }
+
+        // Get the claimed chunk
+        ClaimedChunk claimedChunk = claim.getClaimedChunk(chunk);
+        if (claimedChunk == null) {
+            return;
+        }
+        // Get the region
+        ClaimedRegion region = claimedChunk.getRegion();
+        if (region == null) {
+            return;
+        }
+
+        // Check if region already has a powercell
+        if (region.hasPowerCell()) {
+            return;
+        }
+
+        // Check if multiple powercells are allowed
+        if (!Settings.ALLOW_MULTIPLE_POWERCELLS.getBoolean() && claim.getPowerCells().size() > 0) {
+            return;
+        }
+
+        // Check if a powercell already exists at this location
+        if (claim.hasPowerCellAt(chest.getLocation())) {
             return;
         }
 
@@ -74,18 +102,24 @@ public class InventoryListeners implements Listener {
             return;
         }
 
+        // Create new power cell
+        PowerCell newPowerCell = new PowerCell(claim);
+        Location location = chest.getLocation();
+
         for (ItemStack item : event.getInventory().getContents()) {
             if (item == null) {
                 continue;
             }
-            claim.getPowerCell().addItem(item);
+            newPowerCell.addItem(item);
         }
         event.getInventory().clear();
-        Location location = chest.getLocation();
-        claim.getPowerCell().setLocation(location.clone());
 
-        if (Settings.SET_HOME_AUTOMATICALLY.getBoolean() && player.hasPermission("ultimateclaims.home.auto")) {
-            Location powerCellLocation = claim.getPowerCell().getLocation();
+        newPowerCell.setLocation(location.clone());
+        // Associate the powercell with the region
+        region.setPowerCell(newPowerCell);
+
+        if (Settings.SET_HOME_AUTOMATICALLY.getBoolean() && player.hasPermission("ultimateclaims.home.auto") && claim.getHome() == null) {
+            Location powerCellLocation = newPowerCell.getLocation();
             if (powerCellLocation != null) {
                 Location homeLocation = powerCellLocation.add(0, 1, 0);
                 claim.setHome(homeLocation);
@@ -96,10 +130,10 @@ public class InventoryListeners implements Listener {
             }
         }
 
-        this.plugin.getDataHelper().updateClaim(claim);
+        this.plugin.getDataHelper().createPowerCell(claim, newPowerCell);
 
         if (Settings.POWERCELL_HOLOGRAMS.getBoolean()) {
-            claim.getPowerCell().createHologram();
+            newPowerCell.createHologram();
         }
 
         if (this.plugin.getDynmapManager() != null) {

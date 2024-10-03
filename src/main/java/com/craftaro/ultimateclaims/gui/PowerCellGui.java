@@ -26,15 +26,15 @@ import java.util.stream.Collectors;
 
 public class PowerCellGui extends CustomizableGui {
     private final UltimateClaims plugin;
-    private final PowerCell powercell;
+    private final PowerCell powerCell;
     private final Claim claim;
     private final boolean fullPerms;
 
-    public PowerCellGui(UltimateClaims plugin, Claim claim, Player player) {
+    public PowerCellGui(UltimateClaims plugin, Claim claim, PowerCell powerCell, Player player) {
         super(plugin, "powercell");
 
         this.plugin = plugin;
-        this.powercell = claim.getPowerCell();
+        this.powerCell = powerCell;
         this.claim = claim;
         this.fullPerms = claim.getOwner().getUniqueId().equals(player.getUniqueId());
 
@@ -84,7 +84,7 @@ public class PowerCellGui extends CustomizableGui {
                             plugin.getLocale().getMessage("interface.powercell.banslore").getMessageLines().stream().map(AdventureUtils::toLegacy).collect(Collectors.toList())),
                     (event) -> {
                         closed();
-                        event.manager.showGUI(event.player, new BansGui(plugin, claim));
+                        event.manager.showGUI(event.player, new BansGui(plugin, claim, powerCell));
                     });
         }
 
@@ -95,7 +95,7 @@ public class PowerCellGui extends CustomizableGui {
                             plugin.getLocale().getMessage("interface.powercell.settingslore").getMessageLines().stream().map(AdventureUtils::toLegacy).collect(Collectors.toList())),
                     (event) -> {
                         closed();
-                        event.manager.showGUI(event.player, new SettingsGui(plugin, claim, event.player));
+                        event.manager.showGUI(event.player, new SettingsGui(plugin, claim, this.powerCell, event.player));
                     });
         }
 
@@ -119,7 +119,7 @@ public class PowerCellGui extends CustomizableGui {
                             plugin.getLocale().getMessage("interface.powercell.memberslore").getMessageLines().stream().map(AdventureUtils::toLegacy).collect(Collectors.toList())),
                     (event) -> {
                         closed();
-                        event.manager.showGUI(event.player, new MembersGui(plugin, claim));
+                        event.manager.showGUI(event.player, new MembersGui(plugin, claim, powerCell));
                     });
         }
 
@@ -154,7 +154,7 @@ public class PowerCellGui extends CustomizableGui {
             return;
         }
         // update display inventory with the powercell's inventory
-        updateGuiInventory(this.powercell.getItems());
+        updateGuiInventory(this.powerCell.getItems());
         refreshPower();
         this.lastUpdate = now;
     }
@@ -191,17 +191,17 @@ public class PowerCellGui extends CustomizableGui {
         if (Settings.ENABLE_FUEL.getBoolean()) {
             this.updateItem("economy", 0, 2,
                     this.plugin.getLocale().getMessage("interface.powercell.economytitle")
-                            .processPlaceholder("time", TimeUtils.makeReadable((long) this.powercell.getEconomyPower() * 60 * 1000))
-                            .processPlaceholder("balance", this.powercell.getEconomyBalance()).toText(),
+                            .processPlaceholder("time", TimeUtils.makeReadable((long) this.powerCell.getEconomyPower() * 60 * 1000))
+                            .processPlaceholder("balance", this.powerCell.getEconomyBalance()).toText(),
                     this.plugin.getLocale().getMessage("interface.powercell.economylore")
-                            .processPlaceholder("balance", this.powercell.getEconomyBalance()).toText().split("\\|"));
+                            .processPlaceholder("balance", this.powerCell.getEconomyBalance()).toText().split("\\|"));
         }
 
         // Display the total time
         if (Settings.ENABLE_FUEL.getBoolean()) {
             this.updateItem("time", 0, 4,
                     this.plugin.getLocale().getMessage("interface.powercell.totaltitle")
-                            .processPlaceholder("time", TimeUtils.makeReadable(this.powercell.getTotalPower() * 60 * 1000)).toText(),
+                            .processPlaceholder("time", TimeUtils.makeReadable(this.powerCell.getTotalPower() * 60 * 1000)).toText(),
                     ChatColor.BLACK.toString());
         }
 
@@ -209,7 +209,7 @@ public class PowerCellGui extends CustomizableGui {
         if (Settings.ENABLE_FUEL.getBoolean()) {
             this.updateItem("item", 0, 6,
                     this.plugin.getLocale().getMessage("interface.powercell.valuablestitle")
-                            .processPlaceholder("time", TimeUtils.makeReadable(this.powercell.getItemPower() * 60 * 1000)).toText(),
+                            .processPlaceholder("time", TimeUtils.makeReadable(this.powerCell.getItemPower() * 60 * 1000)).toText(),
                     ChatColor.BLACK.toString());
         }
 
@@ -225,17 +225,17 @@ public class PowerCellGui extends CustomizableGui {
 
     private void closed() {
         // update cell's inventory
-        this.powercell.updateItemsFromGui(true);
+        this.powerCell.updateItemsFromGui(true);
 
         if (Settings.POWERCELL_HOLOGRAMS.getBoolean()) {
-            this.powercell.updateHologram();
+            this.powerCell.updateHologram();
         }
 
         if (this.plugin.getDynmapManager() != null) {
             this.plugin.getDynmapManager().refreshDescription(this.claim);
         }
 
-        this.powercell.rejectUnusable();
+        this.powerCell.rejectUnusable();
     }
 
     public Inventory getInventory() {
@@ -255,17 +255,17 @@ public class PowerCellGui extends CustomizableGui {
                         return;
                     }
                     double amount = Double.parseDouble(response.getMessage().trim());
-                    if (amount > 0 && this.powercell.hasLocation()) {
+                    if (amount > 0 && this.powerCell.hasLocation()) {
                         if (EconomyManager.hasBalance(player, amount)) {
                             EconomyManager.withdrawBalance(player, amount);
-                            this.powercell.addEconomy(amount);
-                            this.plugin.getDataHelper().updateClaim(this.claim);
+                            this.powerCell.addEconomy(amount);
+                            this.plugin.getDataHelper().updatePowerCell(this.claim, powerCell);
                         } else {
                             this.plugin.getLocale().getMessage("general.notenoughfunds").sendPrefixedMessage(player);
                         }
                     }
                 }).setOnClose(() -> {
-            if (this.powercell.hasLocation()) {
+            if (this.powerCell.hasLocation()) {
                 this.plugin.getGuiManager().showGUI(player, this);
             }
         }).setOnCancel(() -> player.sendMessage(ChatColor.RED + "Edit canceled"));
@@ -284,18 +284,18 @@ public class PowerCellGui extends CustomizableGui {
                         return;
                     }
                     double amount = Double.parseDouble(response.getMessage().trim());
-                    if (amount > 0 && this.powercell.hasLocation()) {
-                        if (this.powercell.getEconomyBalance() >= amount) {
+                    if (amount > 0 && this.powerCell.hasLocation()) {
+                        if (this.powerCell.getEconomyBalance() >= amount) {
                             EconomyManager.deposit(player, amount);
-                            this.powercell.removeEconomy(amount);
-                            this.plugin.getDataHelper().updateClaim(this.claim);
+                            this.powerCell.removeEconomy(amount);
+                            this.plugin.getDataHelper().updatePowerCell(this.claim, powerCell);
                         } else {
                             this.plugin.getLocale().getMessage("general.notenoughfundspowercell")
-                                    .processPlaceholder("balance", this.powercell.getEconomyBalance()).sendPrefixedMessage(player);
+                                    .processPlaceholder("balance", this.powerCell.getEconomyBalance()).sendPrefixedMessage(player);
                         }
                     }
                 }).setOnClose(() -> {
-            if (this.powercell.hasLocation()) {
+            if (this.powerCell.hasLocation()) {
                 this.plugin.getGuiManager().showGUI(player, this);
             }
         }).setOnCancel(() -> player.sendMessage(ChatColor.RED + "Edit canceled"));

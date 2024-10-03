@@ -6,6 +6,7 @@ import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
 import com.craftaro.ultimateclaims.claim.ClaimSetting;
+import com.craftaro.ultimateclaims.claim.PowerCell;
 import com.craftaro.ultimateclaims.member.ClaimRole;
 import com.craftaro.ultimateclaims.settings.Settings;
 import org.bukkit.entity.Player;
@@ -16,7 +17,7 @@ public class SettingsGui extends CustomizableGui {
     private final Claim claim;
     private final boolean hostilemobspawning, firespread, pvp, mobgriefing, leafdecay, tnt, fly;
 
-    public SettingsGui(UltimateClaims plugin, Claim claim, Player player) {
+    public SettingsGui(UltimateClaims plugin, Claim claim, PowerCell powerCell, Player player) {
         super(plugin, "settings");
         this.claim = claim;
         this.plugin = plugin;
@@ -40,7 +41,7 @@ public class SettingsGui extends CustomizableGui {
                         plugin.getLocale().getMessage("general.interface.exit").toText()),
                 (event) -> event.player.closeInventory());
         this.setButton("back", 8, this.getItem(0),
-                (event) -> this.guiManager.showGUI(event.player, claim.getPowerCell().getGui(event.player)));
+                (event) -> this.guiManager.showGUI(event.player, powerCell.getGui(event.player)));
 
         // shortcuts for member settings
         this.setButton("visitors", this.rows - 1, 3, GuiUtils.createButtonItem(XMaterial.OAK_SIGN,
