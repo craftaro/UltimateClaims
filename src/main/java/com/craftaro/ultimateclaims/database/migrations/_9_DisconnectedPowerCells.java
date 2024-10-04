@@ -8,7 +8,7 @@ import java.sql.Statement;
 
 public class _9_DisconnectedPowerCells extends DataMigration {
     public _9_DisconnectedPowerCells() {
-        super(8);
+        super(9);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class _9_DisconnectedPowerCells extends DataMigration {
                     "z INTEGER, " +
                     "inventory TEXT, " +
                     "power INTEGER NOT NULL, " +
-                    "eco_bal DOUBLE NOT NULL, " +
+                    "eco_bal DOUBLE NOT NULL" +
                     ")");
         }
     }

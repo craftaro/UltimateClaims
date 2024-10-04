@@ -63,7 +63,7 @@ public class CommandClaim extends AbstractCommand {
                 return ReturnType.FAILURE;
             }
 
-            if ((Settings.CHUNKS_MUST_TOUCH.getBoolean() || Settings.ALLOW_MULTIPLE_POWERCELLS.getBoolean()) && region == null) {
+            if (region == null && Settings.CHUNKS_MUST_TOUCH.getBoolean() && !Settings.ALLOW_MULTIPLE_POWERCELLS.getBoolean()) {
                 this.plugin.getLocale().getMessage("command.claim.nottouching").sendPrefixedMessage(player);
                 return ReturnType.FAILURE;
             }
