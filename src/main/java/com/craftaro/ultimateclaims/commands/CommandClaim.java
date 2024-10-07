@@ -102,7 +102,7 @@ public class CommandClaim extends AbstractCommand {
                 this.plugin.getDynmapManager().refresh();
             }
 
-            if (Settings.POWERCELL_HOLOGRAMS.getBoolean()) {
+            if (Settings.POWERCELL_HOLOGRAMS.getBoolean() && claim.getClaimedRegion(chunk).getPowerCell() != null) {
                 claim.getClaimedRegion(chunk).getPowerCell().updateHologram();
             }
         } else {
