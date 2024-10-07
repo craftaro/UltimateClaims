@@ -356,6 +356,11 @@ public class Claim {
         return PlayerUtils.getNumberFromPermission(player, "ultimateclaims.maxclaims", Settings.MAX_CHUNKS.getInt());
     }
 
+    public int getRegionSize(Location location) {
+        ClaimedRegion region = getClaimedRegion(location);
+        return region == null ? 0 : region.getChunks().size();
+    }
+
     public void animateChunk(Chunk chunk, Player player, Material material) {
         if (Settings.ENABLE_CHUNK_ANIMATION.getBoolean()) {
             if (!ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)) {

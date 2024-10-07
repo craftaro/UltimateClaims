@@ -33,6 +33,7 @@ public class DataHelper {
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private Integer nextClaimId = null;
+    private Integer nextPowerCellId = null;
 
     public DataHelper(DataManager dataManager, Plugin plugin) {
         this.dataManager = dataManager;
@@ -71,7 +72,10 @@ public class DataHelper {
     }
 
     private synchronized int getNextPowerCellId() {
-        return this.dataManager.getNextId("powercell");
+        if (this.nextPowerCellId == null) {
+            this.nextPowerCellId = this.dataManager.getNextId("powercell");
+        }
+        return ++this.nextPowerCellId;
     }
 
     private String getTablePrefix() {
@@ -214,7 +218,7 @@ public class DataHelper {
     public void updateClaim(Claim claim) {
         this.runAsync(() -> {
             try (Connection connection = this.databaseConnector.getConnection()) {
-                String updateClaim = "UPDATE " + this.getTablePrefix() + "claim SET name = ?, locked = ?, home_world = ?, home_x = ?, home_y = ?, home_z = ?, home_pitch = ?, home_yaw = ?, WHERE id = ?";
+                String updateClaim = "UPDATE " + this.getTablePrefix() + "claim SET name = ?, locked = ?, home_world = ?, home_x = ?, home_y = ?, home_z = ?, home_pitch = ?, home_yaw = ? WHERE id = ?";
                 PreparedStatement statement = connection.prepareStatement(updateClaim);
                 statement.setString(1, claim.getName());
                 statement.setInt(2, claim.isLocked() ? 1 : 0);
@@ -274,18 +278,19 @@ public class DataHelper {
             int powerCellId = getNextPowerCellId();
 
             try (Connection connection = this.databaseConnector.getConnection()) {
-                String createPowerCell = "INSERT INTO " + this.getTablePrefix() + "powercell (claim_id, power, eco_bal, world, x, y, z, inventory) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                String createPowerCell = "INSERT INTO " + this.getTablePrefix() + "powercell (id, claim_id, power, eco_bal, world, x, y, z, inventory) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 PreparedStatement statement = connection.prepareStatement(createPowerCell);
-                statement.setInt(1, claim.getId());
-                statement.setInt(2, powerCell.getCurrentPower());
-                statement.setDouble(3, powerCell.getEconomyBalance());
+                statement.setInt(1, powerCellId);
+                statement.setInt(2, claim.getId());
+                statement.setInt(3, powerCell.getCurrentPower());
+                statement.setDouble(4, powerCell.getEconomyBalance());
 
                 Location location = powerCell.getLocation();
-                statement.setString(4, location.getWorld().getName());
-                statement.setInt(5, location.getBlockX());
-                statement.setInt(6, location.getBlockY());
-                statement.setInt(7, location.getBlockZ());
-                statement.setString(8, ItemSerializer.toBase64(powerCell.getItems()));
+                statement.setString(5, location.getWorld().getName());
+                statement.setInt(6, location.getBlockX());
+                statement.setInt(7, location.getBlockY());
+                statement.setInt(8, location.getBlockZ());
+                statement.setString(9, ItemSerializer.toBase64(powerCell.getItems()));
 
                 statement.executeUpdate();
             } catch (Exception ex) {
@@ -299,7 +304,7 @@ public class DataHelper {
     public void bulkUpdateClaims(Collection<Claim> claims) {
         runAndWait(() -> {
             try (Connection connection = this.databaseConnector.getConnection()) {
-                String updateClaim = "UPDATE " + this.getTablePrefix() + "claim SET name = ?, locked = ?, home_world = ?, home_x = ?, home_y = ?, home_z = ?, home_pitch = ?, home_yaw = ?, WHERE id = ?";
+                String updateClaim = "UPDATE " + this.getTablePrefix() + "claim SET name = ?, locked = ?, home_world = ?, home_x = ?, home_y = ?, home_z = ?, home_pitch = ?, home_yaw = ? WHERE id = ?";
                         try (PreparedStatement statement = connection.prepareStatement(updateClaim)) {
                             for (Claim claim : claims) {
                                 statement.setString(1, claim.getName());
@@ -791,30 +796,6 @@ public class DataHelper {
                 }
 
                 try (Statement statement = connection.createStatement()) {
-                    ResultSet result = statement.executeQuery(selectPowerCells);
-                    while (result.next()) {
-                        int claimId = result.getInt("claim_id");
-                        Claim claim = claims.get(claimId);
-                        if (claim == null) {
-                            continue;
-                        }
-
-                        Location location = new Location(Bukkit.getWorld(result.getString("world")), result.getInt("x"), result.getInt("y"), result.getInt("z"));
-                        PowerCell powerCell = new PowerCell(claim);
-                        powerCell.setId(result.getInt("id"));
-                        powerCell.setCurrentPower(result.getInt("power"));
-                        powerCell.setEconomyBalance(result.getDouble("eco_bal"));
-                        powerCell.setItems(ItemSerializer.fromBase64(result.getString("inventory")));
-                        powerCell.setLocation(location);
-
-                        ClaimedRegion region = claim.getClaimedRegion(location);
-                        if (region != null) {
-                            region.setPowerCell(powerCell);
-                        }
-                    }
-                }
-
-                try (Statement statement = connection.createStatement()) {
                     ResultSet result = statement.executeQuery(selectMembers);
                     while (result.next()) {
                         int claimId = result.getInt("claim_id");
@@ -939,6 +920,30 @@ public class DataHelper {
                             case "visitor":
                                 claim.setVisitorPermissions(permissions);
                                 break;
+                        }
+                    }
+                }
+
+                try (Statement statement = connection.createStatement()) {
+                    ResultSet result = statement.executeQuery(selectPowerCells);
+                    while (result.next()) {
+                        int claimId = result.getInt("claim_id");
+                        Claim claim = claims.get(claimId);
+                        if (claim == null) {
+                            continue;
+                        }
+
+                        Location location = new Location(Bukkit.getWorld(result.getString("world")), result.getInt("x"), result.getInt("y"), result.getInt("z"));
+                        PowerCell powerCell = new PowerCell(claim);
+                        powerCell.setId(result.getInt("id"));
+                        powerCell.setCurrentPower(result.getInt("power"));
+                        powerCell.setEconomyBalance(result.getDouble("eco_bal"));
+                        powerCell.setItems(ItemSerializer.fromBase64(result.getString("inventory")));
+                        powerCell.setLocation(location);
+
+                        ClaimedRegion region = claim.getClaimedRegion(location);
+                        if (region != null) {
+                            region.setPowerCell(powerCell);
                         }
                     }
                 }

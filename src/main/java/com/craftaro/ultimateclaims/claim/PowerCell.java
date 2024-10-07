@@ -217,10 +217,10 @@ public class PowerCell {
 
             switch (getCostEquation()) {
                 case DEFAULT:
-                    total += itemValue / this.claim.getClaimSize();
+                    total += itemValue / this.claim.getRegionSize(location);
                     break;
                 case LINEAR:
-                    total += itemValue / (this.claim.getClaimSize() * getLinearValue());
+                    total += itemValue / (this.claim.getRegionSize(location) * getLinearValue());
                     break;
                 default:
                     total += itemValue;
@@ -288,9 +288,9 @@ public class PowerCell {
 
         switch (getCostEquation()) {
             case DEFAULT:
-                return value * this.claim.getClaimSize();
+                return value * this.claim.getRegionSize(location);
             case LINEAR:
-                return value * (this.claim.getClaimSize() * getLinearValue());
+                return value * (this.claim.getRegionSize(location) * getLinearValue());
             default:
                 return value;
         }
