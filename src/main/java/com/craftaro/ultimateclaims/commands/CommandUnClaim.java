@@ -76,6 +76,10 @@ public class CommandUnClaim extends AbstractCommand {
             }
         }
 
+        if (Settings.POWERCELL_HOLOGRAMS.getBoolean() && claim.getClaimedRegion(chunk).getPowerCell() != null) {
+            claim.getClaimedRegion(chunk).getPowerCell().updateHologram();
+        }
+
         // Remove chunk from claim
         ClaimedChunk removedChunk = claim.removeClaimedChunk(chunk, player);
 
