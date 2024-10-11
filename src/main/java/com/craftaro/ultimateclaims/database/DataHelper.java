@@ -763,12 +763,14 @@ public class DataHelper {
                         // old powercell system conversion
                         String powercellWorld = result.getString("powercell_world");
                         if (powercellWorld != null) {
+                            int id = getNextPowerCellId();
                             double x = result.getDouble("powercell_x");
                             double y = result.getDouble("powercell_y");
                             double z = result.getDouble("powercell_z");
                             Location location = new Location(Bukkit.getWorld(powercellWorld), x, y, z);
 
                             PowerCell newPowerCell = new PowerCell(claim);
+                            newPowerCell.setId(id);
                             newPowerCell.setLocation(location);
                             newPowerCell.setCurrentPower(result.getInt("power"));
                             newPowerCell.setEconomyBalance(result.getDouble("eco_bal"));

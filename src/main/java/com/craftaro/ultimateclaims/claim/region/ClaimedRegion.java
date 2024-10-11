@@ -2,6 +2,7 @@ package com.craftaro.ultimateclaims.claim.region;
 
 import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
+import com.craftaro.ultimateclaims.claim.ClaimDeleteReason;
 import com.craftaro.ultimateclaims.claim.PowerCell;
 
 import java.util.*;
@@ -131,5 +132,28 @@ public class ClaimedRegion {
 
     public boolean hasPowerCell() {
         return this.powerCell != null && this.powerCell.hasLocation();
+    }
+
+    public void destroy(ClaimDeleteReason reason) {
+        // Remove this region from the claim
+        claim.removeClaimedRegion(this);
+
+        // Remove all the chunks from the claim and reset their region reference
+        for (ClaimedChunk chunk : claimedChunks) {
+            chunk.setRegion(null);
+        }
+
+        // If we have a powercell, destroy it
+        if (this.powerCell != null) {
+            this.powerCell.destroy();
+        }
+
+        // Update the data in the database
+        UltimateClaims.getInstance().getDataHelper().deleteClaimedRegion(this);
+
+        // Refresh any visualizations, like Dynmap
+        if (UltimateClaims.getInstance().getDynmapManager() != null) {
+            UltimateClaims.getInstance().getDynmapManager().refresh();
+        }
     }
 }

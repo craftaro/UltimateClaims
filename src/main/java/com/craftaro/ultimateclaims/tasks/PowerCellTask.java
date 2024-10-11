@@ -4,6 +4,7 @@ import com.craftaro.ultimateclaims.UltimateClaims;
 import com.craftaro.ultimateclaims.claim.Claim;
 import com.craftaro.ultimateclaims.claim.ClaimDeleteReason;
 import com.craftaro.ultimateclaims.claim.PowerCell;
+import com.craftaro.ultimateclaims.claim.region.ClaimedRegion;
 import com.craftaro.ultimateclaims.member.ClaimMember;
 import com.craftaro.ultimateclaims.member.ClaimRole;
 import com.craftaro.ultimateclaims.settings.Settings;
@@ -46,11 +47,23 @@ public class PowerCellTask extends BukkitRunnable {
                 int tick = powerCell.tick();
                 if (powerCell.getTotalPower() <= 0) {
                     if (tick == -1 && !powerCell.hasLocation()) {
-                        for (ClaimMember member : claim.getMembers()) {
-                            this.dissolved(member);
+                        if (claim.getPowerCells().size() == 1) {
+                            for (ClaimMember member : claim.getMembers()) {
+                                this.dissolved(member);
+                            }
+                            this.dissolved(claim.getOwner());
+                            claim.destroy(ClaimDeleteReason.POWERCELL_TIMEOUT);
+                        } else {
+                            for (ClaimMember member : claim.getMembers()) {
+                                this.regionUnclaimed(member);
+                            }
+                            ClaimedRegion region = claim.getRegionByPowerCell(powerCell);
+                            if (region != null) {
+                                region.destroy(ClaimDeleteReason.POWERCELL_TIMEOUT);
+                            } else {
+                                plugin.getLogger().warning("Could not find region for powercell when trying to destroy it.");
+                            }
                         }
-                        this.dissolved(claim.getOwner());
-                        claim.destroy(ClaimDeleteReason.POWERCELL_TIMEOUT);
                     } else if (tick == -1) {
                         for (ClaimMember member : members) {
                             this.outOfPower(member);
@@ -60,13 +73,34 @@ public class PowerCellTask extends BukkitRunnable {
                             this.tenLeft(member);
                         }
                     } else if (tick <= Settings.MINIMUM_POWER.getInt()) {
-                        for (ClaimMember member : members) {
-                            this.dissolved(member);
+                        if (claim.getPowerCells().size() == 1) {
+                            for (ClaimMember member : members) {
+                                this.dissolved(member);
+                            }
+                            claim.destroy(ClaimDeleteReason.POWERCELL_TIMEOUT);
+                        } else {
+                            for (ClaimMember member : members) {
+                                this.regionUnclaimed(member);
+                            }
+                            ClaimedRegion region = claim.getRegionByPowerCell(powerCell);
+                            if (region != null) {
+                                region.destroy(ClaimDeleteReason.POWERCELL_TIMEOUT);
+                            } else {
+                                plugin.getLogger().warning("Could not find region for powercell when trying to destroy it.");
+                            }
                         }
-                        claim.destroy(ClaimDeleteReason.POWERCELL_TIMEOUT);
                     }
                 }
             }
+        }
+    }
+
+    private void regionUnclaimed(ClaimMember member) {
+        OfflinePlayer player = member.getPlayer();
+        if (player.isOnline()) {
+            plugin.getLocale().getMessage("general.claim.regionunclaimed")
+                    .processPlaceholder("claim", member.getClaim().getName())
+                    .sendPrefixedMessage(player.getPlayer());
         }
     }
 

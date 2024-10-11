@@ -72,6 +72,7 @@ command:
     nottouching: '&cYou can only claim chunks that are touching each other.'
     toomany: '&cYou can only claim &4%amount% &cchunks.'
     disabledworld: '&cYou cannot do that in this world.'
+    regionunclaimed: '&7Your region in claim &6%claim% &7has been unclaimed due to powercell depletion.'
   unclaim:
     success: '&7You unclaimed this chunk.'
     powercell: '&cYou cannot unclaim the chunk holding your powercell... Please move it first.'

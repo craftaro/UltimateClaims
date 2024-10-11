@@ -549,6 +549,15 @@ public class Claim {
         return totalPower > 0 ? TimeUtils.makeReadable(totalPower * 60 * 1000) : null;
     }
 
+    public ClaimedRegion getRegionByPowerCell(PowerCell powerCell) {
+        for (ClaimedRegion region : claimedRegions) {
+            if (region.getPowerCell() == powerCell) {
+                return region;
+            }
+        }
+        return null;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null || getClass() != obj.getClass()) {
