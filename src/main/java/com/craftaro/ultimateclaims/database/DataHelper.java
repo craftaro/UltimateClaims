@@ -252,7 +252,7 @@ public class DataHelper {
     public void updatePowerCell(Claim claim, PowerCell powerCell) {
         this.runAsync(() -> {
             try (Connection connection = this.databaseConnector.getConnection()) {
-                String updateClaim = "UPDATE " + this.getTablePrefix() + "powercell SET claim_id = ?, power = ?, eco_bal = ?, world = ?, x = ?, y = ?, z = ?, inventory = ?, WHERE id = ?";
+                String updateClaim = "UPDATE " + this.getTablePrefix() + "powercell SET claim_id = ?, power = ?, eco_bal = ?, world = ?, x = ?, y = ?, z = ?, inventory = ? WHERE id = ?";
                 PreparedStatement statement = connection.prepareStatement(updateClaim);
                 statement.setInt(1, claim.getId());
                 statement.setInt(2, powerCell.getCurrentPower());
@@ -353,7 +353,7 @@ public class DataHelper {
                     statement.executeBatch();
                 }
 
-                String updatePowerCell = "UPDATE " + this.getTablePrefix() + "powercell SET power = ?, eco_bal = ?, world = ?, x = ?, y = ?, z = ?, inventory = ? WHERE claim_id = ?";
+                String updatePowerCell = "UPDATE " + this.getTablePrefix() + "powercell SET power = ?, eco_bal = ?, world = ?, x = ?, y = ?, z = ?, inventory = ? WHERE id = ?";
                 try (PreparedStatement statement = connection.prepareStatement(updatePowerCell)) {
                     for (Claim claim : claims) {
                         for (PowerCell powerCell : claim.getPowerCells()) {
@@ -366,7 +366,7 @@ public class DataHelper {
                         statement.setInt(5, location.getBlockY());
                         statement.setInt(6, location.getBlockZ());
                         statement.setString(7, ItemSerializer.toBase64(powerCell.getItems()));
-                        statement.setInt(8, claim.getId());
+                        statement.setInt(8, powerCell.getId());
                         statement.addBatch();
                         }
 
