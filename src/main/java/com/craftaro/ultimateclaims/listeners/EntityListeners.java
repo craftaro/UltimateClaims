@@ -104,7 +104,8 @@ public class EntityListeners implements Listener {
         if (!(event.getEntered() instanceof Player)) {
             return;
         }
-        if (playerMove(event.getEntered().getLocation(), event.getVehicle().getLocation(), (Player) event.getEntered())) {
+        if (playerMove(event.getEntered().getLocation(), event.getVehicle().getLocation(),
+                (Player) event.getEntered())) {
             event.setCancelled(true);
         }
     }
@@ -115,7 +116,8 @@ public class EntityListeners implements Listener {
 
         if (claimManager.hasClaim(event.getLocation().getChunk())) {
             Claim claim = claimManager.getClaim(event.getLocation().getChunk());
-            if (!claim.getClaimSettings().isEnabled(ClaimSetting.HOSTILE_MOB_SPAWNING) && event.getEntity() instanceof Monster) {
+            if (!claim.getClaimSettings().isEnabled(ClaimSetting.HOSTILE_MOB_SPAWNING)
+                    && event.getEntity() instanceof Monster) {
                 event.setCancelled(true);
             }
         }
@@ -213,7 +215,8 @@ public class EntityListeners implements Listener {
             }
             if (source instanceof Player) {
                 if (!(event.getEntity() instanceof Player)) {
-                    if (!(event.getEntity() instanceof LivingEntity) && event.getEntity().getType() != EntityType.ARMOR_STAND) {
+                    if (!(event.getEntity() instanceof LivingEntity)
+                            && event.getEntity().getType() != EntityType.ARMOR_STAND) {
                         event.setCancelled(!claim.playerHasPerms((Player) source, ClaimPerm.BREAK));
                     } else if (!claim.playerHasPerms((Player) source, ClaimPerm.MOB_KILLING)) {
                         event.setCancelled(true);
@@ -322,9 +325,11 @@ public class EntityListeners implements Listener {
                     claim.getVisitorBossBar().removePlayer(player);
                     claim.getMemberBossBar().removePlayer(player);
                 } else {
-                    this.plugin.getLocale().getMessage("event.claim.exit")
+                    String message = this.plugin.getLocale().getMessage("event.claim.exit")
                             .processPlaceholder("claim", claim.getName())
-                            .sendTitle(player);
+                            .toText();
+
+                    player.sendTitle(message, null);
                 }
             }
         }
@@ -335,8 +340,10 @@ public class EntityListeners implements Listener {
                 ClaimMember member = claim.getMember(player);
                 if (member == null) {
                     if (claim.isLocked() && !player.hasPermission("ultimateclaims.bypass.lock")) {
-                        this.plugin.getLocale().getMessage("event.claim.locked")
-                                .sendTitle(player);
+                        String message = this.plugin.getLocale().getMessage("event.claim.locked")
+                                .toText();
+                        player.sendTitle(message, null);
+
                         return true;
                     }
 
@@ -352,8 +359,10 @@ public class EntityListeners implements Listener {
                 if (member != null
                         && claim.isBanned(member.getUniqueId())
                         && !player.hasPermission("ultimateclaims.bypass.ban")) {
-                    this.plugin.getLocale().getMessage("event.claim.locked")
-                            .sendTitle(player);
+                    String message = this.plugin.getLocale().getMessage("event.claim.locked")
+                            .toText();
+                    player.sendTitle(message, null);
+
                     return true;
                 }
 
@@ -364,9 +373,11 @@ public class EntityListeners implements Listener {
                         claim.getMemberBossBar().addPlayer(player);
                     }
                 } else {
-                    this.plugin.getLocale().getMessage("event.claim.enter")
+                    String message = this.plugin.getLocale().getMessage("event.claim.enter")
                             .processPlaceholder("claim", claim.getName())
-                            .sendTitle(player);
+                            .toText();
+
+                    player.sendTitle(message, null);
                 }
             }
         }
